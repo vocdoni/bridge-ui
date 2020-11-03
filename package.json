@@ -1,0 +1,42 @@
+{
+    "name": "bridge-ui",
+    "version": "1.0.0",
+    "description": "Frontend for the Vocdoni Bridge voting client",
+    "main": "index.js",
+    "scripts": {
+        "dev": "next dev -p 8080",
+        "build": "next build",
+        "start": "next start",
+        "export": "next build && next export -o build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vocdoni/bridge-ui.git"
+    },
+    "keywords": [],
+    "author": "",
+    "bugs": {
+        "url": "https://github.com/vocdoni/bridge-ui/issues"
+    },
+    "homepage": "https://github.com/vocdoni/bridge-ui#readme",
+    "dependencies": {
+        "@types/node": "^12.12.6",
+        "@types/react": "^16.9.21",
+        "@types/ws": "^7.2.4",
+        "@zeit/next-less": "^1.0.1",
+        "dexie": "^2.0.4",
+        "dvote-js": "^0.16.5",
+        "ethers": "^5.0.19",
+        "iso-language-codes": "^1.0.6",
+        "less": "^3.12.2",
+        "moment": "^2.29.0",
+        "next": "^10.0.0",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "typescript": "^4.0.5"
+    },
+    "devDependencies": {
+        "eslint": "^7.12.1",
+        "eslint-plugin-react": "^7.21.5"
+    }
+}

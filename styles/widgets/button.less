@@ -1,0 +1,22 @@
+.button {
+    box-sizing: border-box;
+    border-radius: 40px;
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+    letter-spacing: 0.01em;
+
+    &.accent-2 {
+        background: rgba(var(--accent-2-triplet), 4%);
+        border: 1px solid var(--accent-2);
+
+        &:hover {
+            background: rgba(var(--accent-2-triplet), 10%);
+        }
+
+        &:active {
+            background: rgba(var(--accent-2-triplet), 16%);
+        }
+    }
+}
