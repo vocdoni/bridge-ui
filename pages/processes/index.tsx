@@ -9,8 +9,7 @@ import { API, ProcessMetadata } from 'dvote-js'
 // import { getGatewayClients, getNetworkState } from '../../lib/network'
 import { IWallet } from '../../lib/types'
 import AppContext, { IAppContext } from '../../components/app-context'
-import TokenCard from '../../components/token-card'
-import Router from 'next/router'
+import Button from '../../components/button'
 
 // MAIN COMPONENT
 const ProcessPage = props => {
@@ -32,6 +31,10 @@ class ProcessView extends Component<IAppContext, State> {
         console.log(value, options)
     }
 
+    onSubmit() {
+        alert("TO DO")
+    }
+
     render() {
         // TODO:
         const name = "DAI"
@@ -49,6 +52,27 @@ class ProcessView extends Component<IAppContext, State> {
                             { title: { default: "I may accept another amount" }, value: 2 },
                         ],
                         type: "single-choice"
+                    },
+                    {
+                        question: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
+                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+                        voteOptions: [
+                            { title: { default: "Approve the proposed minting" }, value: 0 },
+                            { title: { default: "Approve up to 75% of the proposed amount" }, value: 1 },
+                            { title: { default: "Approve up to 50% of the proposed amount" }, value: 2 },
+                            { title: { default: "Approve up to 25% of the proposed amount" }, value: 3 },
+                            { title: { default: "Reject the minting" }, value: 4 },
+                        ],
+                        type: "single-choice"
+                    },
+                    {
+                        question: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
+                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+                        voteOptions: [
+                            { title: { default: "Approve the minting" }, value: 0 },
+                            { title: { default: "Reject the minting" }, value: 1 },
+                        ],
+                        type: "single-choice"
                     }
                 ],
                 entityId: "",
@@ -62,7 +86,10 @@ class ProcessView extends Component<IAppContext, State> {
             version: "1.0"
         }
         const remainingTime = "3 days left"
+        const canVote = false
         const status = "The process is open for voting"
+        const choiceVoteCount = Math.round(Math.random() * 100)
+        const questionVoteCount = 100
 
         return <div id="process">
             <div className="page-head">
@@ -88,17 +115,46 @@ class ProcessView extends Component<IAppContext, State> {
 
             <div className="row-questions">
                 {
-                    metadata.details.questions.map((question, idx) => <div className="question" key={idx}>
+                    metadata.details.questions.map((question, qIdx) => <div className="question" key={qIdx}>
                         <div className="left">
-                            <h6 className="accent-1">Question x</h6>
+                            <h6 className="accent-1">Question {qIdx + 1}</h6>
                             <h3>{question.question.default}</h3>
                             <p className="light">{question.description.default}</p>
                         </div>
                         <div className="right">
-                            __VOTE OPTIONS__
-                    </div>
+                            {
+                                question.voteOptions.map((option, oIdx) => canVote ?
+                                    this.renderClickableChoice(oIdx, qIdx, option.title.default, option.value) :
+                                    this.renderResultsChoice(oIdx, option.title.default, choiceVoteCount, questionVoteCount))
+                            }
+                        </div>
                     </div>)
                 }
+            </div>
+
+            <br /><br />
+
+            <div className="row-continue">
+                <Button onClick={() => this.onSubmit()}>Sign and submit the vote</Button>
+            </div>
+
+        </div>
+    }
+
+    renderClickableChoice(choiceIdx: number, questionIdx: number, title: string, value: number) {
+        return <label className="radio-choice" key={choiceIdx}> <input type="radio" name={"question-" + questionIdx} />
+            <div className="checkmark"></div> {title}
+        </label>
+    }
+
+    renderResultsChoice(idx: number, title: string, voteCount: number, totalVotes) {
+        return <div className="choice-result" key={idx}>
+            <div className="percent">
+                <div className="box">{(totalVotes <= 0 ? 0 : (voteCount / totalVotes * 100)).toFixed(1)} %</div>
+            </div>
+            <div className="text">
+                <span>{title}</span>
+                <span className="lighter">{voteCount || 0} votes</span>
             </div>
         </div>
     }

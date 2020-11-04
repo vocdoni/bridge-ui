@@ -21,11 +21,72 @@
 
             .left {
                 flex: 6;
+
+                .accent-1 {
+                    margin-bottom: 0;
+                    color: rgba(var(--accent-1-triplet), 0.5);
+                }
+                h3 {
+                    margin-top: 10px;
+                }
             }
             .right {
                 flex: 4;
-                text-align: right;
+                text-align: left;
+                margin-left: 10%;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                padding-top: 50px;
+
+                .radio-choice {
+                    font-size: 15px;
+                }
+
+                .choice-result {
+                    display: flex;
+                    flex-direction: row;
+
+                    .percent {
+                        flex: 1;
+                        margin-bottom: 1em;
+
+                        .box {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            color: var(--clear);
+                            background-color: var(--accent-1);
+                            width: 55px;
+                            height: 55px;
+                            border-radius: 50%;
+                        }
+                    }
+                    .text {
+                        flex: 4;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: flex-start;
+
+                        .lighter {
+                            margin-top: 0.4em;
+                        }
+                    }
+                }
             }
+        }
+    }
+
+
+    .row-continue {
+        display: flex;
+        justify-content: space-around;
+
+        & > * {
+            min-width: 200px;
         }
     }
 }
