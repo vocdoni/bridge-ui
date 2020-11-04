@@ -1,5 +1,6 @@
 import { useContext, Component } from 'react'
-import Link from 'next/link'
+// import Link from 'next/link'
+import Router from 'next/router'
 import { API, EntityMetadata } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
@@ -31,16 +32,16 @@ class IndexView extends Component<IAppContext, State> {
     state: State = {}
 
     onMetamaskSignIn() {
-        console.log("METAMASK")
+        Router.push("/dashboard")
     }
 
-    onTokenClick() {
-        console.log("TOKEN")
+    onTokenClick(address: string) {
+        Router.push("/tokens#/" + address)
     }
 
     render() {
         return <div id="index">
-            <div className="title">
+            <div className="page-head">
                 <h1>Bridge</h1>
                 <h4 className="accent-1">Trustless governance for Token holders</h4>
             </div>
@@ -84,19 +85,19 @@ class IndexView extends Component<IAppContext, State> {
                 <p className="light">Below is a curated list of tokens featured on the platform</p>
 
                 <div className="token-list">
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="($915M)" onClick={() => this.onTokenClick()}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="($915M)" href="/tokens/0x111">
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick()}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick("0x0")}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick()}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick("0x0")}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick()}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick("0x0")}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
                 </div>
