@@ -85,8 +85,8 @@ class ProcessView extends Component<IAppContext, State> {
             type: "poll-vote",
             version: "1.0"
         }
+        const canVote = true
         const remainingTime = "3 days left"
-        const canVote = false
         const status = "The process is open for voting"
         const choiceVoteCount = Math.round(Math.random() * 100)
         const questionVoteCount = 100

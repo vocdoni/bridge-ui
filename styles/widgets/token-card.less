@@ -14,9 +14,15 @@
     margin: 1rem 1em 1rem;
 
     background: linear-gradient(101.6deg, var(--accent-1) 0%, var(--accent-2) 100%);
-    // background: linear-gradient(101.6deg, #E87446 0%, #D963EC 100%);
     border-radius: 13px;
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    box-shadow: 1px 4px 9px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.1s ease-in-out;
+    opacity: 1;
+
+    &:hover {
+        box-shadow: 1px 4px 9px rgba(0, 0, 0, 0.35);
+        opacity: 0.95;
+    }
 
     a {
         color: var(--clear);
