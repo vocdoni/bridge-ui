@@ -71,7 +71,7 @@ class TokensView extends Component<IAppContext, State> {
 
                 <div className="token-list">
                     {
-                        tokens.map((token, idx) => <TokenCard name={token.symbol} icon={token.icon} rightText={token.marketCap} href={"/processes#/" + token.address} key={idx}>
+                        tokens.map((token, idx) => <TokenCard name={token.symbol} icon={token.icon} rightText={token.marketCap} href={"/tokens/view#/" + token.address} key={idx}>
                             <p>{token.name}<br />{token.activeVotes || 0} active votes</p>
                         </TokenCard>)
                     }
