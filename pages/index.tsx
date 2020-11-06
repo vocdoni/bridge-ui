@@ -85,19 +85,19 @@ class IndexView extends Component<IAppContext, State> {
                 <p className="light">Below is a curated list of tokens featured on the platform</p>
 
                 <div className="token-list">
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="($915M)" href="/tokens/0x111">
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="($915M)" href={"/tokens/info#/" + "0x1234"}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick("0x0")}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + "0x1234"}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick("0x0")}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + "0x1234"}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" onClick={() => this.onTokenClick("0x0")}>
+                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + "0x1234"}>
                         <p>Multicollateral DAI<br />7 active votes</p>
                     </TokenCard>
                 </div>

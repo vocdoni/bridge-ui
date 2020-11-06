@@ -1,5 +1,4 @@
 import { useContext, Component } from 'react'
-import Link from 'next/link'
 import { API, ProcessMetadata } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
@@ -11,6 +10,7 @@ import { IWallet } from '../../../lib/types'
 import AppContext, { IAppContext } from '../../../components/app-context'
 import TokenCard from '../../../components/token-card'
 import Button from '../../../components/button'
+import Router from 'next/router'
 
 // MAIN COMPONENT
 const TokenPage = props => {
@@ -28,8 +28,8 @@ type State = {
 class TokenView extends Component<IAppContext, State> {
     state: State = {}
 
-    onCreateProcess() {
-        console.log("NEW PROCESS")
+    onCreateProcess(tokenAddress: string) {
+        Router.push("/processes/new#/" + tokenAddress)
     }
 
     render() {
@@ -99,7 +99,7 @@ class TokenView extends Component<IAppContext, State> {
                 </div>
                 <div className="right">
                     <div className="v-center">Signed in as 0x1234... <img src="http://identicon.net/img/identicon.png" /></div>
-                    <Button onClick={() => this.onCreateProcess()}>Create a governance process</Button>
+                    <Button onClick={() => this.onCreateProcess(token.address)}>Create a governance process</Button>
                 </div>
             </div>
 
