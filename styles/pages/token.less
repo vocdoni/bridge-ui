@@ -1,0 +1,33 @@
+#token {
+    a { text-decoration: none; color: var(--accent-1); }
+
+    .row-summary {
+        margin-top: 2em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .accent-1 {
+            font-weight: 500;
+        }
+        h4 {
+            font-size: 18px;
+
+            &.address {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 200px;
+            }
+        }
+    }
+
+    .row-main {
+        .token-list {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -1em;
+        }
+    }
+
+}
