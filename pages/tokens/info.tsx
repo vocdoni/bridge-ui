@@ -6,10 +6,10 @@ import { API, ProcessMetadata } from 'dvote-js'
 // import Router from 'next/router'
 
 // import { getGatewayClients, getNetworkState } from '../../../lib/network'
-import { IWallet } from '../../../lib/types'
-import AppContext, { IAppContext } from '../../../components/app-context'
-import TokenCard from '../../../components/token-card'
-import Button from '../../../components/button'
+import { IWallet } from '../../lib/types'
+import AppContext, { IAppContext } from '../../components/app-context'
+import TokenCard from '../../components/token-card'
+import Button from '../../components/button'
 import Router from 'next/router'
 
 // MAIN COMPONENT
@@ -91,7 +91,7 @@ class TokenView extends Component<IAppContext, State> {
 
         const endedProcesses = activeProcesses
 
-        return <div id="token">
+        return <div id="token-info">
             <div className="page-head">
                 <div className="left">
                     <h1>Token details</h1>

@@ -17,6 +17,9 @@ async function generatePathMap() {
         '/': { page: '/' },
         '/dashboard': { page: '/dashboard' },
         '/processes': { page: '/processes' },
+        '/processes/new': { page: '/processes/new' },
         '/tokens': { page: '/tokens' },
+        '/tokens/info': { page: '/tokens/info' },
+        '/tokens/add': { page: '/tokens/add' },
     }
 }
