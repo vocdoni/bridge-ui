@@ -66,7 +66,7 @@ class TokensView extends Component<IAppContext, State> {
             </div>
 
             <div className="row-main">
-                <h2>Active votes</h2>
+                <h2>Active tokens</h2>
                 <p className="light">Below are the processes belonging to tokens that you currently hold.</p>
 
                 <div className="token-list">

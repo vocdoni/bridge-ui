@@ -1,4 +1,4 @@
-import { Wallet, utils, providers } from "ethers"
+import { Wallet, utils, providers, BigNumber } from "ethers"
 import { EtherUtils } from "dvote-js"
 // import { DataCache } from "./storage"
 import { Key } from "react"
@@ -58,7 +58,7 @@ export default class Web3Wallet {
     }
 
     // Gets all the stored wallet accounts from IndexedDB
-    public getStored(): Promise<IWallet[]>  {
+    public getStored(): Promise<IWallet[]> {
         return this.db.getAllWallets();
     }
 
@@ -72,7 +72,8 @@ export default class Web3Wallet {
         // We need to verify the generated wallet publicKey = stored public Key
         // tslint:disable-next-line
         if (wallet["signingKey"].publicKey === storedWallet.publicKey) {
-            this.wallet = wallet
+            // TODO: Upgrade dvote-js > ethers
+            this.wallet = wallet as any
         } else {
             throw new Error('Wrong password for wallet!')
         }
@@ -91,12 +92,12 @@ export default class Web3Wallet {
     }
 
     public async getBalance(): Promise<string> {
-        const balance: utils.BigNumber = await this.provider.getBalance(await this.wallet.getAddress())
+        const balance: BigNumber = await this.provider.getBalance(await this.wallet.getAddress())
         return balance.toString()
     }
 
     public async getEthBalance(): Promise<string> {
-        const balance: utils.BigNumber = await this.provider.getBalance(await this.wallet.getAddress())
+        const balance: BigNumber = await this.provider.getBalance(await this.wallet.getAddress())
 
         return utils.formatEther(balance)
     }
