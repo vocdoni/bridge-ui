@@ -10,13 +10,10 @@ module.exports = {
     FALLBACK_REDIRECT_URL: "https://bridge.vocdoni.net/",
 
     // BLOCKCHAIN
-    ETH_NETWORK_ID: process.env.ETH_NETWORK_ID || "homestead",
+    ETH_NETWORK_ID: process.env.ETH_NETWORK_ID || "goerli",
 
     // GATEWAYS
-    BOOTNODES_URL: DEVELOPMENT ? "https://bootnodes.vocdoni.net/gateways.json" : (process.env.BOOTNODES_URL || "https://bootnodes.vocdoni.net/gateways.json"),
-
-    // VOCHAIN
-    BLOCK_TIME: 10, // 10 seconds
+    BOOTNODES_URL: DEVELOPMENT ? "https://bootnodes.vocdoni.net/gateways.dev.json" : (process.env.BOOTNODES_URL || "https://bootnodes.vocdoni.net/gateways.json"),
 }
 
 console.log("Building the frontend with ENV:", module.exports)

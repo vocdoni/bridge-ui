@@ -1,5 +1,5 @@
 import { useContext, Component } from 'react'
-import { API, ProcessMetadata } from 'dvote-js'
+import { ProcessMetadata } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'
@@ -37,51 +37,43 @@ class TokenView extends Component<IAppContext, State> {
 
         const activeProcesses: ProcessMetadata[] = [
             {
-                details: {
-                    title: { default: "Token supply expansion" },
-                    description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                    questions: [
-                        {
-                            question: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
-                            description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                            voteOptions: [
-                                { title: { default: "Approve the minting" }, value: 0 },
-                                { title: { default: "Reject the minting" }, value: 1 },
-                                { title: { default: "I may accept another amount" }, value: 2 },
-                            ],
-                            type: "single-choice"
-                        },
-                        {
-                            question: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
-                            description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                            voteOptions: [
-                                { title: { default: "Approve the proposed minting" }, value: 0 },
-                                { title: { default: "Approve up to 75% of the proposed amount" }, value: 1 },
-                                { title: { default: "Approve up to 50% of the proposed amount" }, value: 2 },
-                                { title: { default: "Approve up to 25% of the proposed amount" }, value: 3 },
-                                { title: { default: "Reject the minting" }, value: 4 },
-                            ],
-                            type: "single-choice"
-                        },
-                        {
-                            question: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
-                            description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                            voteOptions: [
-                                { title: { default: "Approve the minting" }, value: 0 },
-                                { title: { default: "Reject the minting" }, value: 1 },
-                            ],
-                            type: "single-choice"
-                        }
-                    ],
-                    entityId: "",
-                    headerImage: "",
-                    streamUrl: ""
+                title: { default: "Token supply expansion" },
+                description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+                questions: [
+                    {
+                        title: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
+                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+                        choices: [
+                            { title: { default: "Approve the minting" }, value: 0 },
+                            { title: { default: "Reject the minting" }, value: 1 },
+                            { title: { default: "I may accept another amount" }, value: 2 },
+                        ],
+                    },
+                    {
+                        title: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
+                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+                        choices: [
+                            { title: { default: "Approve the proposed minting" }, value: 0 },
+                            { title: { default: "Approve up to 75% of the proposed amount" }, value: 1 },
+                            { title: { default: "Approve up to 50% of the proposed amount" }, value: 2 },
+                            { title: { default: "Approve up to 25% of the proposed amount" }, value: 3 },
+                            { title: { default: "Reject the minting" }, value: 4 },
+                        ],
+                    },
+                    {
+                        title: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
+                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+                        choices: [
+                            { title: { default: "Approve the minting" }, value: 0 },
+                            { title: { default: "Reject the minting" }, value: 1 },
+                        ],
+                    }
+                ],
+                media: {
+                    header: "",
+                    streamUri: null
                 },
-                census: { merkleRoot: "", merkleTree: "" },
-                numberOfBlocks: 1234,
-                startBlock: 10,
-                type: "poll-vote",
-                version: "1.0"
+                version: "1.1"
             }
         ]
         // TODO:
@@ -129,7 +121,7 @@ class TokenView extends Component<IAppContext, State> {
                 <div className="token-list">
                     {
                         activeProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="3 days left" href={"/processes#/" + idx} key={idx}>
-                            <p>{proc.details.title.default}</p>
+                            <p>{proc.title.default}</p>
                         </TokenCard>)
                     }
 
@@ -143,14 +135,14 @@ class TokenView extends Component<IAppContext, State> {
                 <div className="token-list">
                     {
                         endedProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="3 days left" href={"/processes#/" + idx} key={idx}>
-                            <p>{proc.details.title.default}</p>
+                            <p>{proc.title.default}</p>
                         </TokenCard>)
                     }
 
                 </div>
             </div>
 
-        </div>
+        </div >
     }
 }
 

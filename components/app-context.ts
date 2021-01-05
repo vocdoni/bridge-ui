@@ -1,10 +1,9 @@
 import { createContext } from 'react'
 import { Wallet } from 'ethers'
-import Web3Wallet from '../lib/wallet'
 // import { DVoteGateway } from 'dvote-js/dist/net/gateway'
 
 export interface IAppContext {
-    web3Wallet: Web3Wallet,
+    // web3Wallet: Web3Wallet,
     onNewWallet: (wallet: Wallet) => any,
     entityId: string,
     processId: string,

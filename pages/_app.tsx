@@ -2,17 +2,13 @@ import React from 'react'
 import Head from 'next/head'
 import App from 'next/app'
 import { Wallet } from 'ethers'
-import { DVoteGateway } from 'dvote-js/dist/net/gateway'
-import { GatewayPool } from 'dvote-js/dist/net/gateway-pool'
+import { GatewayPool } from 'dvote-js'
 
 import AppContext, { IAppContext } from '../components/app-context'
 // import MainLayout from '../components/layout'
 // import GeneralError from '../components/error'
 // import { initNetwork, getNetworkState } from '../lib/network'
 // import { IAppContext } from '../components/app-context'
-import Web3Wallet, { getWeb3Wallet } from '../lib/wallet'
-
-// import { } from '../lib/types'
 // import { isServer } from '../lib/util'
 
 import '../styles/index.less'
@@ -175,15 +171,15 @@ class MainApp extends App<Props, State> {
         const { Component, pageProps } = this.props
 
         const injectedGlobalContext: IAppContext = {
-            web3Wallet: getWeb3Wallet(),
+            // web3Wallet: getWeb3Wallet(),
             // onNewWallet: (wallet: Wallet) => this.useNewWallet(wallet),
             // onGatewayError: this.onGatewayError,
-            setEntityId: (id) => this.setEntityId(id),
-            setProcessId: (id) => this.setProcessId(id),
+            setEntityId: (id: string) => this.setEntityId(id),
+            setProcessId: (id: string) => this.setProcessId(id),
             entityId: this.state.entityId,
             processId: this.state.processId,
             urlHash: this.state.urlHash,
-            setUrlHash: (hash) => this.setUrlHash(hash),
+            setUrlHash: (hash: string) => this.setUrlHash(hash),
             // managerBackendGateway: this.state.managerBackendGateway,
         } as any // TODO:
 

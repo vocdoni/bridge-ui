@@ -1,6 +1,6 @@
 import { useContext, Component } from 'react'
 import Link from 'next/link'
-import { API, ProcessMetadata } from 'dvote-js'
+import { ProcessMetadata } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'
@@ -10,7 +10,7 @@ import { API, ProcessMetadata } from 'dvote-js'
 import { IWallet } from '../../lib/types'
 import AppContext, { IAppContext } from '../../components/app-context'
 import Button from '../../components/button'
-import { ProcessMetadataTemplate } from 'dvote-js/dist/models/voting-process'
+import { ProcessMetadataTemplate } from 'dvote-js'
 
 // MAIN COMPONENT
 const NewProcessPage = props => {
@@ -41,7 +41,7 @@ class NewProcessView extends Component<IAppContext, State> {
 
     onAddpQuestion() {
         const metadata = this.state.metadata
-        metadata.details.questions.push(ProcessMetadataTemplate.details.questions[0])
+        metadata.questions.push(ProcessMetadataTemplate.questions[0])
         this.setState({ metadata })
     }
 
@@ -61,7 +61,7 @@ class NewProcessView extends Component<IAppContext, State> {
                 <div className="left">
                     <h2>Title</h2>
                     <div className="light">Short name to identify the process</div>
-                    <input type="text" placeholder="Title" value={this.state.metadata.details.title.default} />
+                    <input type="text" placeholder="Title" value={this.state.metadata.title.default} />
                 </div>
                 <div className="right">
                     <label className="radio-choice"> <input type="radio" name={"process-encryption"} />
@@ -77,7 +77,7 @@ class NewProcessView extends Component<IAppContext, State> {
                 <div className="left">
                     <h2>Description</h2>
                     <div className="light">An optional introduction of about 2-3 lines</div>
-                    <textarea placeholder="Description" value={this.state.metadata.details.description.default} />
+                    <textarea placeholder="Description" value={this.state.metadata.description.default} />
                 </div>
                 <div className="right">
                     <input type="text" placeholder="Start date" />
@@ -87,12 +87,12 @@ class NewProcessView extends Component<IAppContext, State> {
 
             <div className="row-questions">
                 {
-                    this.state.metadata.details.questions.map((question, qIdx) => <div className="item" key={qIdx}>
+                    this.state.metadata.questions.map((question, qIdx) => <div className="item" key={qIdx}>
                         <div className="question">
                             <div className="left">
                                 <h6 className="accent-1">Question {qIdx + 1}</h6>
                                 <h3>Question</h3>
-                                <input type="text" placeholder="Title" value={question.question.default} onChange={ev => console.log(ev.target.value)} />
+                                <input type="text" placeholder="Title" value={question.title.default} onChange={ev => console.log(ev.target.value)} />
 
                                 <h3>Description</h3>
                                 <textarea placeholder="Description" value={question.description.default} onChange={ev => console.log(ev.target.value)} />
@@ -102,18 +102,18 @@ class NewProcessView extends Component<IAppContext, State> {
                         <div className="options">
                             <h3>Options</h3>
                             {
-                                question.voteOptions.map((option, oIdx) => <div className="option" key={oIdx}>
+                                question.choices.map((option, oIdx) => <div className="option" key={oIdx}>
                                     <div className="left">
                                         <input type="text" placeholder="" value={option.title.default} onChange={ev => console.log(ev.target.value)} />
                                     </div>
                                     <div className="right">
-                                        <div className={oIdx == question.voteOptions.length - 1 ? "plus-box active" : "plus-box"} onClick={() => this.onAddOption(qIdx)}>+</div>
+                                        <div className={oIdx == question.choices.length - 1 ? "plus-box active" : "plus-box"} onClick={() => this.onAddOption(qIdx)}>+</div>
                                     </div>
                                 </div>)
                             }
                         </div>
 
-                        {qIdx == this.state.metadata.details.questions.length - 1 ?
+                        {qIdx == this.state.metadata.questions.length - 1 ?
                             <div className="add-question-btn" onClick={() => this.onAddpQuestion()}>Add question</div> : null
                         }
                     </div>)

@@ -25,7 +25,7 @@
         "@types/ws": "^7.2.4",
         "@zeit/next-less": "^1.0.1",
         "dexie": "^2.0.4",
-        "dvote-js": "^0.16.5",
+        "dvote-js": "^0.17.1",
         "ethers": "^5.0.19",
         "iso-language-codes": "^1.0.6",
         "less": "^3.12.2",

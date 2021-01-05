@@ -1,6 +1,6 @@
 import { useContext, Component } from 'react'
 import Link from 'next/link'
-import { API } from 'dvote-js'
+import { } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'

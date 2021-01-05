@@ -1,19 +1,16 @@
 import { useContext, Component } from 'react'
 // import Link from 'next/link'
 import Router from 'next/router'
-import { API, EntityMetadata } from 'dvote-js'
+import { EntityApi, EntityMetadata } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'
 // import Router from 'next/router'
 
 // import { getGatewayClients, getNetworkState } from '../lib/network'
-import { IWallet } from '../lib/types'
 import AppContext, { IAppContext } from '../components/app-context'
 import Button from '../components/button'
 import TokenCard from '../components/token-card'
-
-const { Entity } = API
 
 // MAIN COMPONENT
 const IndexPage = props => {
