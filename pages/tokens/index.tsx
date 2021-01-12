@@ -7,8 +7,7 @@ import { } from 'dvote-js'
 // import Router from 'next/router'
 
 // import { getGatewayClients, getNetworkState } from '../../lib/network'
-import { IWallet } from '../../lib/types'
-import AppContext, { IAppContext } from '../../components/app-context'
+import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
 

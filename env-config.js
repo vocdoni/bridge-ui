@@ -11,6 +11,7 @@ module.exports = {
 
     // BLOCKCHAIN
     ETH_NETWORK_ID: process.env.ETH_NETWORK_ID || "goerli",
+    ETH_CHAIN_ID: process.env.ETH_CHAIN_ID ? parseInt(process.env.ETH_CHAIN_ID) : 5,
 
     // GATEWAYS
     BOOTNODES_URL: DEVELOPMENT ? "https://bootnodes.vocdoni.net/gateways.dev.json" : (process.env.BOOTNODES_URL || "https://bootnodes.vocdoni.net/gateways.json"),

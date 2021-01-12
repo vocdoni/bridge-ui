@@ -8,9 +8,14 @@ import { EntityApi, EntityMetadata } from 'dvote-js'
 // import Router from 'next/router'
 
 // import { getGatewayClients, getNetworkState } from '../lib/network'
-import AppContext, { IAppContext } from '../components/app-context'
+import AppContext, { IAppContext } from '../lib/app-context'
 import Button from '../components/button'
 import TokenCard from '../components/token-card'
+import { connectWeb3, isWeb3Ready } from '../lib/web3'
+import { connectVochain, getPool } from '../lib/vochain'
+import Spinner from "react-svg-spinner"
+
+import { INVALID_CHAIN_ID } from '../lib/errors'
 
 // MAIN COMPONENT
 const IndexPage = props => {
@@ -21,15 +26,36 @@ const IndexPage = props => {
 }
 
 type State = {
-    entityLoading?: boolean,
+    connecting: boolean,
 }
 
 // Stateful component
 class IndexView extends Component<IAppContext, State> {
-    state: State = {}
+    state: State = {
+        connecting: false
+    }
 
     onMetamaskSignIn() {
-        Router.push("/dashboard")
+        const pool = getPool()
+        if (isWeb3Ready() && pool) { // && pool.isReady) {
+            return Router.push("/dashboard")
+        }
+
+        this.setState({ connecting: true })
+
+        return connectWeb3()
+            .then(() => connectVochain())
+            .then(() => Router.push("/dashboard"))
+            .catch(err => {
+                this.setState({ connecting: false })
+
+                if (err && err.message == INVALID_CHAIN_ID) {
+                    const msg = "Please, switch to the {{NAME}} network".replace("{{NAME}}", process.env.ETH_NETWORK_ID)
+                    return alert(msg)
+                }
+                console.error(err)
+                alert("Could not access Metamask or connect to the network")
+            })
     }
 
     onTokenClick(address: string) {
@@ -37,6 +63,9 @@ class IndexView extends Component<IAppContext, State> {
     }
 
     render() {
+        const pool = getPool()
+        const isConnected = isWeb3Ready() && pool // && pool.isReady
+
         return <div id="index">
             <div className="page-head">
                 <h1>Bridge</h1>
@@ -54,7 +83,12 @@ class IndexView extends Component<IAppContext, State> {
                     </small></p>
                 </div>
                 <div className="right">
-                    <Button onClick={() => this.onMetamaskSignIn()}>Sign in with Metamask</Button>
+                    {
+                        this.state.connecting ? <Spinner /> :
+                            <Button onClick={() => this.onMetamaskSignIn()}>{
+                                isConnected ? "Connected" : "Sign in with Metamask"
+                            }</Button>
+                    }
                 </div>
             </div>
 

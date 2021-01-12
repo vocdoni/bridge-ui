@@ -1,10 +1,9 @@
 import React from 'react'
 import Head from 'next/head'
 import App from 'next/app'
-import { Wallet } from 'ethers'
 import { GatewayPool } from 'dvote-js'
 
-import AppContext, { IAppContext } from '../components/app-context'
+import AppContext, { IAppContext } from '../lib/app-context'
 // import MainLayout from '../components/layout'
 // import GeneralError from '../components/error'
 // import { initNetwork, getNetworkState } from '../lib/network'
@@ -14,17 +13,15 @@ import AppContext, { IAppContext } from '../components/app-context'
 import '../styles/index.less'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { getWeb3 } from '../lib/web3'
+import { getPool } from '../lib/vochain'
 // import IndexPage from '.'
-
-// const ETH_NETWORK_ID = process.env.ETH_NETWORK_ID
 
 type Props = {
     managerBackendGateway: GatewayPool
 }
 
 type State = {
-    isConnected: boolean
-
     // STATE SHARED WITH CHILDREN
     entityId?: string
     processId?: string
@@ -35,25 +32,24 @@ type State = {
 
 class MainApp extends App<Props, State> {
     state: State = {
-        isConnected: false,
         entityId: '',
         processId: '',
         urlHash: '',
     }
 
-    // componentDidMount(): void {
-    //     this.connect()
+    componentDidMount(): void {
+        // this.connect()
 
-    //     window.addEventListener('beforeunload', this.beforeUnload)
+        // window.addEventListener('beforeunload', this.beforeUnload)
 
-    //     this.hashChange = this.hashChange.bind(this)
-    //     window.addEventListener('hashchange', this.hashChange)
-    // }
+        this.hashChange = this.hashChange.bind(this)
+        window.addEventListener('hashchange', this.hashChange)
+    }
 
-    // componentWillUnmount(): void {
-    //     window.removeEventListener('beforeunload', this.beforeUnload)
-    //     window.removeEventListener('hashchange', this.hashChange)
-    // }
+    componentWillUnmount(): void {
+        // window.removeEventListener('beforeunload', this.beforeUnload)
+        window.removeEventListener('hashchange', this.hashChange)
+    }
 
     // beforeUnload(e: BeforeUnloadEvent): void {
     //     if (!getNetworkState().readOnly) {
@@ -169,24 +165,25 @@ class MainApp extends App<Props, State> {
 
         // Get data from getInitialProps and provide it as the global context to children
         const { Component, pageProps } = this.props
+        const { provider, signer } = getWeb3()
+        const pool = getPool()
 
         const injectedGlobalContext: IAppContext = {
-            // web3Wallet: getWeb3Wallet(),
-            // onNewWallet: (wallet: Wallet) => this.useNewWallet(wallet),
-            // onGatewayError: this.onGatewayError,
+            provider,
+            signer,
+            pool,
             setEntityId: (id: string) => this.setEntityId(id),
             setProcessId: (id: string) => this.setProcessId(id),
+            setUrlHash: (hash: string) => this.setUrlHash(hash),
             entityId: this.state.entityId,
             processId: this.state.processId,
             urlHash: this.state.urlHash,
-            setUrlHash: (hash: string) => this.setUrlHash(hash),
-            // managerBackendGateway: this.state.managerBackendGateway,
-        } as any // TODO:
+        }
 
         return <AppContext.Provider value={injectedGlobalContext}>
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title> </title>
+                <title>Bridge</title>
             </Head>
             <Header />
             <div id="main">
