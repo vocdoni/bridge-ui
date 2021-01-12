@@ -1,39 +1,59 @@
 import { ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js"
 import { YOU_ARE_NOT_CONNECTED } from "./errors"
 import { allTokens } from "./tokens"
-import { Token } from "./types"
-import { getPool } from "./vochain"
+import { ProcessInfo, Token } from "./types"
+import { connectVochain, getPool } from "./vochain"
+
+export function ensureConnectedVochain() {
+    if (getPool()) return Promise.resolve()
+
+    return connectVochain().then(() => {
+        const pool = getPool()
+        if (!pool) return Promise.reject(new Error(YOU_ARE_NOT_CONNECTED))
+    })
+}
 
 export function getTokenProcesses(filterTokenAddress?: string): Promise<{ metadata: ProcessMetadata, parameters: ProcessContractParameters, token: Token, id: string }[]> {
-    const pool = getPool()
-    if (!pool) return Promise.reject(new Error(YOU_ARE_NOT_CONNECTED))
+    return ensureConnectedVochain()
+        .then(() => {
+            const tokenAddrs = filterTokenAddress ?
+                [filterTokenAddress] :
+                allTokens.map(token => token.address)
 
-    const tokenAddrs = filterTokenAddress ?
-        [filterTokenAddress] :
-        allTokens.map(token => token.address)
+            let result: { metadata: ProcessMetadata, parameters: ProcessContractParameters, token: Token, id: string }[] = []
 
-    let result: { metadata: ProcessMetadata, parameters: ProcessContractParameters, token: Token, id: string }[] = []
-
-    return Promise.all(tokenAddrs.map(tokenAddr => {
-        const tokenProms = getProcessList(tokenAddr)
-            .then(processIds => {
-                return Promise.all(processIds.map(processId =>
-                    Promise.all([
-                        VotingApi.getProcessMetadata(processId, pool),
-                        VotingApi.getProcessParameters(processId, pool)
-                    ]).then(results => {
-                        result.push({
-                            metadata: results[0],
-                            parameters: results[1],
-                            token: allTokens.find(t => t.address == tokenAddr),
-                            id: processId
-                        })
+            return Promise.all(tokenAddrs.map(tokenAddr => {
+                const tokenProms = getProcessList(tokenAddr)
+                    .then(processIds => {
+                        return Promise.all(
+                            processIds.map(processId => getProcessInfo(processId))
+                        )
                     })
-                ))
-            })
 
-        return tokenProms
-    })).then(() => result)
+                return tokenProms
+            })).then((processesByToken) => {
+                return processesByToken.reduce((prev, cur) => prev.concat(cur), [])
+            })
+        })
+}
+
+export function getProcessInfo(id: string): Promise<ProcessInfo> {
+    return ensureConnectedVochain().then(() => {
+        const pool = getPool()
+
+        return Promise.all([
+            VotingApi.getProcessMetadata(id, pool),
+            VotingApi.getProcessParameters(id, pool)
+        ])
+    }).then(results => {
+        const token = allTokens && allTokens.find(t => t.address.toLowerCase() == results[1].entityAddress.toLowerCase()) || {} as Token
+        return {
+            metadata: results[0],
+            parameters: results[1],
+            token,
+            id // pass-through to have the value for links
+        }
+    })
 }
 
 export async function getProcessList(tokenAddress: string): Promise<string[]> {

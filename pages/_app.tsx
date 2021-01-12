@@ -28,15 +28,20 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const [allProcesses, setAllProcesses] = useState([] as ProcessInfo[])
 
     const onHashChanged = (e: HashChangeEvent) => {
-        setUrlHash(location.hash.substr(2))
+        if (urlHash == location.hash.substr(2)) return
+        else setUrlHash(location.hash.substr(2))
     }
 
     useEffect(() => {
         // this.connect()
         window.addEventListener('hashchange', onHashChanged)
+        // window.addEventListener('popstate', onHashChanged)
+        // Router.events.on('routeChangeStart', onHashChanged)
 
         return () => {
             window.removeEventListener('hashchange', onHashChanged)
+            // window.removeEventListener('popstate', onHashChanged)
+            // Router.events.off('routeChangeStart', onHashChanged)
         }
     })
 
