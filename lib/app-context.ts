@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 import { providers, Signer } from 'ethers'
 import { GatewayPool } from 'dvote-js'
+import { ProcessInfo } from './types'
 
 export interface IAppContext {
     provider?: providers.JsonRpcProvider,
@@ -10,11 +11,11 @@ export interface IAppContext {
     entityId: string,
     processId: string,
     urlHash: string,
-    // setTitle: (title: string) => void
-    // onGatewayError: (type: 'private' | 'public') => void
+    allProcesses: ProcessInfo[],
     setEntityId: (entityId: string) => void
     setProcessId: (processId: string) => void,
     setUrlHash: (urlHash: string) => void,
+    setAllProcesses: (procs: ProcessInfo[]) => void
 }
 
 // Global context provided to every page

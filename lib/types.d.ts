@@ -3,3 +3,10 @@ export type Token = {
     name: string,
     address: string
 }
+
+export type ProcessInfo = {
+    metadata: ProcessMetadata,
+    parameters: ProcessContractParameters,
+    token: Token,
+    id: string
+}

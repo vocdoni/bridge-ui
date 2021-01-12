@@ -16,8 +16,8 @@ import { allTokens } from '../../lib/tokens'
 import { getTokenProcesses } from '../../lib/api'
 import { YOU_ARE_NOT_CONNECTED } from '../../lib/errors'
 import { getPool } from '../../lib/vochain'
-import { Token } from '../../lib/types'
 import { strDateDiff } from '../../lib/date'
+import { ProcessInfo } from '../../lib/types'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
@@ -31,12 +31,7 @@ type State = {
     loading: boolean,
     offline: boolean,
     blockNumber: number,
-    processes: {
-        metadata: ProcessMetadata,
-        parameters: ProcessContractParameters,
-        token: Token,
-        id: string
-    }[]
+    filteredProcesses: ProcessInfo[]
 }
 
 // Stateful component
@@ -45,7 +40,7 @@ class DashboardView extends Component<IAppContext, State> {
         loading: false,
         offline: false,
         blockNumber: undefined,
-        processes: []
+        filteredProcesses: null
     }
 
     componentDidMount() {
@@ -74,7 +69,11 @@ class DashboardView extends Component<IAppContext, State> {
 
         return getTokenProcesses(targetTokenAddress)
             .then((processes) => {
-                this.setState({ loading: false, offline: false, processes })
+                // Only update the global list if not doing a filtered load
+                if (!targetTokenAddress) {
+                    this.props.setAllProcesses(processes)
+                }
+                this.setState({ loading: false, offline: false, filteredProcesses: processes })
             })
             .catch(err => {
                 this.setState({ loading: false })
@@ -101,14 +100,17 @@ class DashboardView extends Component<IAppContext, State> {
         const options = allTokens.map(token => ({ label: token.name, value: token.symbol }))
         options.unshift({ label: "(all tokens)", value: "" })
 
-        const upcomingProcesses = this.state.processes.filter(
+        const processes = this.state.filteredProcesses ?
+            this.state.filteredProcesses : this.props.allProcesses
+
+        const upcomingProcesses = processes.filter(
             proc => this.state.blockNumber < proc.parameters.startBlock
         )
-        const activeProcesses = this.state.processes.filter(
+        const activeProcesses = processes.filter(
             proc => this.state.blockNumber >= proc.parameters.startBlock &&
                 this.state.blockNumber < (proc.parameters.startBlock + proc.parameters.blockCount)
         )
-        const endedProcesses = this.state.processes.filter(
+        const endedProcesses = processes.filter(
             proc => this.state.blockNumber >= (proc.parameters.startBlock + proc.parameters.blockCount)
         )
 
@@ -139,7 +141,7 @@ class DashboardView extends Component<IAppContext, State> {
                 <div className="token-list">
                     {
                         this.state.loading ? <Spinner /> :
-                            activeProcesses.map(proc => <TokenCard name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+                            activeProcesses.map(proc => <TokenCard key={proc.id} name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
                                 <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
                             </TokenCard>)
                     }
@@ -157,7 +159,7 @@ class DashboardView extends Component<IAppContext, State> {
                 <div className="token-list">
                     {
                         this.state.loading ? <Spinner /> :
-                            endedProcesses.map(proc => <TokenCard name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+                            endedProcesses.map(proc => <TokenCard key={proc.id} name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
                                 <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
                             </TokenCard>)
                     }
@@ -175,7 +177,7 @@ class DashboardView extends Component<IAppContext, State> {
                 <div className="token-list">
                     {
                         this.state.loading ? <Spinner /> :
-                            upcomingProcesses.map(proc => <TokenCard name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+                            upcomingProcesses.map(proc => <TokenCard key={proc.id} name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
                                 <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
                             </TokenCard>)
                     }
