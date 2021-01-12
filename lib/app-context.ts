@@ -3,9 +3,10 @@ import { providers, Signer } from 'ethers'
 import { GatewayPool } from 'dvote-js'
 
 export interface IAppContext {
-    provider: providers.JsonRpcProvider,
-    signer: Signer,
-    pool: GatewayPool,
+    provider?: providers.JsonRpcProvider,
+    signer?: Signer,
+    holderAddress?: string,
+    pool?: GatewayPool,
     entityId: string,
     processId: string,
     urlHash: string,

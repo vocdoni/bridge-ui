@@ -165,12 +165,13 @@ class MainApp extends App<Props, State> {
 
         // Get data from getInitialProps and provide it as the global context to children
         const { Component, pageProps } = this.props
-        const { provider, signer } = getWeb3()
+        const { provider, signer, holderAddress } = getWeb3()
         const pool = getPool()
 
         const injectedGlobalContext: IAppContext = {
             provider,
             signer,
+            holderAddress,
             pool,
             setEntityId: (id: string) => this.setEntityId(id),
             setProcessId: (id: string) => this.setProcessId(id),

@@ -1,6 +1,8 @@
 import { useContext, Component } from 'react'
 import Link from 'next/link'
-import { EntityApi } from 'dvote-js'
+import { EntityApi, ProcessContractParameters, ProcessMetadata, VotingApi } from 'dvote-js'
+import Spinner from "react-svg-spinner"
+
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'
@@ -10,6 +12,12 @@ import { EntityApi } from 'dvote-js'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
+import { allTokens } from '../../lib/tokens'
+import { getTokenProcesses } from '../../lib/api'
+import { YOU_ARE_NOT_CONNECTED } from '../../lib/errors'
+import { getPool } from '../../lib/vochain'
+import { Token } from '../../lib/types'
+import { strDateDiff } from '../../lib/date'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
@@ -20,24 +28,89 @@ const DashboardPage = props => {
 }
 
 type State = {
-    entityLoading?: boolean,
+    loading: boolean,
+    offline: boolean,
+    blockNumber: number,
+    processes: {
+        metadata: ProcessMetadata,
+        parameters: ProcessContractParameters,
+        token: Token,
+        id: string
+    }[]
 }
 
 // Stateful component
 class DashboardView extends Component<IAppContext, State> {
-    state: State = {}
+    state: State = {
+        loading: false,
+        offline: false,
+        blockNumber: undefined,
+        processes: []
+    }
+
+    componentDidMount() {
+        return this.loadCurrentBlock()
+            .then(() => this.loadTokenProcesses())
+            .catch(err => {
+                if (err && err.message == YOU_ARE_NOT_CONNECTED) {
+                    this.setState({ offline: true })
+                    return
+                }
+            })
+    }
+
+    loadCurrentBlock() {
+        const pool = getPool()
+        if (!pool) return Promise.reject(new Error(YOU_ARE_NOT_CONNECTED))
+
+        return VotingApi.getBlockHeight(pool)
+            .then(height => {
+                this.setState({ blockNumber: height })
+            })
+    }
+
+    loadTokenProcesses(targetTokenAddress?: string) {
+        this.setState({ loading: true })
+
+        return getTokenProcesses(targetTokenAddress)
+            .then((processes) => {
+                this.setState({ loading: false, offline: false, processes })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+
+                if (err && err.message == YOU_ARE_NOT_CONNECTED) {
+                    this.setState({ offline: true })
+                    return
+                }
+
+                alert("The list of processes could not be loaded")
+            })
+    }
 
     onTokenFilter(value: { value: string, label: string }, options: { action: string, option: any, name: any }) {
-        console.log(value, options)
+        const token = allTokens.find(t => t.symbol == value.value)
+        if (!token) {
+            return this.loadTokenProcesses()
+        }
+        return this.loadTokenProcesses(token.address)
     }
 
     render() {
-        const options = [
-            { value: 'MKR', label: 'Maker DAO' },
-            { value: 'DAI', label: 'DAI' },
-            { value: 'ARZ', label: '0x District' },
-            { value: 'ANT', label: 'Aragon Token' }
-        ]
+        const { holderAddress } = this.props
+        const options = allTokens.map(token => ({ label: token.name, value: token.symbol }))
+        options.unshift({ label: "(all tokens)", value: "" })
+
+        const upcomingProcesses = this.state.processes.filter(
+            proc => this.state.blockNumber < proc.parameters.startBlock
+        )
+        const activeProcesses = this.state.processes.filter(
+            proc => this.state.blockNumber >= proc.parameters.startBlock &&
+                this.state.blockNumber < (proc.parameters.startBlock + proc.parameters.blockCount)
+        )
+        const endedProcesses = this.state.processes.filter(
+            proc => this.state.blockNumber >= (proc.parameters.startBlock + proc.parameters.blockCount)
+        )
 
         return <div id="dashboard">
             <div className="page-head">
@@ -46,54 +119,66 @@ class DashboardView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Vote on the open processes and see the results of the ones that already ended.</h4>
                 </div>
                 <div className="right">
-                    <div className="v-center">Signed in as 0x1234... <img src="http://identicon.net/img/identicon.png" /></div>
+                    {
+                        holderAddress ?
+                            <div className="v-center">Signed in as {holderAddress.substr(0, 10)}... <img src="http://identicon.net/img/identicon.png" /></div> :
+                            <div className="v-center">(Metamask is not connected)</div>
+                    }
                     <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} />
                 </div>
             </div>
 
             <div className="row-main">
                 <h2>Active votes</h2>
-                <p className="light">Below are the processes belonging to tokens that you currently hold.</p>
+                <p className="light">{
+                    endedProcesses.length ?
+                        "Below are the votes belonging to the available tokens." :
+                        "There are no active votes at this moment."
+                }</p>
 
                 <div className="token-list">
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="3 days left" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="1 day left" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="6h left" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="1h left" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
+                    {
+                        this.state.loading ? <Spinner /> :
+                            activeProcesses.map(proc => <TokenCard name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+                                <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
+                            </TokenCard>)
+                    }
                 </div>
             </div>
 
             <div className="row-main">
                 <h2>Vote results</h2>
-                <p className="light">Below are the results for votes related to your tokens.</p>
+                <p className="light">{
+                    endedProcesses.length ?
+                        "Below are the results for votes related to your tokens." :
+                        "There are no votes with results to display."
+                }</p>
 
                 <div className="token-list">
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="3 days ago" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
+                    {
+                        this.state.loading ? <Spinner /> :
+                            endedProcesses.map(proc => <TokenCard name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+                                <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
+                            </TokenCard>)
+                    }
+                </div>
+            </div>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="1 day ago" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
+            <div className="row-main">
+                <h2>Upcoming votes</h2>
+                <p className="light">{
+                    upcomingProcesses.length ?
+                        "Below are the votes scheduled to start soon." :
+                        "There are no votes scheduled to start soon."
+                }</p>
 
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="6h ago" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="1h ago" href="/processes#/0x01234">
-                        <p>Token supply expansion<br />Do you approve a minting of 900.000 new MKR Tokens?</p>
-                    </TokenCard>
+                <div className="token-list">
+                    {
+                        this.state.loading ? <Spinner /> :
+                            upcomingProcesses.map(proc => <TokenCard name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+                                <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
+                            </TokenCard>)
+                    }
                 </div>
             </div>
 

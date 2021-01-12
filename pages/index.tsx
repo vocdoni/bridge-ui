@@ -15,7 +15,7 @@ import { connectWeb3, isWeb3Ready } from '../lib/web3'
 import { connectVochain, getPool } from '../lib/vochain'
 import Spinner from "react-svg-spinner"
 
-import { INVALID_CHAIN_ID } from '../lib/errors'
+import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
 
 // MAIN COMPONENT
 const IndexPage = props => {
@@ -52,6 +52,9 @@ class IndexView extends Component<IAppContext, State> {
                 if (err && err.message == INVALID_CHAIN_ID) {
                     const msg = "Please, switch to the {{NAME}} network".replace("{{NAME}}", process.env.ETH_NETWORK_ID)
                     return alert(msg)
+                }
+                else if (err && err.message == METAMASK_IS_NOT_AVAILABLE) {
+                    return alert("Please, install Metamask or a Web3 compatible wallet")
                 }
                 console.error(err)
                 alert("Could not access Metamask or connect to the network")
