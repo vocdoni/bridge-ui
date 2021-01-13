@@ -1,6 +1,6 @@
 import { useContext, Component, ReactNode } from 'react'
 import Link from 'next/link'
-import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata } from 'dvote-js'
+import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem } from 'dvote-js'
 import { ensureConnectedVochain, getProcessInfo } from '../../lib/api'
 import { ProcessInfo } from "../../lib/types"
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
@@ -94,11 +94,13 @@ class ProcessView extends Component<IAppContext, State> {
                 this.refreshVoteState(proc)
             ])
         }).then(() => {
-            const interval = (parseInt(process.env.BLOCK_TIME || '10', 10) || 10) * 1000
-            this.refreshInterval = setInterval(
-                () => this.refreshBlockHeight(),
-                interval
-            )
+            if (!this.state.hasVoted) {
+                const interval = (parseInt(process.env.BLOCK_TIME || '10', 10) || 10) * 1000
+                this.refreshInterval = setInterval(
+                    () => this.refreshBlockHeight(),
+                    interval
+                )
+            }
         }).catch(err => console.error(err))
     }
 
@@ -107,7 +109,8 @@ class ProcessView extends Component<IAppContext, State> {
     }
 
     refreshBlockHeight() {
-        return VotingApi.getBlockHeight(getPool())
+        return ensureConnectedVochain()
+            .then(() => VotingApi.getBlockHeight(getPool()))
             .then(height => {
                 this.setState({ currentBlock: height })
             })
@@ -122,23 +125,20 @@ class ProcessView extends Component<IAppContext, State> {
             const holderAddr = await getWeb3().signer.getAddress()
             this.setState({ refreshingVoteStatus: true })
             const token = allTokens.find(t => t.address.toLowerCase() == this.state.process.parameters.entityAddress.toLowerCase())
-            console.log("PRE PRE PROOF")
 
             if (!token || !await CensusErc20Api.isRegistered(token.address, pool)) {
                 alert("The token contract is not yet registered")
                 return
             }
 
-            const blockNumber = await pool.provider.getBlockNumber()
+            const processEthCreationBlock = proc.parameters.evmBlockHeight
             const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddr, token.balanceMappingPosition)
 
-            console.log("PRE PROOF")
-            const proofFields = await CensusErc20Api.generateProof(token.address, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider)
+            const proofFields = await CensusErc20Api.generateProof(token.address, [balanceSlot], processEthCreationBlock, pool.provider as providers.JsonRpcProvider)
             const { proof, block, blockHeaderRLP, accountProofRLP, storageProofsRLP } = proofFields
-            console.log("PROOF", proof.storageProof)
             this.setState({ censusProof: proof.storageProof[0] })
 
-            const nullifier = await VotingApi.getSignedVoteNullifier(holderAddr, proc.id)
+            const nullifier = VotingApi.getSignedVoteNullifier(holderAddr, proc.id)
             const { registered, date } = await VotingApi.getEnvelopeStatus(proc.id, nullifier, pool)
 
             this.setState({
@@ -194,13 +194,20 @@ class ProcessView extends Component<IAppContext, State> {
             if (!isWeb3Ready()) { await connectWeb3() }
             if (!isWeb3Ready()) return alert("Please, install Metamask and grant access to the Bridge dapp")
 
+            // Merkle Proof
+            const holderAddr = await getWeb3().signer.getAddress()
+            const token = allTokens.find(t => t.address.toLowerCase() == this.state.process.parameters.entityAddress.toLowerCase())
+            const processEthCreationBlock = proc.parameters.evmBlockHeight
+            const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddr, token.balanceMappingPosition)
+            const { proof } = await CensusErc20Api.generateProof(token.address, [balanceSlot], processEthCreationBlock, pool.provider as providers.JsonRpcProvider)
+
             // Detect encryption
             if (proc.parameters.envelopeType.hasEncryptedVotes) {
                 const keys = await VotingApi.getProcessKeys(proc.id, pool)
                 const { envelope, signature } = await VotingApi.packageSignedEnvelope({
                     votes,
                     censusOrigin: proc.parameters.censusOrigin,
-                    censusProof: this.state.censusProof,
+                    censusProof: proof.storageProof[0],
                     processId: proc.id,
                     walletOrSigner: getWeb3().signer,
                     processKeys: keys
@@ -210,26 +217,39 @@ class ProcessView extends Component<IAppContext, State> {
                 const { envelope, signature } = await VotingApi.packageSignedEnvelope({
                     votes,
                     censusOrigin: proc.parameters.censusOrigin,
-                    censusProof: this.state.censusProof,
+                    censusProof: proof.storageProof[0],
                     processId: proc.id,
                     walletOrSigner: getWeb3().signer
                 })
                 await VotingApi.submitEnvelope(envelope, signature, pool)
             }
 
+            // wait a bit
             await new Promise(resolve => setTimeout(resolve, Math.floor(parseInt(process.env.BLOCK_TIME) * 1000)))
 
             for (let i = 0; i < 10; i++) {
-                await this.refreshVoteState(proc)
-                if (this.state.hasVoted) break
+                const nullifier = VotingApi.getSignedVoteNullifier(await getWeb3().signer.getAddress(), proc.id)
+                const { registered, date } = await VotingApi.getEnvelopeStatus(proc.id, nullifier, pool)
+                this.setState({
+                    nullifier: nullifier.replace(/^0x/, ''),
+                    hasVoted: registered,
+                    hasVotedOnDate: date || null,
+                })
+
+                if (registered) break
                 await new Promise(resolve => setTimeout(resolve, Math.floor(parseInt(process.env.BLOCK_TIME) * 500)))
             }
             if (!this.state.hasVoted) throw new Error('The vote has not been registered')
 
+            // detached update
+            setTimeout(() =>
+                this.refreshVoteResults()
+                    .then(() => this.refreshVoteState(proc)).catch(),
+                1000 * 16)
+            clearInterval(this.refreshInterval)
+
             alert("Your vote has been sucessfully submitted")
             this.setState({ isSubmitting: false })
-
-            await this.refreshVoteResults()
         }
         catch (err) {
             console.error(err)
