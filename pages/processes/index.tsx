@@ -1,6 +1,6 @@
 import { useContext, Component, ReactNode } from 'react'
 import Link from 'next/link'
-import { VotingApi, ProcessMetadata, ProcessContractParameters, CensusErc20Api } from 'dvote-js'
+import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults } from 'dvote-js'
 import { getProcessInfo } from '../../lib/api'
 import { ProcessInfo } from "../../lib/types"
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
@@ -48,7 +48,7 @@ type State = {
     nullifier: string,
     connectionError?: string,
     choices: number[],
-    results: number[][]
+    results: DigestedProcessResults
 }
 
 // Stateful component
@@ -65,7 +65,7 @@ class ProcessView extends Component<IAppContext, State> {
         showSubmitConfirmation: false,
 
         choices: [],
-        results: [],
+        results: null,
         isSubmitting: false,
         refreshingVoteStatus: false,
         nullifier: ''
@@ -82,7 +82,8 @@ class ProcessView extends Component<IAppContext, State> {
 
         return Promise.all([
             this.refreshBlockHeight(),
-            getProcessInfo(processId)
+            getProcessInfo(processId),
+            this.refreshVoteResults()
         ]).then((results) => {
             const proc = results[1]
             this.setState({ process: proc })
@@ -98,6 +99,10 @@ class ProcessView extends Component<IAppContext, State> {
                 interval
             )
         }).catch(err => console.error(err))
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.refreshInterval)
     }
 
     refreshBlockHeight() {
@@ -141,6 +146,16 @@ class ProcessView extends Component<IAppContext, State> {
                 refreshingVoteStatus: false,
             })
         }
+    }
+
+    refreshVoteResults() {
+        const processId = this.resolveProcessId()
+        const pool = getPool()
+
+        // return VotingApi.getRawResults(processId, pool).then(console.log)
+        return VotingApi.getResultsDigest(processId, pool).then(results => {
+            this.setState({ results })
+        })
     }
 
     estimateDates(proc: ProcessContractParameters) {
@@ -202,10 +217,13 @@ class ProcessView extends Component<IAppContext, State> {
 
             alert("Your vote has been sucessfully submitted")
             this.setState({ isSubmitting: false })
+
+            await this.refreshVoteResults()
         }
         catch (err) {
+            console.error(err)
             this.setState({ isSubmitting: false })
-            alert("Your vote could not be submitted")
+            alert("The delivery of your vote could not be completed")
         }
     }
 
@@ -223,6 +241,7 @@ class ProcessView extends Component<IAppContext, State> {
     shouldDisplayResults(): boolean {
         if (this.state.process.parameters.status.isEnded || this.state.process.parameters.status.hasResults) return true
         else if (this.state.endDate && this.state.endDate.getTime() < Date.now()) return true
+        else if (this.state.hasVoted && this.state.results) return true
         return false
     }
 
@@ -243,7 +262,7 @@ class ProcessView extends Component<IAppContext, State> {
     }
 
     renderStatusFooter() {
-        const { choices, startDate, endDate, hasVoted, refreshingVoteStatus, isSubmitting } = this.state
+        const { choices, startDate, endDate, hasVoted, refreshingVoteStatus, isSubmitting, censusProof } = this.state
         const processId = this.resolveProcessId()
         if (!processId) return this.renderEmpty()
 
@@ -254,15 +273,14 @@ class ProcessView extends Component<IAppContext, State> {
 
         const hasStarted = startDate && startDate.getTime() <= Date.now()
         const hasEnded = endDate && endDate.getTime() < Date.now()
-        const isInCensus = !!this.state.censusProof
 
         // const canVote = !hasVoted && hasStarted && !hasEnded && isInCensus
 
         if (!proc || refreshingVoteStatus) return null
-        else if (hasVoted) return <p className="status">Your vate has been registered</p>
+        else if (hasVoted) return <p className="status">Your vote has been registered</p>
         else if (!hasStarted) return <p className="status">The process has not started yet</p>
         else if (hasEnded) return <p className="status">The process has ended</p>
-        else if (!isInCensus) return <p className="status">You are not part of the process holders' census</p>
+        else if (!censusProof) return <p className="status">You are not part of the process holders' census</p>
         else if (!allQuestionsChosen) return <p className="status">Select a choice for every question</p>
 
         if (isSubmitting) return <p className="status">Please wait...<Spinner /></p>
