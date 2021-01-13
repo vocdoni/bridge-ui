@@ -13,11 +13,12 @@ import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
 import { allTokens } from '../../lib/tokens'
-import { getTokenProcesses } from '../../lib/api'
+import { ensureConnectedVochain, getTokenProcesses } from '../../lib/api'
 import { YOU_ARE_NOT_CONNECTED } from '../../lib/errors'
 import { getPool } from '../../lib/vochain'
 import { strDateDiff } from '../../lib/date'
 import { ProcessInfo } from '../../lib/types'
+import { limitedText } from '../../lib/util'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
@@ -54,14 +55,12 @@ class DashboardView extends Component<IAppContext, State> {
             })
     }
 
-    loadCurrentBlock() {
+    async loadCurrentBlock() {
+        await ensureConnectedVochain()
         const pool = getPool()
-        if (!pool) return Promise.reject(new Error(YOU_ARE_NOT_CONNECTED))
 
-        return VotingApi.getBlockHeight(pool)
-            .then(height => {
-                this.setState({ blockNumber: height })
-            })
+        const height = await VotingApi.getBlockHeight(pool)
+        this.setState({ blockNumber: height })
     }
 
     loadTokenProcesses(targetTokenAddress?: string) {
@@ -138,7 +137,11 @@ class DashboardView extends Component<IAppContext, State> {
                     {
                         this.state.loading ? <Spinner /> :
                             activeProcesses.map(proc => <TokenCard key={proc.id} name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
-                                <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
+                                <p>
+                                    <strong>{limitedText(proc.metadata.title.default, 35) || "No title"}</strong>
+                                    <br />
+                                    {limitedText(proc.metadata.description.default) || "No description"}
+                                </p>
                             </TokenCard>)
                     }
                 </div>
@@ -156,7 +159,11 @@ class DashboardView extends Component<IAppContext, State> {
                     {
                         this.state.loading ? <Spinner /> :
                             endedProcesses.map(proc => <TokenCard key={proc.id} name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
-                                <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
+                                <p>
+                                    <strong>{limitedText(proc.metadata.title.default, 35) || "No title"}</strong>
+                                    <br />
+                                    {limitedText(proc.metadata.description.default) || "No description"}
+                                </p>
                             </TokenCard>)
                     }
                 </div>
@@ -174,7 +181,11 @@ class DashboardView extends Component<IAppContext, State> {
                     {
                         this.state.loading ? <Spinner /> :
                             upcomingProcesses.map(proc => <TokenCard key={proc.id} name={proc.token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
-                                <p>{proc.metadata.title.default || "No title"}<br />{proc.metadata.description.default || "No description"}</p>
+                                <p>
+                                    <strong>{limitedText(proc.metadata.title.default, 35) || "No title"}</strong>
+                                    <br />
+                                    {limitedText(proc.metadata.description.default) || "No description"}
+                                </p>
                             </TokenCard>)
                     }
                 </div>

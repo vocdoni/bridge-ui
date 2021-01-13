@@ -8,3 +8,9 @@ export const areAllNumbers = (slice: any[]) => {
     }
     return !found
 }
+
+export function limitedText(str: string, maxLength: number = 60): string {
+    if (!str || !str.length || str.length < maxLength) return str
+
+    return str.substr(0, maxLength) + "..."
+}

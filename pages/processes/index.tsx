@@ -1,7 +1,7 @@
 import { useContext, Component, ReactNode } from 'react'
 import Link from 'next/link'
-import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults } from 'dvote-js'
-import { getProcessInfo } from '../../lib/api'
+import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata } from 'dvote-js'
+import { ensureConnectedVochain, getProcessInfo } from '../../lib/api'
 import { ProcessInfo } from "../../lib/types"
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
@@ -18,6 +18,7 @@ import { HEX_REGEX } from '../../lib/regex'
 import { allTokens } from '../../lib/tokens'
 import { providers } from 'ethers'
 import { areAllNumbers } from '../../lib/util'
+import { connectWeb3, getWeb3, isWeb3Ready } from '../../lib/web3'
 
 // MAIN COMPONENT
 const ProcessPage = props => {
@@ -114,10 +115,14 @@ class ProcessView extends Component<IAppContext, State> {
 
     async refreshVoteState(proc: ProcessInfo) {
         try {
+            if (!isWeb3Ready()) { await connectWeb3() }
+            if (!isWeb3Ready()) return
+
             const pool = getPool()
-            const holderAddr = await this.props.signer.getAddress()
+            const holderAddr = await getWeb3().signer.getAddress()
             this.setState({ refreshingVoteStatus: true })
             const token = allTokens.find(t => t.address.toLowerCase() == this.state.process.parameters.entityAddress.toLowerCase())
+            console.log("PRE PRE PROOF")
 
             if (!token || !await CensusErc20Api.isRegistered(token.address, pool)) {
                 alert("The token contract is not yet registered")
@@ -126,10 +131,12 @@ class ProcessView extends Component<IAppContext, State> {
 
             const blockNumber = await pool.provider.getBlockNumber()
             const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddr, token.balanceMappingPosition)
+
+            console.log("PRE PROOF")
             const proofFields = await CensusErc20Api.generateProof(token.address, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider)
             const { proof, block, blockHeaderRLP, accountProofRLP, storageProofsRLP } = proofFields
-
-            if (proof) this.setState({ censusProof: proof.storageProof[0] })
+            console.log("PROOF", proof.storageProof)
+            this.setState({ censusProof: proof.storageProof[0] })
 
             const nullifier = await VotingApi.getSignedVoteNullifier(holderAddr, proc.id)
             const { registered, date } = await VotingApi.getEnvelopeStatus(proc.id, nullifier, pool)
@@ -148,14 +155,16 @@ class ProcessView extends Component<IAppContext, State> {
         }
     }
 
-    refreshVoteResults() {
+    async refreshVoteResults() {
+        await ensureConnectedVochain()
+
         const processId = this.resolveProcessId()
         const pool = getPool()
 
         // return VotingApi.getRawResults(processId, pool).then(console.log)
         return VotingApi.getResultsDigest(processId, pool).then(results => {
             this.setState({ results })
-        })
+        }).catch(console.error)
     }
 
     estimateDates(proc: ProcessContractParameters) {
@@ -182,6 +191,8 @@ class ProcessView extends Component<IAppContext, State> {
 
         try {
             this.setState({ isSubmitting: true })
+            if (!isWeb3Ready()) { await connectWeb3() }
+            if (!isWeb3Ready()) return alert("Please, install Metamask and grant access to the Bridge dapp")
 
             // Detect encryption
             if (proc.parameters.envelopeType.hasEncryptedVotes) {
@@ -191,7 +202,7 @@ class ProcessView extends Component<IAppContext, State> {
                     censusOrigin: proc.parameters.censusOrigin,
                     censusProof: this.state.censusProof,
                     processId: proc.id,
-                    walletOrSigner: this.props.signer,
+                    walletOrSigner: getWeb3().signer,
                     processKeys: keys
                 })
                 await VotingApi.submitEnvelope(envelope, signature, pool)
@@ -201,7 +212,7 @@ class ProcessView extends Component<IAppContext, State> {
                     censusOrigin: proc.parameters.censusOrigin,
                     censusProof: this.state.censusProof,
                     processId: proc.id,
-                    walletOrSigner: this.props.signer
+                    walletOrSigner: getWeb3().signer
                 })
                 await VotingApi.submitEnvelope(envelope, signature, pool)
             }
@@ -241,7 +252,7 @@ class ProcessView extends Component<IAppContext, State> {
     shouldDisplayResults(): boolean {
         if (this.state.process.parameters.status.isEnded || this.state.process.parameters.status.hasResults) return true
         else if (this.state.endDate && this.state.endDate.getTime() < Date.now()) return true
-        else if (this.state.hasVoted && this.state.results) return true
+        else if (this.state.hasVoted && this.state.results && this.state.results.questions && this.state.results.questions.length) return true
         return false
     }
 
@@ -338,24 +349,9 @@ class ProcessView extends Component<IAppContext, State> {
 
             <div className="row-questions">
                 {
-                    proc.metadata.questions.map((question, qIdx) => <div className="question" key={qIdx}>
-                        <div className="left">
-                            <h6 className="accent-1">Question {qIdx + 1}</h6>
-                            <h3>{question.title.default || "No title"}</h3>
-                            <p className="light">{question.description.default || "No description"}</p>
-                        </div>
-                        <div className="right">
-                            {
-                                question.choices.map((choice, cIdx) =>
-                                    this.canVote() ?
-                                        this.renderClickableChoice(qIdx, cIdx, choice.title.default, choice.value) :
-                                        this.shouldDisplayResults() ?
-                                            this.renderResultsChoice(cIdx, choice.title.default, choiceVoteCount, questionVoteCount) :
-                                            this.renderRawChoice(choice.title.default)
-                                )
-                            }
-                        </div>
-                    </div>)
+                    proc.metadata.questions.map((question, qIdx) =>
+                        this.renderQuestionRow(qIdx)
+                    )
                 }
             </div>
 
@@ -363,6 +359,35 @@ class ProcessView extends Component<IAppContext, State> {
 
             <div className="row-continue">
                 {this.renderStatusFooter()}
+            </div>
+        </div>
+    }
+
+    renderQuestionRow(qIdx: number) {
+        const question = this.state.process.metadata.questions[qIdx]
+        const resultsQuestion = this.state.results &&
+            this.state.results.questions[qIdx]
+
+        const questionVoteCount = resultsQuestion &&
+            resultsQuestion.voteResults.reduce((prev, cur) => prev + (cur.votes || 0), 0)
+            || 0
+
+        return <div className="question" key={qIdx}>
+            <div className="left">
+                <h6 className="accent-1">Question {qIdx + 1}</h6>
+                <h3>{question.title.default || "No title"}</h3>
+                <p className="light">{question.description.default || "No description"}</p>
+            </div>
+            <div className="right">
+                {
+                    question.choices.map((choice, cIdx) =>
+                        this.canVote() ?
+                            this.renderClickableChoice(qIdx, cIdx, choice.title.default, choice.value) :
+                            this.shouldDisplayResults() ?
+                                this.renderResultsChoice(cIdx, resultsQuestion, questionVoteCount) :
+                                this.renderRawChoice(choice.title.default)
+                    )
+                }
             </div>
         </div>
     }
@@ -377,8 +402,12 @@ class ProcessView extends Component<IAppContext, State> {
         return <label className="radio-choice" key={title}>{title}</label>
     }
 
-    renderResultsChoice(idx: number, title: string, voteCount: number, totalVotes) {
-        return <div className="choice-result" key={idx}>
+    renderResultsChoice(cIdx: number, resultsQuestion: DigestedProcessResultItem, totalVotes: number) {
+        if (!resultsQuestion.voteResults || !resultsQuestion.voteResults[cIdx]) return null
+        const title = resultsQuestion.voteResults[cIdx].title.default
+        const voteCount = resultsQuestion.voteResults[cIdx].votes
+
+        return <div className="choice-result" key={cIdx}>
             <div className="percent">
                 <div className="box">{(totalVotes <= 0 ? 0 : (voteCount / totalVotes * 100)).toFixed(1)} %</div>
             </div>
