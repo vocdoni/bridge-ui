@@ -11,11 +11,9 @@ export interface IAppContext {
     entityId: string,
     processId: string,
     urlHash: string,
-    allProcesses: ProcessInfo[],
     setEntityId: (entityId: string) => void
     setProcessId: (processId: string) => void,
     setUrlHash: (urlHash: string) => void,
-    setAllProcesses: (procs: ProcessInfo[]) => void
 }
 
 // Global context provided to every page

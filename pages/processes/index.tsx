@@ -1,18 +1,23 @@
-import { useContext, Component } from 'react'
+import { useContext, Component, ReactNode } from 'react'
 import Link from 'next/link'
-import { VotingApi, ProcessMetadata, ProcessContractParameters } from 'dvote-js'
+import { VotingApi, ProcessMetadata, ProcessContractParameters, CensusErc20Api } from 'dvote-js'
 import { getProcessInfo } from '../../lib/api'
 import { ProcessInfo } from "../../lib/types"
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'
-// import Router from 'next/router'
+import Router from 'next/router'
+import Spinner from "react-svg-spinner"
 
 // import { getGatewayClients, getNetworkState } from '../../lib/network'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import Button from '../../components/button'
 import { getPool } from '../../lib/vochain'
 import { strDateDiff } from '../../lib/date'
+import { HEX_REGEX } from '../../lib/regex'
+import { allTokens } from '../../lib/tokens'
+import { providers } from 'ethers'
+import { areAllNumbers } from '../../lib/util'
 
 // MAIN COMPONENT
 const ProcessPage = props => {
@@ -26,7 +31,24 @@ type State = {
     entityLoading?: boolean,
     process: ProcessInfo,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    currentBlock: number,
+    // currentDate: Date,
+    censusProof: {
+        key: string;
+        proof: string[];
+        value: string;
+    },
+    hasVoted: boolean,
+    hasVotedOnDate: Date,
+    showConfirmChoices: boolean,
+    showSubmitConfirmation: boolean,
+    isSubmitting: boolean,
+    refreshingVoteStatus: boolean,
+    nullifier: string,
+    connectionError?: string,
+    choices: number[],
+    results: number[][]
 }
 
 // Stateful component
@@ -34,19 +56,91 @@ class ProcessView extends Component<IAppContext, State> {
     state: State = {
         process: null,
         startDate: null,
-        endDate: null
+        endDate: null,
+        currentBlock: null,
+        censusProof: null,
+        hasVoted: false,
+        hasVotedOnDate: null,
+        showConfirmChoices: false,
+        showSubmitConfirmation: false,
+
+        choices: [],
+        results: [],
+        isSubmitting: false,
+        refreshingVoteStatus: false,
+        nullifier: ''
     }
+
+    refreshInterval = null
 
     componentDidMount() {
         const processId = this.resolveProcessId()
-        const loadedProcess = this.props.allProcesses.find(p => p.id = processId)
-        if (loadedProcess) return this.estimateDates(loadedProcess.parameters)
+        if (!processId.match(HEX_REGEX)) {
+            Router.replace('/')
+            return
+        }
 
-        return getProcessInfo(processId).then(proc => {
+        return Promise.all([
+            this.refreshBlockHeight(),
+            getProcessInfo(processId)
+        ]).then((results) => {
+            const proc = results[1]
             this.setState({ process: proc })
 
-            return this.estimateDates(proc.parameters)
-        })
+            return Promise.all([
+                this.estimateDates(proc.parameters),
+                this.refreshVoteState(proc)
+            ])
+        }).then(() => {
+            const interval = (parseInt(process.env.BLOCK_TIME || '10', 10) || 10) * 1000
+            this.refreshInterval = setInterval(
+                () => this.refreshBlockHeight(),
+                interval
+            )
+        }).catch(err => console.error(err))
+    }
+
+    refreshBlockHeight() {
+        return VotingApi.getBlockHeight(getPool())
+            .then(height => {
+                this.setState({ currentBlock: height })
+            })
+    }
+
+    async refreshVoteState(proc: ProcessInfo) {
+        try {
+            const pool = getPool()
+            const holderAddr = await this.props.signer.getAddress()
+            this.setState({ refreshingVoteStatus: true })
+            const token = allTokens.find(t => t.address.toLowerCase() == this.state.process.parameters.entityAddress.toLowerCase())
+
+            if (!token || !await CensusErc20Api.isRegistered(token.address, pool)) {
+                alert("The token contract is not yet registered")
+                return
+            }
+
+            const blockNumber = await pool.provider.getBlockNumber()
+            const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddr, token.balanceMappingPosition)
+            const proofFields = await CensusErc20Api.generateProof(token.address, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider)
+            const { proof, block, blockHeaderRLP, accountProofRLP, storageProofsRLP } = proofFields
+
+            if (proof) this.setState({ censusProof: proof.storageProof[0] })
+
+            const nullifier = await VotingApi.getSignedVoteNullifier(holderAddr, proc.id)
+            const { registered, date } = await VotingApi.getEnvelopeStatus(proc.id, nullifier, pool)
+
+            this.setState({
+                refreshingVoteStatus: false,
+                nullifier: nullifier.replace(/^0x/, ''),
+                hasVoted: registered,
+                hasVotedOnDate: date || null,
+            })
+        }
+        catch (err) {
+            this.setState({
+                refreshingVoteStatus: false,
+            })
+        }
     }
 
     estimateDates(proc: ProcessContractParameters) {
@@ -59,35 +153,135 @@ class ProcessView extends Component<IAppContext, State> {
     }
 
     resolveProcessId(): string {
-        if (this.props.urlHash) return this.props.urlHash
-        else if (typeof window == "undefined") return ""
-        return location.hash.substr(2)
+        if (typeof window != "undefined") return location.hash.substr(2)
+        else if (this.props.urlHash) return this.props.urlHash
+        else return ""
     }
 
-    onSubmit() {
-        alert("TO DO")
+    async onSubmitVote(): Promise<void> {
+        if (!confirm("You are about to submit your vote. This action cannot be undone.\n\nDo you want to continue?")) return
+
+        const votes = this.state.choices
+        const proc = this.state.process
+        const pool = getPool()
+
+        try {
+            this.setState({ isSubmitting: true })
+
+            // Detect encryption
+            if (proc.parameters.envelopeType.hasEncryptedVotes) {
+                const keys = await VotingApi.getProcessKeys(proc.id, pool)
+                const { envelope, signature } = await VotingApi.packageSignedEnvelope({
+                    votes,
+                    censusOrigin: proc.parameters.censusOrigin,
+                    censusProof: this.state.censusProof,
+                    processId: proc.id,
+                    walletOrSigner: this.props.signer,
+                    processKeys: keys
+                })
+                await VotingApi.submitEnvelope(envelope, signature, pool)
+            } else {
+                const { envelope, signature } = await VotingApi.packageSignedEnvelope({
+                    votes,
+                    censusOrigin: proc.parameters.censusOrigin,
+                    censusProof: this.state.censusProof,
+                    processId: proc.id,
+                    walletOrSigner: this.props.signer
+                })
+                await VotingApi.submitEnvelope(envelope, signature, pool)
+            }
+
+            await new Promise(resolve => setTimeout(resolve, Math.floor(parseInt(process.env.BLOCK_TIME) * 1000)))
+
+            for (let i = 0; i < 10; i++) {
+                await this.refreshVoteState(proc)
+                if (this.state.hasVoted) break
+                await new Promise(resolve => setTimeout(resolve, Math.floor(parseInt(process.env.BLOCK_TIME) * 500)))
+            }
+            if (!this.state.hasVoted) throw new Error('The vote has not been registered')
+
+            alert("Your vote has been sucessfully submitted")
+            this.setState({ isSubmitting: false })
+        }
+        catch (err) {
+            this.setState({ isSubmitting: false })
+            alert("Your vote could not be submitted")
+        }
+    }
+
+    canVote(): boolean {
+        if (!this.state.process) return false
+        else if (!this.state.process || !this.state.process.parameters.status.isReady) return false
+        else if (this.state.hasVoted) return false
+        // else if(this.state.isSubmitting) return false
+        else if (!this.state.startDate || this.state.startDate.getTime() >= Date.now()) return false
+        else if (!this.state.endDate || this.state.endDate.getTime() < Date.now()) return false
+        else if (!this.state.censusProof) return false
+        return true
+    }
+
+    shouldDisplayResults(): boolean {
+        if (this.state.process.parameters.status.isEnded || this.state.process.parameters.status.hasResults) return true
+        else if (this.state.endDate && this.state.endDate.getTime() < Date.now()) return true
+        return false
+    }
+
+    setQuestionChoice(questionIdx: number, choiceValue: number) {
+        if (typeof choiceValue == "string") choiceValue = parseInt(choiceValue)
+        if (isNaN(choiceValue)) return alert("Invalid question value")
+
+        const choices = [].concat(this.state.choices)
+        choices[questionIdx] = choiceValue
+        this.setState({ choices })
     }
 
     renderEmpty() {
         // TODO:
-        return <div></div>
+        return <div>
+            <p>Loading... <Spinner /></p>
+        </div>
+    }
+
+    renderStatusFooter() {
+        const { choices, startDate, endDate, hasVoted, refreshingVoteStatus, isSubmitting } = this.state
+        const processId = this.resolveProcessId()
+        if (!processId) return this.renderEmpty()
+
+        const proc = this.state.process
+        if (!proc) return this.renderEmpty()
+
+        const allQuestionsChosen = areAllNumbers(choices) && choices.length == proc.metadata.questions.length
+
+        const hasStarted = startDate && startDate.getTime() <= Date.now()
+        const hasEnded = endDate && endDate.getTime() < Date.now()
+        const isInCensus = !!this.state.censusProof
+
+        // const canVote = !hasVoted && hasStarted && !hasEnded && isInCensus
+
+        if (!proc || refreshingVoteStatus) return null
+        else if (hasVoted) return <p className="status">Your vate has been registered</p>
+        else if (!hasStarted) return <p className="status">The process has not started yet</p>
+        else if (hasEnded) return <p className="status">The process has ended</p>
+        else if (!isInCensus) return <p className="status">You are not part of the process holders' census</p>
+        else if (!allQuestionsChosen) return <p className="status">Select a choice for every question</p>
+
+        if (isSubmitting) return <p className="status">Please wait...<Spinner /></p>
+
+        return <Button onClick={() => this.onSubmitVote()}>Sign and submit the vote</Button>
     }
 
     render() {
         const { holderAddress } = this.props
+        const { startDate, endDate, hasVoted } = this.state
         const processId = this.resolveProcessId()
         if (!processId) return this.renderEmpty()
 
-        const proc = this.state.process ?
-            this.state.process :
-            this.props.allProcesses.find(p => p.id == processId)
+        const proc = this.state.process
         if (!proc) return this.renderEmpty()
 
-        // TODO: REAL VALUES
-        const now = Date.now()
-        const hasStarted = this.state.startDate && now >= this.state.startDate.getTime()
-        const hasEnded = this.state.endDate && now >= this.state.endDate.getTime()
-        const canVote = proc.parameters.status.isReady
+        const hasStarted = startDate && startDate.getTime() <= Date.now()
+        // const hasEnded = endDate && endDate.getTime() < Date.now()
+        // const isInCensus = !!this.state.censusProof
 
         const remainingTime = this.state.startDate ?
             (hasStarted ?
@@ -134,10 +328,12 @@ class ProcessView extends Component<IAppContext, State> {
                         </div>
                         <div className="right">
                             {
-                                question.choices.map((option, oIdx) =>
-                                    proc.parameters.status.isReady ?
-                                        this.renderClickableChoice(oIdx, qIdx, option.title.default, option.value) :
-                                        this.renderResultsChoice(oIdx, option.title.default, choiceVoteCount, questionVoteCount)
+                                question.choices.map((choice, cIdx) =>
+                                    this.canVote() ?
+                                        this.renderClickableChoice(qIdx, cIdx, choice.title.default, choice.value) :
+                                        this.shouldDisplayResults() ?
+                                            this.renderResultsChoice(cIdx, choice.title.default, choiceVoteCount, questionVoteCount) :
+                                            this.renderRawChoice(choice.title.default)
                                 )
                             }
                         </div>
@@ -148,16 +344,19 @@ class ProcessView extends Component<IAppContext, State> {
             <br /><br />
 
             <div className="row-continue">
-                <Button onClick={() => this.onSubmit()}>Sign and submit the vote</Button>
+                {this.renderStatusFooter()}
             </div>
-
         </div>
     }
 
-    renderClickableChoice(choiceIdx: number, questionIdx: number, title: string, value: number) {
-        return <label className="radio-choice" key={choiceIdx}> <input type="radio" name={"question-" + questionIdx} />
+    renderClickableChoice(questionIdx: number, choiceIdx: number, title: string, choiceValue: number) {
+        return <label className="radio-choice" key={choiceIdx}> <input type="radio" onClick={() => this.setQuestionChoice(questionIdx, choiceValue)} name={"question-" + questionIdx} />
             <div className="checkmark"></div> {title}
         </label>
+    }
+
+    renderRawChoice(title: string) {
+        return <label className="radio-choice" key={title}>{title}</label>
     }
 
     renderResultsChoice(idx: number, title: string, voteCount: number, totalVotes) {

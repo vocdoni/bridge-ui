@@ -70,9 +70,6 @@ class DashboardView extends Component<IAppContext, State> {
         return getTokenProcesses(targetTokenAddress)
             .then((processes) => {
                 // Only update the global list if not doing a filtered load
-                if (!targetTokenAddress) {
-                    this.props.setAllProcesses(processes)
-                }
                 this.setState({ loading: false, offline: false, filteredProcesses: processes })
             })
             .catch(err => {
@@ -100,8 +97,7 @@ class DashboardView extends Component<IAppContext, State> {
         const options = allTokens.map(token => ({ label: token.name, value: token.symbol }))
         options.unshift({ label: "(all tokens)", value: "" })
 
-        const processes = this.state.filteredProcesses ?
-            this.state.filteredProcesses : this.props.allProcesses
+        const processes = this.state.filteredProcesses || []
 
         const upcomingProcesses = processes.filter(
             proc => this.state.blockNumber < proc.parameters.startBlock

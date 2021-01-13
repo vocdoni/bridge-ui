@@ -3,7 +3,8 @@ import { ProcessContractParameters, ProcessMetadata } from "dvote-js"
 export type Token = {
     symbol: string,
     name: string,
-    address: string
+    address: string,
+    balanceMappingPosition: number
 }
 
 export type ProcessInfo = {

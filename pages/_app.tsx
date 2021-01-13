@@ -14,7 +14,6 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import { getWeb3 } from '../lib/web3'
 import { getPool } from '../lib/vochain'
-import { ProcessInfo } from '../lib/types'
 import { NextComponentType, NextPageContext } from 'next'
 import { Router } from 'next/router'
 // import IndexPage from '.'
@@ -25,11 +24,12 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const [entityId, setEntityId] = useState("")
     const [processId, setProcessId] = useState("")
     const [urlHash, setUrlHash] = useState("")
-    const [allProcesses, setAllProcesses] = useState([] as ProcessInfo[])
 
     const onHashChanged = (e: HashChangeEvent) => {
         if (urlHash == location.hash.substr(2)) return
-        else setUrlHash(location.hash.substr(2))
+
+        console.log("NEW URL HASH", location.hash.substr(2))
+        setUrlHash(location.hash.substr(2))
     }
 
     useEffect(() => {
@@ -56,14 +56,12 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
         pool,
 
         // State
-        setEntityId,
-        setProcessId,
-        setUrlHash,
-        setAllProcesses,
+        setEntityId: value => setEntityId(value),
+        setProcessId: value => setProcessId(value),
+        setUrlHash: value => setUrlHash(value),
         entityId: entityId,
         processId: processId,
         urlHash: urlHash,
-        allProcesses,
     }
 
     return <AppContext.Provider value={injectedGlobalContext}>
