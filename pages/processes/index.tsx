@@ -335,8 +335,8 @@ class ProcessView extends Component<IAppContext, State> {
 
         const remainingTime = this.state.startDate ?
             (hasStarted ?
-                strDateDiff(this.state.endDate) :
-                strDateDiff(this.state.startDate)) : ""
+                strDateDiff("end-date", this.state.endDate) :
+                strDateDiff("start-date", this.state.startDate)) : ""
 
         const status = "The process is open for voting"
         const choiceVoteCount = Math.round(Math.random() * 100)
