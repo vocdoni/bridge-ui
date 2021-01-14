@@ -11,7 +11,6 @@ import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
 import { WalletStatus } from '../../components/wallet-status'
-import { BigNumber } from 'ethers'
 import { allTokens } from '../../lib/tokens'
 import { getTokenInfo } from '../../lib/api'
 

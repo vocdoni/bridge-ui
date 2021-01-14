@@ -1,5 +1,5 @@
 import { useContext, Component } from 'react'
-import { ProcessMetadata } from 'dvote-js'
+import { ProcessMetadata, VotingApi } from 'dvote-js'
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 // import { getEntityId } from 'dvote-js/dist/api/entity'
@@ -11,6 +11,14 @@ import TokenCard from '../../components/token-card'
 import Button from '../../components/button'
 import Router from 'next/router'
 import { WalletStatus } from '../../components/wallet-status'
+import { ProcessInfo } from '../../lib/types'
+import { YOU_ARE_NOT_CONNECTED } from '../../lib/errors'
+import { ensureConnectedVochain, getTokenInfo, getTokenProcesses } from '../../lib/api'
+import { getPool } from '../../lib/vochain'
+import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
+import { allTokens } from '../../lib/tokens'
+import Spinner from "react-svg-spinner"
+
 
 // MAIN COMPONENT
 const TokenPage = props => {
@@ -21,12 +29,75 @@ const TokenPage = props => {
 }
 
 type State = {
-    entityLoading?: boolean,
+    loading?: boolean,
+    offline?: boolean, // unused
+    processes: ProcessInfo[],
+    blockNumber: number,
+    tokenInfo?: {
+        name: string;
+        symbol: string;
+        totalSupply: string;
+        address: string;
+    }
 }
 
 // Stateful component
 class TokenView extends Component<IAppContext, State> {
-    state: State = {}
+    state: State = {
+        processes: null,
+        blockNumber: null
+    }
+
+    componentDidMount() {
+        const tokenAddress = this.resolveTokenAddress()
+
+        this.setState({ loading: true })
+
+        return this.loadCurrentBlock()
+            .then(() => this.loadTokenProcesses(tokenAddress))
+            .then(() => getTokenInfo(tokenAddress))
+            .then(tokenInfo => {
+                this.setState({ loading: false, tokenInfo })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+                alert("Could not load the token details")
+            })
+    }
+
+    resolveTokenAddress(): string {
+        if (typeof window != "undefined") return location.hash.substr(2)
+        else if (this.props.urlHash) return this.props.urlHash
+        else return ""
+    }
+
+    async loadCurrentBlock() {
+        await ensureConnectedVochain()
+        const pool = getPool()
+
+        const height = await VotingApi.getBlockHeight(pool)
+        this.setState({ blockNumber: height })
+    }
+
+    loadTokenProcesses(targetTokenAddress: string) {
+        this.setState({ loading: true })
+
+        return getTokenProcesses(targetTokenAddress)
+            .then((processes) => {
+                // Only update the global list if not doing a filtered load
+                this.setState({ loading: false, offline: false, processes })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+
+                if (err && err.message == YOU_ARE_NOT_CONNECTED) {
+                    this.setState({ offline: true })
+                    return
+                }
+
+                alert("The list of processes could not be loaded")
+            })
+    }
 
     onCreateProcess(tokenAddress: string) {
         Router.push("/processes/new#/" + tokenAddress)
@@ -34,55 +105,22 @@ class TokenView extends Component<IAppContext, State> {
 
     render() {
         const { holderAddress } = this.props
-        const token = { symbol: "DAI", address: "0x123412341234132698471629837461982736498213649817236498123412341234", name: "Multicollateral DAI", activeVotes: 7, marketCap: "$ 500M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" }
+        const token = this.state.tokenInfo ||
+            Object.assign({}, allTokens.find(t => t.address == this.resolveTokenAddress()), { totalSupply: <Spinner size={12} /> }) ||
+            { name: "", symbol: "", address: this.resolveTokenAddress(), totalSupply: <Spinner size={12} /> }
 
-        const activeProcesses: ProcessMetadata[] = [
-            {
-                title: { default: "Token supply expansion" },
-                description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                questions: [
-                    {
-                        title: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
-                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                        choices: [
-                            { title: { default: "Approve the minting" }, value: 0 },
-                            { title: { default: "Reject the minting" }, value: 1 },
-                            { title: { default: "I may accept another amount" }, value: 2 },
-                        ],
-                    },
-                    {
-                        title: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
-                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                        choices: [
-                            { title: { default: "Approve the proposed minting" }, value: 0 },
-                            { title: { default: "Approve up to 75% of the proposed amount" }, value: 1 },
-                            { title: { default: "Approve up to 50% of the proposed amount" }, value: 2 },
-                            { title: { default: "Approve up to 25% of the proposed amount" }, value: 3 },
-                            { title: { default: "Reject the minting" }, value: 4 },
-                        ],
-                    },
-                    {
-                        title: { default: "Do you approve a minting of 900.000 new MKR Tokens?" },
-                        description: { default: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-                        choices: [
-                            { title: { default: "Approve the minting" }, value: 0 },
-                            { title: { default: "Reject the minting" }, value: 1 },
-                        ],
-                    }
-                ],
-                media: {
-                    header: "",
-                    streamUri: null
-                },
-                version: "1.1"
-            }
-        ]
-        // TODO:
-        activeProcesses.push(activeProcesses[0])
-        activeProcesses.push(activeProcesses[0])
-        activeProcesses.push(activeProcesses[0])
+        const processes = this.state.processes || []
 
-        const endedProcesses = activeProcesses
+        const upcomingProcesses = processes.filter(
+            proc => this.state.blockNumber < proc.parameters.startBlock
+        )
+        const activeProcesses = processes.filter(
+            proc => this.state.blockNumber >= proc.parameters.startBlock &&
+                this.state.blockNumber < (proc.parameters.startBlock + proc.parameters.blockCount)
+        )
+        const endedProcesses = processes.filter(
+            proc => this.state.blockNumber >= (proc.parameters.startBlock + proc.parameters.blockCount)
+        )
 
         return <div id="token-info">
             <div className="page-head">
@@ -106,8 +144,8 @@ class TokenView extends Component<IAppContext, State> {
                     <h4>{token.name}</h4>
                 </div>
                 <div className="item">
-                    <p className="accent-1">Market cap</p>
-                    <h4>{token.marketCap}</h4>
+                    <p className="accent-1">Total supply</p>
+                    <h4>{token && token.totalSupply}</h4>
                 </div>
                 <div className="item">
                     <p className="accent-1">Token address</p>
@@ -117,29 +155,55 @@ class TokenView extends Component<IAppContext, State> {
 
             <div className="row-main">
                 <h2>Active votes</h2>
-                <p className="accent-1">See the active governance processes and vote on them.</p>
+                <p className="light">{
+                    endedProcesses.length ?
+                        "Below are the votes belonging to the available tokens." :
+                        "There are no active votes at this moment."
+                }</p>
 
                 <div className="token-list">
                     {
-                        activeProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="3 days left" href={"/processes#/" + idx} key={idx}>
-                            <p>{proc.title.default}</p>
-                        </TokenCard>)
+                        this.state.loading ? <Spinner /> :
+                            activeProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + proc.id} key={idx}>
+                                <p>{proc.metadata.title.default || "No title"}</p>
+                            </TokenCard>)
                     }
-
                 </div>
             </div>
 
             <div className="row-main">
                 <h2>Vote results</h2>
-                <p className="accent-1">See the results of the governance processes that already ended.</p>
+                <p className="light">{
+                    endedProcesses.length ?
+                        "Below are the results for votes related to your tokens." :
+                        "There are no votes with results to display."
+                }</p>
 
                 <div className="token-list">
                     {
-                        endedProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="3 days left" href={"/processes#/" + idx} key={idx}>
-                            <p>{proc.title.default}</p>
-                        </TokenCard>)
+                        this.state.loading ? <Spinner /> :
+                            endedProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + proc.id} key={idx}>
+                                <p>{proc.metadata.title.default || "No title"}</p>
+                            </TokenCard>)
                     }
+                </div>
+            </div>
 
+            <div className="row-main">
+                <h2>Upcoming votes</h2>
+                <p className="light">{
+                    upcomingProcesses.length ?
+                        "Below are the votes scheduled to start soon." :
+                        "There are no votes scheduled to start soon."
+                }</p>
+
+                <div className="token-list">
+                    {
+                        this.state.loading ? <Spinner /> :
+                            upcomingProcesses.map((proc, idx) => <TokenCard name={token.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + proc.id} key={idx}>
+                                <p>{proc.metadata.title.default || "No title"}</p>
+                            </TokenCard>)
+                    }
                 </div>
             </div>
 

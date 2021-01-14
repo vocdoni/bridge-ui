@@ -439,7 +439,7 @@ class ProcessView extends Component<IAppContext, State> {
     }
 
     renderResultsChoice(cIdx: number, resultsQuestion: DigestedProcessResultItem, totalVotes: number) {
-        if (!resultsQuestion.voteResults || !resultsQuestion.voteResults[cIdx]) return null
+        if (!resultsQuestion || !resultsQuestion.voteResults || !resultsQuestion.voteResults[cIdx]) return null
         const title = resultsQuestion.voteResults[cIdx].title.default
         const voteCount = resultsQuestion.voteResults[cIdx].votes
 

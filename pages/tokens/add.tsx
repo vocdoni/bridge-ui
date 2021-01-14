@@ -84,7 +84,7 @@ class TokenAddView extends Component<IAppContext, State> {
             alert("The token has been successfully registered")
             this.setState({ registering: false })
 
-            Router.push("/tokens#/" + this.state.tokenInfo.address)
+            Router.push("/tokens/info#/" + this.state.tokenInfo.address)
         }
         catch (err) {
             this.setState({ registering: false })
