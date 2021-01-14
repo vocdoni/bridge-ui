@@ -9,6 +9,7 @@ import { ProcessMetadata } from 'dvote-js'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import Button from '../../components/button'
 import Router from 'next/router'
+import { WalletStatus } from '../../components/wallet-status'
 
 // MAIN COMPONENT
 const TokenAddPage = props => {
@@ -39,6 +40,8 @@ class TokenAddView extends Component<IAppContext, State> {
     }
 
     render() {
+        const { holderAddress } = this.props
+
         const token = { symbol: "DAI", address: "0x123412341234132698471629837461982736498213649817236498123412341234", name: "Multicollateral DAI", activeVotes: 7, marketCap: "$ 500M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" }
 
         return <div id="token-add">
@@ -48,7 +51,7 @@ class TokenAddView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Enter the details of an ERC20 token and start submitting governance processes.</h4>
                 </div>
                 <div className="right">
-                    <div className="v-center">Signed in as 0x1234... <img src="http://identicon.net/img/identicon.png" /></div>
+                    <WalletStatus address={holderAddress} />
                 </div>
             </div>
 

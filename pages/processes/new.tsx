@@ -10,6 +10,7 @@ import { ProcessMetadata } from 'dvote-js'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import Button from '../../components/button'
 import { ProcessMetadataTemplate } from 'dvote-js'
+import { WalletStatus } from '../../components/wallet-status'
 
 // MAIN COMPONENT
 const NewProcessPage = props => {
@@ -45,6 +46,8 @@ class NewProcessView extends Component<IAppContext, State> {
     }
 
     render() {
+        const { holderAddress } = this.props
+
         return <div id="process-new">
             <div className="page-head">
                 <div className="left">
@@ -52,7 +55,7 @@ class NewProcessView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Enter the details of a new governance process and submit them.</h4>
                 </div>
                 <div className="right">
-                    <div className="v-center">Signed in as 0x1234... <img src="http://identicon.net/img/identicon.png" /></div>
+                    <WalletStatus address={holderAddress} />
                 </div>
             </div>
 

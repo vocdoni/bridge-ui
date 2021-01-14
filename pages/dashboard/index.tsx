@@ -19,6 +19,7 @@ import { getPool } from '../../lib/vochain'
 import { strDateDiff } from '../../lib/date'
 import { ProcessInfo } from '../../lib/types'
 import { limitedText } from '../../lib/util'
+import { WalletStatus } from '../../components/wallet-status'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
@@ -116,11 +117,7 @@ class DashboardView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Vote on the open processes and see the results of the ones that already ended.</h4>
                 </div>
                 <div className="right">
-                    {
-                        holderAddress ?
-                            <div className="v-center">Signed in as {holderAddress.substr(0, 10)}... <img src="http://identicon.net/img/identicon.png" /></div> :
-                            <div className="v-center">(Metamask is not connected)</div>
-                    }
+                    <WalletStatus address={holderAddress} />
                     <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} />
                 </div>
             </div>

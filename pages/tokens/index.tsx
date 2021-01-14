@@ -10,6 +10,7 @@ import { } from 'dvote-js'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
+import { WalletStatus } from '../../components/wallet-status'
 
 // MAIN COMPONENT
 const TokensPage = props => {
@@ -32,6 +33,7 @@ class TokensView extends Component<IAppContext, State> {
     }
 
     render() {
+        const { holderAddress } = this.props
         const tokens = [
             { symbol: "MKR", address: "0x1234", name: "Maker DAO", activeVotes: 7, marketCap: "$ 90M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
             { symbol: "ANT", address: "0x1234", name: "Aragon Token", activeVotes: 16, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
@@ -59,6 +61,8 @@ class TokensView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Click at the tokens you own and cast your votes</h4>
                 </div>
                 <div className="right">
+                    <WalletStatus address={holderAddress} />
+
                     <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} />
                     <h6 className="accent-1"><Link href="/tokens/add"><a>My token is not listed</a></Link></h6>
                 </div>

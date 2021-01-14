@@ -19,6 +19,7 @@ import { allTokens } from '../../lib/tokens'
 import { providers } from 'ethers'
 import { areAllNumbers } from '../../lib/util'
 import { connectWeb3, getWeb3, isWeb3Ready } from '../../lib/web3'
+import { WalletStatus } from '../../components/wallet-status'
 
 // MAIN COMPONENT
 const ProcessPage = props => {
@@ -348,11 +349,7 @@ class ProcessView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Cast your vote and see the ongoing results as they are received.</h4>
                 </div>
                 <div className="right">
-                    {
-                        holderAddress ?
-                            <div className="v-center">Signed in as {holderAddress.substr(0, 10)}... <img src="http://identicon.net/img/identicon.png" /></div> :
-                            <div className="v-center">(Metamask is not connected)</div>
-                    }
+                    <WalletStatus address={holderAddress} />
                 </div>
             </div>
 
