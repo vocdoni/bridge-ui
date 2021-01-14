@@ -1,9 +1,10 @@
-import { ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js"
-import { YOU_ARE_NOT_CONNECTED } from "./errors"
+import { CensusErc20Api, ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js"
+import { NO_TOKEN_BALANCE, YOU_ARE_NOT_CONNECTED } from "./errors"
 import { allTokens } from "./tokens"
 import { ProcessInfo, Token } from "./types"
 import { connectVochain, getPool } from "./vochain"
-import { BigNumber, Contract } from "ethers"
+import { BigNumber, Contract, providers } from "ethers"
+import { getWeb3 } from "./web3"
 
 // VOCDONI API's
 
@@ -69,6 +70,71 @@ export async function getProcessList(tokenAddress: string): Promise<string[]> {
     }
 }
 
+export async function registerToken(tokenAddress: string, holderAddress: string) {
+    try {
+        await ensureConnectedVochain()
+        const pool = getPool()
+        const { signer } = getWeb3()
+
+        const tokenBalanceMappingPosition = await findTokenBalanceMappingPosition(tokenAddress, holderAddress)
+        const blockNumber = await pool.provider.getBlockNumber()
+        const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddress, tokenBalanceMappingPosition)
+        const result = await CensusErc20Api.generateProof(tokenAddress, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider)
+        const { blockHeaderRLP, accountProofRLP, storageProofsRLP } = result
+
+        await CensusErc20Api.registerToken(
+            tokenAddress,
+            tokenBalanceMappingPosition,
+            blockNumber,
+            Buffer.from(blockHeaderRLP.replace("0x", ""), "hex"),
+            Buffer.from(accountProofRLP.replace("0x", ""), "hex"),
+            Buffer.from(storageProofsRLP[0].replace("0x", ""), "hex"),
+            signer,
+            pool
+        )
+    }
+    catch (err) {
+        if (err && err.message == NO_TOKEN_BALANCE) throw err
+        throw new Error("The token internal details cannot be chacked")
+    }
+}
+
+export async function findTokenBalanceMappingPosition(tokenAddress: string, holderAddress: string) {
+    const verify = true
+    try {
+        await ensureConnectedVochain()
+        const pool = getPool()
+        const blockNumber = await pool.provider.getBlockNumber()
+        const balance = await balanceOf(tokenAddress, holderAddress)
+        if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE)
+
+        for (let i = 0; i < 50; i++) {
+            const tokenBalanceMappingPosition = i
+
+            const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddress, tokenBalanceMappingPosition)
+
+            const result = await CensusErc20Api
+                .generateProof(tokenAddress, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider, { verify })
+                .catch(() => null) // Failed => ignore
+
+            if (result == null || !result.proof) continue
+
+            const onChainBalance = BigNumber.from(result.proof.storageProof[0].value)
+            if (!onChainBalance.eq(balance)) {
+                console.warn("The proved balance does not match the on-chain balance:", result.proof.storageProof[0].value, "vs", balance.toHexString())
+                continue
+            }
+
+            // FOUND
+            return tokenBalanceMappingPosition
+        }
+        return null
+    }
+    catch (err) {
+        throw err
+    }
+}
+
 // ERC20 API
 
 const ERC20_ABI = [
@@ -97,5 +163,25 @@ export function getTokenInfo(address: string) {
             totalSupply: items[2].toString() as string,
             address
         }
+    })
+}
+
+export function balanceOf(tokenAddress: string, holderAddress: string): Promise<BigNumber> {
+    return ensureConnectedVochain().then(() => {
+        const pool = getPool()
+        const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
+
+        return tokenInstance.balanceOf(holderAddress)
+    })
+}
+
+export function hasBalance(tokenAddress: string, holderAddress: string): Promise<boolean> {
+    return ensureConnectedVochain().then(() => {
+        const pool = getPool()
+        const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
+
+        return tokenInstance.balanceOf(holderAddress)
+    }).then(balance => {
+        return !balance.isZero()
     })
 }
