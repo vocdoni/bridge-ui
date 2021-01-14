@@ -11,6 +11,11 @@ import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
 import { WalletStatus } from '../../components/wallet-status'
+import { BigNumber } from 'ethers'
+import { allTokens } from '../../lib/tokens'
+import { getTokenInfo } from '../../lib/api'
+
+const FALLBACK_TOKEN_ICON = "https://cdn.worldvectorlogo.com/logos/dai-2.svg"
 
 // MAIN COMPONENT
 const TokensPage = props => {
@@ -21,38 +26,44 @@ const TokensPage = props => {
 }
 
 type State = {
-    entityLoading?: boolean,
+    loding?: boolean,
+    tokens: { name: string, symbol: string, address: string, totalSupply: string }[],
+    filter: string
 }
 
 // Stateful component
 class TokensView extends Component<IAppContext, State> {
-    state: State = {}
+    state: State = {
+        tokens: null,
+        filter: null
+    }
 
-    onTokenFilter(value: { value: string, label: string }, options: { action: string, option: any, name: any }) {
-        console.log(value, options)
+    componentDidMount() {
+        Promise.all(allTokens.map(token => {
+            return getTokenInfo(token.address)
+        })).then(infos => {
+            this.setState({ tokens: infos })
+        })
+    }
+
+    onTokenFilter(selection: { value: string, label: string }, options: { action: string, option: any, name: any }) {
+        this.setState({ filter: selection.value })
     }
 
     render() {
         const { holderAddress } = this.props
-        const tokens = [
-            { symbol: "MKR", address: "0x1234", name: "Maker DAO", activeVotes: 7, marketCap: "$ 90M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ANT", address: "0x1234", name: "Aragon Token", activeVotes: 16, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "DAI", address: "0x1234", name: "Multicollateral", activeVotes: 5, marketCap: "$ 40M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ZRX", address: "0x1234", name: "0x District", activeVotes: 7, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "MKR", address: "0x1234", name: "Maker DAO", activeVotes: 7, marketCap: "$ 90M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ANT", address: "0x1234", name: "Aragon Token", activeVotes: 16, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "DAI", address: "0x1234", name: "Multicollateral", activeVotes: 5, marketCap: "$ 40M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ZRX", address: "0x1234", name: "0x District", activeVotes: 7, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "MKR", address: "0x1234", name: "Maker DAO", activeVotes: 7, marketCap: "$ 90M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ANT", address: "0x1234", name: "Aragon Token", activeVotes: 16, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "DAI", address: "0x1234", name: "Multicollateral", activeVotes: 5, marketCap: "$ 40M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ZRX", address: "0x1234", name: "0x District", activeVotes: 7, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "MKR", address: "0x1234", name: "Maker DAO", activeVotes: 7, marketCap: "$ 90M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ANT", address: "0x1234", name: "Aragon Token", activeVotes: 16, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "DAI", address: "0x1234", name: "Multicollateral", activeVotes: 5, marketCap: "$ 40M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-            { symbol: "ZRX", address: "0x1234", name: "0x District", activeVotes: 7, marketCap: "$ 900M", icon: "https://cdn.worldvectorlogo.com/logos/dai-2.svg" },
-        ]
-        const options = tokens.map(token => ({ value: token.symbol, label: token.name }))
+        let tokens = this.state.tokens ?
+            this.state.tokens :
+            allTokens.map(t => ({ name: t.name, symbol: t.symbol, address: t.address, totalSupply: "" }))
+
+        if (this.state.filter) {
+            tokens = [tokens.find(t => t.symbol == this.state.filter)]
+        }
+
+        let options = tokens.map(token => ({ value: token.symbol, label: token.name }))
+        options.unshift({ value: "", label: "(All tokens)" })
+
+
 
         return <div id="tokens">
             <div className="page-head">
@@ -74,8 +85,13 @@ class TokensView extends Component<IAppContext, State> {
 
                 <div className="token-list">
                     {
-                        tokens.map((token, idx) => <TokenCard name={token.symbol} icon={token.icon} rightText={token.marketCap} href={"/tokens/info#/" + token.address} key={idx}>
-                            <p>{token.name}<br />{token.activeVotes || 0} active votes</p>
+                        tokens.map((token, idx) => <TokenCard name={token.symbol} icon={FALLBACK_TOKEN_ICON} rightText={""} href={"/tokens/info#/" + token.address} key={idx}>
+                            <p>{token.name}<br />
+                                {token.totalSupply ?
+                                    <small>Total supply: {token.totalSupply}</small> :
+                                    null
+                                }
+                            </p>
                         </TokenCard>)
                     }
 

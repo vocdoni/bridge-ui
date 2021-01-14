@@ -1,6 +1,6 @@
 import { useContext, Component, ReactNode } from 'react'
 import Link from 'next/link'
-import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem } from 'dvote-js'
+import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem, ProcessStatus } from 'dvote-js'
 import { ensureConnectedVochain, getProcessInfo } from '../../lib/api'
 import { ProcessInfo } from "../../lib/types"
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
@@ -330,7 +330,7 @@ class ProcessView extends Component<IAppContext, State> {
         if (!proc) return this.renderEmpty()
 
         const hasStarted = startDate && startDate.getTime() <= Date.now()
-        // const hasEnded = endDate && endDate.getTime() < Date.now()
+        const hasEnded = endDate && endDate.getTime() < Date.now()
         // const isInCensus = !!this.state.censusProof
 
         const remainingTime = this.state.startDate ?
@@ -338,9 +338,28 @@ class ProcessView extends Component<IAppContext, State> {
                 strDateDiff("end-date", this.state.endDate) :
                 strDateDiff("start-date", this.state.startDate)) : ""
 
-        const status = "The process is open for voting"
-        const choiceVoteCount = Math.round(Math.random() * 100)
-        const questionVoteCount = 100
+        let status: string = ""
+
+        switch (proc.parameters.status.value) {
+            case ProcessStatus.READY:
+                if (hasEnded)
+                    status = "The process is closed"
+                else if (hasStarted)
+                    status = "The process is open for voting"
+                else if (!hasStarted)
+                    status = "The process is ready and will start soon"
+                break
+            case ProcessStatus.PAUSED:
+                status = "The process is paused"
+                break
+            case ProcessStatus.CANCELED:
+                status = "The process has been canceled"
+                break
+            case ProcessStatus.ENDED:
+            case ProcessStatus.RESULTS:
+                status = "The process has ended"
+                break
+        }
 
         return <div id="process">
             <div className="page-head">

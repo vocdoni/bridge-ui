@@ -3,6 +3,9 @@ import { YOU_ARE_NOT_CONNECTED } from "./errors"
 import { allTokens } from "./tokens"
 import { ProcessInfo, Token } from "./types"
 import { connectVochain, getPool } from "./vochain"
+import { BigNumber, Contract } from "ethers"
+
+// VOCDONI API's
 
 export function ensureConnectedVochain() {
     if (getPool()) return Promise.resolve()
@@ -64,4 +67,35 @@ export async function getProcessList(tokenAddress: string): Promise<string[]> {
         result = result.concat(processList.map(id => "0x" + id))
         lastId = processList[processList.length - 1]
     }
+}
+
+// ERC20 API
+
+const ERC20_ABI = [
+    // Read-Only Functions
+    "function name() public view returns (string)",
+    "function symbol() public view returns (string)",
+    "function decimals() public view returns (uint8)",
+    "function balanceOf(address _owner) public view returns (uint256 balance)",
+    "function totalSupply() public view returns (uint256)",
+]
+
+export function getTokenInfo(address: string) {
+    return ensureConnectedVochain().then(() => {
+        const pool = getPool()
+        const tokenInstance = new Contract(address, ERC20_ABI, pool.provider)
+
+        return Promise.all([
+            tokenInstance.name(),
+            tokenInstance.symbol(),
+            tokenInstance.totalSupply()
+        ])
+    }).then(items => {
+        return {
+            name: items[0] as string,
+            symbol: items[1] as string,
+            totalSupply: items[2].toString() as string,
+            address
+        }
+    })
 }
