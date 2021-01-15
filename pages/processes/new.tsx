@@ -1,6 +1,6 @@
 import { useContext, Component } from 'react'
 // import Link from 'next/link'
-import { ProcessContractParameters, ProcessEnvelopeType, ProcessMetadata } from 'dvote-js'
+import { CensusErc20Api, IProcessCreateParams, ProcessCensusOrigin, ProcessContractParameters, ProcessEnvelopeType, ProcessMetadata, ProcessMode, VotingApi } from 'dvote-js'
 // import Router from 'next/router'
 
 import AppContext, { IAppContext } from '../../lib/app-context'
@@ -12,7 +12,10 @@ import { Moment } from 'moment'
 import moment from 'moment'
 import { cursorTo } from 'readline'
 import { ensureConnectedVochain } from '../../lib/api'
-import { connectWeb3 } from '../../lib/web3'
+import { connectWeb3, getWeb3 } from '../../lib/web3'
+import { getPool } from '../../lib/vochain'
+import { providers } from 'ethers'
+import Router from 'next/router'
 
 // MAIN COMPONENT
 const NewProcessPage = props => {
@@ -39,41 +42,10 @@ class NewProcessView extends Component<IAppContext, State> {
         endDate: null,
     }
 
-    async onSubmit() {
-        await ensureConnectedVochain()
-        await connectWeb3()
-
-        if (!this.state.metadata.title || this.state.metadata.title.default.trim().length < 2) return alert("Please enter a title")
-        else if (this.state.metadata.title.default.trim().length > 50) return alert("Please enter a shorter title")
-
-        if (!this.state.metadata.description || this.state.metadata.description.default.trim().length < 2) return alert("Please enter a description")
-        else if (this.state.metadata.description.default.trim().length > 300) return alert("Please enter a shorter description")
-
-        if (!this.state.startDate) return alert("Please, enter a start date")
-        else if (!this.state.endDate) return alert("Please, enter an ending date")
-
-        if (moment(this.state.startDate).isBefore(moment().add(5, "minutes"))) {
-            return alert("The start date must be at least 5 minutes from now")
-        }
-        else if (moment(this.state.endDate).isBefore(moment().add(10, "minutes"))) {
-            return alert("The end date must be at least 10 minutes from now")
-        }
-        else if (moment(this.state.endDate).isBefore(moment(this.state.startDate).add(5, "minutes"))) {
-            return alert("The end date must be at least 5 minutes after the start")
-        }
-
-        for (let qIdx = 0; qIdx < this.state.metadata.questions.length; qIdx++) {
-            const question = this.state.metadata.questions[qIdx]
-            if (!question.title.default.trim())
-                return alert("Please, enter a title for question " + (qIdx + 1))
-
-            for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
-                const choice = question.choices[cIdx]
-                if (!choice.title.default.trim())
-                    return alert("Please, fill in all the choices for question " + (qIdx + 1))
-            }
-        }
-
+    resolveTokenAddress(): string {
+        if (typeof window != "undefined") return location.hash.substr(2)
+        else if (this.props.urlHash) return this.props.urlHash
+        else return ""
     }
 
     setMainTitle(title: string) {
@@ -161,6 +133,96 @@ class NewProcessView extends Component<IAppContext, State> {
         const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24)
 
         return date.isAfter(threshold)
+    }
+
+    async onSubmit() {
+        if (!this.state.metadata.title || this.state.metadata.title.default.trim().length < 2) return alert("Please enter a title")
+        else if (this.state.metadata.title.default.trim().length > 50) return alert("Please enter a shorter title")
+
+        if (!this.state.metadata.description || this.state.metadata.description.default.trim().length < 2) return alert("Please enter a description")
+        else if (this.state.metadata.description.default.trim().length > 300) return alert("Please enter a shorter description")
+
+        if (!this.state.startDate) return alert("Please, enter a start date")
+        else if (!this.state.endDate) return alert("Please, enter an ending date")
+
+        if (moment(this.state.startDate).isBefore(moment().add(5, "minutes"))) {
+            return alert("The start date must be at least 5 minutes from now")
+        }
+        else if (moment(this.state.endDate).isBefore(moment().add(10, "minutes"))) {
+            return alert("The end date must be at least 10 minutes from now")
+        }
+        else if (moment(this.state.endDate).isBefore(moment(this.state.startDate).add(5, "minutes"))) {
+            return alert("The end date must be at least 5 minutes after the start")
+        }
+
+        for (let qIdx = 0; qIdx < this.state.metadata.questions.length; qIdx++) {
+            const question = this.state.metadata.questions[qIdx]
+            if (!question.title.default.trim())
+                return alert("Please, enter a title for question " + (qIdx + 1))
+
+            for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
+                const choice = question.choices[cIdx]
+                if (!choice.title.default.trim())
+                    return alert("Please, fill in all the choices for question " + (qIdx + 1))
+            }
+        }
+
+        const tokenAddress = this.resolveTokenAddress()
+        if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
+            return alert("The token address it not valid")
+
+        // FINAL CONFIRMATION
+        if (confirm("You are about to create a new governance process.\n\nDo you want to continue?")) return
+
+        // Continue
+        try {
+            await connectWeb3()
+            await ensureConnectedVochain()
+            const pool = getPool()
+            const { signer } = getWeb3()
+
+            // Estimate start/end blocks
+            const [startBlock, endBlock] = await Promise.all([
+                VotingApi.estimateBlockAtDateTime(this.state.startDate, pool),
+                VotingApi.estimateBlockAtDateTime(this.state.endDate, pool),
+            ])
+            const blockCount = endBlock - startBlock
+
+            // Fetch EMV proof
+            const holderAddress = await signer.getAddress()
+            const tokenBalanceMappingPosition = await CensusErc20Api.getBalanceMappingPosition(tokenAddress, pool)
+
+            const evmBlockHeight = await pool.provider.getBlockNumber()
+            const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddress, tokenBalanceMappingPosition.toNumber())
+            const { proof } = await CensusErc20Api.generateProof(tokenAddress, [balanceSlot], evmBlockHeight, pool.provider as providers.JsonRpcProvider)
+
+            const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & { metadata: ProcessMetadata } = {
+                mode: ProcessMode.make({ autoStart: true }),
+                envelopeType: ProcessEnvelopeType.make({}), // bit mask
+                censusOrigin: ProcessCensusOrigin.ERC20,
+                metadata: this.state.metadata,
+                censusMerkleRoot: proof.storageHash,
+                startBlock,
+                blockCount,
+                maxCount: 1,
+                maxValue: 3,
+                maxTotalCost: 0,
+                costExponent: 10000,
+                maxVoteOverwrites: 1,
+                evmBlockHeight,
+                tokenAddress,
+                namespace: 0,
+                paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
+
+            const processId = await VotingApi.newProcess(processParamsPre, this.props.signer, pool)
+            Router.push("/processes#/" + processId)
+
+            alert("The governance process has been created successfully")
+        } catch (err) {
+            console.error(err)
+            alert("The governance process could not be created")
+        }
     }
 
     render() {
