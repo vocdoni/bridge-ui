@@ -172,7 +172,7 @@ class NewProcessView extends Component<IAppContext, State> {
             return alert("The token address it not valid")
 
         // FINAL CONFIRMATION
-        if (confirm("You are about to create a new governance process.\n\nDo you want to continue?")) return
+        if (!confirm("You are about to create a new governance process.\n\nDo you want to continue?")) return
 
         // Continue
         try {
