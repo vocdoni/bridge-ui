@@ -1,16 +1,18 @@
 import { useContext, Component } from 'react'
-import Link from 'next/link'
-import { ProcessMetadata } from 'dvote-js'
-// import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
-// import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-// import { getEntityId } from 'dvote-js/dist/api/entity'
+// import Link from 'next/link'
+import { ProcessContractParameters, ProcessEnvelopeType, ProcessMetadata } from 'dvote-js'
 // import Router from 'next/router'
 
-// import { getGatewayClients, getNetworkState } from '../../lib/network'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import Button from '../../components/button'
 import { ProcessMetadataTemplate } from 'dvote-js'
 import { WalletStatus } from '../../components/wallet-status'
+import Datetime from "react-datetime"
+import { Moment } from 'moment'
+import moment from 'moment'
+import { cursorTo } from 'readline'
+import { ensureConnectedVochain } from '../../lib/api'
+import { connectWeb3 } from '../../lib/web3'
 
 // MAIN COMPONENT
 const NewProcessPage = props => {
@@ -22,27 +24,143 @@ const NewProcessPage = props => {
 
 type State = {
     metadata: ProcessMetadata,
+    envelopeType: ProcessEnvelopeType,
+    startDate: Date,
+    endDate: Date,
     entityLoading?: boolean,
 }
 
 // Stateful component
 class NewProcessView extends Component<IAppContext, State> {
     state: State = {
-        metadata: ProcessMetadataTemplate
+        metadata: JSON.parse(JSON.stringify(ProcessMetadataTemplate)),
+        envelopeType: new ProcessEnvelopeType(0),
+        startDate: null,
+        endDate: null,
     }
 
-    onSubmit() {
-        alert("TO DO")
+    async onSubmit() {
+        await ensureConnectedVochain()
+        await connectWeb3()
+
+        if (!this.state.metadata.title || this.state.metadata.title.default.trim().length < 2) return alert("Please enter a title")
+        else if (this.state.metadata.title.default.trim().length > 50) return alert("Please enter a shorter title")
+
+        if (!this.state.metadata.description || this.state.metadata.description.default.trim().length < 2) return alert("Please enter a description")
+        else if (this.state.metadata.description.default.trim().length > 300) return alert("Please enter a shorter description")
+
+        if (!this.state.startDate) return alert("Please, enter a start date")
+        else if (!this.state.endDate) return alert("Please, enter an ending date")
+
+        if (moment(this.state.startDate).isBefore(moment().add(5, "minutes"))) {
+            return alert("The start date must be at least 5 minutes from now")
+        }
+        else if (moment(this.state.endDate).isBefore(moment().add(10, "minutes"))) {
+            return alert("The end date must be at least 10 minutes from now")
+        }
+        else if (moment(this.state.endDate).isBefore(moment(this.state.startDate).add(5, "minutes"))) {
+            return alert("The end date must be at least 5 minutes after the start")
+        }
+
+        for (let qIdx = 0; qIdx < this.state.metadata.questions.length; qIdx++) {
+            const question = this.state.metadata.questions[qIdx]
+            if (!question.title.default.trim())
+                return alert("Please, enter a title for question " + (qIdx + 1))
+
+            for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
+                const choice = question.choices[cIdx]
+                if (!choice.title.default.trim())
+                    return alert("Please, fill in all the choices for question " + (qIdx + 1))
+            }
+        }
+
     }
 
-    onAddOption(questionIndex: number) {
-        console.log(questionIndex)
-    }
-
-    onAddpQuestion() {
+    setMainTitle(title: string) {
         const metadata = this.state.metadata
-        metadata.questions.push(ProcessMetadataTemplate.questions[0])
+        metadata.title.default = title
         this.setState({ metadata })
+    }
+
+    setMainDescription(description: string) {
+        const metadata = this.state.metadata
+        metadata.description.default = description
+        this.setState({ metadata })
+    }
+
+    setEncryptedVotes(value: boolean) {
+        let current = this.state.envelopeType.value
+
+        if (value) {
+            current = current | ProcessEnvelopeType.ENCRYPTED_VOTES
+        }
+        else {
+            current = current & (~ProcessEnvelopeType.ENCRYPTED_VOTES) & 0xff
+        }
+        this.setState({ envelopeType: new ProcessEnvelopeType(current) })
+    }
+
+    setStartDate(date: string | Moment) {
+        if (typeof date == "string") return
+        this.setState({ startDate: date.toDate() })
+    }
+    setEndDate(date: string | Moment) {
+        if (typeof date == "string") return
+        this.setState({ endDate: date.toDate() })
+    }
+
+    onAddQuestion() {
+        const metadata = this.state.metadata
+        metadata.questions.push(JSON.parse(JSON.stringify(ProcessMetadataTemplate.questions[0])))
+        this.setState({ metadata })
+    }
+
+    onAddChoice(qIdx: number) {
+        const metadata = this.state.metadata
+        if (!metadata.questions[qIdx]) return
+        metadata.questions[qIdx].choices.push({
+            title: { default: "" },
+            value: qIdx
+        })
+        this.setState({ metadata })
+    }
+
+    onRemoveChoice(qIdx: number, cIdx: number) {
+        const metadata = this.state.metadata
+        if (!metadata.questions[qIdx]) return
+        else if (metadata.questions[qIdx].choices.length <= 2) return
+
+        metadata.questions[qIdx].choices.splice(cIdx, 1)
+        for (let i = 0; i < metadata.questions[qIdx].choices.length - 1; i++) {
+            metadata.questions[qIdx].choices[i].value = i
+        }
+        this.setState({ metadata })
+    }
+
+    setQuestionTitle(qIdx: number, title: string) {
+        const metadata = this.state.metadata
+        if (!metadata.questions[qIdx]) return
+        metadata.questions[qIdx].title.default = title
+        this.setState({ metadata })
+    }
+    setQuestionDescription(qIdx: number, description: string) {
+        const metadata = this.state.metadata
+        if (!metadata.questions[qIdx]) return
+        metadata.questions[qIdx].description.default = description
+        this.setState({ metadata })
+    }
+    setChoiceText(qIdx, cIdx, text: string) {
+        const metadata = this.state.metadata
+        if (!metadata.questions[qIdx]) return
+        else if (!metadata.questions[qIdx].choices[cIdx]) return
+        metadata.questions[qIdx].choices[cIdx].title.default = text
+        this.setState({ metadata })
+    }
+
+    isValidFutureDate(date: Moment): boolean {
+        const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24)
+
+        return date.isAfter(threshold)
     }
 
     render() {
@@ -63,13 +181,13 @@ class NewProcessView extends Component<IAppContext, State> {
                 <div className="left">
                     <h2>Title</h2>
                     <div className="light">Short name to identify the process</div>
-                    <input type="text" placeholder="Title" value={this.state.metadata.title.default} />
+                    <input type="text" placeholder="Title" onChange={e => this.setMainTitle(e.target.value)} value={this.state.metadata.title.default} />
                 </div>
                 <div className="right">
-                    <label className="radio-choice"> <input type="radio" name={"process-encryption"} />
-                        <div className="checkmark"></div> Open poll
+                    <label className="radio-choice" onClick={() => this.setEncryptedVotes(false)}> <input type="radio" readOnly checked={!this.state.envelopeType.hasEncryptedVotes} name="vote-encryption" />
+                        <div className="checkmark"></div> Real-time results
                     </label>
-                    <label className="radio-choice"> <input type="radio" name={"process-encryption"} />
+                    <label className="radio-choice" onClick={() => this.setEncryptedVotes(true)}> <input type="radio" readOnly checked={this.state.envelopeType.hasEncryptedVotes} name="vote-encryption" />
                         <div className="checkmark"></div> Encrypted results
                     </label>
                 </div>
@@ -78,12 +196,28 @@ class NewProcessView extends Component<IAppContext, State> {
             <div className="row-description">
                 <div className="left">
                     <h2>Description</h2>
-                    <div className="light">An optional introduction of about 2-3 lines</div>
-                    <textarea placeholder="Description" value={this.state.metadata.description.default} />
+                    <div className="light">An introduction of about 2-3 lines</div>
+                    <textarea placeholder="Description" onChange={e => this.setMainDescription(e.target.value)} value={this.state.metadata.description.default} />
                 </div>
                 <div className="right">
-                    <input type="text" placeholder="Start date" />
-                    <input type="text" placeholder="End date" />
+                    <div style={{ display: "block" }}>
+                        <Datetime
+                            value={this.state.startDate}
+                            inputProps={{ placeholder: "Start date (d/m/y h:m)" }}
+                            isValidDate={(cur: Moment) => this.isValidFutureDate(cur)}
+                            dateFormat="D/MM/YYYY"
+                            timeFormat="HH:mm[h]"
+                            onChange={date => this.setStartDate(date)}
+                            strictParsing />
+                        <Datetime
+                            value={this.state.endDate}
+                            inputProps={{ placeholder: "End date (d/m/y h:m)" }}
+                            isValidDate={(cur: Moment) => this.isValidFutureDate(cur)}
+                            dateFormat="D/MM/YYYY"
+                            timeFormat="HH:mm[h]"
+                            onChange={date => this.setEndDate(date)}
+                            strictParsing />
+                    </div>
                 </div>
             </div>
 
@@ -94,29 +228,42 @@ class NewProcessView extends Component<IAppContext, State> {
                             <div className="left">
                                 <h6 className="accent-1">Question {qIdx + 1}</h6>
                                 <h3>Question</h3>
-                                <input type="text" placeholder="Title" value={question.title.default} onChange={ev => console.log(ev.target.value)} />
+                                <input type="text" placeholder="Title" value={question.title.default} onChange={ev => this.setQuestionTitle(qIdx, ev.target.value)} />
 
                                 <h3>Description</h3>
-                                <textarea placeholder="Description" value={question.description.default} onChange={ev => console.log(ev.target.value)} />
+                                <textarea placeholder="Description" value={question.description.default} onChange={ev => this.setQuestionDescription(qIdx, ev.target.value)} />
                             </div>
                             <div className="right" />
                         </div>
-                        <div className="options">
-                            <h3>Options</h3>
+                        <div className="choices">
+                            <h3>Choices</h3>
                             {
-                                question.choices.map((option, oIdx) => <div className="option" key={oIdx}>
+                                question.choices.map((choice, cIdx) => <div className="choice" key={cIdx}>
                                     <div className="left">
-                                        <input type="text" placeholder="" value={option.title.default} onChange={ev => console.log(ev.target.value)} />
+                                        <input type="text" placeholder="Choice" value={choice.title.default} onChange={ev => this.setChoiceText(qIdx, cIdx, ev.target.value)} />
                                     </div>
                                     <div className="right">
-                                        <div className={oIdx == question.choices.length - 1 ? "plus-box active" : "plus-box"} onClick={() => this.onAddOption(qIdx)}>+</div>
+                                        <div className={
+                                            cIdx == question.choices.length - 1 && question.choices[cIdx].title.default ?
+                                                "plus-box add" :
+                                                question.choices.length == 2 ? "plus-box" : "plus-box remove"
+                                        }
+                                            onClick={() => cIdx == question.choices.length - 1 && question.choices[cIdx].title.default ?
+                                                this.onAddChoice(qIdx) :
+                                                this.onRemoveChoice(qIdx, cIdx)
+                                            }>
+                                            {
+                                                cIdx == question.choices.length - 1 && question.choices[cIdx].title.default ?
+                                                    "+" : "⨯"
+                                            }
+                                        </div>
                                     </div>
                                 </div>)
                             }
                         </div>
 
                         {qIdx == this.state.metadata.questions.length - 1 ?
-                            <div className="add-question-btn" onClick={() => this.onAddpQuestion()}>Add question</div> : null
+                            <div className="add-question-btn" onClick={() => this.onAddQuestion()}>Add question</div> : null
                         }
                     </div>)
                 }

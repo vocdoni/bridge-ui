@@ -62,8 +62,6 @@ class TokensView extends Component<IAppContext, State> {
         let options = tokens.map(token => ({ value: token.symbol, label: token.name }))
         options.unshift({ value: "", label: "(All tokens)" })
 
-
-
         return <div id="tokens">
             <div className="page-head">
                 <div className="left">

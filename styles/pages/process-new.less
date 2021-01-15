@@ -73,12 +73,12 @@
                 }
             }
 
-            .options {
+            .choices {
                 h3 {
                     margin-top: 1em;
                     margin-bottom: 0;
                 }
-                .option {
+                .choice {
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;
@@ -122,7 +122,7 @@
                             -ms-user-select: none;
                             user-select: none;
 
-                            &.active {
+                            &.add {
                                 cursor: pointer;
                                 background: rgba(var(--accent-2-triplet), 4%);
                                 border: 1px solid var(--accent-2);
@@ -139,9 +139,23 @@
                                     background: rgba(var(--accent-2-triplet), 16%);
                                 }
                             }
-                            // &:hover {
-                            //     background-color: rgba(var(--input-background-triplet), 70%);
-                            // }
+                            &.remove {
+                                cursor: pointer;
+                                background: rgba(var(--accent-1-triplet), 4%);
+                                border: 1px solid var(--accent-1);
+                                color: var(--accent-1);
+
+                                width: calc(15px + 2em - 2px);
+                                height: calc(15px + 2em - 2px);
+
+                                &:hover {
+                                    background: rgba(var(--accent-1-triplet), 10%);
+                                }
+
+                                &:active {
+                                    background: rgba(var(--accent-1-triplet), 16%);
+                                }
+                            }
                         }
                     }
                 }
