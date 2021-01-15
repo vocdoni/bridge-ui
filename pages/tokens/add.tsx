@@ -15,6 +15,7 @@ import Spinner from "react-svg-spinner"
 import { connectWeb3, getWeb3 } from '../../lib/web3'
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from '../../lib/errors'
 import { ACCENT_COLOR_2 } from '../../lib/constants'
+import { getPool } from '../../lib/vochain'
 
 // MAIN COMPONENT
 const TokenAddPage = props => {
@@ -66,6 +67,7 @@ class TokenAddView extends Component<IAppContext, State> {
     async onSubmit() {
         if (!this.state.tokenInfo) return
         await connectWeb3()
+        const pool = getPool()
         const { signer } = getWeb3()
 
         try {

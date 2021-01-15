@@ -18,7 +18,7 @@ import { NextComponentType, NextPageContext } from 'next'
 import { Router } from 'next/router'
 // import IndexPage from '.'
 
-type NextAppProps = AppInitialProps & { Component: NextComponentType<NextPageContext, any, State>; router: Router; }
+type NextAppProps = AppInitialProps & { Component: NextComponentType<NextPageContext, any, any>; router: Router; }
 
 const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const [entityId, setEntityId] = useState("")
