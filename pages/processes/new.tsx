@@ -215,7 +215,7 @@ class NewProcessView extends Component<IAppContext, State> {
                 paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000"
             }
 
-            const processId = await VotingApi.newProcess(processParamsPre, this.props.signer, pool)
+            const processId = await VotingApi.newProcess(processParamsPre, signer, pool)
             Router.push("/processes#/" + processId)
 
             alert("The governance process has been created successfully")
