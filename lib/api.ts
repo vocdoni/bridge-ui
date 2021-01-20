@@ -5,6 +5,7 @@ import { ProcessInfo, Token } from "./types"
 import { connectVochain, getPool } from "./vochain"
 import { BigNumber, Contract, providers } from "ethers"
 import { getWeb3 } from "./web3"
+import TokenAmount from "token-amount"
 
 // VOCDONI API's
 
@@ -154,13 +155,18 @@ export function getTokenInfo(address: string) {
         return Promise.all([
             tokenInstance.name(),
             tokenInstance.symbol(),
-            tokenInstance.totalSupply()
+            tokenInstance.totalSupply(),
+            tokenInstance.decimals()
         ])
     }).then(items => {
+        const supplyStr = items[2].toString() as string
+        const totalSupply = new TokenAmount(supplyStr, items[3], { symbol: items[1] }).format()
+
         return {
             name: items[0] as string,
             symbol: items[1] as string,
-            totalSupply: items[2].toString() as string,
+            totalSupply,
+            decimals: items[3],
             address
         }
     })
