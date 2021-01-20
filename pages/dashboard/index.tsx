@@ -117,7 +117,7 @@ class DashboardView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Vote on the open processes and see the results of the ones that already ended.</h4>
                 </div>
                 <div className="right">
-                    <WalletStatus address={holderAddress} />
+                    <WalletStatus />
                     <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} />
                 </div>
             </div>

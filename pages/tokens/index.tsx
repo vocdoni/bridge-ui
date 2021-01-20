@@ -69,7 +69,7 @@ class TokensView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Click at the tokens you own and cast your votes</h4>
                 </div>
                 <div className="right">
-                    <WalletStatus address={holderAddress} />
+                    <WalletStatus />
 
                     <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} />
                     <h6 className="accent-1"><Link href="/tokens/add"><a>My token is not listed</a></Link></h6>

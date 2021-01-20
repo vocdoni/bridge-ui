@@ -108,7 +108,7 @@ class TokenAddView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Enter the details of an ERC20 token and start submitting governance processes.</h4>
                 </div>
                 <div className="right">
-                    <WalletStatus address={holderAddress} />
+                    <WalletStatus />
                 </div>
             </div>
 

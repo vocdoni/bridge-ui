@@ -238,7 +238,7 @@ class NewProcessView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Enter the details of a new governance process and submit them.</h4>
                 </div>
                 <div className="right">
-                    <WalletStatus address={holderAddress} />
+                    <WalletStatus />
                 </div>
             </div>
 

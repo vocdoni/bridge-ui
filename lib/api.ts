@@ -27,6 +27,10 @@ export async function getTokenProcesses(filterTokenAddress?: string): Promise<{ 
 
     const processesByToken = await Promise.all(
         tokenAddrs.map(tokenAddr => getProcessList(tokenAddr)
+            .catch(err => {
+                if (err?.message?.includes("Key not found")) { return [] as string[] }
+                throw err
+            })
             .then(tokenProcessIds => Promise.all(tokenProcessIds.map(
                 processId => getProcessInfo(processId))
             ))

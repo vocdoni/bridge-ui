@@ -11,7 +11,7 @@ import Spinner from "react-svg-spinner"
 
 // import { getGatewayClients, getNetworkState } from '../../lib/network'
 import AppContext, { IAppContext } from '../../lib/app-context'
-import Button from '../../components/button'
+import { Button } from '@aragon/ui'
 import { getPool } from '../../lib/vochain'
 import { strDateDiff } from '../../lib/date'
 import { HEX_REGEX } from '../../lib/regex'
@@ -324,7 +324,7 @@ class ProcessView extends Component<IAppContext, State> {
 
         if (isSubmitting) return <p className="status">Please wait...<Spinner /></p>
 
-        return <Button onClick={() => this.onSubmitVote()}>Sign and submit the vote</Button>
+        return <Button mode="strong" onClick={() => this.onSubmitVote()}>Sign and submit the vote</Button>
     }
 
     render() {
@@ -375,7 +375,7 @@ class ProcessView extends Component<IAppContext, State> {
                     <h4 className="accent-1">Cast your vote and see the ongoing results as they are received.</h4>
                 </div>
                 <div className="right">
-                    <WalletStatus address={holderAddress} />
+                    <WalletStatus />
                 </div>
             </div>
 

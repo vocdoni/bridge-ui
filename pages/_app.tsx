@@ -16,6 +16,8 @@ import { getWeb3 } from '../lib/web3'
 import { getPool } from '../lib/vochain'
 import { NextComponentType, NextPageContext } from 'next'
 import { Router } from 'next/router'
+import { UseWalletProvider } from 'use-wallet'
+
 // import IndexPage from '.'
 
 type NextAppProps = AppInitialProps & { Component: NextComponentType<NextPageContext, any, any>; router: Router; }
@@ -28,7 +30,6 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const onHashChanged = (e: HashChangeEvent) => {
         if (urlHash == location.hash.substr(2)) return
 
-        console.log("NEW URL HASH", location.hash.substr(2))
         setUrlHash(location.hash.substr(2))
     }
 
@@ -65,15 +66,17 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     }
 
     return <AppContext.Provider value={injectedGlobalContext}>
-        <Head>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Bridge</title>
-        </Head>
-        <Header />
-        <div id="main">
-            <Component {...pageProps} />
-        </div>
-        <Footer />
+        <UseWalletProvider chainId={parseInt(process.env.ETH_CHAIN_ID)} connectors={{}}>
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Bridge</title>
+            </Head>
+            <Header />
+            <div id="main">
+                <Component {...pageProps} />
+            </div>
+            <Footer />
+        </UseWalletProvider>
     </AppContext.Provider>
 }
 

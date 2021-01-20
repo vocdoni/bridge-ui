@@ -8,7 +8,7 @@ import { ProcessMetadata, VotingApi } from 'dvote-js'
 // import { getGatewayClients, getNetworkState } from '../../../lib/network'
 import AppContext, { IAppContext } from '../../lib/app-context'
 import TokenCard from '../../components/token-card'
-import Button from '../../components/button'
+import { Button } from '@aragon/ui'
 import Router from 'next/router'
 import { WalletStatus } from '../../components/wallet-status'
 import { ProcessInfo } from '../../lib/types'
@@ -94,7 +94,6 @@ class TokenView extends Component<IAppContext, State> {
                     this.setState({ offline: true })
                     return
                 }
-
                 alert("The list of processes could not be loaded")
             })
     }
@@ -104,7 +103,7 @@ class TokenView extends Component<IAppContext, State> {
     }
 
     render() {
-        const { holderAddress } = this.props
+        // const { holderAddress } = this.props
         const token = this.state.tokenInfo ||
             Object.assign({}, allTokens.find(t => t.address == this.resolveTokenAddress()), { totalSupply: <Spinner size={12} /> }) ||
             { name: "", symbol: "", address: this.resolveTokenAddress(), totalSupply: <Spinner size={12} /> }
@@ -129,8 +128,10 @@ class TokenView extends Component<IAppContext, State> {
                     <h4 className="accent-1">See the details of {token.symbol}</h4>
                 </div>
                 <div className="right">
-                    <WalletStatus address={holderAddress} />
-                    <Button onClick={() => this.onCreateProcess(token.address)}>Create a governance process</Button>
+                    <WalletStatus />
+                    <div>
+                        <Button mode="strong" wide onClick={() => this.onCreateProcess(token.address)}>Create a governance process</Button>
+                    </div>
                 </div>
             </div>
 
