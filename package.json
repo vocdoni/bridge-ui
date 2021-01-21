@@ -41,6 +41,7 @@
         "styled-components": "^5.2.1",
         "token-amount": "^0.3.0",
         "typescript": "^4.0.5",
+        "use-token": "^0.2.0",
         "use-wallet": "^0.8.1"
     },
     "devDependencies": {

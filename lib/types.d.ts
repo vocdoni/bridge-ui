@@ -1,15 +1,17 @@
 import { ProcessContractParameters, ProcessMetadata } from "dvote-js"
 
-export type Token = {
-    symbol: string,
+export type TokenInfo = {
     name: string,
+    symbol: string,
     address: string,
-    balanceMappingPosition: number
+    balanceMappingPosition: number,
+    icon: string,
+    processes: string[]
 }
 
 export type ProcessInfo = {
+    id: string,
     metadata: ProcessMetadata,
     parameters: ProcessContractParameters,
-    token: Token,
-    id: string
+    tokenAddress: string
 }

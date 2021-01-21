@@ -1,26 +1,50 @@
 import { useState } from 'react'
 // import Link from 'next/link'
 import { withRouter, useRouter, NextRouter } from 'next/router'
-import AppContext, { IAppContext } from '../lib/app-context'
 import TokenCard from '../components/token-card'
-import { connectWeb3, isWeb3Ready } from '../lib/web3'
-import { connectVochain, getPool } from '../lib/vochain'
 // import Spinner from "react-svg-spinner"
 import { allTokens } from '../lib/tokens'
 import { Button, IconEthereum, LoadingRing } from '@aragon/ui'
 // import Spinner from "react-svg-spinner"
-import { useWallet, Wallet } from 'use-wallet'
+import { ChainUnsupportedError, useWallet, Wallet } from 'use-wallet'
 
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
+import { usePool } from '../lib/hooks/pool'
 
 // MAIN COMPONENT
-const IndexPage = props => {
+const IndexPage = (props) => {
     const [connecting, setConnecting] = useState()
     const router = useRouter()
+    const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
     const wallet = useWallet()
 
-    const pool = getPool()
-    const isConnected = isWeb3Ready() && pool && wallet.status == "connected" // && pool.isReady
+    const isConnected = !poolLoading && !!pool && wallet.status == "connected"
+
+
+    function onSignIn(wallet: Wallet<unknown>, router: NextRouter, setConnecting: (boolean) => void) {
+        if (pool && wallet.status == "connected") {
+            return router.push("/dashboard")
+        }
+
+        setConnecting(true)
+
+        return wallet.connect("injected")
+            .then(() => router.push("/dashboard"))
+            .catch(err => {
+                setConnecting(false)
+
+                if (err && err.message == INVALID_CHAIN_ID || err instanceof ChainUnsupportedError) {
+                    const msg = "Please, switch to the {{NAME}} network".replace("{{NAME}}", process.env.ETH_NETWORK_ID)
+                    return alert(msg)
+                }
+                else if (err && err.message == METAMASK_IS_NOT_AVAILABLE) {
+                    return alert("Please, install Metamask or a Web3 compatible wallet")
+                }
+                console.error(err)
+                alert("Could not access Metamask or connect to the network")
+            })
+    }
+
 
     return <div id="index">
         <div className="page-head">
@@ -39,15 +63,19 @@ const IndexPage = props => {
                 </small></p>
             </div>
             <div className="right">
-                {
-                    connecting ?
-                        <Button label={"Connecting to " + wallet.networkName} icon={<LoadingRing />} wide onClick={() => wallet.reset()} /> :
-                        // <Spinner /> :
-                        <Button
-                            label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
-                            icon={<IconEthereum />} mode="strong"
-                            wide onClick={() => onMetamaskSignIn(wallet, router, setConnecting)} />
-                }
+                {(() => {
+                    if (poolLoading) {
+                        return <Button label={"Connecting to Vocdoni"} icon={<LoadingRing />} wide onClick={() => wallet.reset()} />
+                    }
+                    else if (connecting) {
+                        return <Button label={"Connecting to " + wallet.networkName} icon={<LoadingRing />} wide onClick={() => wallet.reset()} />
+                    }
+
+                    return <Button
+                        label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
+                        icon={<IconEthereum />} mode="strong"
+                        wide onClick={() => onSignIn(wallet, router, setConnecting)} />
+                })()}
             </div>
         </div>
 
@@ -90,33 +118,6 @@ const IndexPage = props => {
         </div>
 
     </div >
-}
-
-function onMetamaskSignIn(wallet: Wallet<unknown>, router: NextRouter, setConnecting: (boolean) => void) {
-    const pool = getPool()
-    if (isWeb3Ready() && pool) { // && pool.isReady) {
-        return router.push("/dashboard")
-    }
-
-    setConnecting(true)
-
-    return wallet.connect("injected")
-        .then(() => connectWeb3())
-        .then(() => connectVochain())
-        .then(() => router.push("/dashboard"))
-        .catch(err => {
-            setConnecting(false)
-
-            if (err && err.message == INVALID_CHAIN_ID) {
-                const msg = "Please, switch to the {{NAME}} network".replace("{{NAME}}", process.env.ETH_NETWORK_ID)
-                return alert(msg)
-            }
-            else if (err && err.message == METAMASK_IS_NOT_AVAILABLE) {
-                return alert("Please, install Metamask or a Web3 compatible wallet")
-            }
-            console.error(err)
-            alert("Could not access Metamask or connect to the network")
-        })
 }
 
 export default withRouter(IndexPage)
