@@ -3,6 +3,7 @@ import { NO_TOKEN_BALANCE } from "./errors"
 import { ProcessInfo, TokenInfo } from "./types"
 import { BigNumber, Contract, providers, Signer, utils } from "ethers"
 import TokenAmount from "token-amount"
+import { FALLBACK_TOKEN_ICON } from "./constants"
 
 // from aragon/use-wallet
 const TRUST_WALLET_BASE_URL =
@@ -158,6 +159,8 @@ export function hasBalance(tokenAddress: string, holderAddress: string, pool: Ga
 
 
 function tokenIconUrl(address = '') {
+    if (process.env.ETH_NETWORK_ID == "goerli") return FALLBACK_TOKEN_ICON
+
     try {
         address = toChecksumAddress(address.trim())
     } catch (err) {
@@ -177,7 +180,6 @@ function toChecksumAddress(address) {
             'Given address "' + address + '" is not a valid Ethereum address.'
         )
     }
-    address = address.toLowerCase().replace(/^0x/i, '')
 
     const addressHash = utils.keccak256(address).replace(/^0x/i, '')
     let checksumAddress = '0x'
