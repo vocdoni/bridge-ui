@@ -1,7 +1,7 @@
 import { useContext, Component, ReactNode } from 'react'
 import Link from 'next/link'
 import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem, ProcessStatus } from 'dvote-js'
-import { ensureConnectedVochain, getProcessInfo } from '../../lib/api'
+import { ensureConnectedVochain, getProcessInfo, getTokenInfo } from '../../lib/api'
 import { ProcessInfo } from "../../lib/types"
 // import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
 // import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
@@ -16,10 +16,13 @@ import { getPool } from '../../lib/vochain'
 import { strDateDiff } from '../../lib/date'
 import { HEX_REGEX } from '../../lib/regex'
 import { allTokens } from '../../lib/tokens'
-import { providers } from 'ethers'
+import { BigNumber, providers } from 'ethers'
 import { areAllNumbers } from '../../lib/util'
 import { connectWeb3, getWeb3, isWeb3Ready } from '../../lib/web3'
 import { WalletStatus } from '../../components/wallet-status'
+import TokenAmount from "token-amount"
+
+const BN_ZERO = BigNumber.from(0)
 
 // MAIN COMPONENT
 const ProcessPage = props => {
@@ -35,6 +38,7 @@ type State = {
     startDate: Date,
     endDate: Date,
     currentBlock: number,
+    tokenDecimals: number,
     // currentDate: Date,
     censusProof: {
         key: string;
@@ -60,6 +64,7 @@ class ProcessView extends Component<IAppContext, State> {
         startDate: null,
         endDate: null,
         currentBlock: null,
+        tokenDecimals: 18,
         censusProof: null,
         hasVoted: false,
         hasVotedOnDate: null,
@@ -85,16 +90,17 @@ class ProcessView extends Component<IAppContext, State> {
         return Promise.all([
             this.refreshBlockHeight(),
             getProcessInfo(processId),
-            this.refreshVoteResults()
+            this.refreshVoteResults(),
         ]).then((results) => {
             const proc = results[1]
             this.setState({ process: proc })
 
             return Promise.all([
                 this.estimateDates(proc.parameters),
-                this.refreshVoteState(proc)
+                this.refreshVoteState(proc),
+                getTokenInfo(proc.parameters.entityAddress)
             ])
-        }).then(() => {
+        }).then(([_, __, tokenInfo]) => {
             if (!this.state.hasVoted) {
                 const interval = (parseInt(process.env.BLOCK_TIME || '10', 10) || 10) * 1000
                 this.refreshInterval = setInterval(
@@ -102,6 +108,7 @@ class ProcessView extends Component<IAppContext, State> {
                     interval
                 )
             }
+            this.setState({ tokenDecimals: tokenInfo.decimals })
         }).catch(err => console.error(err))
     }
 
@@ -405,8 +412,8 @@ class ProcessView extends Component<IAppContext, State> {
             this.state.results.questions[qIdx]
 
         const questionVoteCount = resultsQuestion &&
-            resultsQuestion.voteResults.reduce((prev, cur) => prev + (cur.votes || 0), 0)
-            || 0
+            resultsQuestion.voteResults.reduce((prev, cur) => prev.add(cur.votes || BN_ZERO), BN_ZERO)
+            || BN_ZERO
 
         return <div className="question" key={qIdx}>
             <div className="left">
@@ -438,18 +445,21 @@ class ProcessView extends Component<IAppContext, State> {
         return <label className="radio-choice" key={title}>{title}</label>
     }
 
-    renderResultsChoice(cIdx: number, resultsQuestion: DigestedProcessResultItem, totalVotes: number) {
+    renderResultsChoice(cIdx: number, resultsQuestion: DigestedProcessResultItem, totalVotes: BigNumber) {
         if (!resultsQuestion || !resultsQuestion.voteResults || !resultsQuestion.voteResults[cIdx]) return null
+
         const title = resultsQuestion.voteResults[cIdx].title.default
-        const voteCount = resultsQuestion.voteResults[cIdx].votes
+        const voteCount = resultsQuestion.voteResults[cIdx].votes || BN_ZERO
+        const percent = voteCount.div(totalVotes).mul(100) // = voteCount / totalVotes * 100
+        const amount = new TokenAmount(voteCount, this.state.tokenDecimals, { symbol: this.state.process.token.symbol }).format()
 
         return <div className="choice-result" key={cIdx}>
             <div className="percent">
-                <div className="box">{(totalVotes <= 0 ? 0 : (voteCount / totalVotes * 100)).toFixed(1)} %</div>
+                <div className="box">{percent.toNumber().toFixed(1)} %</div>
             </div>
             <div className="text">
                 <span>{title}</span>
-                <span className="lighter">{voteCount || 0} votes</span>
+                <span className="lighter">{amount} votes</span>
             </div>
         </div>
     }
