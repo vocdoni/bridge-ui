@@ -201,7 +201,7 @@ class NewProcessView extends Component<IAppContext, State> {
                 envelopeType: ProcessEnvelopeType.make({}), // bit mask
                 censusOrigin: ProcessCensusOrigin.ERC20,
                 metadata: this.state.metadata,
-                censusMerkleRoot: proof.storageHash,
+                censusRoot: proof.storageHash,
                 startBlock,
                 blockCount,
                 maxCount: 1,

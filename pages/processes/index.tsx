@@ -202,7 +202,7 @@ class ProcessView extends Component<IAppContext, State> {
             if (!isWeb3Ready()) { await connectWeb3() }
             if (!isWeb3Ready()) return alert("Please, install Metamask and grant access to the Bridge dapp")
 
-            // Merkle Proof
+            // Census Proof
             const holderAddr = await getWeb3().signer.getAddress()
             const token = allTokens.find(t => t.address.toLowerCase() == this.state.process.parameters.entityAddress.toLowerCase())
             const processEthCreationBlock = proc.parameters.evmBlockHeight
