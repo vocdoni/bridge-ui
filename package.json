@@ -25,7 +25,7 @@
         "@types/ws": "^7.2.4",
         "@zeit/next-less": "^1.0.1",
         "dexie": "^2.0.4",
-        "dvote-js": "^0.20.0",
+        "dvote-js": "^0.20.1",
         "ethers": "^5.0.25",
         "identicon.js": "^2.3.3",
         "iso-language-codes": "^1.0.6",
