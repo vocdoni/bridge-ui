@@ -129,7 +129,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         tokenInstance.symbol(),
         tokenInstance.totalSupply(),
         tokenInstance.decimals(),
-        CensusErc20Api.getBalanceMappingPosition(address, pool),
+        CensusErc20Api.getBalanceMappingPosition(address, pool).catch(() => BigNumber.from(-1)),
         getProcessList(address, pool)
     ]).then(([name, symbol, totalSupply, decimals, balMappingPos, pids]: [string, string, BigNumber, number, BigNumber, string[]]) => {
         return {

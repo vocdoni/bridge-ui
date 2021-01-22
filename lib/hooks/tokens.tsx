@@ -17,6 +17,8 @@ export function useToken(address: string) {
         let ignore = false
 
         const update = () => {
+            if (!address) return
+
             tokenContext.resolveTokenInfo(address)
                 .then(newInfo => {
                     if (ignore) return
@@ -47,6 +49,8 @@ export function useTokens(addresses: string[]) {
     const { pool } = usePool()
 
     useEffect(() => {
+        if (!addresses) return
+
         // Signal a refresh on the current token addresses
         Promise.all(addresses.map(address =>
             tokenContext.resolveTokenInfo(address)

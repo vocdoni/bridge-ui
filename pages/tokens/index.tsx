@@ -1,42 +1,21 @@
-import { useContext, Component, useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { VotingApi } from 'dvote-js'
 
 import TokenCard from '../../components/token-card'
 // import Select from 'react-select'
 import { WalletStatus } from '../../components/wallet-status'
 import { allTokens } from '../../lib/tokens'
-import { usePool } from '../../lib/hooks/pool'
+// import { usePool } from '../../lib/hooks/pool'
 import { useTokens } from '../../lib/hooks/tokens'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 
 
 // MAIN COMPONENT
 const TokensPage = props => {
-    const { pool, resolvePool } = usePool()
-    const [blockNumber, setBlockNumber] = useState(0)
     const [targetTokenAddress, setTargetTokenAddress] = useState(null as string)
 
     const tokenAddrs = targetTokenAddress ? [targetTokenAddress] : allTokens
     const tokenInfos = useTokens(tokenAddrs)
-
-    // Block update
-    useEffect(() => {
-        if (!resolvePool) return
-
-        const updateBlockHeight = () => {
-            resolvePool
-                .then(pool => VotingApi.getBlockHeight(pool))
-                .then(num => setBlockNumber(num))
-                .catch(err => console.error(err))
-        }
-
-        const interval = setInterval(() => updateBlockHeight, 1000 * 15)
-        updateBlockHeight()
-
-        // Done
-        return () => clearInterval(interval)
-    }, [pool])
 
     return <div id="tokens">
         <div className="page-head">
