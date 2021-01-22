@@ -27,18 +27,21 @@ const DashboardPage = props => {
 
     // Block update
     useEffect(() => {
-        const interval = setInterval(() => {
-            if (!resolvePool) return
+        if (!resolvePool) return
 
+        const updateBlockHeight = () => {
             resolvePool
                 .then(pool => VotingApi.getBlockHeight(pool))
                 .then(num => setBlockNumber(num))
                 .catch(err => console.error(err))
-        }, 1000 * 15)
+        }
+
+        const interval = setInterval(() => updateBlockHeight, 1000 * 15)
+        updateBlockHeight()
 
         // Done
         return () => clearInterval(interval)
-    }, [])
+    }, [pool])
 
     // Process list fetch
     useEffect(() => {
