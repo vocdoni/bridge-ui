@@ -1,9 +1,14 @@
-import { CensusErc20Api, GatewayPool, ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js"
+import { CensusErc20Api, GatewayPool, VotingApi } from "dvote-js"
 import { NO_TOKEN_BALANCE } from "./errors"
-import { tokenIconUrl } from "use-token/dist/utils"
 import { ProcessInfo, TokenInfo } from "./types"
-import { BigNumber, Contract, providers, Signer } from "ethers"
+import { BigNumber, Contract, providers, Signer, utils } from "ethers"
 import TokenAmount from "token-amount"
+
+// from aragon/use-wallet
+const TRUST_WALLET_BASE_URL =
+    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum'
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 
 // VOCDONI API's
 
@@ -147,4 +152,43 @@ export function balanceOf(tokenAddress: string, holderAddress: string, pool: Gat
 export function hasBalance(tokenAddress: string, holderAddress: string, pool: GatewayPool): Promise<boolean> {
     const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
     return tokenInstance.balanceOf(holderAddress).then(balance => !balance.isZero())
+}
+
+// INTERNAL HELPERS
+
+
+function tokenIconUrl(address = '') {
+    try {
+        address = toChecksumAddress(address.trim())
+    } catch (err) {
+        return null
+    }
+
+    if (address === EMPTY_ADDRESS) {
+        return `${TRUST_WALLET_BASE_URL}/info/logo.png`
+    }
+
+    return `${TRUST_WALLET_BASE_URL}/assets/${address}/logo.png`
+}
+
+function toChecksumAddress(address) {
+    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+        throw new Error(
+            'Given address "' + address + '" is not a valid Ethereum address.'
+        )
+    }
+    address = address.toLowerCase().replace(/^0x/i, '')
+
+    const addressHash = utils.keccak256(address).replace(/^0x/i, '')
+    let checksumAddress = '0x'
+
+    for (let i = 0; i < address.length; i++) {
+        // If ith character is 9 to f then make it uppercase
+        if (parseInt(addressHash[i], 16) > 7) {
+            checksumAddress += address[i].toUpperCase()
+        } else {
+            checksumAddress += address[i]
+        }
+    }
+    return checksumAddress
 }

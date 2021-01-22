@@ -16,7 +16,7 @@ import { useProcess } from '../../lib/hooks/processes'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
-    const { pool, loadingPromise: poolLoadingPromise } = usePool()
+    const { pool, resolvePool } = usePool()
     const [blockNumber, setBlockNumber] = useState(0)
     const [loadingProcesses, setLoadingProcesses] = useState(false)
     const [processes, setProcesses] = useState<ProcessInfo[]>([])
@@ -26,9 +26,13 @@ const DashboardPage = props => {
 
     // Block update
     useEffect(() => {
-        const interval = setInterval(async () => {
-            if (poolLoadingPromise) await poolLoadingPromise
-            setBlockNumber(await VotingApi.getBlockHeight(pool))
+        const interval = setInterval(() => {
+            if (!resolvePool) return
+
+            resolvePool
+                .then(pool => VotingApi.getBlockHeight(pool))
+                .then(num => setBlockNumber(num))
+                .catch(err => console.error(err))
         }, 1000 * 15)
 
         // Done
@@ -37,12 +41,12 @@ const DashboardPage = props => {
 
     // Process list fetch
     useEffect(() => {
+        if (!resolvePool) return
         let skip = false
-        const p = poolLoadingPromise || Promise.resolve()
 
         setLoadingProcesses(true)
 
-        p.then(() => {
+        resolvePool.then(pool => {
             return Promise.all(tokenAddrs.map(addr => getTokenProcesses(addr, pool)))
         }).then(processArrays => {
             if (skip) return
@@ -55,7 +59,7 @@ const DashboardPage = props => {
         })
 
         return () => { skip = true }
-    }, [targetTokenAddress])
+    }, [targetTokenAddress, pool])
 
     // RENDER
 
@@ -149,3 +153,5 @@ const renderProcessCard = ({ processId, tokenAddress }: { processId: string, tok
         </p>
     </TokenCard>
 }
+
+export default DashboardPage
