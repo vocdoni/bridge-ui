@@ -15,10 +15,10 @@ import { usePool } from '../lib/hooks/pool'
 const IndexPage = (props) => {
     const [connecting, setConnecting] = useState()
     const router = useRouter()
-    const { pool, loadingPromise, error: poolError, refresh: poolRefresh } = usePool()
+    const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
     const wallet = useWallet()
 
-    const isConnected = !loadingPromise && !!pool && wallet.status == "connected"
+    const isConnected = wallet.status == "connected"
 
 
     function onSignIn(wallet: Wallet<unknown>, router: NextRouter, setConnecting: (boolean) => void) {
@@ -64,7 +64,7 @@ const IndexPage = (props) => {
             </div>
             <div className="right">
                 {(() => {
-                    if (loadingPromise) {
+                    if (poolLoading) {
                         return <Button label={"Connecting to Vocdoni"} icon={<LoadingRing />} wide onClick={() => wallet.reset()} />
                     }
                     else if (connecting) {
