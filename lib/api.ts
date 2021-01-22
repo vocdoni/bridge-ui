@@ -33,7 +33,7 @@ export async function getProcessInfo(processId: string, pool: GatewayPool): Prom
         metadata: results[0],
         parameters: results[1],
         id: processId, // pass-through to have the value for links
-        tokenAddress: results[1].entityAddress
+        tokenAddress: results[1].entityAddress.toLowerCase()
     }
 }
 

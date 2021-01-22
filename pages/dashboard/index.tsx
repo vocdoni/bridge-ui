@@ -7,11 +7,11 @@ import Select from 'react-select'
 import { allTokens } from '../../lib/tokens'
 import { getProcessList, getTokenProcesses } from '../../lib/api'
 // import { strDateDiff } from '../../lib/date'
-import { ProcessInfo } from '../../lib/types'
+import { ProcessInfo, TokenInfo } from '../../lib/types'
 import { limitedText } from '../../lib/util'
 import { WalletStatus } from '../../components/wallet-status'
 import { usePool } from '../../lib/hooks/pool'
-import { useToken } from '../../lib/hooks/tokens'
+import { useToken, useTokens } from '../../lib/hooks/tokens'
 import { useProcess } from '../../lib/hooks/processes'
 
 // MAIN COMPONENT
@@ -23,6 +23,7 @@ const DashboardPage = props => {
     const [targetTokenAddress, setTargetTokenAddress] = useState(null as string)
 
     const tokenAddrs = targetTokenAddress ? [targetTokenAddress] : allTokens
+    const tokenInfos = useTokens(tokenAddrs)
 
     // Block update
     useEffect(() => {
@@ -100,7 +101,7 @@ const DashboardPage = props => {
             <div className="token-list">
                 {
                     loadingProcesses ? <Spinner /> :
-                        activeProcesses.map(proc => renderProcessCard({ processId: proc.id, tokenAddress: proc.tokenAddress }))
+                        activeProcesses.map(proc => renderProcessCard({ process: proc, token: tokenInfos.get(proc.tokenAddress) }))
                 }
             </div>
         </div>
@@ -116,7 +117,7 @@ const DashboardPage = props => {
             <div className="token-list">
                 {
                     loadingProcesses ? <Spinner /> :
-                        endedProcesses.map(proc => renderProcessCard({ processId: proc.id, tokenAddress: proc.tokenAddress }))
+                        endedProcesses.map(proc => renderProcessCard({ process: proc, token: tokenInfos.get(proc.tokenAddress) }))
                 }
             </div>
         </div>
@@ -132,20 +133,19 @@ const DashboardPage = props => {
             <div className="token-list">
                 {
                     loadingProcesses ? <Spinner /> :
-                        upcomingProcesses.map(proc => renderProcessCard({ processId: proc.id, tokenAddress: proc.tokenAddress }))
+                        upcomingProcesses.map(proc => renderProcessCard({ process: proc, token: tokenInfos.get(proc.tokenAddress) }))
                 }
             </div>
         </div>
     </div>
 }
 
-const renderProcessCard = ({ processId, tokenAddress }: { processId: string, tokenAddress: string }) => {
-    const token = useToken(tokenAddress)
-    const proc = useProcess(processId)
+const renderProcessCard = (props: { process: ProcessInfo, token?: TokenInfo }) => {
+    const proc = props.process
     const icon = process.env.ETH_NETWORK_ID == "goerli" ?
-        "https://cdn.worldvectorlogo.com/logos/dai-2.svg" : token.icon
+        "https://cdn.worldvectorlogo.com/logos/dai-2.svg" : props?.token.icon
 
-    return <TokenCard key={processId} name={token?.symbol} icon={icon} rightText={/*strDateDiff()*/""} href={"/processes#/" + processId}>
+    return <TokenCard key={proc.id} name={props?.token?.symbol} icon={icon} rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
         <p>
             <strong>{limitedText(proc?.metadata?.title?.default, 35) || "No title"}</strong>
             <br />
