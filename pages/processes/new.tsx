@@ -92,7 +92,7 @@ class NewProcessView extends Component<IAppContext, State> {
         if (!metadata.questions[qIdx]) return
         metadata.questions[qIdx].choices.push({
             title: { default: "" },
-            value: qIdx
+            value: metadata.questions[qIdx].choices.length
         })
         this.setState({ metadata })
     }
@@ -103,7 +103,7 @@ class NewProcessView extends Component<IAppContext, State> {
         else if (metadata.questions[qIdx].choices.length <= 2) return
 
         metadata.questions[qIdx].choices.splice(cIdx, 1)
-        for (let i = 0; i < metadata.questions[qIdx].choices.length - 1; i++) {
+        for (let i = 0; i < metadata.questions[qIdx].choices.length; i++) {
             metadata.questions[qIdx].choices[i].value = i
         }
         this.setState({ metadata })
@@ -164,6 +164,9 @@ class NewProcessView extends Component<IAppContext, State> {
                 const choice = question.choices[cIdx]
                 if (!choice.title.default.trim())
                     return alert("Please, fill in all the choices for question " + (qIdx + 1))
+
+                // Ensure values are unique and sequential
+                question.choices[cIdx].value = cIdx
             }
         }
 
