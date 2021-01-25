@@ -450,12 +450,12 @@ class ProcessView extends Component<IAppContext, State> {
 
         const title = resultsQuestion.voteResults[cIdx].title.default
         const voteCount = resultsQuestion.voteResults[cIdx].votes || BN_ZERO
-        const percent = voteCount.div(totalVotes).mul(100) // = voteCount / totalVotes * 100
+        const percent = voteCount.mul(1000).div(totalVotes).toNumber() / 10 // = voteCount / totalVotes * 100
         const amount = new TokenAmount(voteCount, this.state.tokenDecimals, { symbol: this.state.process.token.symbol }).format()
 
         return <div className="choice-result" key={cIdx}>
             <div className="percent">
-                <div className="box">{percent.toNumber().toFixed(1)} %</div>
+                <div className="box">{percent.toFixed(1)} %</div>
             </div>
             <div className="text">
                 <span>{title}</span>
