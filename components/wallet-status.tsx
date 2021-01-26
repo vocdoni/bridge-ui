@@ -18,7 +18,7 @@ export const WalletStatus = () => {
             </div>
         }
         return <div id="wallet-status" className="v-center">
-            <Button mode="negative" wide label="Cannot use Metamask" onClick={() => wallet.reset()}></Button>
+            <Button mode="negative" wide label="Web3 is unavailable" onClick={() => wallet.reset()}></Button>
         </div>
     }
     else if (wallet.status === 'connecting') {

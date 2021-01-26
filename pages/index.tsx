@@ -13,7 +13,7 @@ import { usePool } from '../lib/hooks/pool'
 
 // MAIN COMPONENT
 const IndexPage = (props) => {
-    const [connecting, setConnecting] = useState()
+    const [connecting, setConnecting] = useState(false)
     const router = useRouter()
     const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
     const wallet = useWallet()
@@ -21,7 +21,7 @@ const IndexPage = (props) => {
     const isConnected = wallet.status == "connected"
 
 
-    function onSignIn(wallet: Wallet<unknown>, router: NextRouter, setConnecting: (boolean) => void) {
+    function onSignIn(wallet: Wallet<unknown>, router: NextRouter) {
         if (pool && wallet.status == "connected") {
             return router.push("/dashboard")
         }
@@ -29,7 +29,10 @@ const IndexPage = (props) => {
         setConnecting(true)
 
         return wallet.connect("injected")
-            .then(() => router.push("/dashboard"))
+            .then(() => {
+                if (!wallet.account) throw new Error(METAMASK_IS_NOT_AVAILABLE)
+                router.push("/dashboard")
+            })
             .catch(err => {
                 setConnecting(false)
 
@@ -74,7 +77,7 @@ const IndexPage = (props) => {
                     return <Button
                         label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
                         icon={<IconEthereum />} mode="strong"
-                        wide onClick={() => onSignIn(wallet, router, setConnecting)} />
+                        wide onClick={() => onSignIn(wallet, router)} />
                 })()}
             </div>
         </div>

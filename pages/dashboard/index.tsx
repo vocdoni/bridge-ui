@@ -12,7 +12,7 @@ import { limitedText } from '../../lib/util'
 import { WalletStatus } from '../../components/wallet-status'
 import { usePool } from '../../lib/hooks/pool'
 import { useToken, useTokens } from '../../lib/hooks/tokens'
-import { useProcess } from '../../lib/hooks/processes'
+// import { useProcess } from '../../lib/hooks/processes'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
