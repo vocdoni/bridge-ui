@@ -14,8 +14,10 @@ import TokenCard from '../components/token-card'
 import { connectWeb3, isWeb3Ready } from '../lib/web3'
 import { connectVochain, getPool } from '../lib/vochain'
 import Spinner from "react-svg-spinner"
+import { allTokens } from '../lib/tokens'
 
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
+import { getTokenInfo } from '../lib/api'
 
 // MAIN COMPONENT
 const IndexPage = props => {
@@ -27,12 +29,22 @@ const IndexPage = props => {
 
 type State = {
     connecting: boolean,
+    tokens: { name: string, symbol: string, address: string, totalSupply: string }[],
 }
 
 // Stateful component
 class IndexView extends Component<IAppContext, State> {
     state: State = {
-        connecting: false
+        connecting: false,
+        tokens: []
+    }
+
+    componentDidMount() {
+        Promise.all(allTokens.map(token => {
+            return getTokenInfo(token.address)
+        })).then(infos => {
+            this.setState({ tokens: infos })
+        })
     }
 
     onMetamaskSignIn() {
@@ -119,21 +131,11 @@ class IndexView extends Component<IAppContext, State> {
                 <p className="light">Below is a curated list of tokens featured on the platform</p>
 
                 <div className="token-list">
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="($915M)" href={"/tokens/info#/" + "0x1234"}>
-                        <p>Multicollateral DAI<br />7 active votes</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + "0x1234"}>
-                        <p>Multicollateral DAI<br />7 active votes</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + "0x1234"}>
-                        <p>Multicollateral DAI<br />7 active votes</p>
-                    </TokenCard>
-
-                    <TokenCard name="ZRX" icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + "0x1234"}>
-                        <p>Multicollateral DAI<br />7 active votes</p>
-                    </TokenCard>
+                    {
+                        this.state.tokens.map(token => <TokenCard key={token.address} name={token.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + token.address}>
+                            <p>{token.name}</p>
+                        </TokenCard>)
+                    }
                 </div>
             </div>
 
