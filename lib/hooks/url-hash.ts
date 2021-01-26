@@ -7,13 +7,14 @@ function useWindowEvent(event: string, callback: EventListener) {
     }, [event, callback])
 }
 
-export function useUrlHash() {
-    const [urlHash, setUrlHash] = useState(typeof window != "undefined" ? location.hash : "")
+export function useUrlHash(): string {
+    const [urlHash, setUrlHash] = useState(typeof window != "undefined" ? location.hash.substr(2) : "")
 
     useWindowEvent("hashchange", (e: HashChangeEvent) => {
         if (urlHash == location.hash.substr(2)) return
 
         setUrlHash(location.hash.substr(2))
     })
+
     return urlHash
 }

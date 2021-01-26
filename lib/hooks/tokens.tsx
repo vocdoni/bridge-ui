@@ -9,7 +9,7 @@ const UseTokenContext = React.createContext<{
     refreshTokenInfo: (address: string) => Promise<TokenInfo>
 }>(null)
 
-export function useToken(address: string) {
+export function useToken(address: string): TokenInfo | null {
     const tokenContext = useContext(UseTokenContext)
     const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null)
 

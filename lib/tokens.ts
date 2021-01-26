@@ -11,5 +11,5 @@ const featuredTokensMap = {
     ]
 }
 
-export const allTokens = allTokensMap["goerli"]
-export const featuredTokens = featuredTokensMap["goerli"]
+export const allTokens = allTokensMap.goerli
+export const featuredTokens = featuredTokensMap.goerli
