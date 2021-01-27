@@ -10,11 +10,13 @@ import { ACCENT_COLOR_2 } from '../../lib/constants'
 import { usePool } from '../../lib/hooks/pool'
 import { TokenInfo } from '../../lib/types'
 import { useWallet } from 'use-wallet'
+import { useSigner } from '../../lib/hooks/signer'
 
 // MAIN COMPONENT
 const TokenAddPage = props => {
     const wallet = useWallet()
-    const { resolvePool } = usePool()
+    const signer = useSigner()
+    const { poolPromise } = usePool()
     const [formTokenAddress, setFormTokenAddress] = useState<string>(null)
     const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null)
     const [loadingToken, setLoadingToken] = useState(false)
@@ -30,7 +32,7 @@ const TokenAddPage = props => {
 
         setLoadingToken(true)
 
-        resolvePool
+        poolPromise
             .then(pool => getTokenInfo(formTokenAddress, pool))
             .then(tokenInfo => {
                 setLoadingToken(false)
@@ -43,11 +45,12 @@ const TokenAddPage = props => {
 
     const onSubmit = async () => {
         if (!tokenInfo) return
+        else if (!wallet.connector || !wallet.account) return alert("Web3 support is not available")
 
         try {
             setRegisteringToken(true)
             const holderAddress = wallet.account
-            const pool = await resolvePool
+            const pool = await poolPromise
 
             const hasBal = await hasBalance(tokenInfo.address, holderAddress, pool)
             if (!hasBal) throw new Error(NO_TOKEN_BALANCE)
@@ -56,7 +59,7 @@ const TokenAddPage = props => {
             }
 
             // Register
-            await registerToken(tokenInfo.address, holderAddress, pool, wallet)
+            await registerToken(tokenInfo.address, holderAddress, pool, signer)
 
             alert("The token has been successfully registered")
             setRegisteringToken(false)
@@ -129,9 +132,11 @@ const TokenAddPage = props => {
                 </div>
 
                 <div className="row-continue">
-                    {registeringToken ?
-                        <Button onClick={() => { }}><Spinner color={ACCENT_COLOR_2} /></Button> :
-                        <Button onClick={() => onSubmit()}>Register token</Button>
+                    {
+                        !wallet.account ? <WalletStatus /> :
+                            registeringToken ?
+                                <Button onClick={() => { }}><Spinner color={ACCENT_COLOR_2} /></Button> :
+                                <Button onClick={() => onSubmit()}>Register token</Button>
                     }
                 </div>
             </>
