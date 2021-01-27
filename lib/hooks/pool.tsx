@@ -23,7 +23,7 @@ export function usePool() {
 }
 
 export function UsePoolProvider({ children }) {
-    // Promise holder for the very first iterations where resolvePool is still unset
+    // Promise holder for requests arriving before the pool is available
     let resolvePoolPromise: (pool: GatewayPool) => any
     let poolPromise: Promise<GatewayPool>
 

@@ -53,7 +53,7 @@ export function useTokens(addresses: string[]) {
     const { pool } = usePool()
 
     useEffect(() => {
-        if (!addresses) return
+        if (!addresses || !addresses.length) return
 
         // Signal a refresh on the current token addresses
         Promise.all(addresses.map(address =>
@@ -83,8 +83,9 @@ export function UseTokenProvider({ children }) {
 
     const resolveTokenInfo: (address: string) => Promise<TokenInfo> =
         useCallback((address: string) => {
-            if (tokens.current.has(address.toLowerCase())) {
-                return Promise.resolve(tokens.current.get(address))
+            if (!address) return Promise.resolve(null)
+            else if (tokens.current.has(address.toLowerCase())) { // cached
+                return Promise.resolve(tokens.current.get(address.toLowerCase()))
             }
             return loadTokenInfo(address)
         }, [pool, poolPromise])

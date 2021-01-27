@@ -11,32 +11,30 @@ import { Button } from '@aragon/ui'
 import Router from 'next/router'
 import { WalletStatus } from '../../components/wallet-status'
 import { ProcessInfo } from '../../lib/types'
-import { YOU_ARE_NOT_CONNECTED } from '../../lib/errors'
-import { getTokenInfo, getTokenProcesses } from '../../lib/api'
+import { getTokenProcesses } from '../../lib/api'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
-import { allTokens } from '../../lib/tokens'
 import Spinner from "react-svg-spinner"
 import { useUrlHash } from '../../lib/hooks/url-hash'
 import { useToken } from '../../lib/hooks/tokens'
-import { useProcess } from '../../lib/hooks/processes'
+// import { useProcess } from '../../lib/hooks/processes'
 import { usePool } from '../../lib/hooks/pool'
 
 
 // MAIN COMPONENT
 const TokenPage = props => {
     const { pool } = usePool()
-    const urlHash = useUrlHash()
+    const tokenAddr = useUrlHash().substr(2)
     const [loadingProcesses, setLoadingProcesses] = useState(true)
     const [blockNumber, setBlockNumber] = useState(-1)
     const [processes, setProcesses] = useState([] as ProcessInfo[])
-    const token = useToken(urlHash)
+    const token = useToken(tokenAddr)
 
     useEffect(() => {
-        if (!pool || !urlHash) return
+        if (!pool || !tokenAddr) return
 
         setLoadingProcesses(true)
 
-        getTokenProcesses(urlHash, pool)
+        getTokenProcesses(tokenAddr, pool)
             .then((processes) => {
                 // Only update the global list if not doing a filtered load
                 setLoadingProcesses(false)
