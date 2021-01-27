@@ -10,7 +10,7 @@ export const WalletStatus = () => {
     if (wallet.error?.name) {
         if (wallet.error instanceof ChainUnsupportedError) {
             return <div id="wallet-status" className="v-center">
-                <Button mode="negative" wide label={wallet.networkName + " is not supported"} onClick={() => wallet.reset()}></Button>
+                <Button mode="negative" wide label={wallet.networkName + " is not enabled"} onClick={() => wallet.reset()}></Button>
             </div>
         } else if (wallet.error instanceof ConnectionRejectedError) {
             return <div id="wallet-status" className="v-center">

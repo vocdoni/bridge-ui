@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { getTokenInfo } from '../api'
 import { TokenInfo } from '../types'
 import { usePool } from './pool'
+import { UNAVAILABLE_POOL } from "../errors"
 
 const UseTokenContext = React.createContext<{
     currentTokens: Map<String, TokenInfo>,
@@ -23,6 +24,9 @@ export function useToken(address: string): TokenInfo | null {
                 .then(newInfo => {
                     if (ignore) return
                     setTokenInfo(newInfo)
+                }).catch(err => {
+                    if (err?.message == UNAVAILABLE_POOL) setTimeout(update, 1000 * 5)
+                    else console.error(err)
                 })
         }
         update()
@@ -75,7 +79,7 @@ export function useTokens(addresses: string[]) {
 
 export function UseTokenProvider({ children }) {
     const tokens = useRef(new Map<String, TokenInfo>())
-    const { pool, resolvePool } = usePool()
+    const { pool, poolPromise } = usePool()
 
     const resolveTokenInfo: (address: string) => Promise<TokenInfo> =
         useCallback((address: string) => {
@@ -83,18 +87,19 @@ export function UseTokenProvider({ children }) {
                 return Promise.resolve(tokens.current.get(address))
             }
             return loadTokenInfo(address)
-        }, [pool])
+        }, [pool, poolPromise])
 
-    const loadTokenInfo = (address: string) => {
-        if (!resolvePool) return
+    const loadTokenInfo: (address: string) => Promise<TokenInfo> =
+        useCallback((address: string) => {
+            if (!poolPromise) return Promise.reject(new Error(UNAVAILABLE_POOL))
 
-        return resolvePool
-            .then(pool => getTokenInfo(address, pool))
-            .then(tokenInfo => {
-                tokens.current.set(address.toLowerCase(), tokenInfo)
-                return tokenInfo
-            })
-    }
+            return poolPromise
+                .then(pool => getTokenInfo(address, pool))
+                .then(tokenInfo => {
+                    tokens.current.set(address.toLowerCase(), tokenInfo)
+                    return tokenInfo
+                })
+        }, [pool, poolPromise])
 
     return (
         <UseTokenContext.Provider

@@ -3,13 +3,13 @@ import { useState, useEffect, createContext, useContext } from "react"
 
 interface IPoolContext {
     pool: GatewayPool,
-    resolvePool: Promise<GatewayPool>,
+    poolPromise: Promise<GatewayPool>,
     loading: boolean,
     error: string,
     refresh: () => void
 }
 
-const UsePoolContext = createContext<IPoolContext>({ pool: null, resolvePool: null, loading: false, error: null, refresh: () => { } })
+const UsePoolContext = createContext<IPoolContext>({ pool: null, poolPromise: null, loading: false, error: null, refresh: () => { } })
 
 export function usePool() {
     const poolContext = useContext(UsePoolContext)
@@ -23,7 +23,10 @@ export function usePool() {
 }
 
 export function UsePoolProvider({ children }) {
-    const [resolvePool, setResolvePool] = useState<Promise<GatewayPool>>(null)
+    // Promise holder for the very first iterations where resolvePool is still unset
+    let resolvePoolPromise: (pool: GatewayPool) => any
+    let poolPromise: Promise<GatewayPool>
+
     const [pool, setPool] = useState<GatewayPool>(null)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string>(null)
@@ -34,7 +37,7 @@ export function UsePoolProvider({ children }) {
 
         setLoading(true)
 
-        const prom = GatewayPool.discover({
+        GatewayPool.discover({
             bootnodesContentUri: process.env.BOOTNODES_URL,
             networkId: process.env.ETH_NETWORK_ID as any,
         }).then(discoveredPool => {
@@ -46,13 +49,14 @@ export function UsePoolProvider({ children }) {
             setError(null)
             setLoading(false)
 
+            // Notify early awaiters
+            resolvePoolPromise?.(newPool)
             return newPool
         }).catch(err => {
             setLoading(false)
             setError(err && err.message || err?.toString())
             throw err
         })
-        setResolvePool(prom)
 
         // Cleanup
         return () => {
@@ -65,19 +69,30 @@ export function UsePoolProvider({ children }) {
         if (!pool) return
 
         setLoading(true)
-        const prom = pool.refresh().then(() => {
+        pool.refresh().then(() => {
             setLoading(false)
+
+            // Notify early awaiters
+            resolvePoolPromise?.(pool)
             return pool
         }).catch(err => {
             setLoading(false)
+
             setError(err && err.message || err?.toString())
             throw err
         })
-        setResolvePool(prom)
+    }
+
+    // Ensure that by default, resolvePool always has a promise
+    if (pool == null) {
+        poolPromise = new Promise<GatewayPool>((resolve) => { resolvePoolPromise = resolve })
+    }
+    else {
+        poolPromise = Promise.resolve(pool)
     }
 
     return (
-        <UsePoolContext.Provider value={{ pool, resolvePool, loading, error, refresh }}>
+        <UsePoolContext.Provider value={{ pool, poolPromise, loading, error, refresh }}>
             {children}
         </UsePoolContext.Provider>
     )
