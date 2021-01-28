@@ -1,66 +1,46 @@
-import { CensusErc20Api, ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js"
-import { NO_TOKEN_BALANCE, YOU_ARE_NOT_CONNECTED } from "./errors"
-import { allTokens } from "./tokens"
-import { ProcessInfo, Token } from "./types"
-import { connectVochain, getPool } from "./vochain"
-import { BigNumber, Contract, providers } from "ethers"
-import { getWeb3 } from "./web3"
+import { CensusErc20Api, GatewayPool, VotingApi } from "dvote-js"
+import { NO_TOKEN_BALANCE } from "./errors"
+import { ProcessInfo, TokenInfo } from "./types"
+import { BigNumber, Contract, providers, Signer, utils } from "ethers"
 import TokenAmount from "token-amount"
+import { FALLBACK_TOKEN_ICON } from "./constants"
+
+// from aragon/use-wallet
+const TRUST_WALLET_BASE_URL =
+    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum'
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 
 // VOCDONI API's
 
-export function ensureConnectedVochain() {
-    if (getPool()) return Promise.resolve()
-
-    return connectVochain().then(() => {
-        const pool = getPool()
-        if (!pool) return Promise.reject(new Error(YOU_ARE_NOT_CONNECTED))
-    })
-}
-
-export async function getTokenProcesses(filterTokenAddress?: string): Promise<{ metadata: ProcessMetadata, parameters: ProcessContractParameters, token: Token, id: string }[]> {
-    await ensureConnectedVochain()
-
-    const tokenAddrs = filterTokenAddress ?
-        [filterTokenAddress] :
-        allTokens.map(token => token.address)
-
-    const processesByToken = await Promise.all(
-        tokenAddrs.map(tokenAddr => getProcessList(tokenAddr)
-            .then(tokenProcessIds => Promise.all(tokenProcessIds.map(
-                processId => getProcessInfo(processId))
-            ))
+export async function getTokenProcesses(tokenAddr: string, pool: GatewayPool): Promise<ProcessInfo[]> {
+    return getProcessList(tokenAddr, pool)
+        .catch(err => {
+            if (err?.message?.includes("Key not found")) { return [] as string[] }
+            throw err
+        })
+        .then(tokenProcessIds => Promise.all(tokenProcessIds.map(
+            processId => getProcessInfo(processId, pool))
         ))
-    return processesByToken.reduce((prev, cur) => prev.concat(cur), [])
 }
 
-export async function getProcessInfo(processId: string): Promise<ProcessInfo> {
-    await ensureConnectedVochain()
-    const pool = getPool()
-
+export async function getProcessInfo(processId: string, pool: GatewayPool): Promise<ProcessInfo> {
     const results = await Promise.all([
         VotingApi.getProcessMetadata(processId, pool),
         VotingApi.getProcessParameters(processId, pool)
     ])
 
-    let token = {} as Token
-    if (allTokens && allTokens.length)
-        token = allTokens.find(t => t.address.toLowerCase() == results[1].entityAddress.toLowerCase())
-
     return {
         metadata: results[0],
         parameters: results[1],
-        token,
-        id: processId // pass-through to have the value for links
+        id: processId, // pass-through to have the value for links
+        tokenAddress: results[1].entityAddress.toLowerCase()
     }
 }
 
-export async function getProcessList(tokenAddress: string): Promise<string[]> {
+export async function getProcessList(tokenAddress: string, pool: GatewayPool): Promise<string[]> {
     let result: string[] = []
     let lastId: string = undefined
-
-    const pool = getPool()
-    if (!pool) return Promise.reject(new Error(YOU_ARE_NOT_CONNECTED))
 
     while (true) {
         const processList = await VotingApi.getProcessList(tokenAddress, pool, lastId)
@@ -71,13 +51,9 @@ export async function getProcessList(tokenAddress: string): Promise<string[]> {
     }
 }
 
-export async function registerToken(tokenAddress: string, holderAddress: string) {
+export async function registerToken(tokenAddress: string, holderAddress: string, pool: GatewayPool, signer: Signer) {
     try {
-        await ensureConnectedVochain()
-        const pool = getPool()
-        const { signer } = getWeb3()
-
-        const tokenBalanceMappingPosition = await findTokenBalanceMappingPosition(tokenAddress, holderAddress)
+        const tokenBalanceMappingPosition = await findTokenBalanceMappingPosition(tokenAddress, holderAddress, pool)
         const blockNumber = await pool.provider.getBlockNumber()
         const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddress, tokenBalanceMappingPosition)
         const result = await CensusErc20Api.generateProof(tokenAddress, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider)
@@ -100,13 +76,11 @@ export async function registerToken(tokenAddress: string, holderAddress: string)
     }
 }
 
-export async function findTokenBalanceMappingPosition(tokenAddress: string, holderAddress: string) {
+export async function findTokenBalanceMappingPosition(tokenAddress: string, holderAddress: string, pool: GatewayPool) {
     const verify = true
     try {
-        await ensureConnectedVochain()
-        const pool = getPool()
         const blockNumber = await pool.provider.getBlockNumber()
-        const balance = await balanceOf(tokenAddress, holderAddress)
+        const balance = await balanceOf(tokenAddress, holderAddress, pool)
         if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE)
 
         for (let i = 0; i < 50; i++) {
@@ -147,47 +121,76 @@ const ERC20_ABI = [
     "function totalSupply() public view returns (uint256)",
 ]
 
-export function getTokenInfo(address: string) {
-    return ensureConnectedVochain().then(() => {
-        const pool = getPool()
-        const tokenInstance = new Contract(address, ERC20_ABI, pool.provider)
+export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenInfo> {
+    const tokenInstance = new Contract(address, ERC20_ABI, pool.provider)
 
-        return Promise.all([
-            tokenInstance.name(),
-            tokenInstance.symbol(),
-            tokenInstance.totalSupply(),
-            tokenInstance.decimals()
-        ])
-    }).then(items => {
-        const supplyStr = items[2].toString() as string
-        const totalSupply = new TokenAmount(supplyStr, items[3], { symbol: items[1] }).format()
-
+    return Promise.all([
+        tokenInstance.name(),
+        tokenInstance.symbol(),
+        tokenInstance.totalSupply(),
+        tokenInstance.decimals(),
+        CensusErc20Api.getBalanceMappingPosition(address, pool).catch(() => BigNumber.from(-1)),
+        getProcessList(address, pool)
+    ]).then(([name, symbol, totalSupply, decimals, balMappingPos, pids]: [string, string, BigNumber, number, BigNumber, string[]]) => {
         return {
-            name: items[0] as string,
-            symbol: items[1] as string,
-            totalSupply,
-            decimals: items[3],
-            address
+            name,
+            symbol,
+            totalSupply: new TokenAmount(totalSupply.toString(), decimals, { symbol }).format(),
+            decimals,
+            address,
+            balanceMappingPosition: balMappingPos.toNumber(),
+            icon: tokenIconUrl(address),
+            processes: pids
         }
     })
 }
 
-export function balanceOf(tokenAddress: string, holderAddress: string): Promise<BigNumber> {
-    return ensureConnectedVochain().then(() => {
-        const pool = getPool()
-        const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
-
-        return tokenInstance.balanceOf(holderAddress)
-    })
+export function balanceOf(tokenAddress: string, holderAddress: string, pool: GatewayPool): Promise<BigNumber> {
+    const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
+    return tokenInstance.balanceOf(holderAddress)
 }
 
-export function hasBalance(tokenAddress: string, holderAddress: string): Promise<boolean> {
-    return ensureConnectedVochain().then(() => {
-        const pool = getPool()
-        const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
+export function hasBalance(tokenAddress: string, holderAddress: string, pool: GatewayPool): Promise<boolean> {
+    const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
+    return tokenInstance.balanceOf(holderAddress).then(balance => !balance.isZero())
+}
 
-        return tokenInstance.balanceOf(holderAddress)
-    }).then(balance => {
-        return !balance.isZero()
-    })
+// INTERNAL HELPERS
+
+
+function tokenIconUrl(address = '') {
+    if (process.env.ETH_NETWORK_ID == "goerli") return FALLBACK_TOKEN_ICON
+
+    try {
+        address = toChecksumAddress(address.trim())
+    } catch (err) {
+        return null
+    }
+
+    if (address === EMPTY_ADDRESS) {
+        return `${TRUST_WALLET_BASE_URL}/info/logo.png`
+    }
+
+    return `${TRUST_WALLET_BASE_URL}/assets/${address}/logo.png`
+}
+
+function toChecksumAddress(address) {
+    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+        throw new Error(
+            'Given address "' + address + '" is not a valid Ethereum address.'
+        )
+    }
+
+    const addressHash = utils.keccak256(address).replace(/^0x/i, '')
+    let checksumAddress = '0x'
+
+    for (let i = 0; i < address.length; i++) {
+        // If ith character is 9 to f then make it uppercase
+        if (parseInt(addressHash[i], 16) > 7) {
+            checksumAddress += address[i].toUpperCase()
+        } else {
+            checksumAddress += address[i]
+        }
+    }
+    return checksumAddress
 }
