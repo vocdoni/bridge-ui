@@ -1,6 +1,6 @@
 import { useState } from 'react'
 // import Link from 'next/link'
-import { withRouter, useRouter, NextRouter } from 'next/router'
+import { withRouter, useRouter } from 'next/router'
 import TokenCard from '../components/token-card'
 // import Spinner from "react-svg-spinner"
 import { featuredTokens } from '../lib/tokens'
@@ -24,7 +24,7 @@ const IndexPage = (props) => {
     const isConnected = wallet.status == "connected"
 
 
-    function onSignIn(wallet: Wallet<unknown>, router: NextRouter) {
+    function onSignIn() {
         if (pool && wallet.status == "connected") {
             return router.push("/dashboard")
         }
@@ -33,7 +33,7 @@ const IndexPage = (props) => {
 
         return wallet.connect("injected")
             .then(() => {
-                if (!wallet.account) throw new Error(METAMASK_IS_NOT_AVAILABLE)
+                if (!wallet.connectors.injected) throw new Error(METAMASK_IS_NOT_AVAILABLE)
                 router.push("/dashboard")
             })
             .catch(err => {
@@ -80,7 +80,7 @@ const IndexPage = (props) => {
                     return <Button
                         label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
                         icon={<IconEthereum />} mode="strong"
-                        wide onClick={() => onSignIn(wallet, router)} />
+                        wide onClick={() => onSignIn()} />
                 })()}
             </div>
         </div>

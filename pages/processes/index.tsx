@@ -1,7 +1,7 @@
 import { useContext, Component, ReactNode, useState, useEffect } from 'react'
 import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem, ProcessStatus, GatewayPool } from 'dvote-js'
 import { ProcessInfo, TokenInfo } from "../../lib/types"
-import Router from 'next/router'
+import { withRouter, useRouter } from 'next/router'
 import Spinner from "react-svg-spinner"
 
 import { Button } from '@aragon/ui'
@@ -23,6 +23,7 @@ const BN_ZERO = BigNumber.from(0)
 
 // MAIN COMPONENT
 const ProcessPage = props => {
+    const router = useRouter()
     const wallet = useWallet()
     const signer = useSigner()
     const { poolPromise } = usePool()
@@ -39,11 +40,11 @@ const ProcessPage = props => {
     const [choices, setChoices] = useState([] as number[])
     const [results, setResults] = useState(null as DigestedProcessResults)
 
-    const nullifier = VotingApi.getSignedVoteNullifier(wallet.account, processId)
+    const nullifier = VotingApi.getSignedVoteNullifier(wallet.account || "", processId)
 
-    if (!processId.match(HEX_REGEX)) {
+    if (typeof window != "undefined" && !processId.match(HEX_REGEX)) {
         console.error("Invalid process ID", processId)
-        Router.replace('/tokens')
+        router.replace('/tokens')
     }
 
     // Effects
@@ -66,49 +67,21 @@ const ProcessPage = props => {
         }
     }, [processId])
 
+    // Vote results
+    useEffect(() => { updateResults() }, [processId])
+
+    // Vote status
+    useEffect(() => { updateVoteStatus() }, [wallet, nullifier])
+
+    // Census status
+    useEffect(() => { updateCensusStatus() }, [wallet, nullifier])
+
     // Dates
-    useEffect(() => {
-        if (!proc?.parameters?.startBlock) return
-
-        poolPromise
-            .then(pool => Promise.all([
-                VotingApi.estimateDateAtBlock(proc.parameters.startBlock, pool),
-                VotingApi.estimateDateAtBlock(proc.parameters.startBlock + proc.parameters.blockCount, pool)
-            ])).then(([startDate, endDate]) => {
-                setStartDate(startDate)
-                setEndDate(endDate)
-            }).catch(err => {
-                console.error(err)
-            })
-    }, [poolPromise, proc?.parameters?.startBlock])
-
-    // Census Proof
-    useEffect(() => {
-        let skip = false;
-
-        (async () => {
-            const pool = await poolPromise
-
-            if (!await CensusErc20Api.isRegistered(token.address, pool)) {
-                setTokenRegistered(false)
-                return alert("The token contract is not yet registered")
-            }
-            if (skip) return
-            else if (!tokenRegistered !== true) setTokenRegistered(true)
-
-            const processEthCreationBlock = proc.parameters.evmBlockHeight
-            const balanceSlot = CensusErc20Api.getHolderBalanceSlot(wallet.account, token.balanceMappingPosition)
-
-            const proofFields = await CensusErc20Api.generateProof(token.address, [balanceSlot], processEthCreationBlock, pool.provider as providers.JsonRpcProvider)
-            if (skip) return
-            setCensusProof(proofFields.proof.storageProof[0])
-        })()
-
-        return () => { skip = true }
-    }, [wallet.account, token?.address, processId, nullifier])
+    useEffect(() => { updateDates() }, [proc?.parameters?.startBlock])
 
     // Loaders
     const updateVoteStatus = () => {
+        if (!processId || !nullifier) return
         setRefreshingVotedStatus(true)
 
         poolPromise
@@ -123,10 +96,51 @@ const ProcessPage = props => {
             })
     }
     const updateResults = () => {
+        if (!processId) return
+
         poolPromise
             .then(pool => VotingApi.getResultsDigest(processId, pool))
             .then((results) => setResults(results))
             .catch(err => console.error(err))
+    }
+    const updateCensusStatus = async () => {
+        if (!token?.address) {
+            setTokenRegistered(false)
+            return
+        }
+        else if (!wallet?.account) {
+            setCensusProof(null)
+            return
+        }
+
+        const pool = await poolPromise
+
+        if (!await CensusErc20Api.isRegistered(token.address, pool)) {
+            setTokenRegistered(false)
+            return alert("The token contract is not yet registered")
+        }
+        else if (tokenRegistered !== true) setTokenRegistered(true)
+
+        const processEthCreationBlock = proc.parameters.evmBlockHeight
+        const balanceSlot = CensusErc20Api.getHolderBalanceSlot(wallet.account, token.balanceMappingPosition)
+
+        const proofFields = await CensusErc20Api.generateProof(token.address, [balanceSlot], processEthCreationBlock, pool.provider as providers.JsonRpcProvider)
+
+        setCensusProof(proofFields.proof.storageProof[0])
+    }
+    const updateDates = () => {
+        if (!proc?.parameters?.startBlock) return
+
+        return poolPromise
+            .then(pool => Promise.all([
+                VotingApi.estimateDateAtBlock(proc.parameters.startBlock, pool),
+                VotingApi.estimateDateAtBlock(proc.parameters.startBlock + proc.parameters.blockCount, pool)
+            ])).then(([startDate, endDate]) => {
+                setStartDate(startDate)
+                setEndDate(endDate)
+            }).catch(err => {
+                console.error(err)
+            })
     }
 
 
@@ -136,7 +150,7 @@ const ProcessPage = props => {
         if (isNaN(choiceValue)) return alert("Invalid question value")
 
         choices[questionIdx] = choiceValue
-        setChoices(choices)
+        setChoices([].concat(choices))
     }
 
     const onSubmitVote: () => Promise<void> = async () => {
@@ -208,6 +222,7 @@ const ProcessPage = props => {
 
     // Render params
 
+    const allQuestionsChosen = areAllNumbers(choices) && choices.length == proc?.metadata?.questions?.length
     const hasStarted = startDate && startDate.getTime() <= Date.now()
     const hasEnded = endDate && endDate.getTime() < Date.now()
     const isInCensus = !!censusProof
@@ -221,7 +236,7 @@ const ProcessPage = props => {
 
     let status: string = ""
 
-    switch (proc.parameters.status.value) {
+    switch (proc?.parameters.status.value) {
         case ProcessStatus.READY:
             if (hasEnded)
                 status = "The process is closed"
@@ -270,7 +285,7 @@ const ProcessPage = props => {
         <div className="row-questions">
             {
                 proc.metadata.questions.map((question, qIdx) =>
-                    renderQuestionRow(qIdx, question, results, token, canVote, onSelect)
+                    renderQuestionRow(qIdx, question, results, token, canVote, !!wallet?.account, onSelect)
                 )
             }
         </div>
@@ -280,20 +295,13 @@ const ProcessPage = props => {
         <div className="row-continue">
             {(() => {
                 if (!processId || !proc) return <></>
-
-                const allQuestionsChosen = areAllNumbers(choices) && choices.length == proc.metadata.questions.length
-
-                const hasStarted = startDate && startDate.getTime() <= Date.now()
-                const hasEnded = endDate && endDate.getTime() < Date.now()
-
-                if (!proc) return null
                 else if (hasVoted) return <p className="status">Your vote has been registered</p>
                 else if (!hasStarted) return <p className="status">The process has not started yet</p>
                 else if (hasEnded) return <p className="status">The process has ended</p>
+                else if (!wallet?.account) return <p className="status">You are not connected to MetaMask</p>
                 else if (!censusProof) return <p className="status">You are not part of the process holders' census</p>
                 else if (!allQuestionsChosen) return <p className="status">Select a choice for every question</p>
-
-                if (isSubmitting || refreshingVotedStatus) return <p className="status">Please wait...<Spinner /></p>
+                else if (isSubmitting || refreshingVotedStatus) return <p className="status">Please wait...<Spinner /></p>
 
                 return <Button mode="strong" onClick={() => onSubmitVote()}>Sign and submit the vote</Button>
             })()}
@@ -301,7 +309,7 @@ const ProcessPage = props => {
     </div>
 }
 
-function renderQuestionRow(qIdx: number, question: ProcessMetadata["questions"][0], results: DigestedProcessResults, token: TokenInfo, canVote: boolean, onSelect: (qIdx: number, choiceValue: number) => any) {
+function renderQuestionRow(qIdx: number, question: ProcessMetadata["questions"][0], results: DigestedProcessResults, token: TokenInfo, canVote: boolean, hasWallet: boolean, onSelect: (qIdx: number, choiceValue: number) => any) {
     const resultsQuestion = results && results.questions[qIdx]
 
     const questionVoteCount = resultsQuestion &&
@@ -319,8 +327,8 @@ function renderQuestionRow(qIdx: number, question: ProcessMetadata["questions"][
                 question.choices.map((choice, cIdx) =>
                     canVote ?
                         renderClickableChoice(qIdx, cIdx, choice.title.default, choice.value, onSelect) :
-                        results?.questions?.length ?
-                            renderResultsChoice(cIdx, resultsQuestion, questionVoteCount, token) :
+                        (!hasWallet || results?.questions?.length) ?
+                            renderChoiceResults(cIdx, resultsQuestion, questionVoteCount, token) :
                             renderReadOnlyChoice(cIdx, choice.title.default)
                 )
             }
@@ -340,7 +348,7 @@ function renderReadOnlyChoice(choiceIdx: number, title: string) {
     </label>
 }
 
-function renderResultsChoice(cIdx: number, resultsQuestion: DigestedProcessResultItem, totalVotes: BigNumber, token: TokenInfo) {
+function renderChoiceResults(cIdx: number, resultsQuestion: DigestedProcessResultItem, totalVotes: BigNumber, token: TokenInfo) {
     if (!resultsQuestion || !resultsQuestion.voteResults || !resultsQuestion.voteResults[cIdx]) return null
 
     const title = resultsQuestion.voteResults[cIdx].title.default
@@ -367,4 +375,4 @@ function renderEmpty() {
     </div>
 }
 
-export default ProcessPage
+export default withRouter(ProcessPage)

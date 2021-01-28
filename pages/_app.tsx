@@ -10,6 +10,7 @@ import { UsePoolProvider } from '../lib/hooks/pool'
 import { UseTokenProvider } from '../lib/hooks/tokens'
 
 import '../styles/index.less'
+import { UseProcessProvider } from '../lib/hooks/processes'
 
 type NextAppProps = AppInitialProps & { Component: NextComponentType<NextPageContext, any, any>; router: Router; }
 
@@ -18,17 +19,19 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
 
     return <UsePoolProvider>
         <UseTokenProvider>
-            <UseWalletProvider chainId={chainId} connectors={{}}>
-                <Head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                    <title>Bridge</title>
-                </Head>
-                <Header />
-                <div id="main">
-                    <Component {...pageProps} />
-                </div>
-                <Footer />
-            </UseWalletProvider>
+            <UseProcessProvider>
+                <UseWalletProvider chainId={chainId} connectors={{}}>
+                    <Head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <title>Bridge</title>
+                    </Head>
+                    <Header />
+                    <div id="main">
+                        <Component {...pageProps} />
+                    </div>
+                    <Footer />
+                </UseWalletProvider>
+            </UseProcessProvider>
         </UseTokenProvider>
     </UsePoolProvider>
 }

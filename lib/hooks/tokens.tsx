@@ -66,7 +66,7 @@ export function useTokens(addresses: string[]) {
         })
 
         return () => { }
-    }, [addresses, pool])
+    }, [addresses])
 
     if (tokenContext === null) {
         throw new Error(
@@ -79,7 +79,7 @@ export function useTokens(addresses: string[]) {
 
 export function UseTokenProvider({ children }) {
     const tokens = useRef(new Map<String, TokenInfo>())
-    const { pool, poolPromise } = usePool()
+    const { poolPromise } = usePool()
 
     const resolveTokenInfo: (address: string) => Promise<TokenInfo> =
         useCallback((address: string) => {
@@ -88,19 +88,17 @@ export function UseTokenProvider({ children }) {
                 return Promise.resolve(tokens.current.get(address.toLowerCase()))
             }
             return loadTokenInfo(address)
-        }, [pool, poolPromise])
+        }, [])
 
     const loadTokenInfo: (address: string) => Promise<TokenInfo> =
         useCallback((address: string) => {
-            if (!poolPromise) return Promise.reject(new Error(UNAVAILABLE_POOL))
-
             return poolPromise
                 .then(pool => getTokenInfo(address, pool))
                 .then(tokenInfo => {
                     tokens.current.set(address.toLowerCase(), tokenInfo)
                     return tokenInfo
                 })
-        }, [pool, poolPromise])
+        }, [])
 
     return (
         <UseTokenContext.Provider

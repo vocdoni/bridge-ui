@@ -16,7 +16,7 @@ import { useToken, useTokens } from '../../lib/hooks/tokens'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
-    const { pool, poolPromise } = usePool()
+    const { poolPromise } = usePool()
     const [blockNumber, setBlockNumber] = useState(0)
     const [loadingProcesses, setLoadingProcesses] = useState(false)
     const [processes, setProcesses] = useState<ProcessInfo[]>([])
@@ -27,8 +27,6 @@ const DashboardPage = props => {
 
     // Block update
     useEffect(() => {
-        if (!poolPromise) return
-
         const updateBlockHeight = () => {
             poolPromise
                 .then(pool => VotingApi.getBlockHeight(pool))
@@ -41,11 +39,10 @@ const DashboardPage = props => {
 
         // Done
         return () => clearInterval(interval)
-    }, [pool])
+    }, [])
 
     // Process list fetch
     useEffect(() => {
-        if (!poolPromise) return
         let skip = false
 
         setLoadingProcesses(true)
@@ -63,7 +60,7 @@ const DashboardPage = props => {
         })
 
         return () => { skip = true }
-    }, [targetTokenAddress, pool])
+    }, [targetTokenAddress])
 
     // RENDER
 

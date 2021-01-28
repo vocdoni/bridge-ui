@@ -1,12 +1,10 @@
 export const areAllNumbers = (slice: any[]) => {
-    let found = false
-    for (const i in slice) {
+    for (let i = 0; i < slice.length; i++) {
         if (typeof slice[i] !== 'number') {
-            found = true
-            break
+            return false
         }
     }
-    return !found
+    return true
 }
 
 export function limitedText(str: string, maxLength: number = 60): string {

@@ -4,7 +4,7 @@ import { LoadingRing, IconPower, IconEthereum, Button, AddressField, IdentityBad
 
 export const WalletStatus = () => {
     const wallet = useWallet()
-    const activate = (connector) => wallet.connect(connector)
+    const activate = () => wallet.connect("injected").catch(err => console.error(err))
 
     // Error?
     if (wallet.error?.name) {
@@ -40,7 +40,7 @@ export const WalletStatus = () => {
 
     return (
         <div id="wallet-status" className="v-center">
-            <Button label="Connect with MetaMask" icon={<IconEthereum />} wide onClick={() => activate('injected')} />
+            <Button label="Connect with MetaMask" icon={<IconEthereum />} wide onClick={() => activate()} />
         </div>
     )
 }

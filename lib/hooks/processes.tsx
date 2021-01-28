@@ -50,7 +50,7 @@ export function useProcesses(processIds: string[]) {
     const { pool } = usePool()
 
     useEffect(() => {
-        if (!processIds || processIds.length) return
+        if (!processIds || !processIds.length) return
 
         // Signal a refresh on the current token processIds
         Promise.all(processIds.map(address =>
@@ -63,7 +63,7 @@ export function useProcesses(processIds: string[]) {
         })
 
         return () => { }
-    }, [processIds, pool])
+    }, [processIds])
 
     if (processContext === null) {
         throw new Error(
@@ -76,7 +76,7 @@ export function useProcesses(processIds: string[]) {
 
 export function UseProcessProvider({ children }) {
     const processes = useRef(new Map<String, ProcessInfo>())
-    const { pool, poolPromise } = usePool()
+    const { poolPromise } = usePool()
 
     const resolveProcessInfo: (processId: string) => Promise<ProcessInfo> =
         useCallback((processId: string) => {
@@ -89,15 +89,13 @@ export function UseProcessProvider({ children }) {
 
     const loadProcessInfo: (processId: string) => Promise<ProcessInfo> =
         useCallback((processId: string) => {
-            if (!poolPromise) return Promise.reject(new Error(UNAVAILABLE_POOL))
-
             return poolPromise
                 .then(pool => getProcessInfo(processId, pool))
                 .then(processInfo => {
                     processes.current.set(processId, processInfo)
                     return processInfo
                 })
-        }, [pool, poolPromise])
+        }, [poolPromise])
 
     return (
         <UseProcessContext.Provider
