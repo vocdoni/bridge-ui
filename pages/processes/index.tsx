@@ -40,7 +40,7 @@ const ProcessPage = props => {
     const [choices, setChoices] = useState([] as number[])
     const [results, setResults] = useState(null as DigestedProcessResults)
 
-    const nullifier = VotingApi.getSignedVoteNullifier(wallet.account || "", processId)
+    const nullifier = VotingApi.getSignedVoteNullifier(wallet?.account || "", processId)
 
     if (typeof window != "undefined" && !processId.match(HEX_REGEX)) {
         console.error("Invalid process ID", processId)
@@ -74,7 +74,7 @@ const ProcessPage = props => {
     useEffect(() => { updateVoteStatus() }, [wallet, nullifier])
 
     // Census status
-    useEffect(() => { updateCensusStatus() }, [wallet, nullifier])
+    useEffect(() => { updateCensusStatus() }, [wallet, nullifier, token?.address])
 
     // Dates
     useEffect(() => { updateDates() }, [proc?.parameters?.startBlock])
@@ -285,7 +285,7 @@ const ProcessPage = props => {
         <div className="row-questions">
             {
                 proc.metadata.questions.map((question, qIdx) =>
-                    renderQuestionRow(qIdx, question, results, token, canVote, !!wallet?.account, onSelect)
+                    renderQuestionRow(qIdx, question, results, token, canVote, hasVoted, !!wallet?.account, onSelect)
                 )
             }
         </div>
@@ -309,7 +309,7 @@ const ProcessPage = props => {
     </div>
 }
 
-function renderQuestionRow(qIdx: number, question: ProcessMetadata["questions"][0], results: DigestedProcessResults, token: TokenInfo, canVote: boolean, hasWallet: boolean, onSelect: (qIdx: number, choiceValue: number) => any) {
+function renderQuestionRow(qIdx: number, question: ProcessMetadata["questions"][0], results: DigestedProcessResults, token: TokenInfo, canVote: boolean, hasVoted: boolean, hasWallet: boolean, onSelect: (qIdx: number, choiceValue: number) => any) {
     const resultsQuestion = results && results.questions[qIdx]
 
     const questionVoteCount = resultsQuestion &&
@@ -324,13 +324,16 @@ function renderQuestionRow(qIdx: number, question: ProcessMetadata["questions"][
         </div>
         <div className="right">
             {
-                question.choices.map((choice, cIdx) =>
-                    canVote ?
-                        renderClickableChoice(qIdx, cIdx, choice.title.default, choice.value, onSelect) :
-                        (!hasWallet || results?.questions?.length) ?
-                            renderChoiceResults(cIdx, resultsQuestion, questionVoteCount, token) :
-                            renderReadOnlyChoice(cIdx, choice.title.default)
-                )
+                (() => {
+                    if (!hasWallet || hasVoted) {
+                        if (results?.questions?.length) return question.choices.map((choice, cIdx) => renderChoiceResults(cIdx, resultsQuestion, questionVoteCount, token))
+                        else return question.choices.map((choice, cIdx) => renderReadOnlyChoice(cIdx, choice.title.default))
+                    } else if (canVote) {
+                        return question.choices.map((choice, cIdx) => renderClickableChoice(qIdx, cIdx, choice.title.default, choice.value, onSelect))
+                    } else {
+                        return question.choices.map((choice, cIdx) => renderReadOnlyChoice(cIdx, choice.title.default))
+                    }
+                })()
             }
         </div>
     </div>

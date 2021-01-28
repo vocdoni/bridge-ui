@@ -13,6 +13,7 @@ import { useUrlHash } from '../../lib/hooks/url-hash'
 import { usePool } from '../../lib/hooks/pool'
 import { useSigner } from '../../lib/hooks/signer'
 import { useWallet } from 'use-wallet'
+import Spinner from "react-svg-spinner"
 
 // MAIN COMPONENT
 const NewProcessPage = props => {
@@ -24,6 +25,7 @@ const NewProcessPage = props => {
     const [startDate, setStartDate] = useState(null as Date)
     const [endDate, setEndDate] = useState(null as Date)
     const tokenAddress = useUrlHash().substr(2)
+    const [submitting, setSubmitting] = useState(false)
 
     // Callbacks
     const onStartDate = (date: string | Moment) => {
@@ -132,6 +134,7 @@ const NewProcessPage = props => {
 
         // Continue
         try {
+            setSubmitting(true)
             const pool = await poolPromise
 
             // Estimate start/end blocks
@@ -170,9 +173,12 @@ const NewProcessPage = props => {
 
             const processId = await VotingApi.newProcess(processParamsPre, signer, pool)
             Router.push("/processes#/" + processId)
+            setSubmitting(false)
 
             alert("The governance process has been created successfully")
         } catch (err) {
+            setSubmitting(false)
+
             console.error(err)
             alert("The governance process could not be created")
         }
@@ -285,7 +291,11 @@ const NewProcessPage = props => {
         </div>
 
         <div className="row-continue">
-            <Button onClick={() => onSubmit()}>Submit process</Button>
+            {
+                submitting ?
+                    <p className="status">Please wait...<Spinner /></p> :
+                    <Button onClick={() => onSubmit()}>Submit process</Button>
+            }
         </div>
 
     </div>
