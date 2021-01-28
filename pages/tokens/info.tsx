@@ -11,55 +11,88 @@ import { Button } from '@aragon/ui'
 import Router from 'next/router'
 import { WalletStatus } from '../../components/wallet-status'
 import { ProcessInfo } from '../../lib/types'
-import { getTokenProcesses } from '../../lib/api'
+import { getProcessList, getTokenProcesses } from '../../lib/api'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 import Spinner from "react-svg-spinner"
 import { useUrlHash } from '../../lib/hooks/url-hash'
 import { useToken } from '../../lib/hooks/tokens'
 // import { useProcess } from '../../lib/hooks/processes'
 import { usePool } from '../../lib/hooks/pool'
+import { useProcesses } from '../../lib/hooks/processes'
 
 
 // MAIN COMPONENT
 const TokenPage = props => {
-    const { pool } = usePool()
+    const { poolPromise } = usePool()
     const tokenAddr = useUrlHash().substr(2)
     const [loadingProcesses, setLoadingProcesses] = useState(true)
     const [blockNumber, setBlockNumber] = useState(-1)
-    const [processes, setProcesses] = useState([] as ProcessInfo[])
+    const [processIds, setProcessIds] = useState([] as string[])
+    const processes = useProcesses(processIds || [])
     const token = useToken(tokenAddr)
 
-    useEffect(() => {
-        if (!pool || !tokenAddr) return
+    const allProcessesLoaded = processIds.every(id => processes.has(id))
 
+    // Effects
+
+    useEffect(() => {
+        const interval = setInterval(() => updateBlockHeight, 1000 * 13)
+        updateBlockHeight()
+
+        // Done
+        return () => clearInterval(interval)
+    }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => updateProcessIds, 1000 * 60)
+        updateProcessIds()
+
+        // Done
+        return () => clearInterval(interval)
+    }, [tokenAddr])
+
+    // Loaders
+
+    const updateBlockHeight = () => {
+        poolPromise
+            .then(pool => VotingApi.getBlockHeight(pool))
+            .then(num => setBlockNumber(num))
+            .catch(err => console.error(err))
+    }
+    const updateProcessIds = () => {
+        if (!tokenAddr) return
         setLoadingProcesses(true)
 
-        getTokenProcesses(tokenAddr, pool)
-            .then((processes) => {
-                // Only update the global list if not doing a filtered load
+        poolPromise
+            .then(pool => getProcessList(tokenAddr, pool))
+            .then(ids => {
                 setLoadingProcesses(false)
-                setProcesses(processes)
+                setProcessIds(ids)
             })
             .catch(err => {
                 setLoadingProcesses(false)
+
+                console.error(err)
                 alert("The list of processes could not be loaded")
             })
-    }, [pool])
+    }
+
+    // Callbacks
 
     const onCreateProcess = (tokenAddress: string) => {
         if (!tokenAddress) return
         Router.push("/processes/new#/" + tokenAddress)
     }
 
-    const upcomingProcesses = processes.filter(
-        proc => blockNumber < proc.parameters.startBlock
+    const upcomingProcesses = processIds.filter(
+        id => processes.has(id) && blockNumber < processes.get(id).parameters.startBlock
     )
-    const activeProcesses = processes.filter(
-        proc => blockNumber >= proc.parameters.startBlock &&
-            blockNumber < (proc.parameters.startBlock + proc.parameters.blockCount)
+    const activeProcesses = processIds.filter(
+        id => processes.has(id) && blockNumber >= processes.get(id).parameters.startBlock &&
+            blockNumber < (processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount)
     )
-    const endedProcesses = processes.filter(
-        proc => blockNumber >= (proc.parameters.startBlock + proc.parameters.blockCount)
+    const endedProcesses = processIds.filter(
+        id => processes.has(id) && blockNumber >= (processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount)
     )
 
     return <div id="token-info">
@@ -105,9 +138,9 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    (loadingProcesses) ? <Spinner /> :
-                        activeProcesses.map((proc, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + proc.id} key={idx}>
-                            <p>{proc.metadata.title.default || "No title"}</p>
+                    (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
+                        activeProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + id} key={idx}>
+                            <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
                 }
             </div>
@@ -123,9 +156,9 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    (loadingProcesses) ? <Spinner /> :
-                        endedProcesses.map((proc, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + proc.id} key={idx}>
-                            <p>{proc.metadata.title.default || "No title"}</p>
+                    (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
+                        endedProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + id} key={idx}>
+                            <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
                 }
             </div>
@@ -141,9 +174,9 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    (loadingProcesses) ? <Spinner /> :
-                        upcomingProcesses.map((proc, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + proc.id} key={idx}>
-                            <p>{proc.metadata.title.default || "No title"}</p>
+                    (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
+                        upcomingProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + id} key={idx}>
+                            <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
                 }
             </div>
