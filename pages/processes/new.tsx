@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { CensusErc20Api, IProcessCreateParams, ProcessCensusOrigin, ProcessContractParameters, ProcessEnvelopeType, ProcessMetadata, ProcessMode, VotingApi } from 'dvote-js'
 
+import { usePool, useSigner } from '@vocdoni/react-hooks'
+import { useUrlHash } from 'use-url-hash'
+import { useWallet } from 'use-wallet'
 import Button from '../../components/button'
 import { ProcessMetadataTemplate } from 'dvote-js'
 import { WalletStatus } from '../../components/wallet-status'
@@ -9,10 +12,6 @@ import { Moment } from 'moment'
 import moment from 'moment'
 import { providers } from 'ethers'
 import Router from 'next/router'
-import { useUrlHash } from '../../lib/hooks/url-hash'
-import { usePool } from '../../lib/hooks/pool'
-import { useSigner } from '../../lib/hooks/signer'
-import { useWallet } from 'use-wallet'
 import Spinner from "react-svg-spinner"
 
 // MAIN COMPONENT
@@ -24,7 +23,7 @@ const NewProcessPage = props => {
     const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0))
     const [startDate, setStartDate] = useState(null as Date)
     const [endDate, setEndDate] = useState(null as Date)
-    const tokenAddress = useUrlHash().substr(2)
+    const tokenAddress = useUrlHash().substr(1)
     const [submitting, setSubmitting] = useState(false)
 
     // Callbacks

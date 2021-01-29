@@ -1,23 +1,20 @@
-import { useContext, Component, ReactNode, useState, useEffect } from 'react'
-import { VotingApi, ProcessContractParameters, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem, ProcessStatus, GatewayPool } from 'dvote-js'
-import { ProcessInfo, TokenInfo } from "../../lib/types"
+import { useState, useEffect } from 'react'
+import { VotingApi, CensusErc20Api, DigestedProcessResults, ProcessMetadata, DigestedProcessResultItem, ProcessStatus } from 'dvote-js'
+import { TokenInfo } from "../../lib/types"
 import { withRouter, useRouter } from 'next/router'
 import Spinner from "react-svg-spinner"
 
+import { usePool, useProcess, useSigner } from '@vocdoni/react-hooks'
 import { Button } from '@aragon/ui'
 import { strDateDiff } from '../../lib/date'
 import { HEX_REGEX } from '../../lib/regex'
-import { allTokens } from '../../lib/tokens'
 import { BigNumber, providers } from 'ethers'
 import { areAllNumbers } from '../../lib/util'
 import { WalletStatus } from '../../components/wallet-status'
 import TokenAmount from "token-amount"
 import { useWallet } from 'use-wallet'
-import { useProcess } from '../../lib/hooks/processes'
-import { useUrlHash } from '../../lib/hooks/url-hash'
+import { useUrlHash } from 'use-url-hash'
 import { useToken } from '../../lib/hooks/tokens'
-import { usePool } from '../../lib/hooks/pool'
-import { useSigner } from '../../lib/hooks/signer'
 
 const BN_ZERO = BigNumber.from(0)
 
@@ -27,9 +24,9 @@ const ProcessPage = props => {
     const wallet = useWallet()
     const signer = useSigner()
     const { poolPromise } = usePool()
-    const processId = useUrlHash().substr(2)
-    const proc = useProcess(processId)
-    const token = useToken(proc?.tokenAddress)
+    const processId = useUrlHash().substr(1)
+    const { process: proc } = useProcess(processId)
+    const token = useToken(proc?.entity)
     const [tokenRegistered, setTokenRegistered] = useState(null)
     const [startDate, setStartDate] = useState(null as Date)
     const [endDate, setEndDate] = useState(null as Date)
@@ -356,7 +353,7 @@ function renderChoiceResults(cIdx: number, resultsQuestion: DigestedProcessResul
 
     const title = resultsQuestion.voteResults[cIdx].title.default
     const voteCount = resultsQuestion.voteResults[cIdx].votes || BN_ZERO
-    const percent = voteCount.mul(1000).div(totalVotes).toNumber() / 10 // = voteCount / totalVotes * 100
+    const percent = Math.round(voteCount.mul(10000).div(totalVotes).toNumber()) / 100 // = voteCount / totalVotes * 100
     const amount = new TokenAmount(voteCount, token.decimals, { symbol: token.symbol }).format()
 
     return <div className="choice-result" key={cIdx}>

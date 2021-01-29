@@ -2,14 +2,13 @@ import { useState } from 'react'
 // import Link from 'next/link'
 import { withRouter, useRouter } from 'next/router'
 import TokenCard from '../components/token-card'
-// import Spinner from "react-svg-spinner"
 import { featuredTokens } from '../lib/tokens'
 import { Button, IconEthereum, LoadingRing } from '@aragon/ui'
 // import Spinner from "react-svg-spinner"
-import { ChainUnsupportedError, useWallet, Wallet } from 'use-wallet'
+import { ChainUnsupportedError, useWallet } from 'use-wallet'
 
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
-import { usePool } from '../lib/hooks/pool'
+import { usePool } from '@vocdoni/react-hooks'
 import { useTokens } from '../lib/hooks/tokens'
 
 // MAIN COMPONENT
@@ -18,11 +17,11 @@ const IndexPage = (props) => {
     const router = useRouter()
     const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
     const wallet = useWallet()
-
     const tokenInfos = useTokens(featuredTokens)
 
     const isConnected = wallet.status == "connected"
 
+    // CALLBACKS
 
     function onSignIn() {
         if (pool && wallet.status == "connected") {
@@ -110,7 +109,7 @@ const IndexPage = (props) => {
 
             <div className="token-list">
                 {
-                    featuredTokens.map(tokenAddr => <TokenCard key={tokenAddr} name={tokenInfos.get(tokenAddr)?.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + tokenInfos.get(tokenAddr)?.address}>
+                    featuredTokens.map(tokenAddr => <TokenCard key={tokenAddr} name={tokenInfos.get(tokenAddr)?.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + tokenAddr}>
                         <p>{tokenInfos.get(tokenAddr)?.name || "(loading)"}</p>
                     </TokenCard>)
                 }

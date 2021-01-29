@@ -1,34 +1,26 @@
 import { useContext, Component, useState, useEffect } from 'react'
 import { ProcessMetadata, VotingApi } from 'dvote-js'
-// import { message, Button, Spin, Divider, Input, Select, Col, Row, Card, Modal } from 'antd'
-// import { LoadingOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-// import { getEntityId } from 'dvote-js/dist/api/entity'
-// import Router from 'next/router'
 
-// import { getGatewayClients, getNetworkState } from '../../../lib/network'
+import { usePool, useProcesses } from '@vocdoni/react-hooks'
+import { useToken } from '../../lib/hooks/tokens'
+import { useUrlHash } from 'use-url-hash'
 import TokenCard from '../../components/token-card'
 import { Button } from '@aragon/ui'
 import Router from 'next/router'
 import { WalletStatus } from '../../components/wallet-status'
-import { ProcessInfo } from '../../lib/types'
 import { getProcessList, getTokenProcesses } from '../../lib/api'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 import Spinner from "react-svg-spinner"
-import { useUrlHash } from '../../lib/hooks/url-hash'
-import { useToken } from '../../lib/hooks/tokens'
-// import { useProcess } from '../../lib/hooks/processes'
-import { usePool } from '../../lib/hooks/pool'
-import { useProcesses } from '../../lib/hooks/processes'
 
 
 // MAIN COMPONENT
 const TokenPage = props => {
     const { poolPromise } = usePool()
-    const tokenAddr = useUrlHash().substr(2)
+    const tokenAddr = useUrlHash().substr(1)
     const [loadingProcesses, setLoadingProcesses] = useState(true)
     const [blockNumber, setBlockNumber] = useState(-1)
     const [processIds, setProcessIds] = useState([] as string[])
-    const processes = useProcesses(processIds || [])
+    const { processes, error, loading } = useProcesses(processIds || [])
     const token = useToken(tokenAddr)
 
     const allProcessesLoaded = processIds.every(id => processes.has(id))

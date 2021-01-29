@@ -4,15 +4,13 @@ import Spinner from "react-svg-spinner"
 
 import TokenCard from '../../components/token-card'
 import Select from 'react-select'
+import { usePool } from '@vocdoni/react-hooks'
+import { useTokens } from '../../lib/hooks/tokens'
 import { allTokens } from '../../lib/tokens'
-import { getProcessList, getTokenProcesses } from '../../lib/api'
-// import { strDateDiff } from '../../lib/date'
+import { getTokenProcesses } from '../../lib/api'
 import { ProcessInfo, TokenInfo } from '../../lib/types'
 import { limitedText } from '../../lib/util'
 import { WalletStatus } from '../../components/wallet-status'
-import { usePool } from '../../lib/hooks/pool'
-import { useToken, useTokens } from '../../lib/hooks/tokens'
-// import { useProcess } from '../../lib/hooks/processes'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
@@ -20,9 +18,7 @@ const DashboardPage = props => {
     const [blockNumber, setBlockNumber] = useState(0)
     const [loadingProcesses, setLoadingProcesses] = useState(false)
     const [processes, setProcesses] = useState<ProcessInfo[]>([])
-    const [targetTokenAddress, setTargetTokenAddress] = useState(null as string)
-
-    const tokenAddrs = targetTokenAddress ? [targetTokenAddress] : allTokens
+    const [tokenAddrs, setTokenAddrs] = useState(allTokens)  // TODO: Use setTokenAddrs( [myTokenAddr] ) to filter
     const tokenInfos = useTokens(tokenAddrs)
 
     // Block update
@@ -60,7 +56,7 @@ const DashboardPage = props => {
         })
 
         return () => { skip = true }
-    }, [targetTokenAddress])
+    }, [tokenAddrs])
 
     // RENDER
 

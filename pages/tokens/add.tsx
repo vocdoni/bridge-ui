@@ -3,14 +3,13 @@ import { CensusErc20Api } from 'dvote-js'
 import Button from '../../components/button'
 import Router from 'next/router'
 import { WalletStatus } from '../../components/wallet-status'
+import { usePool, useSigner } from '@vocdoni/react-hooks'
+import { useWallet } from 'use-wallet'
 import { getTokenInfo, hasBalance, registerToken } from '../../lib/api'
 import Spinner from "react-svg-spinner"
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from '../../lib/errors'
 import { ACCENT_COLOR_2 } from '../../lib/constants'
-import { usePool } from '../../lib/hooks/pool'
 import { TokenInfo } from '../../lib/types'
-import { useWallet } from 'use-wallet'
-import { useSigner } from '../../lib/hooks/signer'
 
 // MAIN COMPONENT
 const TokenAddPage = props => {

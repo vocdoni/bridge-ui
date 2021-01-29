@@ -12,9 +12,7 @@ import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 
 // MAIN COMPONENT
 const TokensPage = props => {
-    const [targetTokenAddress, setTargetTokenAddress] = useState(null as string)
-
-    const tokenAddrs = targetTokenAddress ? [targetTokenAddress] : allTokens
+    const [tokenAddrs, setTokenAddrs] = useState(allTokens)  // TODO: Use setTokenAddrs( [myTokenAddr] ) to filter
     const tokenInfos = useTokens(tokenAddrs)
 
     return <div id="tokens">

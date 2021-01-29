@@ -1,11 +1,10 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { getTokenInfo } from '../api'
 import { TokenInfo } from '../types'
-import { usePool } from './pool'
-import { UNAVAILABLE_POOL } from "../errors"
+import { usePool } from '@vocdoni/react-hooks'
 
 const UseTokenContext = React.createContext<{
-    currentTokens: Map<String, TokenInfo>,
+    currentTokens: Map<string, TokenInfo>,
     resolveTokenInfo: (address: string) => Promise<TokenInfo>,
     refreshTokenInfo: (address: string) => Promise<TokenInfo>
 }>(null)
@@ -25,8 +24,7 @@ export function useToken(address: string): TokenInfo | null {
                     if (ignore) return
                     setTokenInfo(newInfo)
                 }).catch(err => {
-                    if (err?.message == UNAVAILABLE_POOL) setTimeout(update, 1000 * 5)
-                    else console.error(err)
+                    console.error(err)
                 })
         }
         update()
@@ -78,7 +76,9 @@ export function useTokens(addresses: string[]) {
 }
 
 export function UseTokenProvider({ children }) {
-    const tokens = useRef(new Map<String, TokenInfo>())
+    // TODO: Use swr
+
+    const tokens = useRef(new Map<string, TokenInfo>())
     const { poolPromise } = usePool()
 
     const resolveTokenInfo: (address: string) => Promise<TokenInfo> =

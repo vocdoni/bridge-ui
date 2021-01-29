@@ -6,18 +6,20 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import { Router } from 'next/router'
 import { UseWalletProvider } from 'use-wallet'
-import { UsePoolProvider } from '../lib/hooks/pool'
+import { UsePoolProvider, UseProcessProvider } from '@vocdoni/react-hooks'
 import { UseTokenProvider } from '../lib/hooks/tokens'
+import { EthNetworkID } from 'dvote-js'
 
 import '../styles/index.less'
-import { UseProcessProvider } from '../lib/hooks/processes'
 
 type NextAppProps = AppInitialProps & { Component: NextComponentType<NextPageContext, any, any>; router: Router; }
 
 const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const chainId = parseInt(process.env.ETH_CHAIN_ID)
+    const bootnodeUri = process.env.BOOTNODES_URL
+    const networkId = process.env.ETH_NETWORK_ID as EthNetworkID
 
-    return <UsePoolProvider>
+    return <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId}>
         <UseTokenProvider>
             <UseProcessProvider>
                 <UseWalletProvider chainId={chainId} connectors={{}}>
