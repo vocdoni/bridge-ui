@@ -11,6 +11,7 @@ import { getTokenProcesses } from '../../lib/api'
 import { ProcessInfo, TokenInfo } from '../../lib/types'
 import { limitedText } from '../../lib/util'
 import { WalletStatus } from '../../components/wallet-status'
+import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 
 // MAIN COMPONENT
 const DashboardPage = props => {
@@ -138,10 +139,9 @@ const DashboardPage = props => {
 
 const renderProcessCard = (props: { process: ProcessInfo, token?: TokenInfo }) => {
     const proc = props.process
-    const icon = process.env.ETH_NETWORK_ID == "goerli" ?
-        "https://cdn.worldvectorlogo.com/logos/dai-2.svg" : props?.token.icon
+    const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : props?.token.icon
 
-    return <TokenCard key={proc.id} name={props?.token?.symbol} icon={icon} rightText={/*strDateDiff()*/""} href={"/processes#/" + proc.id}>
+    return <TokenCard key={proc.id} name={props?.token?.symbol} icon={icon} rightText={/*strDateDiff()*/""} href={proc?.id ? ("/processes#/" + proc.id) : ""}>
         <p>
             <strong>{limitedText(proc?.metadata?.title?.default, 35) || "No title"}</strong>
             <br />

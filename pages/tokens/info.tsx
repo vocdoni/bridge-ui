@@ -131,7 +131,7 @@ const TokenPage = props => {
             <div className="token-list">
                 {
                     (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
-                        activeProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + id} key={idx}>
+                        activeProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
                 }
@@ -149,7 +149,7 @@ const TokenPage = props => {
             <div className="token-list">
                 {
                     (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
-                        endedProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + id} key={idx}>
+                        endedProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
                 }
@@ -167,7 +167,7 @@ const TokenPage = props => {
             <div className="token-list">
                 {
                     (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
-                        upcomingProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={"/processes#/" + id} key={idx}>
+                        upcomingProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
                 }

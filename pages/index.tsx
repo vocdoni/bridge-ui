@@ -10,6 +10,7 @@ import { ChainUnsupportedError, useWallet } from 'use-wallet'
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
 import { usePool } from '@vocdoni/react-hooks'
 import { useTokens } from '../lib/hooks/tokens'
+import { FALLBACK_TOKEN_ICON } from '../lib/constants'
 
 // MAIN COMPONENT
 const IndexPage = (props) => {
@@ -109,7 +110,7 @@ const IndexPage = (props) => {
 
             <div className="token-list">
                 {
-                    featuredTokens.map(tokenAddr => <TokenCard key={tokenAddr} name={tokenInfos.get(tokenAddr)?.symbol} icon="https://cdn.worldvectorlogo.com/logos/dai-2.svg" rightText="" href={"/tokens/info#/" + tokenAddr}>
+                    featuredTokens.map(tokenAddr => <TokenCard key={tokenAddr} name={tokenInfos.get(tokenAddr)?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={tokenAddr ? ("/tokens/info#/" + tokenAddr) : ""}>
                         <p>{tokenInfos.get(tokenAddr)?.name || "(loading)"}</p>
                     </TokenCard>)
                 }

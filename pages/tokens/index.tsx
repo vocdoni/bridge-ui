@@ -35,7 +35,7 @@ const TokensPage = props => {
 
             <div className="token-list">
                 {
-                    tokenAddrs.map(addr => tokenInfos.get(addr)).map((token, idx) => <TokenCard name={token?.symbol} icon={token?.icon || FALLBACK_TOKEN_ICON} rightText={""} href={"/tokens/info#/" + token?.address} key={idx}>
+                    tokenAddrs.map(addr => tokenInfos.get(addr)).map((token, idx) => <TokenCard name={token?.symbol} icon={token?.icon || FALLBACK_TOKEN_ICON} rightText={""} href={token?.address ? ("/tokens/info#/" + token?.address) : ""} key={idx}>
                         <p>
                             {token?.name || "(loading)"}<br />
                             {token?.totalSupply && <small>Total supply: {token?.totalSupply}</small>}
