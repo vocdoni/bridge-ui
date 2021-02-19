@@ -7,12 +7,12 @@ const DEVELOPMENT = process.env.NODE_ENV !== "production"
 module.exports = {
     LANG: lang,
     DEVELOPMENT,
+    VOCDONI_ENVIRONMENT: process.env.VOCDONI_ENVIRONMENT || "dev",
 
     // BLOCKCHAIN
     ETH_NETWORK_ID: process.env.ETH_NETWORK_ID || "goerli",
     ETH_CHAIN_ID: process.env.ETH_CHAIN_ID ? parseInt(process.env.ETH_CHAIN_ID) : 5,
     ETHERSCAN_PREFIX: process.env.ETH_CHAIN_ID || "https://goerli.etherscan.io",
-    ETH_NETWORK_ENVIRONMENT: process.env.ETH_NETWORK_ENVIRONMENT || "dev",
 
     // VOCHAIN
     BLOCK_TIME: process.env.BLOCK_TIME || "12",

@@ -18,7 +18,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const chainId = parseInt(process.env.ETH_CHAIN_ID)
     const bootnodeUri = process.env.BOOTNODES_URL
     const networkId = process.env.ETH_NETWORK_ID as EthNetworkID
-    const environment = process.env.ETH_NETWORK_ENV as VocdoniEnvironment
+    const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment
 
     return <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId} environment={environment}>
         <UseTokenProvider>
