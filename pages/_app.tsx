@@ -8,7 +8,7 @@ import { Router } from 'next/router'
 import { UseWalletProvider } from 'use-wallet'
 import { UsePoolProvider, UseProcessProvider } from '@vocdoni/react-hooks'
 import { UseTokenProvider } from '../lib/hooks/tokens'
-import { EthNetworkID } from 'dvote-js'
+import { EthNetworkID, VocdoniEnvironment } from 'dvote-js'
 
 import '../styles/index.less'
 
@@ -18,8 +18,9 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const chainId = parseInt(process.env.ETH_CHAIN_ID)
     const bootnodeUri = process.env.BOOTNODES_URL
     const networkId = process.env.ETH_NETWORK_ID as EthNetworkID
+    const environment = process.env.ETH_NETWORK_ENV as VocdoniEnvironment
 
-    return <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId}>
+    return <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId} environment={environment}>
         <UseTokenProvider>
             <UseProcessProvider>
                 <UseWalletProvider chainId={chainId} connectors={{}}>
