@@ -1,7 +1,7 @@
 # Static web site compiler
 FROM node:14 as builder
 
-ARG NODE_ENV="production"
+ARG NODE_ENV="development"
 ENV NODE_ENV=${NODE_ENV}
 ARG ETH_NETWORK_ID
 ENV ETH_NETWORK_ID=${ETH_NETWORK_ID}
@@ -18,8 +18,12 @@ ADD . /app
 WORKDIR /app
 RUN npm install && npm run export
 
+FROM node:14
 
-## Static web server
-FROM nginx:1.19
+RUN apt update && apt install nginx -y && apt clean
 
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app /app
+
+WORKDIR /app
+
+ENTRYPOINT [ "/app/entrypoint.sh" ]

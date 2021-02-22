@@ -1,0 +1,44 @@
+version: "3"
+services:
+  bridge-ui:
+    image: ghcr.io/vocdoni/bridge-ui:master
+    container_name: "bridge-ui"
+    env_file:
+      - bridge-ui.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bootnodes.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.bootnodes.entrypoints=websecure"
+      - "traefik.http.routers.bootnodes.tls.certresolver=le"
+      - "traefik.http.routers.bootnodes.service=bootnodes"
+      - "traefik.http.services.bootnodes.loadbalancer.server.port=80"
+    restart: always
+  traefik:
+    image: "traefik:v2.2"
+    container_name: "traefik"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.httpchallenge=true"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.le.acme.email=${LE_EMAIL}"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+        #- /root/.docker/config.json:/config.json
+    labels:
+      - com.centurylinklabs.watchtower.enable="false"
+    command: --interval 30 --include-stopped --revive-stopped --cleanup
