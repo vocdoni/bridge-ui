@@ -3,10 +3,10 @@ import { VotingApi } from 'dvote-js'
 import Spinner from "react-svg-spinner"
 
 import TokenCard from '../../components/token-card'
-import Select from 'react-select'
+// import Select from 'react-select'
 import { usePool } from '@vocdoni/react-hooks'
 import { useTokens } from '../../lib/hooks/tokens'
-import { allTokens } from '../../lib/tokens'
+import { useRegisteredTokens } from '../../lib/hooks/registered-tokens'
 import { getTokenProcesses } from '../../lib/api'
 import { ProcessInfo, TokenInfo } from '../../lib/types'
 import { limitedText } from '../../lib/util'
@@ -16,10 +16,10 @@ import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 // MAIN COMPONENT
 const DashboardPage = props => {
     const { poolPromise } = usePool()
+    const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens()
     const [blockNumber, setBlockNumber] = useState(0)
     const [loadingProcesses, setLoadingProcesses] = useState(false)
     const [processes, setProcesses] = useState<ProcessInfo[]>([])
-    const [tokenAddrs, setTokenAddrs] = useState(allTokens)  // TODO: Use setTokenAddrs( [myTokenAddr] ) to filter
     const tokenInfos = useTokens(tokenAddrs)
 
     // Block update

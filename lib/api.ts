@@ -4,6 +4,7 @@ import { ProcessInfo, TokenInfo } from "./types"
 import { BigNumber, Contract, providers, Signer, utils } from "ethers"
 import TokenAmount from "token-amount"
 import { FALLBACK_TOKEN_ICON } from "./constants"
+import Bluebird from "bluebird"
 
 // from aragon/use-wallet
 const TRUST_WALLET_BASE_URL =
@@ -153,6 +154,18 @@ export function balanceOf(tokenAddress: string, holderAddress: string, pool: Gat
 export function hasBalance(tokenAddress: string, holderAddress: string, pool: GatewayPool): Promise<boolean> {
     const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
     return tokenInstance.balanceOf(holderAddress).then(balance => !balance.isZero())
+}
+
+/** Retrieves the list of registered ERC20 token addresses on the smart contract. If no new tokens are registered, `null` is returned. */
+export async function getRegisteredTokenList(currentTokenCount: number, pool: GatewayPool): Promise<string[]> {
+    const contractInstance = await pool.getTokenStorageProofInstance()
+
+    const count = await contractInstance.tokenCount()
+    if (count == currentTokenCount) return Promise.resolve(null)
+
+    return Bluebird.map(Array.from(Array(count).keys()), idx => {
+        return contractInstance.tokenAddresses(idx)
+    }, { concurrency: 100 })
 }
 
 // INTERNAL HELPERS

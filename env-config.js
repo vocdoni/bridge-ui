@@ -6,6 +6,7 @@ const DEVELOPMENT = process.env.NODE_ENV !== "production"
 
 module.exports = {
     LANG: lang,
+    APP_TITLE: "Bridge",
     DEVELOPMENT,
     VOCDONI_ENVIRONMENT: process.env.VOCDONI_ENVIRONMENT || "dev",
 
@@ -22,4 +23,3 @@ module.exports = {
 }
 
 console.log("Building the frontend with ENV:", module.exports)
-

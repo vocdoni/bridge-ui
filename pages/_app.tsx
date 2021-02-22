@@ -9,6 +9,7 @@ import { UsePoolProvider, UseProcessProvider } from '@vocdoni/react-hooks'
 import { UseTokenProvider } from '../lib/hooks/tokens'
 import { UseMessageAlertProvider } from '../lib/hooks/message-alert'
 import { UseLoadingAlertProvider } from '../lib/hooks/loading-alert'
+import { UseRegisteredTokens } from '../lib/hooks/registered-tokens'
 import { EthNetworkID, VocdoniEnvironment } from 'dvote-js'
 
 import '../styles/index.less'
@@ -20,25 +21,28 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const bootnodeUri = process.env.BOOTNODES_URL
     const networkId = process.env.ETH_NETWORK_ID as EthNetworkID
     const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment
+    const appTitle = process.env.APP_TITLE
 
     return <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId} environment={environment}>
-        <UseTokenProvider>
-            <UseProcessProvider>
-                <UseWalletProvider chainId={chainId} connectors={{}}>
-                    <UseMessageAlertProvider>
-                        <UseLoadingAlertProvider>
-                            <Head>
-                                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                                <title>Bridge</title>
-                            </Head>
-                            <Layout>
-                                <Component {...pageProps} />
-                            </Layout>
-                        </UseLoadingAlertProvider>
-                    </UseMessageAlertProvider>
-                </UseWalletProvider>
-            </UseProcessProvider>
-        </UseTokenProvider>
+        <UseRegisteredTokens>
+            <UseTokenProvider>
+                <UseProcessProvider>
+                    <UseWalletProvider chainId={chainId} connectors={{}}>
+                        <UseMessageAlertProvider>
+                            <UseLoadingAlertProvider>
+                                <Head>
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                                    <title>{appTitle}</title>
+                                </Head>
+                                <Layout>
+                                    <Component {...pageProps} />
+                                </Layout>
+                            </UseLoadingAlertProvider>
+                        </UseMessageAlertProvider>
+                    </UseWalletProvider>
+                </UseProcessProvider>
+            </UseTokenProvider>
+        </UseRegisteredTokens>
     </UsePoolProvider>
 }
 

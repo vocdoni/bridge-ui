@@ -11,6 +11,7 @@ export type TokenInfo = {
     icon: string,
     processes: string[]
 }
+export type TokenEntry = Omit<TokenInfo, "processes">
 
 export type ProcessInfo = {
     id: string,

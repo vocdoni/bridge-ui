@@ -14,7 +14,7 @@ import { FALLBACK_TOKEN_ICON } from '../lib/constants'
 import { useMessageAlert } from '../lib/hooks/message-alert'
 
 // MAIN COMPONENT
-const IndexPage = (props) => {
+const IndexPage = () => {
     const { setAlertMessage } = useMessageAlert()
     const [connecting, setConnecting] = useState(false)
     const router = useRouter()
