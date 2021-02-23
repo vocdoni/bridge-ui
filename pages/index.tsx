@@ -11,9 +11,11 @@ import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
 import { usePool } from '@vocdoni/react-hooks'
 import { useTokens } from '../lib/hooks/tokens'
 import { FALLBACK_TOKEN_ICON } from '../lib/constants'
+import { useMessageAlert } from '../lib/hooks/message-alert'
 
 // MAIN COMPONENT
 const IndexPage = (props) => {
+    const { setAlertMessage } = useMessageAlert()
     const [connecting, setConnecting] = useState(false)
     const router = useRouter()
     const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
@@ -41,13 +43,13 @@ const IndexPage = (props) => {
 
                 if (err && err.message == INVALID_CHAIN_ID || err instanceof ChainUnsupportedError) {
                     const msg = "Please, switch to the {{NAME}} network".replace("{{NAME}}", process.env.ETH_NETWORK_ID)
-                    return alert(msg)
+                    return setAlertMessage(msg)
                 }
                 else if (err && err.message == METAMASK_IS_NOT_AVAILABLE) {
-                    return alert("Please, install Metamask or a Web3 compatible wallet")
+                    return setAlertMessage("Please, install Metamask or a Web3 compatible wallet")
                 }
                 console.error(err)
-                alert("Could not access Metamask or connect to the network")
+                setAlertMessage("Could not access Metamask or connect to the network")
             })
     }
 

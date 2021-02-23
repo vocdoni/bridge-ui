@@ -2,12 +2,13 @@ import React, { FC } from 'react'
 import { NextComponentType, NextPageContext } from 'next'
 import { AppInitialProps } from 'next/app'
 import Head from 'next/head'
-import Header from '../components/header'
-import Footer from '../components/footer'
+import { Layout } from '../components/layout'
 import { Router } from 'next/router'
 import { UseWalletProvider } from 'use-wallet'
 import { UsePoolProvider, UseProcessProvider } from '@vocdoni/react-hooks'
 import { UseTokenProvider } from '../lib/hooks/tokens'
+import { UseMessageAlertProvider } from '../lib/hooks/message-alert'
+import { UseLoadingAlertProvider } from '../lib/hooks/loading-alert'
 import { EthNetworkID, VocdoniEnvironment } from 'dvote-js'
 
 import '../styles/index.less'
@@ -24,15 +25,17 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
         <UseTokenProvider>
             <UseProcessProvider>
                 <UseWalletProvider chainId={chainId} connectors={{}}>
-                    <Head>
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                        <title>Bridge</title>
-                    </Head>
-                    <Header />
-                    <div id="main">
-                        <Component {...pageProps} />
-                    </div>
-                    <Footer />
+                    <UseMessageAlertProvider>
+                        <UseLoadingAlertProvider>
+                            <Head>
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                                <title>Bridge</title>
+                            </Head>
+                            <Layout>
+                                <Component {...pageProps} />
+                            </Layout>
+                        </UseLoadingAlertProvider>
+                    </UseMessageAlertProvider>
                 </UseWalletProvider>
             </UseProcessProvider>
         </UseTokenProvider>

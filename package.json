@@ -45,6 +45,7 @@
     },
     "devDependencies": {
         "@types/node": "^14.14.22",
+        "@types/styled-components": "^5.1.7",
         "eslint": "^7.12.1",
         "eslint-plugin-react": "^7.21.5"
     }

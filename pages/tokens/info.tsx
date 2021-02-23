@@ -1,4 +1,4 @@
-import { useContext, Component, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ProcessMetadata, VotingApi } from 'dvote-js'
 
 import { usePool, useProcesses } from '@vocdoni/react-hooks'
@@ -11,6 +11,7 @@ import { WalletStatus } from '../../components/wallet-status'
 import { getProcessList, getTokenProcesses } from '../../lib/api'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 import Spinner from "react-svg-spinner"
+import { useMessageAlert } from '../../lib/hooks/message-alert'
 
 
 // MAIN COMPONENT
@@ -22,6 +23,7 @@ const TokenPage = props => {
     const [processIds, setProcessIds] = useState([] as string[])
     const { processes, error, loading } = useProcesses(processIds || [])
     const token = useToken(tokenAddr)
+    const { setAlertMessage } = useMessageAlert()
 
     const allProcessesLoaded = processIds.every(id => processes.has(id))
 
@@ -65,7 +67,7 @@ const TokenPage = props => {
                 setLoadingProcesses(false)
 
                 console.error(err)
-                alert("The list of processes could not be loaded")
+                setAlertMessage("The list of processes could not be loaded")
             })
     }
 

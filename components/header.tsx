@@ -6,7 +6,7 @@ type Props = {
     children?: any
 }
 
-export default function Header({ children, ...props }: Props) {
+export function Header({ children, ...props }: Props) {
     return <div id="header">
         <ul className="left">
             <li><Link href="/">Vocdoni Bridge</Link></li>

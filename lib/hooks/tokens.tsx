@@ -2,6 +2,8 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { getTokenInfo } from '../api'
 import { TokenInfo } from '../types'
 import { usePool } from '@vocdoni/react-hooks'
+// import { useLoadingAlert } from './loading-alert'
+import { useMessageAlert } from './message-alert'
 
 const UseTokenContext = React.createContext<{
     currentTokens: Map<string, TokenInfo>,
@@ -12,6 +14,8 @@ const UseTokenContext = React.createContext<{
 export function useToken(address: string): TokenInfo | null {
     const tokenContext = useContext(UseTokenContext)
     const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null)
+    const { setAlertMessage } = useMessageAlert()
+    // const { setLoadingMessage, hideLoading } = useLoadingAlert()
 
     useEffect(() => {
         let ignore = false
@@ -24,6 +28,7 @@ export function useToken(address: string): TokenInfo | null {
                     if (ignore) return
                     setTokenInfo(newInfo)
                 }).catch(err => {
+                    setAlertMessage("The token details could not be loaded")
                     console.error(err)
                 })
         }
@@ -49,6 +54,7 @@ export function useTokens(addresses: string[]) {
     const tokenContext = useContext(UseTokenContext)
     const [bool, setBool] = useState(false) // to force rerender
     const { pool } = usePool()
+    // const { setAlertMessage } = useMessageAlert()
 
     useEffect(() => {
         if (!addresses || !addresses.length) return
@@ -59,6 +65,8 @@ export function useTokens(addresses: string[]) {
         )).then(() => {
             setBool(!bool)
         }).catch(err => {
+            // setAlertMessage("Some token details could not be loaded")
+
             console.error(err)
             setBool(!bool)
         })

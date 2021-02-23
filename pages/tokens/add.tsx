@@ -10,6 +10,7 @@ import Spinner from "react-svg-spinner"
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from '../../lib/errors'
 import { ACCENT_COLOR_2 } from '../../lib/constants'
 import { TokenInfo } from '../../lib/types'
+import { useMessageAlert } from '../../lib/hooks/message-alert'
 
 // MAIN COMPONENT
 const TokenAddPage = props => {
@@ -20,13 +21,14 @@ const TokenAddPage = props => {
     const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null)
     const [loadingToken, setLoadingToken] = useState(false)
     const [registeringToken, setRegisteringToken] = useState(false)
+    const { setAlertMessage } = useMessageAlert()
 
     // Callbacks
 
     const checkToken = () => {
         if (loadingToken) return
         else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
-            return alert("The token address is not valid")
+            return setAlertMessage("The token address is not valid")
         }
 
         setLoadingToken(true)
@@ -38,13 +40,13 @@ const TokenAddPage = props => {
                 setTokenInfo(tokenInfo)
             }).catch(err => {
                 setLoadingToken(false)
-                alert("Could not fetch the contract details")
+                setAlertMessage("Could not fetch the contract details")
             })
     }
 
     const onSubmit = async () => {
         if (!tokenInfo) return
-        else if (!wallet.connector || !wallet.account) return alert("Web3 support is not available")
+        else if (!wallet.connector || !wallet.account) return setAlertMessage("Web3 support is not available")
 
         try {
             setRegisteringToken(true)
@@ -60,7 +62,7 @@ const TokenAddPage = props => {
             // Register
             await registerToken(tokenInfo.address, holderAddress, pool, signer)
 
-            alert("The token has been successfully registered")
+            setAlertMessage("The token has been successfully registered")
             setRegisteringToken(false)
 
             Router.push("/tokens/info#/" + tokenInfo.address)
@@ -68,10 +70,10 @@ const TokenAddPage = props => {
         catch (err) {
             setRegisteringToken(false)
 
-            if (err && err.message == NO_TOKEN_BALANCE) return alert(NO_TOKEN_BALANCE)
-            else if (err && err.message == TOKEN_ALREADY_REGISTERED) return alert(TOKEN_ALREADY_REGISTERED)
+            if (err && err.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE)
+            else if (err && err.message == TOKEN_ALREADY_REGISTERED) return setAlertMessage(TOKEN_ALREADY_REGISTERED)
 
-            alert("The token could not be registered")
+            setAlertMessage("The token could not be registered")
         }
     }
 

@@ -15,6 +15,7 @@ import TokenAmount from "token-amount"
 import { useWallet } from 'use-wallet'
 import { useUrlHash } from 'use-url-hash'
 import { useToken } from '../../lib/hooks/tokens'
+import { useMessageAlert } from '../../lib/hooks/message-alert'
 
 const BN_ZERO = BigNumber.from(0)
 
@@ -23,6 +24,7 @@ const ProcessPage = props => {
     const router = useRouter()
     const wallet = useWallet()
     const signer = useSigner()
+    const { setAlertMessage } = useMessageAlert()
     const { poolPromise } = usePool()
     const processId = useUrlHash().substr(1)
     const { process: proc } = useProcess(processId)
@@ -114,7 +116,7 @@ const ProcessPage = props => {
 
         if (!await CensusErc20Api.isRegistered(token.address, pool)) {
             setTokenRegistered(false)
-            return alert("The token contract is not yet registered")
+            return setAlertMessage("The token contract is not yet registered")
         }
         else if (tokenRegistered !== true) setTokenRegistered(true)
 
@@ -144,7 +146,7 @@ const ProcessPage = props => {
     // Callbacks
     const onSelect = (questionIdx: number, choiceValue: number) => {
         if (typeof choiceValue == "string") choiceValue = parseInt(choiceValue)
-        if (isNaN(choiceValue)) return alert("Invalid question value")
+        if (isNaN(choiceValue)) return setAlertMessage("Invalid question value")
 
         choices[questionIdx] = choiceValue
         setChoices([].concat(choices))
@@ -207,13 +209,13 @@ const ProcessPage = props => {
                 updateVoteStatus()
             })
 
-            alert("Your vote has been sucessfully submitted")
+            setAlertMessage("Your vote has been sucessfully submitted")
             setIsSubmitting(false)
         }
         catch (err) {
             console.error(err)
             setIsSubmitting(false)
-            alert("The delivery of your vote could not be completed")
+            setAlertMessage("The delivery of your vote could not be completed")
         }
     }
 

@@ -13,6 +13,7 @@ import moment from 'moment'
 import { providers } from 'ethers'
 import Router from 'next/router'
 import Spinner from "react-svg-spinner"
+import { useMessageAlert } from '../../lib/hooks/message-alert'
 
 // MAIN COMPONENT
 const NewProcessPage = props => {
@@ -25,6 +26,7 @@ const NewProcessPage = props => {
     const [endDate, setEndDate] = useState(null as Date)
     const tokenAddress = useUrlHash().substr(1)
     const [submitting, setSubmitting] = useState(false)
+    const { setAlertMessage } = useMessageAlert()
 
     // Callbacks
     const onStartDate = (date: string | Moment) => {
@@ -89,34 +91,34 @@ const NewProcessPage = props => {
         setMetadata(Object.assign({}, metadata))
     }
     const onSubmit = async () => {
-        if (!metadata.title || metadata.title.default.trim().length < 2) return alert("Please enter a title")
-        else if (metadata.title.default.trim().length > 50) return alert("Please enter a shorter title")
+        if (!metadata.title || metadata.title.default.trim().length < 2) return setAlertMessage("Please enter a title")
+        else if (metadata.title.default.trim().length > 50) return setAlertMessage("Please enter a shorter title")
 
-        if (!metadata.description || metadata.description.default.trim().length < 2) return alert("Please enter a description")
-        else if (metadata.description.default.trim().length > 300) return alert("Please enter a shorter description")
+        if (!metadata.description || metadata.description.default.trim().length < 2) return setAlertMessage("Please enter a description")
+        else if (metadata.description.default.trim().length > 300) return setAlertMessage("Please enter a shorter description")
 
-        if (!startDate) return alert("Please, enter a start date")
-        else if (!endDate) return alert("Please, enter an ending date")
+        if (!startDate) return setAlertMessage("Please, enter a start date")
+        else if (!endDate) return setAlertMessage("Please, enter an ending date")
 
         if (moment(startDate).isBefore(moment().add(5, "minutes"))) {
-            return alert("The start date must be at least 5 minutes from now")
+            return setAlertMessage("The start date must be at least 5 minutes from now")
         }
         else if (moment(endDate).isBefore(moment().add(10, "minutes"))) {
-            return alert("The end date must be at least 10 minutes from now")
+            return setAlertMessage("The end date must be at least 10 minutes from now")
         }
         else if (moment(endDate).isBefore(moment(startDate).add(5, "minutes"))) {
-            return alert("The end date must be at least 5 minutes after the start")
+            return setAlertMessage("The end date must be at least 5 minutes after the start")
         }
 
         for (let qIdx = 0; qIdx < metadata.questions.length; qIdx++) {
             const question = metadata.questions[qIdx]
             if (!question.title.default.trim())
-                return alert("Please, enter a title for question " + (qIdx + 1))
+                return setAlertMessage("Please, enter a title for question " + (qIdx + 1))
 
             for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
                 const choice = question.choices[cIdx]
                 if (!choice.title.default.trim())
-                    return alert("Please, fill in all the choices for question " + (qIdx + 1))
+                    return setAlertMessage("Please, fill in all the choices for question " + (qIdx + 1))
 
                 // Ensure values are unique and sequential
                 question.choices[cIdx].value = cIdx
@@ -124,9 +126,9 @@ const NewProcessPage = props => {
         }
 
         if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
-            return alert("The token address it not valid")
+            return setAlertMessage("The token address it not valid")
 
-        if (!wallet?.account) return alert("In order to continue, you need to use a Web3 provider like MetaMask")
+        if (!wallet?.account) return setAlertMessage("In order to continue, you need to use a Web3 provider like MetaMask")
 
         // FINAL CONFIRMATION
         if (!confirm("You are about to create a new governance process. The process cannot be altered, paused or canceled.\n\nDo you want to continue?")) return
@@ -174,12 +176,12 @@ const NewProcessPage = props => {
             Router.push("/processes#/" + processId)
             setSubmitting(false)
 
-            alert("The governance process has been created successfully")
+            setAlertMessage("The governance process has been created successfully")
         } catch (err) {
             setSubmitting(false)
 
             console.error(err)
-            alert("The governance process could not be created")
+            setAlertMessage("The governance process could not be created")
         }
     }
 
