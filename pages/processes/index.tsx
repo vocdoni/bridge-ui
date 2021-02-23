@@ -355,8 +355,10 @@ function renderChoiceResults(cIdx: number, resultsQuestion: DigestedProcessResul
 
     const title = resultsQuestion.voteResults[cIdx].title.default
     const voteCount = resultsQuestion.voteResults[cIdx].votes || BN_ZERO
-    const percent = Math.round(voteCount.mul(10000).div(totalVotes).toNumber()) / 100 // = voteCount / totalVotes * 100
-    const amount = new TokenAmount(voteCount, token.decimals, { symbol: token.symbol }).format()
+    const percent = totalVotes.isZero() ? 0 :    // = voteCount / totalVotes * 100
+        Math.round(voteCount.mul(10000).div(totalVotes).toNumber()) / 100
+    const amount = token ?
+        new TokenAmount(voteCount, token.decimals, { symbol: token.symbol }).format() : ""
 
     return <div className="choice-result" key={cIdx}>
         <div className="percent">
