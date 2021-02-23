@@ -25,8 +25,6 @@ const TokenPage = props => {
     const token = useToken(tokenAddr)
     const { setAlertMessage } = useMessageAlert()
 
-    const allProcessesLoaded = processIds.every(id => processes.has(id))
-
     // Effects
 
     useEffect(() => {
@@ -132,7 +130,7 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
+                    loadingProcesses ? <Spinner /> :
                         activeProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
@@ -150,7 +148,7 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
+                    loadingProcesses ? <Spinner /> :
                         endedProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
@@ -168,7 +166,7 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    (loadingProcesses || !allProcessesLoaded) ? <Spinner /> :
+                    loadingProcesses ? <Spinner /> :
                         upcomingProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
