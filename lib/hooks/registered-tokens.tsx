@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { getRegisteredTokenList } from '../api'
 import { TokenListCache } from "../storage"
 import { usePool } from '@vocdoni/react-hooks'
+import { useMessageAlert } from './message-alert'
 
 const UseRegisteredTokensContext = React.createContext<{
     registeredTokens: string[],
@@ -25,6 +26,7 @@ export function UseRegisteredTokens({ children }) {
     const { poolPromise } = usePool()
     const [registeredTokens, setRegisteredTokens] = useState<string[]>([])
     const [error, setError] = useState<string>(null)
+    const { setAlertMessage } = useMessageAlert()
 
     const refreshRegisteredTokens = (currentTokenCount: number) => {
         return poolPromise.then(pool => getRegisteredTokenList(currentTokenCount, pool))
@@ -36,6 +38,9 @@ export function UseRegisteredTokens({ children }) {
 
                 const db = new TokenListCache()
                 return db.write(addrs)
+            })
+            .catch(err => {
+                setAlertMessage("Could not fetch the list of tokens")
             })
     }
 

@@ -108,7 +108,7 @@ const IndexPage = () => {
 
         <div className="row-3">
             <h2>Top Tokens</h2>
-            <p className="light">Below is a curated list of tokens featured on the platform</p>
+            <p className="light">Below is a list of some of the most relevant tokens on the platform</p>
 
             <div className="token-list">
                 {

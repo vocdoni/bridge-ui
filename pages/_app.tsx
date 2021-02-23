@@ -23,13 +23,13 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment
     const appTitle = process.env.APP_TITLE
 
-    return <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId} environment={environment}>
-        <UseRegisteredTokens>
-            <UseTokenProvider>
-                <UseProcessProvider>
-                    <UseWalletProvider chainId={chainId} connectors={{}}>
-                        <UseMessageAlertProvider>
-                            <UseLoadingAlertProvider>
+    return <UseMessageAlertProvider>
+        <UseLoadingAlertProvider>
+            <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId} environment={environment}>
+                <UseRegisteredTokens>
+                    <UseTokenProvider>
+                        <UseProcessProvider>
+                            <UseWalletProvider chainId={chainId} connectors={{}}>
                                 <Head>
                                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                                     <title>{appTitle}</title>
@@ -37,13 +37,13 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                                 <Layout>
                                     <Component {...pageProps} />
                                 </Layout>
-                            </UseLoadingAlertProvider>
-                        </UseMessageAlertProvider>
-                    </UseWalletProvider>
-                </UseProcessProvider>
-            </UseTokenProvider>
-        </UseRegisteredTokens>
-    </UsePoolProvider>
+                            </UseWalletProvider>
+                        </UseProcessProvider>
+                    </UseTokenProvider>
+                </UseRegisteredTokens>
+            </UsePoolProvider>
+        </UseLoadingAlertProvider>
+    </UseMessageAlertProvider>
 }
 
 export default BridgeApp
