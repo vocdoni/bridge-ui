@@ -1,10 +1,10 @@
 version: "3"
 services:
   bridge-ui:
-    image: ghcr.io/vocdoni/bridge-ui:main
-    container_name: "bridge-ui"
+    image: ghcr.io/vocdoni/bridge-ui:${BRIDGE_UI_TAG:-main}
     env_file:
       - .env
+    container_name: "bridge-ui"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bootnodes.rule=Host(`${DOMAIN}`)"
