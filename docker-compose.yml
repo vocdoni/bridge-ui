@@ -1,7 +1,7 @@
 version: "3"
 services:
   bridge-ui:
-    image: ghcr.io/vocdoni/bridge-ui:main
+    image: ghcr.io/vocdoni/bridge-ui:stage
     container_name: "bridge-ui"
     env_file:
       - .env
