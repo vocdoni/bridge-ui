@@ -14,9 +14,13 @@ ENV BLOCK_TIME=${BLOCK_TIME}
 ARG BOOTNODES_URL="https://bootnodes.vocdoni.net/gateways.dev.json"
 ENV BOOTNODES_URL=${BOOTNODES_URL}
 
-ADD . /app
 WORKDIR /app
-RUN npm install && npm run export
+ADD package.json /app
+# ADD package-lock.json /app
+RUN npm install
+
+ADD . /app
+RUN npm run export
 
 FROM node:14
 
