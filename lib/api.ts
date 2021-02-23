@@ -1,4 +1,4 @@
-import { CensusErc20Api, GatewayPool, VotingApi } from "dvote-js"
+import { CensusErc20Api, GatewayPool, ITokenStorageProofContract, VotingApi } from "dvote-js"
 import { NO_TOKEN_BALANCE } from "./errors"
 import { ProcessInfo, TokenInfo } from "./types"
 import { BigNumber, Contract, providers, Signer, utils } from "ethers"
@@ -157,15 +157,21 @@ export function hasBalance(tokenAddress: string, holderAddress: string, pool: Ga
 }
 
 /** Retrieves the list of registered ERC20 token addresses on the smart contract. If no new tokens are registered, `null` is returned. */
-export async function getRegisteredTokenList(currentTokenCount: number, pool: GatewayPool): Promise<string[]> {
-    const contractInstance = await pool.getTokenStorageProofInstance()
+export function getRegisteredTokenList(currentTokenCount: number, pool: GatewayPool): Promise<string[]> {
+    let contractInstance: ITokenStorageProofContract
+    return pool.getTokenStorageProofInstance()
+        .then(instance => {
+            contractInstance = instance
 
-    const count = await contractInstance.tokenCount()
-    if (count == currentTokenCount) return Promise.resolve(null)
+            return contractInstance.tokenCount()
+        })
+        .then(count => {
+            if (count == currentTokenCount) return Promise.resolve(null)
 
-    return Bluebird.map(Array.from(Array(count).keys()), idx => {
-        return contractInstance.tokenAddresses(idx)
-    }, { concurrency: 100 })
+            return Bluebird.map(Array.from(Array(count).keys()), idx => {
+                return contractInstance.tokenAddresses(idx)
+            }, { concurrency: 100 })
+        })
 }
 
 // INTERNAL HELPERS
