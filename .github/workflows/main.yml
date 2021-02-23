@@ -56,8 +56,9 @@ jobs:
         run: |
          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )"
 
-      - name: Push to Docker Hub and ghcr.io
+      - name: Push to Docker Hub and ghcr.io (main)
         uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/main'
         with:
           context: .
           file: ./Dockerfile
@@ -66,3 +67,49 @@ jobs:
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+
+      - name: Push to Docker Hub and ghcr.io (main static, development)
+        uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          file: ./Dockerfile.static
+          platforms: linux/amd64
+          push: true
+          tags: |
+            vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
+
+      - name: Push to Docker Hub and ghcr.io (stage)
+        uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/stage'
+        with:
+          context: .
+          file: ./Dockerfile.static
+          platforms: linux/amd64
+          environment:
+            VOCDONI_ENVIRONMENT=stg
+            ETH_NETWORK_ID=goerli
+            BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.stg.json
+          push: true
+          tags: |
+            vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+
+      - name: Push to Docker Hub and ghcr.io (release)
+        uses: docker/build-push-action@v2
+        if: github.ref == startsWith(github.ref, 'refs/heads/release')
+        with:
+          context: .
+          file: ./Dockerfile.static
+          platforms: linux/amd64
+          environment:
+            NODE_ENV=production
+            VOCDONI_ENVIRONMENT=prod
+            ETH_NETWORK_ID=xdai
+            ETH_CHAIN_ID=100
+            BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.json
+          push: true
+          tags: |
+            vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
