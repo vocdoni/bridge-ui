@@ -18,10 +18,10 @@ import { useMessageAlert } from '../../lib/hooks/message-alert'
 const TokenPage = props => {
     const { poolPromise } = usePool()
     const tokenAddr = useUrlHash().substr(1)
-    const [loadingProcesses, setLoadingProcesses] = useState(true)
+    const [loadingProcessList, setLoadingProcessList] = useState(true)
     const [blockNumber, setBlockNumber] = useState(-1)
     const [processIds, setProcessIds] = useState([] as string[])
-    const { processes, error, loading } = useProcesses(processIds || [])
+    const { processes, error, loading: loadingProcessesDetails } = useProcesses(processIds || [])
     const token = useToken(tokenAddr)
     const { setAlertMessage } = useMessageAlert()
 
@@ -53,16 +53,16 @@ const TokenPage = props => {
     }
     const updateProcessIds = () => {
         if (!tokenAddr) return
-        setLoadingProcesses(true)
+        setLoadingProcessList(true)
 
         poolPromise
             .then(pool => getProcessList(tokenAddr, pool))
             .then(ids => {
-                setLoadingProcesses(false)
+                setLoadingProcessList(false)
                 setProcessIds(ids)
             })
             .catch(err => {
-                setLoadingProcesses(false)
+                setLoadingProcessList(false)
 
                 console.error(err)
                 setAlertMessage("The list of processes could not be loaded")
@@ -130,7 +130,8 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    loadingProcesses ? <Spinner /> :
+                    // TODO: use loadingProcessesDetails as well
+                    loadingProcessList ? <Spinner /> :
                         activeProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
@@ -148,7 +149,8 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    loadingProcesses ? <Spinner /> :
+                    // TODO: use loadingProcessesDetails as well
+                    loadingProcessList ? <Spinner /> :
                         endedProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
@@ -166,7 +168,8 @@ const TokenPage = props => {
 
             <div className="token-list">
                 {
-                    loadingProcesses ? <Spinner /> :
+                    // TODO: use loadingProcessesDetails as well
+                    loadingProcessList ? <Spinner /> :
                         upcomingProcesses.map((id, idx) => <TokenCard name={token?.symbol} icon={FALLBACK_TOKEN_ICON} rightText="" href={id ? ("/processes#/" + id) : ""} key={idx}>
                             <p>{processes.get(id).metadata.title.default || "No title"}</p>
                         </TokenCard>)
