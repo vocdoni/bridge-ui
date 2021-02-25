@@ -18,7 +18,7 @@ export class TokenListCache extends Dexie {
 
         // For newer versions, DO NOT REMOVE any lines. Simply add new ones below.
         this.version(1).stores({
-            tokens: '++id,name'
+            tokens: '++id,address'
         })
 
         // The following line is needed if your typescript
@@ -29,7 +29,7 @@ export class TokenListCache extends Dexie {
     write(tokens: string[]) {
         return this.tokens.clear()
             .then(() => {
-                this.tokens.bulkAdd(tokens.map(a => ({ address: a })))
+                this.tokens.bulkAdd(tokens.map(a => ({ id: a, address: a })))
             })
     }
 

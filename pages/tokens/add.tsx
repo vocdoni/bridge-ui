@@ -11,6 +11,7 @@ import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from '../../lib/errors'
 import { ACCENT_COLOR_2 } from '../../lib/constants'
 import { TokenInfo } from '../../lib/types'
 import { useMessageAlert } from '../../lib/hooks/message-alert'
+import { useRegisteredTokens } from '../../lib/hooks/registered-tokens'
 
 // MAIN COMPONENT
 const TokenAddPage = props => {
@@ -22,6 +23,7 @@ const TokenAddPage = props => {
     const [loadingToken, setLoadingToken] = useState(false)
     const [registeringToken, setRegisteringToken] = useState(false)
     const { setAlertMessage } = useMessageAlert()
+    const { refreshRegisteredTokens } = useRegisteredTokens()
 
     // Callbacks
 
@@ -61,6 +63,8 @@ const TokenAddPage = props => {
 
             // Register
             await registerToken(tokenInfo.address, holderAddress, pool, signer)
+
+            await refreshRegisteredTokens()
 
             setAlertMessage("The token has been successfully registered")
             setRegisteringToken(false)

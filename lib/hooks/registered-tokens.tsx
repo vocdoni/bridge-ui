@@ -6,6 +6,7 @@ import { useMessageAlert } from './message-alert'
 
 const UseRegisteredTokensContext = React.createContext<{
     registeredTokens: string[],
+    refreshRegisteredTokens: (lastKnownTokenCount?: number) => Promise<void>,
     error?: string
 }>(null)
 
@@ -28,8 +29,8 @@ export function UseRegisteredTokens({ children }) {
     const [error, setError] = useState<string>(null)
     const { setAlertMessage } = useMessageAlert()
 
-    const refreshRegisteredTokens = (currentTokenCount: number) => {
-        return poolPromise.then(pool => getRegisteredTokenList(currentTokenCount, pool))
+    const refreshRegisteredTokens = (lastKnownTokenCount?: number) => {
+        return poolPromise.then(pool => getRegisteredTokenList(lastKnownTokenCount || 0, pool))
             .then(addrs => {
                 // Do we have more tokens? Otherwise exit
                 if (addrs === null) { return }
@@ -61,7 +62,7 @@ export function UseRegisteredTokens({ children }) {
 
     return (
         <UseRegisteredTokensContext.Provider
-            value={{ registeredTokens, error }}
+            value={{ registeredTokens, refreshRegisteredTokens, error }}
         >
             {children}
         </UseRegisteredTokensContext.Provider>

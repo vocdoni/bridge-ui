@@ -156,7 +156,7 @@ export function hasBalance(tokenAddress: string, holderAddress: string, pool: Ga
     return tokenInstance.balanceOf(holderAddress).then(balance => !balance.isZero())
 }
 
-/** Retrieves the list of registered ERC20 token addresses on the smart contract. If no new tokens are registered, `null` is returned. */
+/** Retrieves the list of registered ERC20 token addresses on the smart contract. IMPORTANT: If no new tokens are registered, `null` is returned. */
 export function getRegisteredTokenList(currentTokenCount: number, pool: GatewayPool): Promise<string[]> {
     let contractInstance: ITokenStorageProofContract
     return pool.getTokenStorageProofInstance()
@@ -169,8 +169,19 @@ export function getRegisteredTokenList(currentTokenCount: number, pool: GatewayP
             if (count == currentTokenCount) return Promise.resolve(null)
 
             return Bluebird.map(Array.from(Array(count).keys()), idx => {
-                return contractInstance.tokenAddresses(idx)
+                return contractInstance.tokenAddresses(idx).then(addr => addr.toLowerCase())
             }, { concurrency: 100 })
+        })
+}
+
+/** Counts how many ERC20 tokens are registered on the smart contract. */
+export function getRegisteredTokenCount(pool: GatewayPool): Promise<number> {
+    let contractInstance: ITokenStorageProofContract
+    return pool.getTokenStorageProofInstance()
+        .then(instance => {
+            contractInstance = instance
+
+            return contractInstance.tokenCount()
         })
 }
 

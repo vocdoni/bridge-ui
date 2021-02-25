@@ -5,21 +5,8 @@ const env = require("./env-config.js")
 module.exports = withLess({
     env,
     trailingSlash: true,
-    exportPathMap: () => generatePathMap(),
 })
 
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ///////////////////////////////////////////////////////////////////////////////
-
-async function generatePathMap() {
-    return {
-        '/': { page: '/' },
-        '/dashboard': { page: '/dashboard' },
-        '/processes': { page: '/processes' },
-        '/processes/new': { page: '/processes/new' },
-        '/tokens': { page: '/tokens' },
-        '/tokens/info': { page: '/tokens/info' },
-        '/tokens/add': { page: '/tokens/add' },
-    }
-}
