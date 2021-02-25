@@ -1,14 +1,48 @@
-import Link from "next/link"
-// import AppContext from './app-context'
-// import { useContext } from "react"
+import styled from "styled-components";
 
-type Props = {
-    children?: any
-}
+const Container = styled.div`
+    padding: 30px 0 30px;
+    font-size: 13px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
 
-export function Footer({ children, ...props }: Props) {
-    return <div id="footer">
-        <div className="left"><a href="https://discord.gg/sQCxgYs" target="_blank">Discord</a> · <a href="https://twitter.com/vocdoni" target="_blank">Twitter</a> · <a href="https://t.me/vocdoni" target="_blank">Telegram</a></div>
-        <div className="right">Vocdoni {new Date().getFullYear()}</div>
-    </div>
-}
+const ExternalLink = styled.a`
+    color: var(--light-text-);
+`;
+
+const Section = styled.div`
+    padding: 40px var(--horizontal-margin) 0;
+    color: var(--light-text);
+`;
+
+// @TODO: Maybe we should share this const with the header
+const FOOTER_LINKERS = [
+    {
+        url: "https://discord.gg/sQCxgYs",
+        name: "Discord",
+    },
+    {
+        url: "https://twitter.com/vocdoni",
+        name: "Twitter",
+    },
+    {
+        url: "https://t.me/vocdoni",
+        name: "Telegram",
+    },
+];
+
+export const Footer = () => (
+    <Container>
+        <Section>
+            {FOOTER_LINKERS.map(({ url, name }, i) => (
+                <>
+                    <ExternalLink href={url}>{name}</ExternalLink>
+                    {i < FOOTER_LINKERS.length - 1 ? " · " : null}
+                </>
+            ))}
+        </Section>
+        <Section>Vocdoni {new Date().getFullYear()}</Section>
+    </Container>
+);
