@@ -12,3 +12,6 @@ export function limitedText(str: string, maxLength: number = 60): string {
 
     return str.substr(0, maxLength) + "..."
 }
+export function throwIfNotBrowser() {
+    if (typeof window == "undefined") throw new Error("The storage component should only be used on the web browser side")
+}

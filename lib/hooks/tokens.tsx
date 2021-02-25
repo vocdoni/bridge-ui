@@ -53,7 +53,7 @@ export function useToken(address: string): TokenInfo | null {
 export function useTokens(addresses: string[]) {
     const tokenContext = useContext(UseTokenContext)
     const [bool, setBool] = useState(false) // to force rerender
-    const { pool } = usePool()
+    // const { pool } = usePool()
     // const { setAlertMessage } = useMessageAlert()
 
     useEffect(() => {

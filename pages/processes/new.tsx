@@ -176,7 +176,7 @@ const NewProcessPage = props => {
             Router.push("/processes#/" + processId)
             setSubmitting(false)
 
-            setAlertMessage("The governance process has been created successfully")
+            setAlertMessage("The governance process has been successfully created")
         } catch (err) {
             setSubmitting(false)
 

@@ -1,9 +1,10 @@
-import { CensusErc20Api, GatewayPool, VotingApi } from "dvote-js"
+import { CensusErc20Api, GatewayPool, ITokenStorageProofContract, VotingApi } from "dvote-js"
 import { NO_TOKEN_BALANCE } from "./errors"
 import { ProcessInfo, TokenInfo } from "./types"
 import { BigNumber, Contract, providers, Signer, utils } from "ethers"
 import TokenAmount from "token-amount"
 import { FALLBACK_TOKEN_ICON } from "./constants"
+import Bluebird from "bluebird"
 
 // from aragon/use-wallet
 const TRUST_WALLET_BASE_URL =
@@ -153,6 +154,35 @@ export function balanceOf(tokenAddress: string, holderAddress: string, pool: Gat
 export function hasBalance(tokenAddress: string, holderAddress: string, pool: GatewayPool): Promise<boolean> {
     const tokenInstance = new Contract(tokenAddress, ERC20_ABI, pool.provider)
     return tokenInstance.balanceOf(holderAddress).then(balance => !balance.isZero())
+}
+
+/** Retrieves the list of registered ERC20 token addresses on the smart contract. IMPORTANT: If no new tokens are registered, `null` is returned. */
+export function getRegisteredTokenList(currentTokenCount: number, pool: GatewayPool): Promise<string[]> {
+    let contractInstance: ITokenStorageProofContract
+    return pool.getTokenStorageProofInstance()
+        .then(instance => {
+            contractInstance = instance
+
+            return contractInstance.tokenCount()
+        })
+        .then(count => {
+            if (count == currentTokenCount) return Promise.resolve(null)
+
+            return Bluebird.map(Array.from(Array(count).keys()), idx => {
+                return contractInstance.tokenAddresses(idx).then(addr => addr.toLowerCase())
+            }, { concurrency: 100 })
+        })
+}
+
+/** Counts how many ERC20 tokens are registered on the smart contract. */
+export function getRegisteredTokenCount(pool: GatewayPool): Promise<number> {
+    let contractInstance: ITokenStorageProofContract
+    return pool.getTokenStorageProofInstance()
+        .then(instance => {
+            contractInstance = instance
+
+            return contractInstance.tokenCount()
+        })
 }
 
 // INTERNAL HELPERS

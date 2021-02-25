@@ -4,15 +4,16 @@ import Link from 'next/link'
 import TokenCard from '../../components/token-card'
 // import Select from 'react-select'
 import { WalletStatus } from '../../components/wallet-status'
-import { allTokens } from '../../lib/tokens'
 // import { usePool } from '../../lib/hooks/pool'
 import { useTokens } from '../../lib/hooks/tokens'
+import { useRegisteredTokens } from '../../lib/hooks/registered-tokens'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 
 
 // MAIN COMPONENT
-const TokensPage = props => {
-    const [tokenAddrs, setTokenAddrs] = useState(allTokens)  // TODO: Use setTokenAddrs( [myTokenAddr] ) to filter
+const TokensPage = () => {
+    const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens()
+    // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] ) 
     const tokenInfos = useTokens(tokenAddrs)
 
     return <div id="tokens">
