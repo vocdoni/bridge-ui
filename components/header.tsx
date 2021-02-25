@@ -82,7 +82,7 @@ export const Header = () => (
     <HeaderContainer>
         <ListContainer>
             <ListItem>
-                <TitleLink className="left" href="/">
+                <TitleLink rel="noopener noreferrer" href="/">
                     Vocdoni Bridge
                 </TitleLink>
             </ListItem>

@@ -1,18 +1,18 @@
 import { useState } from "react";
 // import Link from 'next/link'
 import { withRouter, useRouter } from "next/router";
-import TokenCard from "../components/token-card";
-import { featuredTokens } from "../lib/tokens";
 import { Button, IconEthereum, LoadingRing } from "@aragon/ui";
 // import Spinner from "react-svg-spinner"
 import { ChainUnsupportedError, useWallet, Wallet } from "use-wallet";
+import styled, { CSSProperties } from "styled-components";
 
+import TokenCard from "../components/token-card";
+import { featuredTokens } from "../lib/tokens";
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from "../lib/errors";
 import { usePool } from "@vocdoni/react-hooks";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
-import styled, { CSSProperties } from "styled-components";
 
 const Head = styled.div`
     display: flex;
@@ -30,30 +30,24 @@ const Subtitle = styled.h4`
     font-size: 20px;
     text-align: center;
     max-width: 300px;
-    color: rgba(249, 105, 79);
+    color: ${({ theme }) => theme.accent1};
 `;
 
 const Row = styled.div`
-    ${(props: CSSProperties) => `
-        display: flex;
-        align-items: ${props.alignItems};
-        justify-content: ${props.justifyContent};
-    `}
+    display: flex;
+    align-items: ${({ alignItems }: CSSProperties) => alignItems};
+    justify-content: ${({ justifyContent }) => justifyContent};
 `;
 
 const LeftSection = styled.div`
-    ${(props: CSSProperties) => `
-        max-width: ${props.maxWidth};
-        width: ${props.width};
-    `}
+    max-width: ${({ maxWidth }: CSSProperties) => maxWidth};
+    width: ${({ width }) => width};
 `;
 
 const RightSection = styled.div`
-    ${(props: CSSProperties) => `
-        width: ${props.width};
-        text-align: ${props.textAlign};
-        max-width: ${props.maxWidth};
-    `}
+    width: ${({ width }: CSSProperties) => width};
+    text-align: ${({ textAlign }) => textAlign};
+    max-width: ${({ maxWidth }) => maxWidth};
 `;
 
 const ConnectButton = styled(Button)`
@@ -67,11 +61,11 @@ const Description = styled.h4`
 `;
 
 const ColorText = styled.span`
-    color: rgba(249, 105, 79);
+    color: ${({ theme }) => theme.accent1};
 `;
 
 const ExternalLink = styled.a`
-    color: rgba(249, 105, 79);
+    color: ${({ theme }) => theme.accent1};
     text-decoration: none;
 `;
 
@@ -207,6 +201,7 @@ const IndexPage = () => {
                             <ExternalLink
                                 href="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
                                 target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 What is an ERC20 Token?
                             </ExternalLink>
