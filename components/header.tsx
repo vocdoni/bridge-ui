@@ -1,4 +1,6 @@
-import styled from "styled-components";
+import React from "react";
+import styled, { useTheme } from "styled-components";
+import { ExternalLink, ExternalLinkStyle } from "./external-link";
 
 const HeaderContainer = styled.div`
     -index: 100;
@@ -10,19 +12,14 @@ const HeaderContainer = styled.div`
     padding: 10px 0 10px;
     background: linear-gradient(
         90deg,
-        var(--accent-1) 0%,
-        var(--accent-2) 100%
+        ${({ theme }) => theme.accent1} 0%,
+        ${({ theme }) => theme.accent2} 100%
     );
-    color: var(--clear);
+
     font-size: 16px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-`;
-
-const LinkStyle = `
-    color: var(--clear);
-    text-decoration: none;
 `;
 
 const ListContainer = styled.ul`
@@ -39,16 +36,7 @@ const ListItem = styled.li`
     }
 `;
 
-const TitleLink = styled.a`
-    ${LinkStyle}
-    font-weight: 500;
-`;
-
-const ExternalLink = styled.a`
-    ${LinkStyle}
-`;
-
-interface LinkProps {
+interface LinkProps extends ExternalLinkStyle {
     name: string;
     url: string;
 }
@@ -72,25 +60,30 @@ const HEADERS_LINKS: LinkProps[] = [
     },
 ];
 
-const Link = ({ name, url }: LinkProps) => (
+const Link = ({ name, url, ...props }: LinkProps) => (
     <ListItem>
-        <ExternalLink href={url}>{name}</ExternalLink>
+        <ExternalLink {...props} link={url}>
+            {name}
+        </ExternalLink>
     </ListItem>
 );
 
-export const Header = () => (
-    <HeaderContainer>
-        <ListContainer>
-            <ListItem>
-                <TitleLink rel="noopener noreferrer" href="/">
-                    Vocdoni Bridge
-                </TitleLink>
-            </ListItem>
-        </ListContainer>
-        <ListContainer>
-            {HEADERS_LINKS.map((link) => (
-                <Link {...link} />
-            ))}
-        </ListContainer>
-    </HeaderContainer>
-);
+export const Header = () => {
+    const theme = useTheme();
+    return (
+        <HeaderContainer>
+            <ListContainer>
+                <ListItem>
+                    <ExternalLink fontWeight={500} color={theme.clear} link="/">
+                        Vocdoni Bridge
+                    </ExternalLink>
+                </ListItem>
+            </ListContainer>
+            <ListContainer>
+                {HEADERS_LINKS.map((link) => (
+                    <Link {...link} color={theme.clear} />
+                ))}
+            </ListContainer>
+        </HeaderContainer>
+    );
+};

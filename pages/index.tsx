@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 // import Link from 'next/link'
 import { withRouter, useRouter } from "next/router";
 import { Button, IconEthereum, LoadingRing } from "@aragon/ui";
 // import Spinner from "react-svg-spinner"
 import { ChainUnsupportedError, useWallet, Wallet } from "use-wallet";
-import styled, { CSSProperties } from "styled-components";
+import styled, { CSSProperties, useTheme } from "styled-components";
 
 import TokenCard from "../components/token-card";
 import { featuredTokens } from "../lib/tokens";
@@ -13,6 +13,8 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
+import { ExternalLink } from "../components/external-link";
+import { theme } from "../theme";
 
 const Head = styled.div`
     display: flex;
@@ -64,11 +66,6 @@ const ColorText = styled.span`
     color: ${({ theme }) => theme.accent1};
 `;
 
-const ExternalLink = styled.a`
-    color: ${({ theme }) => theme.accent1};
-    text-decoration: none;
-`;
-
 const GreyCircle = styled.div`
     background-color: #ccc;
     border-radius: 50%;
@@ -101,6 +98,8 @@ const HandleConnector = ({
     onSignIn,
     isConnected,
 }: HandleConnectorProps) => {
+    const theme = useTheme();
+
     if (poolLoading || connecting) {
         const connectingToVocdoni = "Conneting to Vocdoni";
         const connectingToWeb3 = "Connecting to " + wallet.networkName;
@@ -199,9 +198,8 @@ const IndexPage = () => {
                     <p>
                         <small>
                             <ExternalLink
-                                href="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                color={theme.accent1}
+                                link="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
                             >
                                 What is an ERC20 Token?
                             </ExternalLink>
@@ -237,8 +235,8 @@ const IndexPage = () => {
                     <p>
                         <small>
                             <ExternalLink
-                                href="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
-                                target="_blank"
+                                color={theme.accent1}
+                                link="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
                             >
                                 Learn more
                             </ExternalLink>

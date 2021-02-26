@@ -16,6 +16,7 @@ export interface Colors {
     lightText: Color;
     mainText: Color;
     lighterText: Color;
+    clear: Color;
 }
 
 export interface Screens {
@@ -29,9 +30,15 @@ export interface Screens {
     desktopL: string;
 }
 
+export interface Margins {
+    horizontal: string;
+    vertical: string;
+}
+
 declare module "styled-components" {
     export interface DefaultTheme extends Colors {
         // Screens for media queries
         screens: Screens;
+        margins: Margins;
     }
 }
