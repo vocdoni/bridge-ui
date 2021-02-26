@@ -1,5 +1,5 @@
 import { DefaultTheme } from "styled-components";
-import { Colors } from "./types";
+import { Colors, Margins, Screens } from "./types";
 
 export const colors: Colors = {
     text1: "#F9694F",
@@ -18,6 +18,9 @@ export const colors: Colors = {
     lightText: "#777777",
     mainText: "#393939",
     lighterText: "#999",
+
+    // @TODO: Remove this and use white?
+    clear: "#FFFFFF",
 };
 
 export const size = {
@@ -30,7 +33,7 @@ export const size = {
     desktop: 1920,
 };
 
-export const screens = {
+export const screens: Screens = {
     mobileS: `(min-width: ${size.mobileS}px)`,
     mobileM: `(min-width: ${size.mobileM}px)`,
     mobileL: `(min-width: ${size.mobileL}px)`,
@@ -41,18 +44,13 @@ export const screens = {
     desktopL: `(min-width: ${size.desktop}px)`,
 };
 
-// export const deviceMax = {
-//     mobileS: `(max-width: ${size.mobileS - 1}px)`,
-//     mobileM: `(max-width: ${size.mobileM - 1}px)`,
-//     mobileL: `(max-width: ${size.mobileL - 1}px)`,
-//     tablet: `(max-width: ${size.tablet - 1}px)`,
-//     laptop: `(max-width: ${size.laptop - 1}px)`,
-//     laptopL: `(max-width: ${size.laptopL - 1}px)`,
-//     desktop: `(max-width: ${size.desktop - 1}px)`,
-//     desktopL: `(max-width: ${size.desktop - 1}px)`,
-// };
+export const margins: Margins = {
+    horizontal: "40px",
+    vertical: "",
+};
 
 export const theme: DefaultTheme = {
     ...colors,
     screens,
+    margins,
 };

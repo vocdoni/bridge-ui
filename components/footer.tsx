@@ -1,4 +1,6 @@
+import React from "react";
 import styled from "styled-components";
+import { ExternalLink } from "./external-link";
 
 const Container = styled.div`
     padding: 30px 0 30px;
@@ -8,13 +10,8 @@ const Container = styled.div`
     justify-content: space-between;
 `;
 
-const ExternalLink = styled.a`
-    color: var(--light-text-);
-`;
-
 const Section = styled.div`
-    padding: 40px var(--horizontal-margin) 0;
-    color: var(--light-text);
+    padding: 40px 40px 0;
 `;
 
 // @TODO: Maybe we should share this const with the header
@@ -38,7 +35,9 @@ export const Footer = () => (
         <Section>
             {FOOTER_LINKERS.map(({ url, name }, i) => (
                 <>
-                    <ExternalLink href={url}>{name}</ExternalLink>
+                    <ExternalLink textDecoration="underline" link={url}>
+                        {name}
+                    </ExternalLink>
                     {i < FOOTER_LINKERS.length - 1 ? " · " : null}
                 </>
             ))}
