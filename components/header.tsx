@@ -23,7 +23,7 @@ const HeaderContainer = styled.div`
 `;
 
 const ListContainer = styled.ul`
-    padding: 0 var(--horizontal-margin) 0;
+    padding: ${({ theme }) => "0 " + theme.margins.horizontal};
     display: inline;
     list-style: none;
 `;
@@ -39,12 +39,14 @@ const ListItem = styled.li`
 interface LinkProps extends ExternalLinkStyle {
     name: string;
     url: string;
+    dontRedirect?: boolean;
 }
 
 const HEADERS_LINKS: LinkProps[] = [
     {
         url: "/tokens",
         name: "Find Tokens",
+        dontRedirect: true,
     },
     {
         url: "https://blog.vocdoni.io",
@@ -74,7 +76,12 @@ export const Header = () => {
         <HeaderContainer>
             <ListContainer>
                 <ListItem>
-                    <ExternalLink fontWeight={500} color={theme.clear} link="/">
+                    <ExternalLink
+                        dontRedirect
+                        fontWeight={500}
+                        color={theme.clear}
+                        link="/"
+                    >
                         Vocdoni Bridge
                     </ExternalLink>
                 </ListItem>

@@ -17,6 +17,8 @@ export interface Colors {
     mainText: Color;
     lighterText: Color;
     clear: Color;
+
+    inputBackground: Color;
 }
 
 export interface Screens {

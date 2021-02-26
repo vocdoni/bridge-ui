@@ -9,6 +9,7 @@ export type ExternalLinkStyle = Pick<
 interface ExternalLinkProps extends ExternalLinkStyle {
     link: string;
     children: React.ReactNode;
+    dontRedirect?: boolean;
 }
 
 const Link = styled.a`
@@ -20,9 +21,15 @@ const Link = styled.a`
 export const ExternalLink = ({
     link,
     children,
+    dontRedirect,
     ...props
 }: ExternalLinkProps): JSX.Element => (
-    <Link href={link} rel="noreferrer noopener" target="_blank" {...props}>
+    <Link
+        href={link}
+        rel="noreferrer noopener"
+        target={dontRedirect ? "_self" : "_blank"}
+        {...props}
+    >
         {children}
     </Link>
 );
