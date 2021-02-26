@@ -12,6 +12,10 @@ export interface Colors {
     lightBg: Color;
     lightBg2: Color;
     lightBorder: Color;
+
+    lightText: Color;
+    mainText: Color;
+    lighterText: Color;
 }
 
 export interface Screens {
