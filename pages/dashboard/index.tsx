@@ -11,32 +11,8 @@ import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
 import { getTokenProcesses } from "../../lib/api";
 import { ProcessInfo, TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/util";
-import { WalletStatus } from "../../components/wallet-status";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
-
-const Head = styled.div`
-    display: flex;
-`;
-
-const LeftSection = styled.div`
-    width: 70%;
-`;
-
-const RightSection = styled.div`
-    width: 30%;
-    margin-left: 2em;
-    margin-top: 3em;
-`;
-
-const Title = styled.h1`
-    margin-bottom: 5px;
-`;
-
-const Subtitle = styled.h4`
-    margin-top: 5px;
-    font-size: 20px;
-    color: ${({ theme }) => theme.accent1};
-`;
+import { TopSection } from "../../components/top-section";
 
 const TokenList = styled.div`
     display: flex;
@@ -49,10 +25,6 @@ const TokenList = styled.div`
 
 const LightText = styled.p`
     color: ${({ theme }) => theme.lightText};
-`;
-
-const Loader = styled(Spinner)`
-    margin: 1rem;
 `;
 
 // MAIN COMPONENT
@@ -134,7 +106,7 @@ const DashboardPage = () => {
             proc.parameters.startBlock + proc.parameters.blockCount
     );
 
-    const DASHBOARD_VOTING_SECTIONS = [
+    const VOTING_SECTIONS = [
         {
             title: "Active votes",
             processes: activeProcesses,
@@ -159,21 +131,12 @@ const DashboardPage = () => {
 
     return (
         <div>
-            <Head>
-                <LeftSection>
-                    <Title>My Dashboard</Title>
-                    <Subtitle>
-                        Vote on the open processes and see the results of the
-                        ones that already ended.
-                    </Subtitle>
-                </LeftSection>
-                <RightSection>
-                    <WalletStatus />
-                    {/* <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} /> */}
-                </RightSection>
-            </Head>
-
-            {DASHBOARD_VOTING_SECTIONS.map((section) => (
+            <TopSection
+                title="My Dashboard"
+                description="Vote on the open processes and see the results of the
+                        ones that already ended."
+            />
+            {VOTING_SECTIONS.map((section) => (
                 <VoteSection
                     {...section}
                     loadingProcesses={loadingProcesses}
@@ -184,7 +147,7 @@ const DashboardPage = () => {
     );
 };
 
-const VoteSection = ({
+export const VoteSection = ({
     processes,
     tokenInfos,
     loadingProcesses,

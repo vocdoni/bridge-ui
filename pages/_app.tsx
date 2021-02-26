@@ -15,7 +15,7 @@ import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
 
 import "../styles/index.less";
-import { theme } from "../theme";
+import { FixedGlobalStyle, theme } from "../theme";
 
 type NextAppProps = AppInitialProps & {
     Component: NextComponentType<NextPageContext, any, any>;
@@ -45,6 +45,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                                         chainId={chainId}
                                         connectors={{}}
                                     >
+                                        <FixedGlobalStyle />
                                         <Head>
                                             <meta
                                                 name="viewport"

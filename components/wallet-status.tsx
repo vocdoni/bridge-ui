@@ -25,6 +25,7 @@ const WalletContainer = styled.div`
         padding: inherit;
         margin-top: inherit;
         border-radius: 0.0001px 4px 4px 0.0001px;
+        width: calc(100% - 2 * 1em);
 
         padding: 0 38px 0 12px;
     }

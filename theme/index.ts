@@ -1,4 +1,4 @@
-import { DefaultTheme } from "styled-components";
+import { createGlobalStyle, DefaultTheme } from "styled-components";
 import { Colors, Margins, Screens } from "./types";
 
 export const colors: Colors = {
@@ -21,6 +21,7 @@ export const colors: Colors = {
 
     // @TODO: Remove this and use white?
     clear: "#FFFFFF",
+    inputBackground: "#EAEAEA",
 };
 
 export const size = {
@@ -30,7 +31,7 @@ export const size = {
     tablet: 768,
     laptop: 1024,
     laptopL: 1440,
-    desktop: 1920,
+    desktop: 3000,
 };
 
 export const screens: Screens = {
@@ -54,3 +55,57 @@ export const theme: DefaultTheme = {
     screens,
     margins,
 };
+
+export const FixedGlobalStyle = createGlobalStyle`
+body {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    font-family: "Roboto", Arial, Helvetica, sans-serif !important;
+    background-color: ${({ theme }) => theme.clear} !important;
+    color: ${({ theme }) => theme.mainText};
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.01em;
+}
+
+h1 { font-size: 45px; font-weight: 900; }
+h2 { font-size: 30px; font-weight: 900; }
+h3 { font-size: 20px; font-weight: 900; }
+h4 { font-size: 16px; font-weight: 500; }
+h5 { font-size: 14px; font-weight: 500; }
+h6 { font-size: 13px; font-weight: 500; }
+p { font-size: 14px; }
+
+
+textarea {
+    min-height: 72px;
+}
+
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Roboto'), local('Roboto-Regular'), url(/fonts/roboto-regular.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: local('Roboto Medium'), local('Roboto-Medium'), url(/fonts/roboto-medium.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: local('Roboto Black'), local('Roboto-Black'), url(/fonts/roboto-black.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+`;

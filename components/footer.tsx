@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { ExternalLink } from "./external-link";
 
 const Container = styled.div`
@@ -12,6 +12,7 @@ const Container = styled.div`
 
 const Section = styled.div`
     padding: 40px 40px 0;
+    color: ${({ color }) => color};
 `;
 
 // @TODO: Maybe we should share this const with the header
@@ -30,18 +31,23 @@ const FOOTER_LINKERS = [
     },
 ];
 
-export const Footer = () => (
-    <Container>
-        <Section>
-            {FOOTER_LINKERS.map(({ url, name }, i) => (
-                <>
-                    <ExternalLink textDecoration="underline" link={url}>
-                        {name}
-                    </ExternalLink>
-                    {i < FOOTER_LINKERS.length - 1 ? " · " : null}
-                </>
-            ))}
-        </Section>
-        <Section>Vocdoni {new Date().getFullYear()}</Section>
-    </Container>
-);
+export const Footer = () => {
+    const theme = useTheme();
+    return (
+        <Container>
+            <Section>
+                {FOOTER_LINKERS.map(({ url, name }, i) => (
+                    <>
+                        <ExternalLink textDecoration="underline" link={url}>
+                            {name}
+                        </ExternalLink>
+                        {i < FOOTER_LINKERS.length - 1 ? " · " : null}
+                    </>
+                ))}
+            </Section>
+            <Section color={theme.lightText}>
+                Vocdoni {new Date().getFullYear()}
+            </Section>
+        </Container>
+    );
+};
