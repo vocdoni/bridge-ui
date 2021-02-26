@@ -13,6 +13,11 @@ export const colors: Colors = {
     lightBg: "#F4F4F4",
     lightBg2: "#E8E8E8",
     lightBorder: "#DDE4E9",
+
+    // bridge/styles/constants
+    lightText: "#777777",
+    mainText: "#393939",
+    lighterText: "#999",
 };
 
 export const size = {
