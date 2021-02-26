@@ -8,6 +8,7 @@ import { useTokens } from "../../lib/hooks/tokens";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { ExternalLink } from "../../components/external-link";
+import { TopSection } from "../../components/top-section";
 
 const Container = styled.div`
     max-width: 992px;
@@ -66,24 +67,17 @@ const TokensPage = () => {
 
     return (
         <Container>
-            <Head>
-                <LeftSection>
-                    <Title>All Tokens</Title>
-                    <Description>
-                        Click at the tokens you own and cast your votes
-                    </Description>
-                </LeftSection>
-                <RightSection>
-                    <WalletStatus />
-
-                    {/* <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} /> */}
+            <TopSection
+                title={"All Tokens"}
+                description={"Click at the tokens you own and cast your votes"}
+                Action={() => (
                     <ExternalLink link="/tokens/add">
                         <NotListedMessage>
                             My token is not listed
                         </NotListedMessage>
                     </ExternalLink>
-                </RightSection>
-            </Head>
+                )}
+            />
 
             <h2>Active tokens</h2>
             <ActiveTokensDescription>
