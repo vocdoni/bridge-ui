@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import Link from 'next/link'
+import Link from "next/link";
 import { withRouter, useRouter } from "next/router";
 import { Button, IconEthereum, LoadingRing } from "@aragon/ui";
 // import Spinner from "react-svg-spinner"
@@ -13,7 +13,6 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
-import { ExternalLink } from "../components/external-link";
 import { theme } from "../theme";
 
 const Head = styled.div`
@@ -81,6 +80,11 @@ const TokenList = styled.div`
 
 const ShowMoreButton = styled(Button)`
     min-width: 200px;
+`;
+
+const ClickableLink = styled.a`
+    color: ${({ theme }) => theme.accent1};
+    text-decoration: none;
 `;
 
 interface HandleConnectorProps {
@@ -197,12 +201,14 @@ const IndexPage = () => {
                     </Description>
                     <p>
                         <small>
-                            <ExternalLink
-                                color={theme.accent1}
-                                link="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
+                            <Link
+                                href="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
+                                passHref
                             >
-                                What is an ERC20 Token?
-                            </ExternalLink>
+                                <ClickableLink target="_blank">
+                                    What is an ERC20 Token?
+                                </ClickableLink>
+                            </Link>
                         </small>
                     </p>
                 </LeftSection>
@@ -234,12 +240,14 @@ const IndexPage = () => {
                     </h4>
                     <p>
                         <small>
-                            <ExternalLink
-                                color={theme.accent1}
-                                link="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
+                            <Link
+                                passHref
+                                href="https://ethereum.org/en/developers/docs/standards/tokens/erc-20/"
                             >
-                                Learn more
-                            </ExternalLink>
+                                <ClickableLink target="_blank">
+                                    Learn more
+                                </ClickableLink>
+                            </Link>
                         </small>
                     </p>
                 </RightSection>

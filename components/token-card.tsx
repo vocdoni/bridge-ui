@@ -1,15 +1,6 @@
+import React from "react";
 import styled, { useTheme } from "styled-components";
-import { ExternalLink } from "./external-link";
-
-type Props = {
-    key?: any;
-    children: any;
-    name: string;
-    icon: string;
-    rightText?: string;
-    href: string;
-    onClick?: () => any;
-};
+import Link from "next/link";
 
 const Container = styled.div`
     background: white;
@@ -40,6 +31,7 @@ const Container = styled.div`
 
 const Card = styled.div`
     padding: 1.4em;
+    color: ${({ color }) => color};
 `;
 
 const TokenLogo = styled.img`
@@ -64,22 +56,38 @@ const RightText = styled.span`
     float: right;
 `;
 
-export default function TokenCard({ children, ...props }: Props) {
-    const theme = useTheme();
-    return (
-        <Container>
-            <ExternalLink dontRedirect color={theme.clear} link={props.href}>
-                <Card>
-                    <TokenLogo src={props.icon} />
-                    {props.rightText && (
-                        <RightText>{props.rightText}</RightText>
-                    )}
-                    <Text className="text">
-                        <Name>{props.name}</Name>
-                        {children}
-                    </Text>
-                </Card>
-            </ExternalLink>
-        </Container>
-    );
-}
+type CardProps = {
+    key?: string | number;
+    children: React.ReactNode;
+    name: string;
+    icon: string;
+    rightText?: string;
+    href: string;
+    onClick?: () => void;
+};
+
+const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
+    ({ onClick, icon, rightText, name, children }, ref) => {
+        const theme = useTheme();
+        return (
+            <Card onClick={onClick} ref={ref} color={theme.clear}>
+                <TokenLogo src={icon} />
+                {rightText && <RightText>{rightText}</RightText>}
+                <Text>
+                    <Name>{name}</Name>
+                    {children}
+                </Text>
+            </Card>
+        );
+    }
+);
+
+const TokenCard = ({ children, ...props }: CardProps) => (
+    <Container>
+        <Link href={props.href}>
+            <ClickableCard {...props}>{children}</ClickableCard>
+        </Link>
+    </Container>
+);
+
+export default TokenCard;
