@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
-import { ExternalLink } from "./external-link";
+import Link from "next/link";
 
 const Container = styled.div`
     padding: 30px 0 30px;
@@ -13,6 +13,11 @@ const Container = styled.div`
 const Section = styled.div`
     padding: 40px 40px 0;
     color: ${({ color }) => color};
+`;
+
+const ClickableText = styled.a`
+    text-decoration: underline;
+    color: ${({ theme }) => theme.lightText};
 `;
 
 // @TODO: Maybe we should share this const with the header
@@ -38,9 +43,11 @@ export const Footer = () => {
             <Section>
                 {FOOTER_LINKERS.map(({ url, name }, i) => (
                     <>
-                        <ExternalLink textDecoration="underline" link={url}>
-                            {name}
-                        </ExternalLink>
+                        <Link key={name} href={url} passHref>
+                            <ClickableText target="_blank">
+                                {name}
+                            </ClickableText>
+                        </Link>
                         {i < FOOTER_LINKERS.length - 1 ? " · " : null}
                     </>
                 ))}

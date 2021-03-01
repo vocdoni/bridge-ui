@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
-import { ExternalLink, ExternalLinkStyle } from "./external-link";
+import Link from "next/link";
 
 const HeaderContainer = styled.div`
     -index: 100;
@@ -36,37 +36,52 @@ const ListItem = styled.li`
     }
 `;
 
-interface LinkProps extends ExternalLinkStyle {
+const VocdoniLink = styled.a`
+    font-weight: 500;
+    color: ${({ theme }) => theme.clear};
+    text-decoration: none;
+`;
+
+const ClickableLink = styled.a`
+    text-decoration: none;
+    color: ${({ theme }) => theme.clear};
+`;
+
+interface LinkProps {
     name: string;
     url: string;
-    dontRedirect?: boolean;
+    external?: boolean;
 }
 
 const HEADERS_LINKS: LinkProps[] = [
     {
         url: "/tokens",
         name: "Find Tokens",
-        dontRedirect: true,
     },
     {
         url: "https://blog.vocdoni.io",
         name: "Blog",
+        external: true,
     },
     {
         url: "https://docs.vocdoni.io",
         name: "Docs",
+        external: true,
     },
     {
         url: "https://discord.gg/sQCxgYs",
         name: "Discord",
+        external: true,
     },
 ];
 
-const Link = ({ name, url, ...props }: LinkProps) => (
+const LinkItem = ({ name, url, external }: LinkProps) => (
     <ListItem>
-        <ExternalLink {...props} link={url}>
-            {name}
-        </ExternalLink>
+        <Link href={url} passHref>
+            <ClickableLink target={external ? "_blank" : "_self"}>
+                {name}
+            </ClickableLink>
+        </Link>
     </ListItem>
 );
 
@@ -76,19 +91,14 @@ export const Header = () => {
         <HeaderContainer>
             <ListContainer>
                 <ListItem>
-                    <ExternalLink
-                        dontRedirect
-                        fontWeight={500}
-                        color={theme.clear}
-                        link="/"
-                    >
-                        Vocdoni Bridge
-                    </ExternalLink>
+                    <Link href="/" passHref>
+                        <VocdoniLink>Vocdoni Bridge</VocdoniLink>
+                    </Link>
                 </ListItem>
             </ListContainer>
             <ListContainer>
                 {HEADERS_LINKS.map((link) => (
-                    <Link {...link} color={theme.clear} />
+                    <LinkItem {...link} key={link.name} />
                 ))}
             </ListContainer>
         </HeaderContainer>

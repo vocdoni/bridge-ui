@@ -7,7 +7,7 @@ import { WalletStatus } from "../../components/wallet-status";
 import { useTokens } from "../../lib/hooks/tokens";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
-import { ExternalLink } from "../../components/external-link";
+import Link from "next/link";
 import { TopSection } from "../../components/top-section";
 
 const Container = styled.div`
@@ -71,11 +71,11 @@ const TokensPage = () => {
                 title={"All Tokens"}
                 description={"Click at the tokens you own and cast your votes"}
                 Action={() => (
-                    <ExternalLink link="/tokens/add">
+                    <Link href="/tokens/add">
                         <NotListedMessage>
                             My token is not listed
                         </NotListedMessage>
-                    </ExternalLink>
+                    </Link>
                 )}
             />
 
