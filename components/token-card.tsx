@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import Link from "next/link";
 
 const Container = styled.div`
@@ -12,8 +12,8 @@ const Container = styled.div`
 
     background: linear-gradient(
         101.6deg,
-        var(--accent-1) 0%,
-        var(--accent-2) 100%
+        ${({ theme }) => theme.accent1} 0%,
+        ${({ theme }) => theme.accent2} 100%
     );
     border-radius: 13px;
     box-shadow: 1px 4px 9px rgba(0, 0, 0, 0.2);
@@ -31,7 +31,7 @@ const Container = styled.div`
 
 const Card = styled.div`
     padding: 1.4em;
-    color: ${({ color }) => color};
+    color: ${({ theme }) => theme.clear};
 `;
 
 const TokenLogo = styled.img`
@@ -68,9 +68,8 @@ type CardProps = {
 
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
     ({ onClick, icon, rightText, name, children }, ref) => {
-        const theme = useTheme();
         return (
-            <Card onClick={onClick} ref={ref} color={theme.clear}>
+            <Card onClick={onClick} ref={ref}>
                 <TokenLogo src={icon} />
                 {rightText && <RightText>{rightText}</RightText>}
                 <Text>

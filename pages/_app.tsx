@@ -14,7 +14,6 @@ import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
 
-import "../styles/index.less";
 import { FixedGlobalStyle, theme } from "../theme";
 
 type NextAppProps = AppInitialProps & {

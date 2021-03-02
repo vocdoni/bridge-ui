@@ -29,7 +29,6 @@ export interface Screens {
     laptop: string;
     laptopL: string;
     desktop: string;
-    desktopL: string;
 }
 
 export interface Margins {
