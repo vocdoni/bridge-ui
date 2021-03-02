@@ -32,8 +32,14 @@ export interface Screens {
 }
 
 export interface Margins {
-    horizontal: string;
-    vertical: string;
+    mobile: {
+        horizontal: string;
+        vertical: string;
+    }
+    desktop: {
+        horizontal: string;
+        vertical: string;
+    }
 }
 
 declare module "styled-components" {
