@@ -11,35 +11,12 @@ import Link from "next/link";
 import { TopSection } from "../../components/top-section";
 
 const Container = styled.div`
-    max-width: 992px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: ${({ theme }) => "0 " + theme.margins.horizontal};
-`;
-
-const Head = styled.div`
-    display: flex;
+    width: 100%;
 `;
 
 const NotListedMessage = styled.h6`
     color: ${({ theme }) => theme.accent1};
     text-align: right;
-`;
-
-const LeftSection = styled.div`
-    width: 70%;
-`;
-
-const RightSection = styled.div`
-    width: 30%;
-    margin-left: 2em;
-    margin-top: 3em;
-`;
-
-const Description = styled.h4`
-    color: ${({ theme }) => theme.accent1};
-    margin-top: 5px;
-    font-size: 20px;
 `;
 
 const ActiveTokensDescription = styled.p`
@@ -50,10 +27,10 @@ const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin: 0 -1em;
-`;
 
-const Title = styled.h1`
-    margin-bottom: 5px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        justify-content: center;
+    }
 `;
 
 // MAIN COMPONENT

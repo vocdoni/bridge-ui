@@ -27,6 +27,7 @@ const Container = styled.div`
 
     // This will change with responsive
     max-width: calc(33.3333333% - 2em);
+    min-width: 230px;
 `;
 
 const Card = styled.div`

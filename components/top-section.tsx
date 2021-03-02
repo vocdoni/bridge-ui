@@ -4,16 +4,24 @@ import { WalletStatus } from "./wallet-status";
 
 const Head = styled.div`
     display: flex;
+    flex-wrap: wrap;
 `;
 
 const LeftSection = styled.div`
     width: 70%;
+    @media ${({ theme }) => theme.screens.tablet} {
+        width: 100%;
+    }
 `;
 
 const RightSection = styled.div`
     width: 30%;
-    margin-left: 2em;
     margin-top: 3em;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        width: 100%;
+        margin-left: 0;
+    }
 `;
 
 const Title = styled.h1`

@@ -45,8 +45,14 @@ export const screens: Screens = {
 };
 
 export const margins: Margins = {
-    horizontal: "40px",
-    vertical: "",
+    desktop: {
+        horizontal: "40px",
+        vertical: "",
+    },
+    mobile: {
+        horizontal: "15px",
+        vertical: "",
+    }
 };
 
 export const theme: DefaultTheme = {

@@ -5,6 +5,7 @@ import Link from "next/link";
 const HeaderContainer = styled.div`
     width: 100%;
     z-index: 100;
+    min-height: 50px;
     position: fixed;
     top: 0;
     padding: 10px 0 10px;
@@ -18,19 +19,17 @@ const HeaderContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
-    @media (max-width: ${({ theme }) => theme.screens.tablet}px) {
-        color: red;
-    }
+    align-items: center;
+    flex-wrap: wrap;
 `;
 
-const ListContainer = styled.ul`
-    padding: ${({ theme }) => "0 " + theme.margins.horizontal};
-    display: inline;
-    list-style: none;
+const ListContainer = styled.div`
+    padding: ${({ theme }) => "0 " + theme.margins.desktop.horizontal};
+    display: flex;
+    flex-wrap: wrap;
 `;
 
-const ListItem = styled.li`
+const ListItem = styled.div`
     display: inline;
     margin-right: 20px;
     &:last-child {
