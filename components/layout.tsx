@@ -12,7 +12,7 @@ const LayoutContainer = styled.div`
         max-width: 992px;
         margin-left: auto;
         margin-right: auto;
-        padding: 0 var(--horizontal-margin);
+        padding: 0 ${({ theme }) => theme.margins.horizontal};
     }
 `;
 

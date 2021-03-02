@@ -3,12 +3,10 @@ import styled, { useTheme } from "styled-components";
 import Link from "next/link";
 
 const HeaderContainer = styled.div`
-    -index: 100;
+    width: 100%;
+    z-index: 100;
     position: fixed;
     top: 0;
-    left: 0;
-    right: 0;
-
     padding: 10px 0 10px;
     background: linear-gradient(
         90deg,
@@ -20,6 +18,10 @@ const HeaderContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    @media (max-width: ${({ theme }) => theme.screens.tablet}px) {
+        color: red;
+    }
 `;
 
 const ListContainer = styled.ul`

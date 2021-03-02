@@ -302,7 +302,7 @@ const ProcessPage = props => {
                 else if (!allQuestionsChosen) return <p className="status">Select a choice for every question</p>
                 else if (isSubmitting || refreshingVotedStatus) return <p className="status">Please wait...<Spinner /></p>
 
-                return <Button mode="strong" onClick={() => onSubmitVote()}>Sign and submit the vote</Button>
+                return <Button mode="strong" onClick={onSubmitVote}>Sign and submit the vote</Button>
             })()}
         </div>
     </div>

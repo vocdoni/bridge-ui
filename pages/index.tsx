@@ -13,7 +13,6 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
-import { theme } from "../theme";
 
 const Head = styled.div`
     display: flex;
@@ -38,17 +37,31 @@ const Row = styled.div`
     display: flex;
     align-items: ${({ alignItems }: CSSProperties) => alignItems};
     justify-content: ${({ justifyContent }) => justifyContent};
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
 `;
 
 const LeftSection = styled.div`
     max-width: ${({ maxWidth }: CSSProperties) => maxWidth};
     width: ${({ width }) => width};
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+    }
 `;
 
 const RightSection = styled.div`
     width: ${({ width }: CSSProperties) => width};
     text-align: ${({ textAlign }) => textAlign};
     max-width: ${({ maxWidth }) => maxWidth};
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+    }
 `;
 
 const ConnectButton = styled(Button)`
@@ -76,6 +89,16 @@ const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin: 0 -1em;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        justify-content: center;
+    }
+`;
+
+const TopTokensContainer = styled.div`
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
 `;
 
 const ShowMoreButton = styled(Button)`
@@ -192,7 +215,7 @@ const IndexPage = () => {
                 <Subtitle>Trustless governance for Token holders</Subtitle>
             </Head>
 
-            <Row alignItems={"center"}>
+            <Row alignItems="center">
                 <LeftSection maxWidth={"60%"}>
                     <Description>
                         Submit proposals for <ColorText>ERC20</ColorText> tokens
@@ -256,11 +279,13 @@ const IndexPage = () => {
             <br />
             <br />
 
-            <h2>Top Tokens</h2>
-            <p>
-                Below is a list of some of the most relevant tokens on the
-                platform
-            </p>
+            <TopTokensContainer>
+                <h2>Top Tokens</h2>
+                <p>
+                    Below is a list of some of the most relevant tokens on the
+                    platform
+                </p>
+            </TopTokensContainer>
 
             <TokenList>
                 {featuredTokens.map((tokenAddr) => (
