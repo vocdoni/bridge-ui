@@ -1,54 +1,53 @@
-import styled from "styled-components"
-import { device } from '../lib/sizes'
-import { LIGHT_BORDER, WHITE } from "../lib/constants"
-import { useMessageAlert } from "../lib/hooks/message-alert"
+import styled from "styled-components";
+import { useMessageAlert } from "../lib/hooks/message-alert";
 
 export const MessageAlert = () => {
-    const { message } = useMessageAlert()
+    const { message } = useMessageAlert();
 
-    return <AlertContainer visible={message?.length > 0}>
-        <div>{message || ""}</div>
-    </AlertContainer>
-}
+    return (
+        <AlertContainer visible={message?.length > 0}>
+            <div>{message || ""}</div>
+        </AlertContainer>
+    );
+};
 
 const AlertContainer = styled.div<{ visible: boolean }>`
-position: fixed;
-z-index: 320;
-top: 10px;
-left: 10px;
-right: 10px;
-font-size: 90%;
-padding: 15px;
-text-align: center;
-user-select: none;
-font-size: 16px;
-
-display: flex;
-justify-content: center;
-align-items: center;
-
-background-color: ${WHITE};
-border: 1px solid ${LIGHT_BORDER};
-border-radius: 4px;
-
-transform: ${props => props.visible ? "translate(0px, 0px)" : "translate(0px, -90px)"};
-opacity: ${props => props.visible ? "1" : "0"};
-
-transition: transform .1s ease-out, opacity .1s ease-out;
-
-@media ${device.mobileL} {
-    left: 15vw;
-    right: 15vw;
-}
-
-@media ${device.tablet} {
-    justify-content: flex-end;
-    text-align: right;
-    top: 1,0px;
-    left: unset;
-    max-width: 330px;
+    position: fixed;
+    z-index: 320;
+    top: 10px;
+    left: 10px;
     right: 10px;
+    font-size: 90%;
+    padding: 15px;
+    text-align: center;
+    user-select: none;
+    font-size: 16px;
 
-    transform: ${props => props.visible ? "translate(0px, 0px)" : "translate(360px, 0px)"};
-}
-`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: ${({ theme }) => theme.white};
+    border: 1px solid ${({ theme }) => theme.lightBorder};
+    border-radius: 4px;
+
+    transform: ${({ visible }) => `translate(0px, ${visible ? 0 : 90} px)`};
+    opacity: ${({ visible }) => (visible ? "1" : "0")};
+
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        left: 15vw;
+        right: 15vw;
+    }
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        justify-content: flex-end;
+        text-align: right;
+        top: 1, 0px;
+        left: unset;
+        max-width: 330px;
+        right: 10px;
+        transform: ${({ visible }) => `translate(${visible ? 0 : 360}px  0px)`};
+    }
+`;
