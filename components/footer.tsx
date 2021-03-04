@@ -42,14 +42,14 @@ export const Footer = () => {
         <Container>
             <Section>
                 {FOOTER_LINKERS.map(({ url, name }, i) => (
-                    <>
-                        <Link key={name} href={url} passHref>
+                    <div key={name}>
+                        <Link href={url} passHref>
                             <ClickableText target="_blank">
                                 {name}
                             </ClickableText>
                         </Link>
                         {i < FOOTER_LINKERS.length - 1 ? " · " : null}
-                    </>
+                    </div>
                 ))}
             </Section>
             <Section color={theme.lightText}>
