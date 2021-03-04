@@ -60,7 +60,13 @@ const Radio = styled.label`
     }
 `;
 
-const RadioChoice = () => <Radio />;
+const RadioChoice = ({
+    onClick,
+    children,
+}: {
+    onClick: (args: unknown) => void;
+    children: React.ReactNode;
+}) => <Radio onClick={onClick}>{children}</Radio>;
 
 RadioChoice.Style = Radio;
 export default RadioChoice;

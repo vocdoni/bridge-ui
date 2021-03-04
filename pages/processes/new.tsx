@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import {
     CensusErc20Api,
     IProcessCreateParams,
@@ -24,6 +24,7 @@ import { providers } from "ethers";
 import Button from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
+import RadioChoice from "../../components/radio";
 
 const NewProcessContainer = styled.div`
     input[type="text"],
@@ -56,6 +57,10 @@ const FieldRowRightSection = styled.div`
     flex: 4;
     padding-left: 2em;
     margin-top: ${({ marginTop }: CSSProperties) => marginTop}px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        margin-top: ${({ marginTop }: CSSProperties) =>
+            marginTop === 82 ? 98 : marginTop}px;
+    }
 `;
 
 const RowQuestions = styled.div`
@@ -231,65 +236,6 @@ const PlusBoxRemove = styled.div`
     }
     &:active {
         background: ${({ theme }) => theme.accent1 + "27"};
-    }
-`;
-
-const RadioChoice = styled.label`
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    padding: 5px 0;
-    font-weight: 500;
-    color: var(--main-text);
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    /* Hide the browser's default radio button */
-    input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-    }
-
-    /* Create a custom radio button */
-    .checkmark {
-        height: 22px;
-        width: 22px;
-        background-color: ${({ theme }) => theme.clear};
-        border-radius: 50%;
-        margin-right: 1em;
-        border: 1px solid ${({ theme }) => theme.accent1};
-    }
-
-    /* When the radio button is checked, add a blue background */
-    input:checked ~ .checkmark {
-        background-color: ${({ theme }) => theme.clear};
-    }
-
-    /* Create the indicator (the dot/circle - hidden when not checked) */
-    .checkmark:after {
-        content: "";
-        position: absolute;
-        display: none;
-    }
-
-    /* Show the indicator (dot/circle) when checked */
-    input:checked ~ .checkmark:after {
-        display: block;
-    }
-
-    /* Style the indicator (dot/circle) */
-    .checkmark:after {
-        border-radius: 50%;
-        background: ${({ theme }) => theme.accent1};
-        z-index: 50;
-        height: 16px;
-        width: 16px;
-        margin: 3px;
     }
 `;
 
