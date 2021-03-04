@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ProcessMetadata, VotingApi } from "dvote-js";
 
 import { usePool, useProcesses } from "@vocdoni/react-hooks";
@@ -14,12 +14,24 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
 import { VoteSection } from "../dashboard";
+import { shortAddress } from "../../lib/util";
 
 const RowSummary = styled.div`
     margin-top: 2em;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: column;
+        text-align: center;
+    }
+`;
+
+const Info = styled.div`
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: row;
+    }
 `;
 
 const InfoTitle = styled.p`
@@ -34,11 +46,22 @@ const Address = styled.h4`
     max-width: 200px;
     font-size: 18px;
     letter-spacing: 0;
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+        max-width: 100%;
+        overflow: none;
+    }
 `;
 
 const InfoDescription = styled.h4`
     font-size: 18px;
     letter-spacing: 0;
+`;
+
+const VoteSectionContainer = styled.div`
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
 `;
 
 // MAIN COMPONENT
@@ -126,7 +149,6 @@ const TokenPage = () => {
                     processes.get(id).parameters.blockCount
     );
 
-
     // This exact logic is being done in dashboard/index.tsx
     // @TODO: Convert this logic into a hook so we apply some DRY
     const VOTING_SECTIONS = [
@@ -152,6 +174,13 @@ const TokenPage = () => {
         },
     ];
 
+    const address = useMemo(() => {
+        if (token?.address) {
+            return shortAddress(token.address);
+        }
+        return "-";
+    }, [token?.address]);
+
     return (
         <div>
             <TopSection
@@ -163,7 +192,7 @@ const TokenPage = () => {
                     <Button
                         mode="strong"
                         wide
-                        onClick={() => onCreateProcess(token?.address)}
+                        onClick={() => onCreateProcess(token.address)}
                     >
                         Create a governance process
                     </Button>
@@ -171,33 +200,35 @@ const TokenPage = () => {
             />
 
             <RowSummary>
-                <div>
+                <Info>
                     <InfoTitle>Token symbol</InfoTitle>
                     <InfoDescription>{token?.symbol || "-"}</InfoDescription>
-                </div>
-                <div>
+                </Info>
+                <Info>
                     <InfoTitle>Token name</InfoTitle>
                     <InfoDescription>{token?.name || "-"}</InfoDescription>
-                </div>
-                <div>
+                </Info>
+                <Info>
                     <InfoTitle>Total supply</InfoTitle>
                     <InfoDescription>
                         {token?.totalSupply || "-"}
                     </InfoDescription>
-                </div>
-                <div>
+                </Info>
+                <Info>
                     <InfoTitle>Token address</InfoTitle>
-                    <Address>{token?.address || "-"}</Address>
-                </div>
+                    <Address>{address}</Address>
+                </Info>
             </RowSummary>
 
-            {VOTING_SECTIONS.map((section) => (
-                <VoteSection
-                    {...section}
-                    loadingProcesses={loadingProcessList}
-                    tokenInfos={token}
-                />
-            ))}
+            <VoteSectionContainer>
+                {VOTING_SECTIONS.map((section) => (
+                    <VoteSection
+                        {...section}
+                        loadingProcesses={loadingProcessList}
+                        tokenInfos={token}
+                    />
+                ))}
+            </VoteSectionContainer>
         </div>
     );
 };

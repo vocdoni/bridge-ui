@@ -15,6 +15,7 @@ import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
+import "react-datetime/css/react-datetime.css";
 
 type NextAppProps = AppInitialProps & {
     Component: NextComponentType<NextPageContext, any, any>;
