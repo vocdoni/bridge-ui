@@ -66,11 +66,18 @@ const RowQuestions = styled.div`
 
 const RowQuestionLeftSection = styled.div`
     flex: 6;
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex: 12;
+    }
 `;
 
 const RowQuestionRightSection = styled.div`
     flex: 4;
     padding-left: 2em;
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex: 0;
+        padding-left: 0;
+    }
 `;
 
 const ChoiceRightSection = styled.div`
@@ -79,6 +86,10 @@ const ChoiceRightSection = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex: 0;
+    }
 `;
 
 const InfoTitle = styled.h2`
@@ -94,7 +105,7 @@ const ChoicesTitle = styled.h3`
     margin-bottom: 0;
 `;
 
-const plusbox = `
+/* const plusbox = `
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -140,8 +151,9 @@ const remove = `
     &:active {
         background: ${({ theme }) => theme.accent1 + "27"};
     }
-`;
+`; */
 
+// @TODO: Apply DRY with these three PlusBox divs
 const PlusBoxContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -358,34 +370,31 @@ interface PlusBoxProps {
         title: MultiLanguage<string>;
         value: number;
     }>;
-    isDefault?: string;
-    onClick: (args: unknown) => void;
     currentQuestion: number;
 }
 
 const PlusBox = ({
     currentChoice,
     choices,
-    onClick,
     currentQuestion,
-}: PlusBoxProps) => {
+    onClick,
+}: PlusBoxProps & { onClick: (params: PlusBoxProps) => void }) => {
     const lastChoice = choices.length - 1;
     const isDefault = choices[currentChoice].title.default;
 
-    let Component = PlusBoxRemove;
+    let Box = PlusBoxRemove;
     if (currentChoice === lastChoice && isDefault) {
-        Component = PlusBoxAdd;
-        if (choices.length === 2) {
-            Component = PlusBoxContainer;
-        }
+        Box = PlusBoxAdd;
+    } else if (choices.length === 2) {
+        Box = PlusBoxContainer;
     }
 
     return (
-        <Component
+        <Box
             onClick={() => onClick({ currentQuestion, choices, currentChoice })}
         >
-            +
-        </Component>
+            {currentChoice === lastChoice && isDefault ? "+" : "⨯"}
+        </Box>
     );
 };
 
