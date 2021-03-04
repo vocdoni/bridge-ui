@@ -62,6 +62,7 @@ export const theme: DefaultTheme = {
 };
 
 export const FixedGlobalStyle = createGlobalStyle`
+
 body {
     padding: 0;
     margin: 0;
