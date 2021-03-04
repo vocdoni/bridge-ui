@@ -5,6 +5,9 @@ import { WalletStatus } from "./wallet-status";
 const Head = styled.div`
     display: flex;
     flex-wrap: wrap;
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
 `;
 
 const LeftSection = styled.div`
