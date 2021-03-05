@@ -20,8 +20,8 @@ export async function getTokenProcesses(
 ): Promise<ProcessInfo[]> {
     try {
         const list = await getProcessList(tokenAddr, pool);
-        const allProcess = list.map(
-            async (processId) => await getProcessInfo(processId, pool)
+        const allProcess = list.map((processId) =>
+            getProcessInfo(processId, pool)
         );
         const allProcessesInformation = await Promise.allSettled(allProcess);
         const sanitizeProccesses = (p) => {
