@@ -7,10 +7,13 @@ const Container = styled.div`
     font-size: 13px;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
 `;
 
 const Section = styled.div`
+    display: flex;
+    flex-wrap: wrap;
     padding: 40px 40px 0;
     color: ${({ color }) => color};
 `;
