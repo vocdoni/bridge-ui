@@ -44,22 +44,19 @@ const NewProcessContainer = styled.div`
 
 const FieldRow = styled.div`
     margin-top: 2em;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
-const FieldRowLeftSection = styled.div`
-    flex: 6;
 `;
 
 const FieldRowRightSection = styled.div`
-    flex: 4;
-    padding-left: 2em;
+    display: flex;
     margin-top: ${({ marginTop }: CSSProperties) => marginTop}px;
     @media ${({ theme }) => theme.screens.tablet} {
         margin-top: ${({ marginTop }: CSSProperties) =>
             marginTop === 82 ? 98 : marginTop}px;
+    }
+    flex-wrap: wrap;
+
+    & > * {
+        margin-right: 35px;
     }
 `;
 
@@ -581,7 +578,6 @@ const NewProcessPage = () => {
             />
 
             <FieldRow>
-                <FieldRowLeftSection>
                     <InfoTitle>Title</InfoTitle>
                     <InfoPlaceholder>
                         Short name to identify the process
@@ -592,8 +588,7 @@ const NewProcessPage = () => {
                         onChange={(e) => setMainTitle(e.target.value)}
                         value={metadata.title.default}
                     />
-                </FieldRowLeftSection>
-                <FieldRowRightSection marginTop={70}>
+                <FieldRowRightSection marginTop={25}>
                     <RadioChoice onClick={() => setEncryptedVotes(false)}>
                         {" "}
                         <input
@@ -618,7 +613,6 @@ const NewProcessPage = () => {
             </FieldRow>
 
             <FieldRow>
-                <FieldRowLeftSection>
                     <InfoTitle>Description</InfoTitle>
                     <InfoPlaceholder>
                         An introduction of about 2-3 lines
@@ -628,34 +622,31 @@ const NewProcessPage = () => {
                         onChange={(e) => setMainDescription(e.target.value)}
                         value={metadata.description.default}
                     />
-                </FieldRowLeftSection>
-                <FieldRowRightSection marginTop={82}>
-                    <div>
-                        <Datetime
-                            value={startDate}
-                            inputProps={{
-                                placeholder: "Start date (d/m/y h:m)",
-                            }}
-                            isValidDate={(cur: Moment) =>
-                                isValidFutureDate(cur)
-                            }
-                            dateFormat="D/MM/YYYY"
-                            timeFormat="HH:mm[h]"
-                            onChange={(date) => onStartDate(date)}
-                            strictParsing
-                        />
-                        <Datetime
-                            value={endDate}
-                            inputProps={{ placeholder: "End date (d/m/y h:m)" }}
-                            isValidDate={(cur: Moment) =>
-                                isValidFutureDate(cur)
-                            }
-                            dateFormat="D/MM/YYYY"
-                            timeFormat="HH:mm[h]"
-                            onChange={(date) => onEndDate(date)}
-                            strictParsing
-                        />
-                    </div>
+                <FieldRowRightSection marginTop={25}>
+                    <Datetime
+                        value={startDate}
+                        inputProps={{
+                            placeholder: "Start date (d/m/y h:m)",
+                        }}
+                        isValidDate={(cur: Moment) =>
+                            isValidFutureDate(cur)
+                        }
+                        dateFormat="D/MM/YYYY"
+                        timeFormat="HH:mm[h]"
+                        onChange={(date) => onStartDate(date)}
+                        strictParsing
+                    />
+                    <Datetime
+                        value={endDate}
+                        inputProps={{ placeholder: "End date (d/m/y h:m)" }}
+                        isValidDate={(cur: Moment) =>
+                            isValidFutureDate(cur)
+                        }
+                        dateFormat="D/MM/YYYY"
+                        timeFormat="HH:mm[h]"
+                        onChange={(date) => onEndDate(date)}
+                        strictParsing
+                    />
                 </FieldRowRightSection>
             </FieldRow>
 

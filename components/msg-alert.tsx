@@ -18,7 +18,6 @@ const AlertContainer = styled.div<{ visible: boolean }>`
     left: 10px;
     right: 10px;
     font-size: 90%;
-    padding: 15px;
     text-align: center;
     user-select: none;
     font-size: 16px;

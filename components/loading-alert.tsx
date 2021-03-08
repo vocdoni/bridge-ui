@@ -16,13 +16,13 @@ export const LoadingAlert = () => {
 };
 
 const LoadingAlertContainer = styled.div<{ visible: boolean }>`
-    position: fixed;
-    z-index: 320;
+    // TODO:
+    // position: fixed;
+    // z-index: 320;
     top: 10px;
     left: 10px;
     right: 10px;
     font-size: 90%;
-    padding: 15px;
     text-align: center;
     user-select: none;
     font-size: 16px;
