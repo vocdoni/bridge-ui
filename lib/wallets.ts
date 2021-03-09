@@ -16,7 +16,7 @@ export const WALLETS: ConnectorData[] = [
     {
         name: "Portis",
         connector: "portis",
-        properties: { dAppId: "e83a1e82-0907-4aea-8d9e-f593a9bea43b" },
+        properties: { dAppId: "4402221a-b7c2-4781-9a0e-b1509dabaa1e" },
     },
     {
         name: "Fortmatic",

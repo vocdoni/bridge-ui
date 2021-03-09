@@ -10,7 +10,7 @@ import { strDateDiff } from '../../lib/date'
 import { HEX_REGEX } from '../../lib/regex'
 import { BigNumber, providers } from 'ethers'
 import { areAllNumbers } from '../../lib/util'
-import { WalletStatus } from '../../components/wallet-status'
+import { ConnectButton } from '../../components/connect-button'
 import TokenAmount from "token-amount"
 import { useWallet } from 'use-wallet'
 import { useUrlHash } from 'use-url-hash'
@@ -266,7 +266,7 @@ const ProcessPage = props => {
                 <h4 className="accent-1">Cast your vote and see the ongoing results as they are received.</h4>
             </div>
             <div className="right">
-                <WalletStatus />
+                <ConnectButton />
             </div>
         </div>
 

@@ -7,7 +7,7 @@ import { useUrlHash } from 'use-url-hash'
 import TokenCard from '../../components/token-card'
 import { Button } from '@aragon/ui'
 import Router from 'next/router'
-import { WalletStatus } from '../../components/wallet-status'
+import { ConnectButton } from '../../components/connect-button'
 import { getProcessList, getTokenProcesses } from '../../lib/api'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 import Spinner from "react-svg-spinner"
@@ -94,7 +94,7 @@ const TokenPage = props => {
                 <h4 className="accent-1">See the details of {token?.symbol || "the token"}</h4>
             </div>
             <div className="right">
-                <WalletStatus />
+                <ConnectButton />
                 <div>
                     <Button mode="strong" wide onClick={() => onCreateProcess(token?.address)}>Create a governance process</Button>
                 </div>

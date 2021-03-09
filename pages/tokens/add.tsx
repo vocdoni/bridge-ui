@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { CensusErc20Api } from 'dvote-js'
 import Button from '../../components/button'
 import Router from 'next/router'
-import { WalletStatus } from '../../components/wallet-status'
+import { ConnectButton } from '../../components/connect-button'
 import { usePool, useSigner } from '@vocdoni/react-hooks'
 import { useWallet } from 'use-wallet'
 import { getTokenInfo, hasBalance, registerToken } from '../../lib/api'
@@ -91,7 +91,7 @@ const TokenAddPage = props => {
                 <h4 className="accent-1">Enter the details of an ERC20 token and start submitting governance processes.</h4>
             </div>
             <div className="right">
-                <WalletStatus />
+                <ConnectButton />
             </div>
         </div>
 
@@ -138,7 +138,7 @@ const TokenAddPage = props => {
 
                 <div className="row-continue">
                     {
-                        !wallet.account ? <WalletStatus /> :
+                        !wallet.account ? <ConnectButton /> :
                             registeringToken ?
                                 <Button onClick={() => { }}><Spinner color={ACCENT_COLOR_2} /></Button> :
                                 <Button onClick={() => onSubmit()}>Register token</Button>

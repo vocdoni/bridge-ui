@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useWallet } from "use-wallet";
 
@@ -9,6 +10,7 @@ const ModalContainer = styled.div`
     padding: 50px 20px;
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
 `;
 
 const WalletOption = styled.div`
@@ -43,18 +45,22 @@ const OptionContainer = styled.div`
     padding: 2%;
 `;
 
+const CloseButton = styled.h2`
+    margin-left: -35px;
+    padding-right: 10px;
+    margin-top: 10px;
+    cursos: pointer;
+}    
+`;
+
 export const WalletList = () => {
-    const { connect } = useWallet();
+    const { connect, error } = useWallet();
+    const { push, pathname } = useRouter();
+    const { state, dispatch } = useModal();
 
-    const {
-        state: {
-            walletList: { open },
-        },
-        dispatch,
-    } = useModal();
+    const inLanding = pathname === "/";
 
-    const handleConnection = (wallet: string) => {
-        connect(WALLETS[wallet].connector);
+    const closeModal = () => {
         dispatch({
             type: ActionTypes.CLOSE,
             payload: {
@@ -63,25 +69,28 @@ export const WalletList = () => {
         });
     };
 
+    const handleConnection = async (wallet: string) => {
+        await connect(WALLETS[wallet].connector);
+        if (!error && inLanding) push("/dashboard");
+        closeModal();
+    };
+
     return (
-        <Modal open={open} height={500} width={400}>
+        <Modal open={state.walletList.open} height={500} width={400}>
             <ModalContainer>
                 {Object.keys(WALLETS).map((wallet) => {
                     const { connector, name } = WALLETS[wallet];
                     return (
                         <OptionContainer key={"wallet_" + wallet}>
-                            <WalletOption
-                                onClick={() => handleConnection(wallet)}
-                            >
-                                <WalletLogo
-                                    src={`/media/wallets/${connector}.svg`}
-                                />
+                            <WalletOption onClick={() => handleConnection(wallet)}>
+                                <WalletLogo src={`/media/wallets/${connector}.svg`} />
                                 <WalletName>{name}</WalletName>
                             </WalletOption>
                         </OptionContainer>
                     );
                 })}
             </ModalContainer>
+            <CloseButton onClick={closeModal}>X</CloseButton>
         </Modal>
     );
 };

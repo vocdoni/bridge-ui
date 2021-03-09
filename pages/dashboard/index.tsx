@@ -10,7 +10,7 @@ import { useRegisteredTokens } from '../../lib/hooks/registered-tokens'
 import { getTokenProcesses } from '../../lib/api'
 import { ProcessInfo, TokenInfo } from '../../lib/types'
 import { limitedText } from '../../lib/util'
-import { WalletStatus } from '../../components/wallet-status'
+import { ConnectButton } from '../../components/connect-button'
 import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
 
 // MAIN COMPONENT
@@ -82,7 +82,7 @@ const DashboardPage = props => {
                 <h4 className="accent-1">Vote on the open processes and see the results of the ones that already ended.</h4>
             </div>
             <div className="right">
-                <WalletStatus />
+                <ConnectButton />
                 {/* <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} /> */}
             </div>
         </div>

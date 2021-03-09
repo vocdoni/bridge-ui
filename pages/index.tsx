@@ -1,13 +1,14 @@
 // import Link from 'next/link'
+import { Button, } from '@aragon/ui'
 import { withRouter } from 'next/router'
+
+// import Spinner from "react-svg-spinner"
 import TokenCard from '../components/token-card'
 import {ConnectButton} from '../components/connect-button'
 import { featuredTokens } from '../lib/tokens'
-import { Button, IconEthereum, LoadingRing } from '@aragon/ui'
-// import Spinner from "react-svg-spinner"
-
 import { useTokens } from '../lib/hooks/tokens'
 import { FALLBACK_TOKEN_ICON } from '../lib/constants'
+
 
 // MAIN COMPONENT
 const IndexPage = () => {

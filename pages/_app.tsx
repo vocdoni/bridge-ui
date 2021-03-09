@@ -34,7 +34,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                 <UseRegisteredTokens>
                     <UseTokenProvider>
                         <UseProcessProvider>
-                            <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                            <UseWalletProvider chainId={4} connectors={connectors || {}}>
                                 <ModalsProvider>
                                 <Head>
                                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

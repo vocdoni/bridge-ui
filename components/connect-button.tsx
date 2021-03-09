@@ -1,6 +1,12 @@
-import React, { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/router";
-import { Button, IconEthereum, IconPower, AddressField } from "@aragon/ui";
+import {
+    Button,
+    IconEthereum,
+    IconPower,
+    AddressField,
+    LoadingRing,
+} from "@aragon/ui";
 import { usePool } from "@vocdoni/react-hooks";
 import {
     ChainUnsupportedError,
@@ -17,7 +23,7 @@ const WalletAddress = ({ reset, account }) => {
 
 export const ConnectButton = () => {
     const { dispatch } = useModal();
-    const { pathname } = useRouter();
+    const { pathname, push } = useRouter();
     const { status, networkName, reset, error, account } = useWallet();
     const { loading: poolLoading } = usePool();
 
@@ -28,7 +34,7 @@ export const ConnectButton = () => {
     };
 
     const isConnected = status == "connected";
-    const notInLanding = pathname === "/";
+    const inLanding = pathname === "/";
     const loadingOrConnecting = poolLoading || status === "connecting";
 
     const label = useMemo(() => {
@@ -43,7 +49,7 @@ export const ConnectButton = () => {
             return "Wallet connection rejected";
         }
 
-        return isConnected ? "Show dashboard" : "Connect to wallet";
+        return isConnected ? "Show dashboard" : "Connect to Wallet";
     }, [poolLoading, status, error]);
 
     const mode = useMemo(() => {
@@ -58,10 +64,16 @@ export const ConnectButton = () => {
             reset();
             return;
         }
+
+        if (inLanding && isConnected) {
+            push("/dashboard");
+            return;
+        }
+
         openWallets();
     };
 
-    if (isConnected && notInLanding) {
+    if (isConnected && !inLanding) {
         return (
             <div id="wallet-status" className="v-center">
                 <WalletAddress account={account} reset={reset} />
@@ -69,5 +81,13 @@ export const ConnectButton = () => {
         );
     }
 
-    return <Button mode={mode} onClick={handleButtonClick} label={label} />;
+    return (
+        <Button
+            wide
+            icon={loadingOrConnecting ? <LoadingRing /> : <IconEthereum />}
+            mode={mode}
+            onClick={handleButtonClick}
+            label={label}
+        />
+    );
 };

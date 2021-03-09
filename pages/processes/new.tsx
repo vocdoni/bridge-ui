@@ -6,7 +6,7 @@ import { useUrlHash } from 'use-url-hash'
 import { useWallet } from 'use-wallet'
 import Button from '../../components/button'
 import { ProcessMetadataTemplate } from 'dvote-js'
-import { WalletStatus } from '../../components/wallet-status'
+import { ConnectButton } from '../../components/connect-button'
 import Datetime from "react-datetime"
 import { Moment } from 'moment'
 import moment from 'moment'
@@ -195,7 +195,7 @@ const NewProcessPage = props => {
                 <h4 className="accent-1">Enter the details of a new governance process and submit them.</h4>
             </div>
             <div className="right">
-                <WalletStatus />
+                <ConnectButton />
             </div>
         </div>
 
