@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useMemo } from 'react'
 import { NextComponentType, NextPageContext } from 'next'
 import { AppInitialProps } from 'next/app'
 import Head from 'next/head'
@@ -13,6 +13,8 @@ import { UseRegisteredTokens } from '../lib/hooks/registered-tokens'
 import { EthNetworkID, VocdoniEnvironment } from 'dvote-js'
 
 import '../styles/index.less'
+import { ModalsProvider } from '../components/Modal/context'
+import { getConnectors } from '../lib/wallets'
 
 type NextAppProps = AppInitialProps & { Component: NextComponentType<NextPageContext, any, any>; router: Router; }
 
@@ -23,13 +25,17 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment
     const appTitle = process.env.APP_TITLE
 
+
+    const connectors = getConnectors();
+
     return <UseMessageAlertProvider>
         <UseLoadingAlertProvider>
             <UsePoolProvider bootnodeUri={bootnodeUri} networkId={networkId} environment={environment}>
                 <UseRegisteredTokens>
                     <UseTokenProvider>
                         <UseProcessProvider>
-                            <UseWalletProvider chainId={chainId} connectors={{}}>
+                            <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                                <ModalsProvider>
                                 <Head>
                                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                                     <title>{appTitle}</title>
@@ -37,6 +43,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                                 <Layout>
                                     <Component {...pageProps} />
                                 </Layout>
+                                </ModalsProvider>
                             </UseWalletProvider>
                         </UseProcessProvider>
                     </UseTokenProvider>

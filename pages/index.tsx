@@ -12,6 +12,7 @@ import { usePool } from '@vocdoni/react-hooks'
 import { useTokens } from '../lib/hooks/tokens'
 import { FALLBACK_TOKEN_ICON } from '../lib/constants'
 import { useMessageAlert } from '../lib/hooks/message-alert'
+import { ActionTypes, useModal } from '../components/Modal/context'
 
 // MAIN COMPONENT
 const IndexPage = () => {
@@ -21,6 +22,7 @@ const IndexPage = () => {
     const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
     const wallet = useWallet()
     const tokenInfos = useTokens(featuredTokens)
+    const { dispatch } = useModal()
 
     const isConnected = wallet.status == "connected"
 
@@ -53,6 +55,12 @@ const IndexPage = () => {
             })
     }
 
+    const openWallets = () => {
+        dispatch({
+            type: ActionTypes.OPEN_WALLET_LIST,
+        })
+    }
+
 
     return <div id="index">
         <div className="page-head">
@@ -71,7 +79,7 @@ const IndexPage = () => {
                 </small></p>
             </div>
             <div className="right">
-                {(() => {
+                {/* {(() => {
                     if (poolLoading) {
                         return <Button label={"Connecting to Vocdoni"} icon={<LoadingRing />} wide onClick={() => wallet.reset()} />
                     }
@@ -83,7 +91,10 @@ const IndexPage = () => {
                         label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
                         icon={<IconEthereum />} mode="strong"
                         wide onClick={() => onSignIn()} />
-                })()}
+                })()} */}
+                <button onClick={openWallets}>
+                    {isConnected ? "Connected to " + wallet.connector : "Connect to a wallet" }
+                </button>
             </div>
         </div>
 
