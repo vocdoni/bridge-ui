@@ -14,15 +14,24 @@ const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 // VOCDONI API's
 
-export async function getTokenProcesses(tokenAddr: string, pool: GatewayPool): Promise<ProcessInfo[]> {
-    return getProcessList(tokenAddr, pool)
-        .catch(err => {
-            if (err?.message?.includes("Key not found")) { return [] as string[] }
-            throw err
-        })
-        .then(tokenProcessIds => Promise.all(tokenProcessIds.map(
-            processId => getProcessInfo(processId, pool))
-        ))
+export async function getTokenProcesses(
+    tokenAddr: string,
+    pool: GatewayPool
+): Promise<ProcessInfo[]> {
+    try {
+        const list = await getProcessList(tokenAddr, pool);
+        const allProcess = list.map((processId) =>
+            getProcessInfo(processId, pool)
+        );
+        const allProcessesInformation = await Promise.allSettled(allProcess);
+        const sanitizeProccesses = (p) => {
+            if (p.status === "fulfilled") return p.value;
+        };
+        return allProcessesInformation.map(sanitizeProccesses);
+    } catch (err) {
+        if (err?.message?.includes("Key not found")) return [];
+        throw err;
+    }
 }
 
 export async function getProcessInfo(processId: string, pool: GatewayPool): Promise<ProcessInfo> {
