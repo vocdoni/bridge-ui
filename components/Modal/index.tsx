@@ -15,7 +15,8 @@ const ModalContainer = styled.div<{
     height: ${({ height }) => height}px;
     width: ${({ width }) => width}px;
     display: ${({ open }) => (open ? "flex" : "none")};
-    background: white;
+    background: rgba(234, 234, 234);
+    border-radius: 12px;
 `;
 
 export const Modal = ({ children, height = 400, width = 600, open }) => {

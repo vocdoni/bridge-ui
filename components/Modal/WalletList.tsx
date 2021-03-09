@@ -3,15 +3,12 @@ import { useWallet } from "use-wallet";
 
 import { Modal } from ".";
 import { WALLETS } from "../../lib/wallets";
-import { useModal } from "./context";
+import { ActionTypes, useModal } from "./context";
 
 const ModalContainer = styled.div`
     padding: 50px 20px;
     display: flex;
-    width: 100%;
     flex-wrap: wrap;
-    background: rgba(234, 234, 234);
-    border-radius: 12px;
 `;
 
 const WalletOption = styled.div`
@@ -47,22 +44,27 @@ const OptionContainer = styled.div`
 `;
 
 export const WalletList = () => {
-    const { connect, error } = useWallet();
+    const { connect } = useWallet();
 
     const {
         state: {
             walletList: { open },
         },
+        dispatch,
     } = useModal();
 
     const handleConnection = (wallet: string) => {
-        console.log("connecting");
-        console.log(error);
         connect(WALLETS[wallet].connector);
+        dispatch({
+            type: ActionTypes.CLOSE,
+            payload: {
+                modal: "walletList",
+            },
+        });
     };
 
     return (
-        <Modal open={open} height={500}>
+        <Modal open={open} height={500} width={400}>
             <ModalContainer>
                 {Object.keys(WALLETS).map((wallet) => {
                     const { connector, name } = WALLETS[wallet];

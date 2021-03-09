@@ -3,13 +3,21 @@ import { WalletList } from "./WalletList";
 
 export enum ActionTypes {
     OPEN_WALLET_LIST = "OPEN_WALLET_LIST",
+    CLOSE = "CLOSE",
 }
 
-type WalletList = {
+type WalletListAction = {
     type: ActionTypes.OPEN_WALLET_LIST;
 };
 
-type ModalsContextAction = WalletList;
+type CloseAction = {
+    type: ActionTypes.CLOSE;
+    payload: {
+        modal: keyof ModalContextState;
+    };
+};
+
+type ModalsContextAction = WalletListAction | CloseAction;
 
 interface ModalContextState {
     walletList: {
@@ -28,7 +36,7 @@ const INITIAL_STATE: ModalContextState = {
     },
 };
 
-export const ModalsContext = createContext<Context>({
+const ModalsContext = createContext<Context>({
     state: INITIAL_STATE,
     dispatch: () => null,
 });
@@ -41,8 +49,10 @@ const reducer = (
         case ActionTypes.OPEN_WALLET_LIST:
             return {
                 ...state,
-                walletList: { open: true },
+                walletList: { open: !state.walletList.open },
             };
+        case ActionTypes.CLOSE:
+            return INITIAL_STATE;
         default:
             throw new Error(`Unrecognized action in Modals Provider`);
     }

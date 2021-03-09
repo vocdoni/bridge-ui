@@ -1,66 +1,17 @@
-import { useState } from 'react'
 // import Link from 'next/link'
-import { withRouter, useRouter } from 'next/router'
+import { withRouter } from 'next/router'
 import TokenCard from '../components/token-card'
+import {ConnectButton} from '../components/connect-button'
 import { featuredTokens } from '../lib/tokens'
 import { Button, IconEthereum, LoadingRing } from '@aragon/ui'
 // import Spinner from "react-svg-spinner"
-import { ChainUnsupportedError, useWallet } from 'use-wallet'
 
-import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from '../lib/errors'
-import { usePool } from '@vocdoni/react-hooks'
 import { useTokens } from '../lib/hooks/tokens'
 import { FALLBACK_TOKEN_ICON } from '../lib/constants'
-import { useMessageAlert } from '../lib/hooks/message-alert'
-import { ActionTypes, useModal } from '../components/Modal/context'
 
 // MAIN COMPONENT
 const IndexPage = () => {
-    const { setAlertMessage } = useMessageAlert()
-    const [connecting, setConnecting] = useState(false)
-    const router = useRouter()
-    const { pool, loading: poolLoading, error: poolError, refresh: poolRefresh } = usePool()
-    const wallet = useWallet()
     const tokenInfos = useTokens(featuredTokens)
-    const { dispatch } = useModal()
-
-    const isConnected = wallet.status == "connected"
-
-    // CALLBACKS
-
-    function onSignIn() {
-        if (pool && wallet.status == "connected") {
-            return router.push("/dashboard")
-        }
-
-        setConnecting(true)
-
-        return wallet.connect("injected")
-            .then(() => {
-                if (!wallet.connectors.injected) throw new Error(METAMASK_IS_NOT_AVAILABLE)
-                router.push("/dashboard")
-            })
-            .catch(err => {
-                setConnecting(false)
-
-                if (err && err.message == INVALID_CHAIN_ID || err instanceof ChainUnsupportedError) {
-                    const msg = "Please, switch to the {{NAME}} network".replace("{{NAME}}", process.env.ETH_NETWORK_ID)
-                    return setAlertMessage(msg)
-                }
-                else if (err && err.message == METAMASK_IS_NOT_AVAILABLE) {
-                    return setAlertMessage("Please, install Metamask or a Web3 compatible wallet")
-                }
-                console.error(err)
-                setAlertMessage("Could not access Metamask or connect to the network")
-            })
-    }
-
-    const openWallets = () => {
-        dispatch({
-            type: ActionTypes.OPEN_WALLET_LIST,
-        })
-    }
-
 
     return <div id="index">
         <div className="page-head">
@@ -79,22 +30,7 @@ const IndexPage = () => {
                 </small></p>
             </div>
             <div className="right">
-                {/* {(() => {
-                    if (poolLoading) {
-                        return <Button label={"Connecting to Vocdoni"} icon={<LoadingRing />} wide onClick={() => wallet.reset()} />
-                    }
-                    else if (connecting) {
-                        return <Button label={"Connecting to " + wallet.networkName} icon={<LoadingRing />} wide onClick={() => wallet.reset()} />
-                    }
-
-                    return <Button
-                        label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
-                        icon={<IconEthereum />} mode="strong"
-                        wide onClick={() => onSignIn()} />
-                })()} */}
-                <button onClick={openWallets}>
-                    {isConnected ? "Connected to " + wallet.connector : "Connect to a wallet" }
-                </button>
+                <ConnectButton />
             </div>
         </div>
 
