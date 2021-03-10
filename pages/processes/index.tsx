@@ -72,6 +72,9 @@ const QuestionLeftSection = styled.div`
     h3 {
         margin-top: 10px;
     }
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex: 12;
+    }
 `;
 
 const QuestionNumber = styled.h6`
@@ -98,7 +101,7 @@ const QuestionRightSection = styled.div`
 
     @media ${({ theme }) => theme.screens.tablet} {
         width: 100%;
-
+        flex: 0;
         margin-left: 0;
     }
 `;
@@ -155,8 +158,114 @@ const CurrentStatus = styled.p`
     text-align: center;
 `;
 
+const ChoicesResults = ({ choices, resultsQuestion, token, totalVotes }) => {
+    return choices.map((_, id) => {
+        if (
+            resultsQuestion &&
+            resultsQuestion.voteResults &&
+            resultsQuestion.voteResults[id]
+        ) {
+            const title = resultsQuestion.voteResults[id].title.default;
+            const voteCount = resultsQuestion.voteResults[id].votes || BN_ZERO;
+            const percent = totalVotes.isZero()
+                ? 0 // = voteCount / totalVotes * 100
+                : Math.round(voteCount.mul(10000).div(totalVotes).toNumber()) /
+                  100;
+            const amount = token
+                ? new TokenAmount(voteCount, token.decimals, {
+                      symbol: token.symbol,
+                  }).format()
+                : "";
+
+            return (
+                <ChoiceResult key={id}>
+                    <ChoicePercent>
+                        <Box>{percent.toFixed(1)} %</Box>
+                    </ChoicePercent>
+                    <ChoiceText>
+                        <span>{title}</span>
+                        <VotesAmount>{amount} votes</VotesAmount>
+                    </ChoiceText>
+                </ChoiceResult>
+            );
+        }
+        return null;
+    });
+};
+
+const ClickableChoices = ({ choices, questionId, onSelect }) => {
+    return choices.map((choice, id) => (
+        <Radio key={id}>
+            {" "}
+            <input
+                type="radio"
+                onClick={() => onSelect(questionId, choice.value)}
+                name={"question-" + questionId}
+            />
+            <div className="checkmark"></div> {choice.title.default}
+        </Radio>
+    ));
+};
+
+const ReadOnlyChoices = ({ choices }) => {
+    console.log(choices);
+    return choices.map((choice, id) => (
+        <Radio key={id}>
+            {" "}
+            <input type="radio" checked={false} />
+            <div className="checkmark"></div> {choice.title.default}
+        </Radio>
+    ));
+};
+
+const Choices = ({
+    id,
+    question,
+    results,
+    token,
+    canVote,
+    hasVoted,
+    hasWallet,
+    onSelect,
+
+    resultsQuestion,
+    questionVoteCount,
+}: ChoicesProps & {
+    resultsQuestion: DigestedProcessResultItem;
+    questionVoteCount: BigNumber;
+}) => {
+    const canSeeResults = !hasWallet || hasVoted || results?.questions?.length;
+
+    console.log(canSeeResults)
+    if (canSeeResults) {
+        return (
+            <ChoicesResults
+                choices={question.choices}
+                resultsQuestion={resultsQuestion}
+                token={token}
+                totalVotes={questionVoteCount}
+            />
+        );
+    }
+
+    console.log('jaja')
+
+    if (canVote) {
+        return (
+            <ClickableChoices
+                choices={question.choices}
+                questionId={id}
+                onSelect={onSelect}
+            />
+        );
+    }
+
+    console.log('jaja')
+    return <ReadOnlyChoices choices={question.choices} />;
+};
+
 // MAIN COMPONENT
-const ProcessPage = (props) => {
+const ProcessPage = () => {
     const router = useRouter();
     const wallet = useWallet();
     const signer = useSigner();
@@ -479,16 +588,16 @@ const ProcessPage = (props) => {
 
             <RowQuestions>
                 {proc.metadata.questions.map((question, qIdx) =>
-                    renderQuestionRow(
-                        qIdx,
+                    renderQuestionRow({
+                        id: qIdx,
                         question,
                         results,
                         token,
                         canVote,
                         hasVoted,
-                        !!wallet?.account,
-                        onSelect
-                    )
+                        hasWallet: !!wallet?.account,
+                        onSelect,
+                    })
                 )}
             </RowQuestions>
 
@@ -551,18 +660,21 @@ const ProcessPage = (props) => {
     );
 };
 
-function renderQuestionRow(
-    qIdx: number,
-    question: ProcessMetadata["questions"][0],
-    results: DigestedProcessResults,
-    token: TokenInfo,
-    canVote: boolean,
-    hasVoted: boolean,
-    hasWallet: boolean,
-    onSelect: (qIdx: number, choiceValue: number) => any
-) {
-    const resultsQuestion = results && results.questions[qIdx];
+interface ChoicesProps {
+    id: number;
+    question: ProcessMetadata["questions"][0];
+    results: DigestedProcessResults;
+    token: TokenInfo;
 
+    canVote: boolean;
+    hasVoted: boolean;
+    hasWallet: boolean;
+    onSelect: (id: number, choiceValue: number) => void;
+}
+
+function renderQuestionRow(questionInfo: ChoicesProps) {
+    const { id, question, results } = questionInfo;
+    const resultsQuestion = results && results.questions[id];
     const questionVoteCount =
         (resultsQuestion &&
             resultsQuestion.voteResults.reduce(
@@ -572,115 +684,22 @@ function renderQuestionRow(
         BN_ZERO;
 
     return (
-        <Question key={qIdx}>
+        <Question key={id}>
             <QuestionLeftSection>
-                <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+                <QuestionNumber>Question {id + 1}</QuestionNumber>
                 <h3>{question.title.default || "No title"}</h3>
                 <QuestionDescription>
                     {question.description.default || "No description"}
                 </QuestionDescription>
             </QuestionLeftSection>
             <QuestionRightSection>
-                {(() => {
-                    if (!hasWallet || hasVoted) {
-                        if (results?.questions?.length)
-                            return question.choices.map((choice, cIdx) =>
-                                renderChoiceResults(
-                                    cIdx,
-                                    resultsQuestion,
-                                    questionVoteCount,
-                                    token
-                                )
-                            );
-                        else
-                            return question.choices.map((choice, cIdx) =>
-                                renderReadOnlyChoice(cIdx, choice.title.default)
-                            );
-                    } else if (canVote) {
-                        return question.choices.map((choice, cIdx) =>
-                            renderClickableChoice(
-                                qIdx,
-                                cIdx,
-                                choice.title.default,
-                                choice.value,
-                                onSelect
-                            )
-                        );
-                    } else {
-                        return question.choices.map((choice, cIdx) =>
-                            renderReadOnlyChoice(cIdx, choice.title.default)
-                        );
-                    }
-                })()}
+                <Choices
+                    {...questionInfo}
+                    resultsQuestion={resultsQuestion}
+                    questionVoteCount={questionVoteCount}
+                />
             </QuestionRightSection>
         </Question>
-    );
-}
-
-function renderClickableChoice(
-    questionIdx: number,
-    choiceIdx: number,
-    title: string,
-    choiceValue: number,
-    onSelect: (qIdx: number, choiceValue: number) => any
-) {
-    return (
-        <Radio key={choiceIdx}>
-            {" "}
-            <input
-                type="radio"
-                onClick={() => onSelect(questionIdx, choiceValue)}
-                name={"question-" + questionIdx}
-            />
-            <div className="checkmark"></div> {title}
-        </Radio>
-    );
-}
-
-function renderReadOnlyChoice(choiceIdx: number, title: string) {
-    return (
-        <Radio key={choiceIdx}>
-            {" "}
-            <input type="radio" checked={false} />
-            <div className="checkmark"></div> {title}
-        </Radio>
-    );
-}
-
-function renderChoiceResults(
-    cIdx: number,
-    resultsQuestion: DigestedProcessResultItem,
-    totalVotes: BigNumber,
-    token: TokenInfo
-) {
-    if (
-        !resultsQuestion ||
-        !resultsQuestion.voteResults ||
-        !resultsQuestion.voteResults[cIdx]
-    )
-        return null;
-
-    const title = resultsQuestion.voteResults[cIdx].title.default;
-    const voteCount = resultsQuestion.voteResults[cIdx].votes || BN_ZERO;
-    const percent = totalVotes.isZero()
-        ? 0 // = voteCount / totalVotes * 100
-        : Math.round(voteCount.mul(10000).div(totalVotes).toNumber()) / 100;
-    const amount = token
-        ? new TokenAmount(voteCount, token.decimals, {
-              symbol: token.symbol,
-          }).format()
-        : "";
-
-    return (
-        <ChoiceResult key={cIdx}>
-            <ChoicePercent>
-                <Box>{percent.toFixed(1)} %</Box>
-            </ChoicePercent>
-            <ChoiceText>
-                <span>{title}</span>
-                <VotesAmount>{amount} votes</VotesAmount>
-            </ChoiceText>
-        </ChoiceResult>
     );
 }
 

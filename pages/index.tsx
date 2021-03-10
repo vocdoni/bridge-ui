@@ -5,11 +5,11 @@ import { Button, IconEthereum, LoadingRing } from "@aragon/ui";
 // import Spinner from "react-svg-spinner"
 import { ChainUnsupportedError, useWallet, Wallet } from "use-wallet";
 import styled, { CSSProperties, useTheme } from "styled-components";
+import { usePool } from "@vocdoni/react-hooks";
 
 import TokenCard from "../components/token-card";
 import { featuredTokens } from "../lib/tokens";
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from "../lib/errors";
-import { usePool } from "@vocdoni/react-hooks";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
@@ -67,6 +67,7 @@ const RightSection = styled.div`
 const ConnectButton = styled(Button)`
     max-width: 300px;
     margin: auto;
+    margin-top: 15px;
 `;
 
 const Description = styled.h4`
