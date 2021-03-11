@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { WalletStatus } from "./wallet-status";
 
 const Head = styled.div`
@@ -22,6 +23,7 @@ const RightSection = styled.div`
     margin-top: 3em;
 
     @media ${({ theme }) => theme.screens.tablet} {
+        margin-top: 0;
         width: 100%;
         margin-left: 0;
     }
@@ -44,6 +46,7 @@ interface TopSectionProps {
 }
 
 export const TopSection = ({ title, description, Action }: TopSectionProps) => {
+    const isMobile = useIsMobile();
     return (
         <Head>
             <LeftSection>
@@ -51,7 +54,7 @@ export const TopSection = ({ title, description, Action }: TopSectionProps) => {
                 <Subtitle>{description}</Subtitle>
             </LeftSection>
             <RightSection>
-                <WalletStatus />
+                {isMobile ? null : <WalletStatus />}
                 {Action ? <Action /> : null}
             </RightSection>
         </Head>

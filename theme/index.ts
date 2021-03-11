@@ -52,7 +52,7 @@ export const margins: Margins = {
     mobile: {
         horizontal: "15px",
         vertical: "",
-    }
+    },
 };
 
 export const theme: DefaultTheme = {
@@ -76,10 +76,38 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: 0.01em;
 }
 
-h1 { font-size: 45px; font-weight: 900; }
-h2 { font-size: 30px; font-weight: 900; }
-h3 { font-size: 20px; font-weight: 900; }
-h4 { font-size: 16px; font-weight: 500; }
+h1 { 
+    font-size: 45px; 
+    font-weight: 900; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 40px; 
+        font-weight: 800; 
+    }
+}
+h2 { 
+    font-size: 30px; 
+    font-weight: 900; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 25px; 
+        font-weight: 800; 
+    }
+}
+h3 { 
+    font-size: 20px; 
+    font-weight: 900; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 18px; 
+        font-weight: 700; 
+    }
+}
+h4 { 
+    font-size: 16px; 
+    font-weight: 500; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 15px; 
+    }
+
+}
 h5 { font-size: 14px; font-weight: 500; }
 h6 { font-size: 13px; font-weight: 500; }
 p { font-size: 14px; }

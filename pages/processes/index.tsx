@@ -7,23 +7,22 @@ import {
     DigestedProcessResultItem,
     ProcessStatus,
 } from "dvote-js";
-import { TokenInfo } from "../../lib/types";
 import { withRouter, useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
-
 import { usePool, useProcess, useSigner } from "@vocdoni/react-hooks";
 import { Button } from "@aragon/ui";
-import { strDateDiff } from "../../lib/date";
-import { HEX_REGEX } from "../../lib/regex";
 import { BigNumber, providers } from "ethers";
-import { areAllNumbers } from "../../lib/util";
-import { WalletStatus } from "../../components/wallet-status";
 import TokenAmount from "token-amount";
 import { useWallet } from "use-wallet";
 import { useUrlHash } from "use-url-hash";
+import styled from "styled-components";
+
+import { TokenInfo } from "../../lib/types";
+import { strDateDiff } from "../../lib/date";
+import { HEX_REGEX } from "../../lib/regex";
+import { areAllNumbers } from "../../lib/util";
 import { useToken } from "../../lib/hooks/tokens";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 
@@ -36,6 +35,7 @@ const RowDescription = styled.div`
     @media ${({ theme }) => theme.screens.tablet} {
         flex-direction: column;
         text-align: center;
+        width: 100%;
     }
 `;
 
@@ -60,11 +60,12 @@ const LightText = styled.p`
     color: ${({ theme }) => theme.lightText};
 `;
 
-const RowQuestions = styled.div``;
-
 const Question = styled.div`
     display: flex;
     flex-direction: row;
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: column;
+    }
 `;
 
 const QuestionLeftSection = styled.div`
@@ -158,6 +159,10 @@ const CurrentStatus = styled.p`
     text-align: center;
 `;
 
+const ChoiceDescription = styled.div`
+    width: calc(100% - 2.5em);
+`;
+
 const ChoicesResults = ({ choices, resultsQuestion, token, totalVotes }) => {
     return choices.map((_, id) => {
         if (
@@ -202,18 +207,19 @@ const ClickableChoices = ({ choices, questionId, onSelect }) => {
                 onClick={() => onSelect(questionId, choice.value)}
                 name={"question-" + questionId}
             />
-            <div className="checkmark"></div> {choice.title.default}
+            <div className="checkmark"></div>
+            <ChoiceDescription>{choice.title.default}</ChoiceDescription>
         </Radio>
     ));
 };
 
 const ReadOnlyChoices = ({ choices }) => {
-    console.log(choices);
     return choices.map((choice, id) => (
         <Radio key={id}>
             {" "}
             <input type="radio" checked={false} />
-            <div className="checkmark"></div> {choice.title.default}
+            <div className="checkmark"></div>
+            <ChoiceDescription>{choice.title.default}</ChoiceDescription>
         </Radio>
     ));
 };
@@ -234,21 +240,22 @@ const Choices = ({
     resultsQuestion: DigestedProcessResultItem;
     questionVoteCount: BigNumber;
 }) => {
-    const canSeeResults = !hasWallet || hasVoted || results?.questions?.length;
+    const canSeeResults = !hasWallet || hasVoted;
+    const resultsAvailable = results?.questions?.length;
 
-    console.log(canSeeResults)
     if (canSeeResults) {
-        return (
-            <ChoicesResults
-                choices={question.choices}
-                resultsQuestion={resultsQuestion}
-                token={token}
-                totalVotes={questionVoteCount}
-            />
-        );
+        if (resultsAvailable) {
+            return (
+                <ChoicesResults
+                    choices={question.choices}
+                    resultsQuestion={resultsQuestion}
+                    token={token}
+                    totalVotes={questionVoteCount}
+                />
+            );
+        }
+        return <ReadOnlyChoices choices={question.choices} />;
     }
-
-    console.log('jaja')
 
     if (canVote) {
         return (
@@ -260,11 +267,33 @@ const Choices = ({
         );
     }
 
-    console.log('jaja')
     return <ReadOnlyChoices choices={question.choices} />;
 };
 
-// MAIN COMPONENT
+const ProcessQuestions = ({
+    proc,
+    results,
+    token,
+    canVote,
+    hasVoted,
+    wallet,
+    onSelect,
+}) => {
+    return proc.metadata.questions.map((question, qIdx) => {
+        const questionProps = {
+            id: qIdx,
+            question,
+            results,
+            token,
+            canVote,
+            hasVoted,
+            hasWallet: !!wallet?.account,
+            onSelect,
+        };
+        return <QuestionRow {...questionProps} />;
+    });
+};
+
 const ProcessPage = () => {
     const router = useRouter();
     const wallet = useWallet();
@@ -592,20 +621,15 @@ const ProcessPage = () => {
                 </RowDescriptionRightSection>
             </RowDescription>
 
-            <RowQuestions>
-                {proc.metadata.questions.map((question, qIdx) =>
-                    renderQuestionRow({
-                        id: qIdx,
-                        question,
-                        results,
-                        token,
-                        canVote,
-                        hasVoted,
-                        hasWallet: !!wallet?.account,
-                        onSelect,
-                    })
-                )}
-            </RowQuestions>
+            <ProcessQuestions
+                proc={proc}
+                results={results}
+                token={token}
+                canVote={canVote}
+                hasVoted={hasVoted}
+                wallet={wallet}
+                onSelect={onSelect}
+            />
 
             <br />
             <br />
@@ -678,7 +702,7 @@ interface ChoicesProps {
     onSelect: (id: number, choiceValue: number) => void;
 }
 
-function renderQuestionRow(questionInfo: ChoicesProps) {
+function QuestionRow(questionInfo: ChoicesProps) {
     const { id, question, results } = questionInfo;
     const resultsQuestion = results && results.questions[id];
     const questionVoteCount =

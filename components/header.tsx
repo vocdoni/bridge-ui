@@ -1,9 +1,8 @@
-import React, { useMemo, useState } from "react";
-import styled, { useTheme } from "styled-components";
+import React, { useState } from "react";
+import styled from "styled-components";
 import Link from "next/link";
-import Hamburger from 'hamburger-react'
-import { useWindowSize } from "../lib/hooks/useWindowSize";
-import { size } from "../theme";
+import Hamburger from "hamburger-react";
+import { useIsMobile } from "../lib/hooks/useWindowSize";
 
 const HeaderContainer = styled.div`
     width: 100%;
@@ -37,7 +36,7 @@ const ListContainer = styled.div`
 const MenuItemsContainer = styled.div`
     display: flex;
     justify-content: center;
-`
+`;
 
 const ListItem = styled.div`
     margin-right: 20px;
@@ -106,7 +105,7 @@ const HEADERS_LINKS: LinkProps[] = [
     },
 ];
 
-const LinkItem = ({ name, url, external, mobile }: LinkProps) => (
+const LinkItem = ({ name, url, external }: LinkProps) => (
     <ListItem>
         <Link href={url} passHref>
             <ClickableLink target={external ? "_blank" : "_self"}>
@@ -116,12 +115,12 @@ const LinkItem = ({ name, url, external, mobile }: LinkProps) => (
     </ListItem>
 );
 
-const MobileMenuContainer = styled.div`
-    position:fixed;
-    padding:0;
-    margin:0;
-    top:-100%;
-    left:0;
+const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
+    position: fixed;
+    padding: 0;
+    margin: 0;
+    top: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
     background: ${({ theme }) => theme.clear};
@@ -134,34 +133,41 @@ const MobileMenuContainer = styled.div`
     transition: top 0.5s ease-in-out;
 
     @media ${({ theme }) => theme.screens.tablet} {
-        top: ${({ showMenu }: { showMenu: boolean }) => showMenu? "0": "-100%"};
+        top: ${({ showMenu }) => (showMenu ? "0" : "-100%")};
     }
-`
+`;
 
 export const Header = () => {
     const [showMenu, setShowMenu] = useState(false);
-    const { width } = useWindowSize()
-    const isMobile = useMemo(() => width <= size.tablet, [width])
+    const isMobile = useIsMobile();
 
     return (
         <>
-            {isMobile && 
-            <MobileMenuContainer showMenu={showMenu}>
-                {HEADERS_LINKS.map((link) => (
-                    <LinkItem {...link} mobile={true} key={link.name}/>
-                ))}
-            </MobileMenuContainer>}
+            {isMobile && (
+                <MobileMenuContainer showMenu={showMenu}>
+                    {HEADERS_LINKS.map((link) => (
+                        <LinkItem {...link} mobile={true} key={link.name} />
+                    ))}
+                </MobileMenuContainer>
+            )}
             <HeaderContainer>
                 <ListContainer>
                     <Link href="/" passHref>
                         <VocdoniLink>Vocdoni Bridge</VocdoniLink>
                     </Link>
                     <MenuItemsContainer>
-                        {!isMobile && HEADERS_LINKS.map((link) => (
-                            <LinkItem {...link} key={link.name} />
-                        ))}
+                        {!isMobile &&
+                            HEADERS_LINKS.map((link) => (
+                                <LinkItem {...link} key={link.name} />
+                            ))}
                     </MenuItemsContainer>
-                    {isMobile && <Hamburger toggled={showMenu} toggle={setShowMenu} color="#fff" />}
+                    {isMobile && (
+                        <Hamburger
+                            toggled={showMenu}
+                            toggle={setShowMenu}
+                            color="#fff"
+                        />
+                    )}
                 </ListContainer>
             </HeaderContainer>
         </>

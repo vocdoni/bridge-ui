@@ -1,6 +1,10 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { WalletStatus } from "./wallet-status";
 
 const Container = styled.div`
     padding: 30px 0 30px;
@@ -23,6 +27,17 @@ const ClickableText = styled.a`
     color: ${({ theme }) => theme.lightText};
 `;
 
+const MobileFooter = styled.div`
+    margin-top: 10px;
+    background-color: ${({ theme }) => theme.clear};
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px;
+    min-height: 90px;
+    bottom: 0;
+    position: sticky;
+`;
+
 // @TODO: Maybe we should share this const with the header
 const FOOTER_LINKERS = [
     {
@@ -41,7 +56,13 @@ const FOOTER_LINKERS = [
 
 export const Footer = () => {
     const theme = useTheme();
-    return (
+    const isMobile = useIsMobile();
+
+    return isMobile ? (
+        <MobileFooter>
+            <WalletStatus />
+        </MobileFooter>
+    ) : (
         <Container>
             <Section>
                 {FOOTER_LINKERS.map(({ url, name }, i) => (
