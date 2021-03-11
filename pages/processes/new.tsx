@@ -578,16 +578,16 @@ const NewProcessPage = () => {
             />
 
             <FieldRow>
-                    <InfoTitle>Title</InfoTitle>
-                    <InfoPlaceholder>
-                        Short name to identify the process
-                    </InfoPlaceholder>
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        onChange={(e) => setMainTitle(e.target.value)}
-                        value={metadata.title.default}
-                    />
+                <InfoTitle>Title</InfoTitle>
+                <InfoPlaceholder>
+                    Short name to identify the process
+                </InfoPlaceholder>
+                <input
+                    type="text"
+                    placeholder="Title"
+                    onChange={(e) => setMainTitle(e.target.value)}
+                    value={metadata.title.default}
+                />
                 <FieldRowRightSection marginTop={25}>
                     <RadioChoice onClick={() => setEncryptedVotes(false)}>
                         {" "}
@@ -613,24 +613,22 @@ const NewProcessPage = () => {
             </FieldRow>
 
             <FieldRow>
-                    <InfoTitle>Description</InfoTitle>
-                    <InfoPlaceholder>
-                        An introduction of about 2-3 lines
-                    </InfoPlaceholder>
-                    <textarea
-                        placeholder="Description"
-                        onChange={(e) => setMainDescription(e.target.value)}
-                        value={metadata.description.default}
-                    />
+                <InfoTitle>Description</InfoTitle>
+                <InfoPlaceholder>
+                    An introduction of about 2-3 lines
+                </InfoPlaceholder>
+                <textarea
+                    placeholder="Description"
+                    onChange={(e) => setMainDescription(e.target.value)}
+                    value={metadata.description.default}
+                />
                 <FieldRowRightSection marginTop={25}>
                     <Datetime
                         value={startDate}
                         inputProps={{
                             placeholder: "Start date (d/m/y h:m)",
                         }}
-                        isValidDate={(cur: Moment) =>
-                            isValidFutureDate(cur)
-                        }
+                        isValidDate={(cur: Moment) => isValidFutureDate(cur)}
                         dateFormat="D/MM/YYYY"
                         timeFormat="HH:mm[h]"
                         onChange={(date) => onStartDate(date)}
@@ -639,9 +637,7 @@ const NewProcessPage = () => {
                     <Datetime
                         value={endDate}
                         inputProps={{ placeholder: "End date (d/m/y h:m)" }}
-                        isValidDate={(cur: Moment) =>
-                            isValidFutureDate(cur)
-                        }
+                        isValidDate={(cur: Moment) => isValidFutureDate(cur)}
                         dateFormat="D/MM/YYYY"
                         timeFormat="HH:mm[h]"
                         onChange={(date) => onEndDate(date)}

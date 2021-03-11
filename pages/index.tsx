@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { withRouter, useRouter } from "next/router";
 import { Button, IconEthereum, LoadingRing } from "@aragon/ui";
-// import Spinner from "react-svg-spinner"
 import { ChainUnsupportedError, useWallet, Wallet } from "use-wallet";
 import styled, { CSSProperties, useTheme } from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
+// import Spinner from "react-svg-spinner"
 
 import TokenCard from "../components/token-card";
 import { featuredTokens } from "../lib/tokens";
@@ -13,6 +13,7 @@ import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from "../lib/errors";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
+import { useIsMobile } from "../lib/hooks/useWindowSize";
 
 const Head = styled.div`
     display: flex;
@@ -66,8 +67,7 @@ const RightSection = styled.div`
 
 const ConnectButton = styled(Button)`
     max-width: 300px;
-    margin: auto;
-    margin-top: 15px;
+    margin: 15px auto;
 `;
 
 const Description = styled.h4`
@@ -166,7 +166,7 @@ const IndexPage = () => {
     } = usePool();
     const wallet = useWallet();
     const tokenInfos = useTokens(featuredTokens);
-
+    const isMobile = useIsMobile();
     const isConnected = wallet.status == "connected";
 
     // CALLBACKS
@@ -236,16 +236,18 @@ const IndexPage = () => {
                         </small>
                     </p>
                 </LeftSection>
-                <RightSection width={"100%"} textAlign={"center"}>
-                    {/** Not sure if we want this props drill... */}
-                    <HandleConnector
-                        poolLoading={poolLoading}
-                        wallet={wallet}
-                        connecting={connecting}
-                        onSignIn={onSignIn}
-                        isConnected={isConnected}
-                    />
-                </RightSection>
+                {isMobile ? null : (
+                    <RightSection width={"100%"} textAlign={"center"}>
+                        {/** Not sure if we want this props drill... */}
+                        <HandleConnector
+                            poolLoading={poolLoading}
+                            wallet={wallet}
+                            connecting={connecting}
+                            onSignIn={onSignIn}
+                            isConnected={isConnected}
+                        />
+                    </RightSection>
+                )}
             </Row>
 
             <br />
