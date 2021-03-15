@@ -50,14 +50,14 @@ export async function getProcessInfo(processId: string, pool: GatewayPool): Prom
 
 export async function getProcessList(tokenAddress: string, pool: GatewayPool): Promise<string[]> {
     let result: string[] = []
-    let lastId: string = undefined
+    let from = 0
 
     while (true) {
-        const processList = await VotingApi.getProcessList(tokenAddress, pool, lastId)
+        const processList = await VotingApi.getProcessList({ entityId: tokenAddress, from }, pool)
         if (processList.length == 0) return result
 
         result = result.concat(processList.map(id => "0x" + id))
-        lastId = processList[processList.length - 1]
+        from += processList.length
     }
 }
 

@@ -168,7 +168,6 @@ const NewProcessPage = props => {
                 maxVoteOverwrites: 1,
                 evmBlockHeight,
                 tokenAddress,
-                namespace: 0,
                 paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000"
             }
 

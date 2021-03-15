@@ -22,11 +22,11 @@
     "dependencies": {
         "@aragon/ui": "^1.7.0",
         "@types/react": "^17.0.0",
-        "@vocdoni/react-hooks": "^0.3.1",
+        "@vocdoni/react-hooks": "^0.3.2",
         "@zeit/next-less": "^1.0.1",
         "bluebird": "^3.7.2",
         "dexie": "^3.0.3",
-        "dvote-js": "^0.25.2",
+        "dvote-js": "^0.26.1",
         "ethers": "^5.0.25",
         "identicon.js": "^2.3.3",
         "iso-language-codes": "^1.0.6",
