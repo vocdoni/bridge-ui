@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { VotingApi } from "dvote-js";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
@@ -156,10 +156,14 @@ export const VoteSection = ({
     processesMessage,
 }) => {
     const Processes = () =>
-        processes.map((proc) => {
-            const token = tokenInfos.get(proc.tokenAddress);
-            return <ProcessCard process={proc} token={token} />;
-        });
+        useMemo(() => {
+            return processes.map((proc) => {
+                if (tokenInfos.size) {
+                    const token = tokenInfos.get(proc.tokenAddress);
+                    return <ProcessCard process={proc} token={token} />;
+                }
+            });
+        }, [tokenInfos, processes]);
 
     return (
         <div>
