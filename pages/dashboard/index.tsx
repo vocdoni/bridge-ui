@@ -14,7 +14,7 @@ import { limitedText } from "../../lib/util";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 
-const TokenList = styled.div`
+export const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
     margin: 0 -1em;
@@ -23,7 +23,7 @@ const TokenList = styled.div`
     }
 `;
 
-const LightText = styled.p`
+export const LightText = styled.p`
     color: ${({ theme }) => theme.lightText};
 `;
 
@@ -155,6 +155,7 @@ export const VoteSection = ({
     noProcessesMessage,
     processesMessage,
 }) => {
+
     const Processes = () =>
         useMemo(() => {
             return processes.map((proc) => {
@@ -191,7 +192,7 @@ const ProcessCard = (props: { process: ProcessInfo; token?: TokenInfo }) => {
             name={props?.token?.symbol}
             icon={icon}
             rightText={/*strDateDiff()*/ ""}
-            href={proc?.id ? "/processes#/" + proc.id : ""}
+            href={proc?.id ? "/processes/" + proc.id : ""}
         >
             <p>
                 <strong>

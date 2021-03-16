@@ -13,8 +13,8 @@ import Spinner from "react-svg-spinner";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
-import { VoteSection } from "../dashboard";
 import { shortAddress } from "../../lib/util";
+import { LightText, TokenList } from "../dashboard";
 
 const RowSummary = styled.div`
     margin-top: 2em;
@@ -63,6 +63,59 @@ const VoteSectionContainer = styled.div`
         text-align: center;
     }
 `;
+
+const VoteSection = ({
+    allProcesses,
+    processes,
+    token,
+    loadingProcesses,
+    title,
+    noProcessesMessage,
+    processesMessage,
+}) => {
+    const Processes = () =>
+        useMemo(() => {
+            console.log(processes);
+            return processes.map((processId) => {
+                const title =
+                    allProcesses.get(processId).metadata.title.default ||
+                    "No title";
+                return (
+                    <ProcessCard id={processId} title={title} token={token} />
+                );
+            });
+        }, [processes]);
+
+    return (
+        <div>
+            <h2>{title}</h2>
+            <LightText>
+                {processes.length ? processesMessage : noProcessesMessage}
+            </LightText>
+            <TokenList>
+                {loadingProcesses ? <Spinner /> : <Processes />}
+            </TokenList>
+        </div>
+    );
+};
+
+const ProcessCard = ({ id, token, title }) => {
+    const icon =
+        process.env.ETH_NETWORK_ID == "goerli"
+            ? FALLBACK_TOKEN_ICON
+            : token.icon;
+    return (
+        <TokenCard
+            name={token?.symbol}
+            icon={icon}
+            rightText=""
+            href={id ? "/processes/" + id : ""}
+            key={id}
+        >
+            <p>{title}</p>
+        </TokenCard>
+    );
+};
 
 // MAIN COMPONENT
 const TokenPage = () => {
@@ -224,8 +277,9 @@ const TokenPage = () => {
                 {VOTING_SECTIONS.map((section) => (
                     <VoteSection
                         {...section}
+                        allProcesses={processes}
                         loadingProcesses={loadingProcessList}
-                        tokenInfos={token}
+                        token={token}
                     />
                 ))}
             </VoteSectionContainer>

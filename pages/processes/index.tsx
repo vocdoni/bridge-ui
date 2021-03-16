@@ -233,31 +233,26 @@ const Choices = ({
     hasVoted,
     hasWallet,
     onSelect,
-
+    hasEnded,
     resultsQuestion,
     questionVoteCount,
 }: ChoicesProps & {
     resultsQuestion: DigestedProcessResultItem;
     questionVoteCount: BigNumber;
 }) => {
-    const canSeeResults = !hasWallet || hasVoted;
     const resultsAvailable = results?.questions?.length;
-
-    if (canSeeResults) {
-        if (resultsAvailable) {
-            return (
-                <ChoicesResults
-                    choices={question.choices}
-                    resultsQuestion={resultsQuestion}
-                    token={token}
-                    totalVotes={questionVoteCount}
-                />
-            );
-        }
-        return <ReadOnlyChoices choices={question.choices} />;
+    if (resultsAvailable && hasEnded) {
+        return (
+            <ChoicesResults
+                choices={question.choices}
+                resultsQuestion={resultsQuestion}
+                token={token}
+                totalVotes={questionVoteCount}
+            />
+        );
     }
 
-    if (canVote) {
+    if (canVote && !hasVoted && hasWallet) {
         return (
             <ClickableChoices
                 choices={question.choices}
@@ -278,6 +273,7 @@ const ProcessQuestions = ({
     hasVoted,
     wallet,
     onSelect,
+    hasEnded,
 }) => {
     return proc.metadata.questions.map((question, qIdx) => {
         const questionProps = {
@@ -289,6 +285,7 @@ const ProcessQuestions = ({
             hasVoted,
             hasWallet: !!wallet?.account,
             onSelect,
+            hasEnded,
         };
         return <QuestionRow {...questionProps} />;
     });
@@ -492,9 +489,9 @@ const ProcessPage = () => {
                     censusProof: proof.storageProof[0],
                     processId,
                     walletOrSigner: signer,
-                    processKeys: keys
+                    processKeys: keys,
                 });
-                await VotingApi.submitEnvelope(envelope, signer, pool)
+                await VotingApi.submitEnvelope(envelope, signer, pool);
             } else {
                 const envelope = await VotingApi.packageSignedEnvelope({
                     votes: choices,
@@ -503,7 +500,7 @@ const ProcessPage = () => {
                     processId,
                     walletOrSigner: signer,
                 });
-                await VotingApi.submitEnvelope(envelope, signer, pool)
+                await VotingApi.submitEnvelope(envelope, signer, pool);
             }
 
             // wait a block
@@ -573,7 +570,6 @@ const ProcessPage = () => {
         : "";
 
     let status: string = "";
-
     switch (proc?.parameters.status.value) {
         case ProcessStatus.READY:
             if (hasEnded) status = "The process is closed";
@@ -623,6 +619,7 @@ const ProcessPage = () => {
                 hasVoted={hasVoted}
                 wallet={wallet}
                 onSelect={onSelect}
+                hasEnded={hasEnded}
             />
 
             <br />
@@ -693,10 +690,12 @@ interface ChoicesProps {
     canVote: boolean;
     hasVoted: boolean;
     hasWallet: boolean;
+    hasEnded: boolean;
     onSelect: (id: number, choiceValue: number) => void;
 }
 
 function QuestionRow(questionInfo: ChoicesProps) {
+    console.log(questionInfo);
     const { id, question, results } = questionInfo;
     const resultsQuestion = results && results.questions[id];
     const questionVoteCount =
