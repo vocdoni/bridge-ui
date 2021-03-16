@@ -69,10 +69,15 @@ export const WalletList = () => {
         });
     };
 
+    console.log(error);
     const handleConnection = async (wallet: string) => {
-        await connect(WALLETS[wallet].connector);
-        if (!error && inLanding) push("/dashboard");
-        closeModal();
+        try {
+            await connect(WALLETS[wallet].connector);
+            if (!error && inLanding) push("/dashboard");
+            closeModal();
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     return (
@@ -82,8 +87,12 @@ export const WalletList = () => {
                     const { connector, name } = WALLETS[wallet];
                     return (
                         <OptionContainer key={"wallet_" + wallet}>
-                            <WalletOption onClick={() => handleConnection(wallet)}>
-                                <WalletLogo src={`/media/wallets/${connector}.svg`} />
+                            <WalletOption
+                                onClick={() => handleConnection(wallet)}
+                            >
+                                <WalletLogo
+                                    src={`/media/wallets/${connector}.svg`}
+                                />
                                 <WalletName>{name}</WalletName>
                             </WalletOption>
                         </OptionContainer>

@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "next dev -p 8080",
+        "dev:https": "node server.js",
         "build": "next build",
         "start": "next start",
         "export": "next build && next export -o build"
@@ -21,7 +22,6 @@
     "homepage": "https://github.com/vocdoni/bridge-ui#readme",
     "dependencies": {
         "@aragon/ui": "^1.7.0",
-        "@types/react": "^17.0.0",
         "@vocdoni/react-hooks": "^0.3.1",
         "@zeit/next-less": "^1.0.1",
         "bluebird": "^3.7.2",
@@ -42,10 +42,11 @@
         "token-amount": "^0.3.0",
         "typescript": "^4.0.5",
         "use-url-hash": "^0.1.0",
-        "use-wallet": "^0.8.1"
+        "use-wallet": "0.8.1"
     },
     "devDependencies": {
         "@types/node": "^14.14.22",
+        "@types/react": "^17.0.0",
         "@types/styled-components": "^5.1.7",
         "eslint": "^7.12.1",
         "eslint-plugin-react": "^7.21.5"

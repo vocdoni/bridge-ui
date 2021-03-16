@@ -1,7 +1,7 @@
 export interface ConnectorData {
     name: string;
     connector: string;
-    properties?: Record<string, string>;
+    properties?: Record<string, string | number>;
 }
 
 export const WALLETS: ConnectorData[] = [
@@ -30,6 +30,14 @@ export const WALLETS: ConnectorData[] = [
         connector: "walletconnect",
         properties: {
             rpcUrl: `https://${process.env.ETH_NETWORK_ID}.infura.io/v3/b76cba91dc954ceebff27244923224b1`,
+        },
+    },
+    {
+        name: "Ledger",
+        connector: "ledger",
+        properties: {
+            url: `https://${process.env.ETH_NETWORK_ID}.infura.io/v3/b76cba91dc954ceebff27244923224b1`,
+            chainId: 1,
         },
     },
 ];
