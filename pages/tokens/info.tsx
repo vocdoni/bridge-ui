@@ -75,7 +75,6 @@ const VoteSection = ({
 }) => {
     const Processes = () =>
         useMemo(() => {
-            console.log(processes);
             return processes.map((processId) => {
                 const title =
                     allProcesses.get(processId).metadata.title.default ||

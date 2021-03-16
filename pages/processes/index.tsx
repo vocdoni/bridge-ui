@@ -695,7 +695,6 @@ interface ChoicesProps {
 }
 
 function QuestionRow(questionInfo: ChoicesProps) {
-    console.log(questionInfo);
     const { id, question, results } = questionInfo;
     const resultsQuestion = results && results.questions[id];
     const questionVoteCount =
