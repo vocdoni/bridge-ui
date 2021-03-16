@@ -9,7 +9,7 @@ const UseTokenContext = React.createContext<{
     currentTokens: Map<string, TokenInfo>,
     resolveTokenInfo: (address: string) => Promise<TokenInfo>,
     refreshTokenInfo: (address: string) => Promise<TokenInfo>
-}>(null)
+}>({ currentTokens: new Map(), resolveTokenInfo: () => Promise.reject(new Error("Not initialized")), refreshTokenInfo: () => Promise.reject(new Error("Not initialized")) })
 
 export function useToken(address: string): TokenInfo | null {
     const tokenContext = useContext(UseTokenContext)

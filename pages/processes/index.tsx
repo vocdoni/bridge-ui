@@ -486,30 +486,24 @@ const ProcessPage = () => {
             // Detect encryption
             if (proc.parameters.envelopeType.hasEncryptedVotes) {
                 const keys = await VotingApi.getProcessKeys(processId, pool);
-                const {
-                    envelope,
-                    signature,
-                } = await VotingApi.packageSignedEnvelope({
+                const envelope = await VotingApi.packageSignedEnvelope({
                     votes: choices,
                     censusOrigin: proc.parameters.censusOrigin,
                     censusProof: proof.storageProof[0],
                     processId,
                     walletOrSigner: signer,
-                    processKeys: keys,
+                    processKeys: keys
                 });
-                await VotingApi.submitEnvelope(envelope, signature, pool);
+                await VotingApi.submitEnvelope(envelope, signer, pool)
             } else {
-                const {
-                    envelope,
-                    signature,
-                } = await VotingApi.packageSignedEnvelope({
+                const envelope = await VotingApi.packageSignedEnvelope({
                     votes: choices,
                     censusOrigin: proc.parameters.censusOrigin,
                     censusProof: proof.storageProof[0],
                     processId,
                     walletOrSigner: signer,
                 });
-                await VotingApi.submitEnvelope(envelope, signature, pool);
+                await VotingApi.submitEnvelope(envelope, signer, pool)
             }
 
             // wait a block

@@ -553,22 +553,14 @@ const NewProcessPage = () => {
                 maxVoteOverwrites: 1,
                 evmBlockHeight,
                 tokenAddress,
-                namespace: 0,
-                paramsSignature:
-                    "0x0000000000000000000000000000000000000000000000000000000000000000",
-            };
+                paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
 
-            const processId = await VotingApi.newProcess(
-                processParamsPre,
-                signer,
-                pool
-            );
-            Router.push("/processes#/" + processId);
-            setSubmitting(false);
+            const processId = await VotingApi.newProcess(processParamsPre, signer, pool)
+            Router.push("/processes#/" + processId)
+            setSubmitting(false)
 
-            setAlertMessage(
-                "The governance process has been successfully created"
-            );
+            setAlertMessage("The governance process has been successfully created")
         } catch (err) {
             setSubmitting(false);
 
