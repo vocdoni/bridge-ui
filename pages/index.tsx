@@ -14,6 +14,7 @@ import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useMessageAlert } from "../lib/hooks/message-alert";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { TokenList } from "./dashboard";
 
 const Head = styled.div`
     display: flex;
@@ -86,16 +87,6 @@ const GreyCircle = styled.div`
     width: 140px;
 `;
 
-const TokenList = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 10px;
-
-    @media ${({ theme }) => theme.screens.tablet} {
-        justify-content: center;
-    }
-`;
-
 const TopTokensContainer = styled.div`
     @media ${({ theme }) => theme.screens.tablet} {
         text-align: center;
@@ -121,7 +112,7 @@ export const HandleConnector = () => {
 
     const isConnected = wallet.status == "connected";
     const onSignIn = () => {
-        if (pool && wallet.status == "connected") {
+        if (pool && isConnected) {
             return router.push("/dashboard");
         }
 

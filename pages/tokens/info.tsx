@@ -14,7 +14,7 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
 import { shortAddress } from "../../lib/util";
-import { LightText, TokenList } from "../dashboard";
+import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 
 const RowSummary = styled.div`
     margin-top: 2em;
@@ -58,13 +58,6 @@ const InfoDescription = styled.h4`
     letter-spacing: 0;
 `;
 
-const VoteSectionContainer = styled.div`
-    @media ${({ theme }) => theme.screens.tablet} {
-        text-align: center;
-        margin: 0 10px;
-    }
-`;
-
 const VoteSection = ({
     allProcesses,
     processes,
@@ -87,7 +80,7 @@ const VoteSection = ({
         }, [processes]);
 
     return (
-        <div>
+        <VoteSectionContainer>
             <h2>{title}</h2>
             <LightText>
                 {processes.length ? processesMessage : noProcessesMessage}
@@ -95,7 +88,7 @@ const VoteSection = ({
             <TokenList>
                 {loadingProcesses ? <Spinner /> : <Processes />}
             </TokenList>
-        </div>
+        </VoteSectionContainer>
     );
 };
 
@@ -109,7 +102,7 @@ const ProcessCard = ({ id, token, title }) => {
             name={token?.symbol}
             icon={icon}
             rightText=""
-            href={id ? "/processes/" + id : ""}
+            href={id ? "/processes#/" + id : ""}
             key={id}
         >
             <p>{title}</p>
@@ -273,16 +266,14 @@ const TokenPage = () => {
                 </Info>
             </RowSummary>
 
-            <VoteSectionContainer>
-                {VOTING_SECTIONS.map((section) => (
-                    <VoteSection
-                        {...section}
-                        allProcesses={processes}
-                        loadingProcesses={loadingProcessList}
-                        token={token}
-                    />
-                ))}
-            </VoteSectionContainer>
+            {VOTING_SECTIONS.map((section) => (
+                <VoteSection
+                    {...section}
+                    allProcesses={processes}
+                    loadingProcesses={loadingProcessList}
+                    token={token}
+                />
+            ))}
         </div>
     );
 };

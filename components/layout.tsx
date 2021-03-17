@@ -13,7 +13,7 @@ const LayoutContainer = styled.div`
     margin-right: auto;
 
     @media ${({ theme }) => theme.screens.tablet} {
-        margin-top: 77px;
+        margin-bottom: 110px;
         padding: 0 ${({ theme }) => theme.margins.mobile.horizontal};
     }
 `;

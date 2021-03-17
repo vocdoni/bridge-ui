@@ -10,7 +10,6 @@ import Button from "../../components/button";
 import { WalletStatus } from "../../components/wallet-status";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
-import { ACCENT_COLOR_2 } from "../../lib/constants";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
@@ -268,7 +267,7 @@ const TokenAddPage = () => {
                         {!wallet.account ? (
                             <WalletStatus />
                         ) : registeringToken ? (
-                            <Button children={StyledSpinner} />
+                            <Button children={<StyledSpinner />} />
                         ) : (
                             <Button onClick={onSubmit}>Register token</Button>
                         )}

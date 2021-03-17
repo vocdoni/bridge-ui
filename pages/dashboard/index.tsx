@@ -19,14 +19,22 @@ import { useRouter } from "next/router";
 export const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -1em;
-    svg {
-        margin: 1rem;
+    margin: 0 10px;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        justify-content: center;
+        text-align: start;
     }
 `;
 
 export const LightText = styled.p`
     color: ${({ theme }) => theme.lightText};
+`;
+
+export const VoteSectionContainer = styled.div`
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
 `;
 
 // MAIN COMPONENT
@@ -176,7 +184,7 @@ export const VoteSection = ({
         }, [tokenInfos, processes]);
 
     return (
-        <div>
+        <VoteSectionContainer>
             <h2>{title}</h2>
             <LightText>
                 {processes.length ? processesMessage : noProcessesMessage}
@@ -184,7 +192,7 @@ export const VoteSection = ({
             <TokenList>
                 {loadingProcesses ? <Spinner /> : <Processes />}
             </TokenList>
-        </div>
+        </VoteSectionContainer>
     );
 };
 
@@ -201,7 +209,7 @@ const ProcessCard = (props: { process: ProcessInfo; token?: TokenInfo }) => {
             name={props?.token?.symbol}
             icon={icon}
             rightText={/*strDateDiff()*/ ""}
-            href={proc?.id ? "/processes/" + proc.id : ""}
+            href={proc?.id ? "/processes#/" + proc.id : ""}
         >
             <p>
                 <strong>

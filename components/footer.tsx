@@ -30,14 +30,15 @@ const ClickableText = styled.a`
 `;
 
 const MobileFooter = styled.div`
-    margin-top: 10px;
     background-color: ${({ theme }) => theme.clear};
     box-sizing: border-box;
     width: 100%;
     padding: 16px;
     min-height: 100px;
+    left: 0;
+    right: 0;
     bottom: 0;
-    position: sticky;
+    position: fixed;
 `;
 
 export const Footer = () => {

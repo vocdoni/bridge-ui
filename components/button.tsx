@@ -24,14 +24,14 @@ type ButtonProps = {
 };
 
 function Button({ children, onClick, href }: ButtonProps) {
-    if (onClick)
-        return <StyledButton onClick={onClick}>{children}</StyledButton>;
-
-    return (
-        <Link href={href}>
-            <StyledButton>{children}</StyledButton>
-        </Link>
-    );
+    if (href) {
+        return (
+            <Link href={href}>
+                <StyledButton onClick={onClick}>{children}</StyledButton>;
+            </Link>
+        );
+    }
+    return <StyledButton onClick={onClick}>{children}</StyledButton>;
 }
 
 Button.Styled = StyledButton;
