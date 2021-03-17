@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { WalletStatus } from "./wallet-status";
+import { LINKS } from "./header";
+import { HandleConnector } from "../pages";
 
 const Container = styled.div`
     padding: 30px 0 30px;
@@ -33,46 +35,33 @@ const MobileFooter = styled.div`
     box-sizing: border-box;
     width: 100%;
     padding: 16px;
-    min-height: 90px;
+    min-height: 100px;
     bottom: 0;
     position: sticky;
 `;
 
-// @TODO: Maybe we should share this const with the header
-const FOOTER_LINKERS = [
-    {
-        url: "https://discord.gg/sQCxgYs",
-        name: "Discord",
-    },
-    {
-        url: "https://twitter.com/vocdoni",
-        name: "Twitter",
-    },
-    {
-        url: "https://t.me/vocdoni",
-        name: "Telegram",
-    },
-];
-
 export const Footer = () => {
     const theme = useTheme();
+    const { pathname } = useRouter();
     const isMobile = useIsMobile();
+
+    const FOOTER_LINKS = LINKS.filter((l) => l.footer);
 
     return isMobile ? (
         <MobileFooter>
-            <WalletStatus />
+            {pathname === "/" ? <HandleConnector /> : <WalletStatus />}
         </MobileFooter>
     ) : (
         <Container>
             <Section>
-                {FOOTER_LINKERS.map(({ url, name }, i) => (
+                {FOOTER_LINKS.map(({ url, name }, i) => (
                     <div key={name}>
                         <Link href={url} passHref>
                             <ClickableText target="_blank">
                                 {name}
                             </ClickableText>
                         </Link>
-                        {i < FOOTER_LINKERS.length - 1 ? " · " : null}
+                        {i < FOOTER_LINKS.length - 1 ? " · " : null}
                     </div>
                 ))}
             </Section>

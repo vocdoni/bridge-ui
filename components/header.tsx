@@ -31,15 +31,24 @@ const ListContainer = styled.div`
     width: 100%;
     justify-content: space-between;
     align-items: center;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        padding: 0 20px;
+    }
 `;
 
 const MenuItemsContainer = styled.div`
     display: flex;
     justify-content: center;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        margin-top: 10px;
+    }
 `;
 
 const ListItem = styled.div`
     margin-right: 20px;
+
     &:last-child {
         margin-right: 0;
     }
@@ -52,6 +61,10 @@ const ListItem = styled.div`
         justify-content: center;
         align-items: center;
         min-height: 50px;
+
+        &:first-child {
+            margin-top: 10px;
+        }
 
         & > a {
             color: ${({ theme }) => theme.mainText};
@@ -76,45 +89,6 @@ const ClickableLink = styled.a`
     color: ${({ theme }) => theme.clear};
 `;
 
-interface LinkProps {
-    name: string;
-    url: string;
-    external?: boolean;
-    mobile?: boolean;
-}
-
-const HEADERS_LINKS: LinkProps[] = [
-    {
-        url: "/tokens",
-        name: "Find Tokens",
-    },
-    {
-        url: "https://blog.vocdoni.io",
-        name: "Blog",
-        external: true,
-    },
-    {
-        url: "https://docs.vocdoni.io",
-        name: "Docs",
-        external: true,
-    },
-    {
-        url: "https://discord.gg/sQCxgYs",
-        name: "Discord",
-        external: true,
-    },
-];
-
-const LinkItem = ({ name, url, external }: LinkProps) => (
-    <ListItem>
-        <Link href={url} passHref>
-            <ClickableLink target={external ? "_blank" : "_self"}>
-                {name}
-            </ClickableLink>
-        </Link>
-    </ListItem>
-);
-
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
     position: fixed;
     padding: 0;
@@ -137,17 +111,95 @@ const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
     }
 `;
 
+const Section = styled.div`
+    display: flex;
+    margin-top: 30px;
+    justify-content: center;
+    color: ${({ color }) => color};
+`;
+
+interface LinkProps {
+    name: string;
+    url: string;
+    external?: boolean;
+    header?: boolean;
+    footer?: boolean;
+}
+
+export const LINKS: LinkProps[] = [
+    {
+        url: "/tokens",
+        name: "Find Tokens",
+        header: true,
+    },
+    {
+        url: "https://blog.vocdoni.io",
+        name: "Blog",
+        external: true,
+        header: true,
+    },
+    {
+        url: "https://docs.vocdoni.io",
+        name: "Docs",
+        external: true,
+        header: true,
+    },
+    {
+        url: "https://discord.gg/sQCxgYs",
+        name: "Discord",
+        external: true,
+        header: true,
+        footer: true,
+    },
+    {
+        url: "https://twitter.com/vocdoni",
+        name: "Twitter",
+        external: true,
+        footer: true,
+    },
+    {
+        url: "https://t.me/vocdoni",
+        name: "Telegram",
+        external: true,
+        footer: true,
+    },
+];
+
+const LinkItem = ({
+    name,
+    url,
+    external,
+    onClick,
+}: LinkProps & React.HTMLProps<HTMLAnchorElement>) => (
+    <ListItem>
+        <Link href={url} passHref>
+            <ClickableLink
+                onClick={onClick}
+                target={external ? "_blank" : "_self"}
+            >
+                {name}
+            </ClickableLink>
+        </Link>
+    </ListItem>
+);
+
 export const Header = () => {
     const [showMenu, setShowMenu] = useState(false);
     const isMobile = useIsMobile();
+    const HEADER_LINKS = LINKS.filter((l) => l.header);
 
     return (
         <>
             {isMobile && (
                 <MobileMenuContainer showMenu={showMenu}>
-                    {HEADERS_LINKS.map((link) => (
-                        <LinkItem {...link} mobile={true} key={link.name} />
+                    {LINKS.map((link) => (
+                        <LinkItem
+                            {...link}
+                            key={link.name}
+                            onClick={() => setShowMenu(false)}
+                        />
                     ))}
+                    <Section>Vocdoni {new Date().getFullYear()}</Section>
                 </MobileMenuContainer>
             )}
             <HeaderContainer>
@@ -157,7 +209,7 @@ export const Header = () => {
                     </Link>
                     <MenuItemsContainer>
                         {!isMobile &&
-                            HEADERS_LINKS.map((link) => (
+                            HEADER_LINKS.map((link) => (
                                 <LinkItem {...link} key={link.name} />
                             ))}
                     </MenuItemsContainer>
@@ -166,6 +218,7 @@ export const Header = () => {
                             toggled={showMenu}
                             toggle={setShowMenu}
                             color="#fff"
+                            size={25}
                         />
                     )}
                 </ListContainer>

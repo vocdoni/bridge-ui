@@ -25,9 +25,20 @@ const Container = styled.div`
         opacity: 0.95;
     }
 
-    // This will change with responsive
     max-width: calc(33.3333333% - 2em);
     min-width: 250px;
+    min-height: 130px;
+
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        margin: 10px;
+        max-width: calc(50% - 2em);
+        text-align: start;
+        justify-content: center;
+    }
+    @media ${({ theme }) => theme.screens.mobileL} {
+        max-width: calc(100% - 2em);
+    }
 `;
 
 const Card = styled.div`

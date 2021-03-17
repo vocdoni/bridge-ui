@@ -89,7 +89,7 @@ const GreyCircle = styled.div`
 const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -1em;
+    margin: 0 10px;
 
     @media ${({ theme }) => theme.screens.tablet} {
         justify-content: center;
@@ -111,67 +111,16 @@ const ClickableLink = styled.a`
     text-decoration: none;
 `;
 
-interface HandleConnectorProps {
-    poolLoading: boolean;
-    wallet: Wallet<unknown>;
-    connecting: boolean;
-    onSignIn: () => void;
-    isConnected: boolean;
-}
-
-const HandleConnector = ({
-    poolLoading,
-    wallet,
-    connecting,
-    onSignIn,
-    isConnected,
-}: HandleConnectorProps) => {
-    const theme = useTheme();
-
-    if (poolLoading || connecting) {
-        const connectingToVocdoni = "Conneting to Vocdoni";
-        const connectingToWeb3 = "Connecting to " + wallet.networkName;
-        const label = poolLoading ? connectingToVocdoni : connectingToWeb3;
-        return (
-            <ConnectButton
-                label={label}
-                icon={<LoadingRing />}
-                wide
-                onClick={wallet.reset}
-            />
-        );
-    }
-
-    return (
-        <ConnectButton
-            label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
-            icon={<IconEthereum />}
-            mode="strong"
-            wide
-            onClick={onSignIn}
-        />
-    );
-};
-
-// MAIN COMPONENT
-const IndexPage = () => {
+//@TODO: This will be improved with the Wallet Modal PR
+export const HandleConnector = () => {
     const { setAlertMessage } = useMessageAlert();
     const [connecting, setConnecting] = useState(false);
     const router = useRouter();
-    const {
-        pool,
-        loading: poolLoading,
-        error: poolError,
-        refresh: poolRefresh,
-    } = usePool();
+    const { pool, loading: poolLoading } = usePool();
     const wallet = useWallet();
-    const tokenInfos = useTokens(featuredTokens);
-    const isMobile = useIsMobile();
+
     const isConnected = wallet.status == "connected";
-
-    // CALLBACKS
-
-    function onSignIn() {
+    const onSignIn = () => {
         if (pool && wallet.status == "connected") {
             return router.push("/dashboard");
         }
@@ -207,7 +156,37 @@ const IndexPage = () => {
                     "Could not access Metamask or connect to the network"
                 );
             });
+    };
+
+    if (poolLoading || connecting) {
+        const connectingToVocdoni = "Conneting to Vocdoni";
+        const connectingToWeb3 = "Connecting to " + wallet.networkName;
+        const label = poolLoading ? connectingToVocdoni : connectingToWeb3;
+        return (
+            <ConnectButton
+                label={label}
+                icon={<LoadingRing />}
+                wide
+                onClick={wallet.reset}
+            />
+        );
     }
+
+    return (
+        <ConnectButton
+            label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
+            icon={<IconEthereum />}
+            mode="strong"
+            wide
+            onClick={onSignIn}
+        />
+    );
+};
+
+// MAIN COMPONENT
+const IndexPage = () => {
+    const tokenInfos = useTokens(featuredTokens);
+    const isMobile = useIsMobile();
 
     return (
         <div>
@@ -217,7 +196,7 @@ const IndexPage = () => {
             </Head>
 
             <Row alignItems="center">
-                <LeftSection maxWidth={"60%"}>
+                <LeftSection maxWidth="60%">
                     <Description>
                         Submit proposals for <ColorText>ERC20</ColorText> tokens
                         and vote on them using a decentralized end-to-end
@@ -237,15 +216,8 @@ const IndexPage = () => {
                     </p>
                 </LeftSection>
                 {isMobile ? null : (
-                    <RightSection width={"100%"} textAlign={"center"}>
-                        {/** Not sure if we want this props drill... */}
-                        <HandleConnector
-                            poolLoading={poolLoading}
-                            wallet={wallet}
-                            connecting={connecting}
-                            onSignIn={onSignIn}
-                            isConnected={isConnected}
-                        />
+                    <RightSection width="100%" textAlign="center">
+                        <HandleConnector />
                     </RightSection>
                 )}
             </Row>
@@ -308,7 +280,9 @@ const IndexPage = () => {
             <br />
 
             <Row justifyContent={"space-around"}>
-                <ShowMoreButton href="/tokens">Show more</ShowMoreButton>
+                <ShowMoreButton target="_self" href="/tokens">
+                    Show more
+                </ShowMoreButton>
             </Row>
         </div>
     );

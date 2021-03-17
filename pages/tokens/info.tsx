@@ -61,6 +61,7 @@ const InfoDescription = styled.h4`
 const VoteSectionContainer = styled.div`
     @media ${({ theme }) => theme.screens.tablet} {
         text-align: center;
+        margin: 0 10px;
     }
 `;
 

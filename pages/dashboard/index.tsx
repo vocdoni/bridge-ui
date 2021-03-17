@@ -13,6 +13,8 @@ import { ProcessInfo, TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/util";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
+import { useWallet } from "use-wallet";
+import { useRouter } from "next/router";
 
 export const TokenList = styled.div`
     display: flex;
@@ -29,6 +31,8 @@ export const LightText = styled.p`
 
 // MAIN COMPONENT
 const DashboardPage = () => {
+    const { account } = useWallet();
+    const router = useRouter();
     const { poolPromise } = usePool();
     const {
         registeredTokens: tokenAddrs,
@@ -85,6 +89,12 @@ const DashboardPage = () => {
             skip = true;
         };
     }, [tokenAddrs]);
+
+    useEffect(() => {
+        if (!account) {
+            router.replace("/");
+        }
+    }, [account]);
 
     // RENDER
 
@@ -155,7 +165,6 @@ export const VoteSection = ({
     noProcessesMessage,
     processesMessage,
 }) => {
-
     const Processes = () =>
         useMemo(() => {
             return processes.map((proc) => {
