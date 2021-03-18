@@ -64,8 +64,18 @@ const Row = styled.div`
 const RowSummary = styled.div`
     margin-top: 2em;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+`;
+
+const Info = styled.div`
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: row;
+    }
 `;
 
 const Title = styled.p`
@@ -88,14 +98,19 @@ const Address = styled.h4`
 
 const RowContinue = styled.div`
     margin-top: 5em;
-
+    
     display: flex;
     justify-content: space-around;
-
+    
     & > * {
+        margin-top: -3em;
         min-width: 250px;
     }
 `;
+
+const TokenContractDetails = styled.div`
+    text-align: center;
+`
 
 const LightText = styled.p`
     color: ${({ theme }) => theme.lightText};
@@ -225,32 +240,32 @@ const TokenAddPage = () => {
 
             {tokenInfo && (
                 <>
-                    <div>
+                    <TokenContractDetails>
                         <h2>Token contract details</h2>
                         <LightText>
                             The following token will be registered. All token
                             holders will be able to submit new governance
                             processes.
                         </LightText>
-                    </div>
+                    </TokenContractDetails>
 
                     <RowSummary>
-                        <div>
+                        <Info>
                             <Title>Token symbol</Title>
                             <Description>{tokenInfo?.symbol}</Description>
-                        </div>
-                        <div>
+                        </Info>
+                        <Info>
                             <Title>Token name</Title>
                             <Description>{tokenInfo?.name}</Description>
-                        </div>
-                        <div>
+                        </Info>
+                        <Info>
                             <Title>Total supply</Title>
                             <Description>{tokenInfo?.totalSupply}</Description>
-                        </div>
-                        <div>
+                        </Info>
+                        <Info>
                             <Title>Token address</Title>
                             <Address>{tokenInfo?.address}</Address>
-                        </div>
+                        </Info>
                     </RowSummary>
 
                     <RowContinue>

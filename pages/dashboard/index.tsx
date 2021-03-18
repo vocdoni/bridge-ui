@@ -19,9 +19,9 @@ import { useRouter } from "next/router";
 export const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
-    margin: 0 10px;
-
+    
     @media ${({ theme }) => theme.screens.tablet} {
+        margin: 0 10px;
         justify-content: center;
         text-align: start;
     }

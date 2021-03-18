@@ -14,6 +14,7 @@ const LayoutContainer = styled.div`
 
     @media ${({ theme }) => theme.screens.tablet} {
         margin-bottom: 110px;
+        margin-top: 50px;
         padding: 0 ${({ theme }) => theme.margins.mobile.horizontal};
     }
 `;

@@ -5,7 +5,7 @@ export const MessageAlert = () => {
     const { message } = useMessageAlert();
 
     return (
-        <AlertContainer visible={message?.length > 0}>
+        <AlertContainer visible={!!message?.length}>
             <div>{message || ""}</div>
         </AlertContainer>
     );
@@ -22,6 +22,10 @@ const AlertContainer = styled.div<{ visible: boolean }>`
     user-select: none;
     font-size: 16px;
 
+
+    box-sizing: border-box;
+    padding: ${({ visible }) => (visible ? "16px" : "0")};
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -36,17 +40,11 @@ const AlertContainer = styled.div<{ visible: boolean }>`
     transition: transform 0.1s ease-out, opacity 0.1s ease-out;
 
     @media ${({ theme }) => theme.screens.tablet} {
-        left: 15vw;
-        right: 15vw;
-    }
-
-    @media ${({ theme }) => theme.screens.tablet} {
-        justify-content: flex-end;
-        text-align: right;
-        top: 1, 0px;
-        left: unset;
-        max-width: 330px;
-        right: 10px;
+        text-align: center;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        max-width: 75vw;
         transform: ${({ visible }) => `translate(${visible ? 0 : 360}px  0px)`};
     }
 `;

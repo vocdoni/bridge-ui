@@ -8,7 +8,7 @@ const Container = styled.div`
 
     flex: 1 0 500px;
     box-sizing: border-box;
-    margin: 1rem 1em 1rem;
+    margin: 1rem 1em;
 
     background: linear-gradient(
         101.6deg,
@@ -27,8 +27,6 @@ const Container = styled.div`
 
     max-width: calc(33.3333333% - 2em);
     min-width: 250px;
-    min-height: 130px;
-
 
     @media ${({ theme }) => theme.screens.tablet} {
         margin: 10px;

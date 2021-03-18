@@ -80,18 +80,20 @@ h1 {
     font-size: 45px; 
     font-weight: 900; 
     @media ${({ theme }) => theme.screens.tablet} {
-        font-size: 40px; 
+        font-size: 30px; 
         font-weight: 800; 
     }
 }
+
 h2 { 
     font-size: 30px; 
     font-weight: 900; 
     @media ${({ theme }) => theme.screens.tablet} {
-        font-size: 25px; 
-        font-weight: 800; 
+        font-size: 24px; 
+        font-weight: 700; 
     }
 }
+
 h3 { 
     font-size: 20px; 
     font-weight: 900; 
@@ -100,17 +102,38 @@ h3 {
         font-weight: 700; 
     }
 }
+
 h4 { 
     font-size: 16px; 
     font-weight: 500; 
     @media ${({ theme }) => theme.screens.tablet} {
         font-size: 15px; 
     }
+}
+
+h5 { 
+    font-size: 14px; 
+    font-weight: 500; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 12px; 
+    }
+}
+
+h6 { 
+    font-size: 13px; 
+    font-weight: 500; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 11px; 
+    }
+}
+
+p { 
+    font-size: 14px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 12px; 
+    }
 
 }
-h5 { font-size: 14px; font-weight: 500; }
-h6 { font-size: 13px; font-weight: 500; }
-p { font-size: 14px; }
 
 
 textarea {

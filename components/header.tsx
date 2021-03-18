@@ -82,6 +82,7 @@ const VocdoniLink = styled.a`
     font-weight: 500;
     color: ${({ theme }) => theme.clear};
     text-decoration: none;
+    cursor: pointer;
 `;
 
 const ClickableLink = styled.a`
@@ -205,7 +206,7 @@ export const Header = () => {
             <HeaderContainer>
                 <ListContainer>
                     <Link href="/" passHref>
-                        <VocdoniLink>Vocdoni Bridge</VocdoniLink>
+                        <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
                     </Link>
                     <MenuItemsContainer>
                         {!isMobile &&

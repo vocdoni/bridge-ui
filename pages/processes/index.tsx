@@ -25,6 +25,7 @@ import { useToken } from "../../lib/hooks/tokens";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -62,9 +63,9 @@ const LightText = styled.p`
 
 const Question = styled.div`
     display: flex;
-    flex-direction: row;
     @media ${({ theme }) => theme.screens.tablet} {
         flex-direction: column;
+        text-align: center;
     }
 `;
 
@@ -101,6 +102,7 @@ const QuestionRightSection = styled.div`
     padding-top: 50px;
 
     @media ${({ theme }) => theme.screens.tablet} {
+        padding-top: 20px;
         width: 100%;
         flex: 0;
         margin-left: 0;
@@ -295,6 +297,7 @@ const ProcessPage = () => {
     const router = useRouter();
     const wallet = useWallet();
     const signer = useSigner();
+    const isMobile = useIsMobile();
     const { setAlertMessage } = useMessageAlert();
     const { poolPromise } = usePool();
     const processId = useUrlHash().substr(1);
@@ -601,13 +604,13 @@ const ProcessPage = () => {
             <RowDescription>
                 <RowDescriptionLeftSection>
                     <h2>{proc.metadata.title.default || "No title"}</h2>
-                    <Status>{status}</Status>
+                    <Status>{isMobile ? remainingTime : status}</Status>
                     <LightText>
                         {proc.metadata.description.default || "No description"}
                     </LightText>
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
-                    <LightText>{remainingTime}</LightText>
+                    {isMobile ? null : <LightText>{remainingTime}</LightText>}
                 </RowDescriptionRightSection>
             </RowDescription>
 
