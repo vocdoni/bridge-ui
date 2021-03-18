@@ -7,10 +7,12 @@ import {
     LoadingRing,
     IconPower,
     IconEthereum,
-    Button,
     AddressField,
 } from "@aragon/ui";
 import styled from "styled-components";
+
+
+import Button from "./button"
 
 const WalletContainer = styled.div`
     display: flex;

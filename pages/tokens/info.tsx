@@ -31,6 +31,7 @@ const RowSummary = styled.div`
 const Info = styled.div`
     @media ${({ theme }) => theme.screens.tablet} {
         flex-direction: row;
+        height: 80px;
     }
 `;
 

@@ -1,38 +1,30 @@
 import Link from "next/link";
 import React from "react";
-import styled from "styled-components";
+import { Button as AragonButton } from "@aragon/ui";
 
-const StyledButton = styled.div`
-    box-sizing: border-box;
-    border-radius: 40px;
-    padding: 15px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 16px;
-    letter-spacing: 0.01em;
-
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-`;
-
-type ButtonProps = {
-    children: React.ReactNode;
-    href?: string;
-    onClick?: () => void;
+type AragonButtonProps = {
+    mode?: "normal" | "strong" | "positive" | "negative";
+    size?: "medium" | "small" | "mini";
+    wide?: boolean;
+    label?: string;
+    icon?: React.ReactNode;
 };
 
-function Button({ children, onClick, href }: ButtonProps) {
+interface ButtonProps {
+    children?: React.ReactNode;
+    href?: string;
+    onClick?: () => void;
+}
+
+function Button({ href, ...props }: ButtonProps & AragonButtonProps) {
     if (href) {
         return (
             <Link href={href}>
-                <StyledButton onClick={onClick}>{children}</StyledButton>;
+                <AragonButton {...props} />
             </Link>
         );
     }
-    return <StyledButton onClick={onClick}>{children}</StyledButton>;
+    return <AragonButton {...props} />;
 }
 
-Button.Styled = StyledButton;
 export default Button;

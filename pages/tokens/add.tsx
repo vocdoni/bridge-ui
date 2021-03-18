@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
@@ -17,24 +17,6 @@ import { TopSection } from "../../components/top-section";
 
 const StyledSpinner = styled(Spinner)`
     color: ${({ theme }) => theme.accent2};
-`;
-
-const TokenButton = styled(Button.Styled)`
-    background: ${({ theme }) => theme.accent2}0C;
-    color: ${({ theme }) => theme.accent2};
-    border: 1px solid ${({ theme }) => theme.accent2};
-
-    &:hover {
-        background: ${({ theme }) => theme.accent2}1A;
-    }
-
-    &:active {
-        background: ${({ theme }) => theme.accent2}27;
-    }
-
-    @media ${({ theme }) => theme.screens.tablet} {
-        margin-top: 10px;
-    }
 `;
 
 const LeftSection = styled.div`
@@ -56,13 +38,13 @@ const RightSection = styled.div`
     display: flex;
     align-items: flex-end;
     flex: 3;
-    margin-bottom: -4px;
     margin-left: 2em;
     & > * {
         width: 100%;
     }
 
     @media ${({ theme }) => theme.screens.tablet} {
+        margin-top: 20px;
         max-width: 100%;
         margin-left: 0px;
     }
@@ -135,7 +117,7 @@ const TokenAddPage = () => {
     // Callbacks
 
     const checkToken = () => {
-        if (loadingToken) return;
+        if (loadingToken || !formTokenAddress) return;
         else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
             return setAlertMessage("The token address is not valid");
         }
@@ -154,10 +136,16 @@ const TokenAddPage = () => {
             });
     };
 
-    const onSubmit = async () => {
+    const onSubmit = useCallback(async () => {
         if (!tokenInfo) return;
-        else if (!wallet.connector || !wallet.account)
-            return setAlertMessage("Web3 support is not available");
+        if (!wallet.connector || !wallet.account) {
+            try {
+                //@TODO: When wallet modal PR is merged, open that modal here
+                await wallet.connect("injected");
+            } catch (e) {
+                return setAlertMessage("Web3 support is not available");
+            }
+        }
 
         try {
             setRegisteringToken(true);
@@ -186,6 +174,7 @@ const TokenAddPage = () => {
 
             Router.push("/tokens/info#/" + tokenInfo.address);
         } catch (err) {
+            console.log(err.message);
             setRegisteringToken(false);
 
             if (err && err.message == NO_TOKEN_BALANCE)
@@ -195,7 +184,7 @@ const TokenAddPage = () => {
 
             setAlertMessage("The token could not be registered");
         }
-    };
+    }, [signer, wallet, tokenInfo]);
 
     // RENDER
 
@@ -224,7 +213,8 @@ const TokenAddPage = () => {
                     />
                 </LeftSection>
                 <RightSection>
-                    <TokenButton
+                    <Button
+                        mode="strong"
                         onClick={loadingToken ? undefined : checkToken}
                         children={
                             loadingToken ? <StyledSpinner /> : "Check token"
@@ -264,12 +254,12 @@ const TokenAddPage = () => {
                     </RowSummary>
 
                     <RowContinue>
-                        {!wallet.account ? (
-                            <WalletStatus />
-                        ) : registeringToken ? (
+                        {registeringToken ? (
                             <Button children={<StyledSpinner />} />
                         ) : (
-                            <Button onClick={onSubmit}>Register token</Button>
+                            <Button mode="strong" onClick={onSubmit}>
+                                Register token
+                            </Button>
                         )}
                     </RowContinue>
                 </>

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { withRouter, useRouter } from "next/router";
-import { Button, IconEthereum, LoadingRing } from "@aragon/ui";
+import { IconEthereum, LoadingRing } from "@aragon/ui";
 import { ChainUnsupportedError, useWallet, Wallet } from "use-wallet";
 import styled, { CSSProperties, useTheme } from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
 // import Spinner from "react-svg-spinner"
 
 import TokenCard from "../components/token-card";
+import Button from "../components/button";
 import { featuredTokens } from "../lib/tokens";
 import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from "../lib/errors";
 import { useTokens } from "../lib/hooks/tokens";
@@ -271,7 +272,7 @@ const IndexPage = () => {
             <br />
 
             <Row justifyContent={"space-around"}>
-                <ShowMoreButton target="_self" href="/tokens">
+                <ShowMoreButton href="/tokens">
                     Show more
                 </ShowMoreButton>
             </Row>

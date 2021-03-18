@@ -16,10 +16,22 @@ const Container = styled.div`
 const NotListedMessage = styled.h6`
     color: ${({ theme }) => theme.accent1};
     text-align: right;
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
 `;
 
 const ActiveTokensDescription = styled.p`
     color: ${({ theme }) => theme.lightText};
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
+`;
+
+const ActiveTokens = styled.h2`
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
 `;
 
 const TokenList = styled.div`
@@ -55,7 +67,7 @@ const TokensPage = () => {
                 )}
             />
 
-            <h2>Active tokens</h2>
+            <ActiveTokens>Active tokens</ActiveTokens>
             <ActiveTokensDescription>
                 Below are the processes belonging to tokens that you currently
                 hold.

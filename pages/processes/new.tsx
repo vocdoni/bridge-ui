@@ -246,56 +246,6 @@ const QuestionText = styled.h3`
     margin-bottom: 0;
 `;
 
-const AddQuestionButton = styled.div`
-    margin-top: 1em;
-    border-radius: 8px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-
-    cursor: pointer;
-    background: ${({ theme }) => theme.accent2}0C;
-    border: 1px solid ${({ theme }) => theme.accent2};
-    color: ${({ theme }) => theme.accent2};
-
-    width: 180px;
-    height: calc(15px + 2em - 2px);
-
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    &:hover {
-        background: ${({ theme }) => theme.accent2}1A;
-    }
-
-    &:active {
-        background: ${({ theme }) => theme.accent2}27;
-    }
-`;
-
-const SubmitButton = styled(Button.Styled)`
-    background: ${({ theme }) => theme.accent2}0C;
-    color: ${({ theme }) => theme.accent2};
-    border: 1px solid ${({ theme }) => theme.accent2};
-
-    &:hover {
-        background: ${({ theme }) => theme.accent2}1A;
-    }
-
-    &:active {
-        background: ${({ theme }) => theme.accent2}27;
-    }
-
-    @media ${({ theme }) => theme.screens.tablet} {
-        margin-top: 10px;
-    }
-`;
-
 const RowContinue = styled.div`
     margin-top: 5em;
 
@@ -305,6 +255,10 @@ const RowContinue = styled.div`
     & > * {
         min-width: 250px;
     }
+`;
+
+const AddQuestionButton = styled(Button)`
+    margin-top: 10px;
 `;
 
 interface PlusBoxProps {
@@ -553,14 +507,21 @@ const NewProcessPage = () => {
                 maxVoteOverwrites: 1,
                 evmBlockHeight,
                 tokenAddress,
-                paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000"
-            }
+                paramsSignature:
+                    "0x0000000000000000000000000000000000000000000000000000000000000000",
+            };
 
-            const processId = await VotingApi.newProcess(processParamsPre, signer, pool)
-            Router.push("/processes#/" + processId)
-            setSubmitting(false)
+            const processId = await VotingApi.newProcess(
+                processParamsPre,
+                signer,
+                pool
+            );
+            Router.push("/processes#/" + processId);
+            setSubmitting(false);
 
-            setAlertMessage("The governance process has been successfully created")
+            setAlertMessage(
+                "The governance process has been successfully created"
+            );
         } catch (err) {
             setSubmitting(false);
 
@@ -706,7 +667,10 @@ const NewProcessPage = () => {
                     </div>
 
                     {qIdx == metadata.questions.length - 1 ? (
-                        <AddQuestionButton onClick={onAddQuestion}>
+                        <AddQuestionButton
+                            mode="positive"
+                            onClick={onAddQuestion}
+                        >
                             Add question
                         </AddQuestionButton>
                     ) : null}
@@ -715,14 +679,14 @@ const NewProcessPage = () => {
 
             <RowContinue>
                 {submitting ? (
-                    <p className="status">
+                    <p>
                         Please wait...
                         <Spinner />
                     </p>
                 ) : (
-                    <SubmitButton onClick={onSubmit}>
+                    <Button mode="strong" onClick={onSubmit}>
                         Submit process
-                    </SubmitButton>
+                    </Button>
                 )}
             </RowContinue>
         </NewProcessContainer>
