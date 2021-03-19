@@ -124,7 +124,7 @@ const Box = styled.div`
     justify-content: center;
     align-items: center;
 
-    color: ${({ theme }) => theme.clear};
+    color: ${({ theme }) => theme.white};
     background-color: ${({ theme }) => theme.accent1};
     width: 55px;
     height: 55px;
@@ -243,7 +243,7 @@ const Choices = ({
     questionVoteCount: BigNumber;
 }) => {
     const resultsAvailable = results?.questions?.length;
-    if (resultsAvailable && hasEnded) {
+    if ((resultsAvailable && hasEnded) || hasVoted) {
         return (
             <ChoicesResults
                 choices={question.choices}
@@ -541,6 +541,7 @@ const ProcessPage = () => {
             });
 
             setAlertMessage("Your vote has been sucessfully submitted");
+            setHasVoted(true);
             setIsSubmitting(false);
         } catch (err) {
             console.error(err);

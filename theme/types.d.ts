@@ -16,7 +16,6 @@ export interface Colors {
     lightText: Color;
     mainText: Color;
     lighterText: Color;
-    clear: Color;
 
     inputBackground: Color;
 }

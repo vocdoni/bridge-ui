@@ -26,7 +26,7 @@ const Radio = styled.label`
     .checkmark {
         height: 22px;
         width: 22px;
-        background-color: ${({ theme }) => theme.clear};
+        background-color: ${({ theme }) => theme.white};
         border-radius: 50%;
         margin-right: 1em;
         border: 1px solid ${({ theme }) => theme.accent1};
@@ -34,7 +34,7 @@ const Radio = styled.label`
 
     /* When the radio button is checked, add a blue background */
     input:checked ~ .checkmark {
-        background-color: ${({ theme }) => theme.clear};
+        background-color: ${({ theme }) => theme.white};
     }
 
     /* Create the indicator (the dot/circle - hidden when not checked) */
@@ -53,7 +53,7 @@ const Radio = styled.label`
     .checkmark:after {
         border-radius: 50%;
         background: ${({ theme }) => theme.accent1};
-        z-index: 50;
+        z-index: 9;
         height: 16px;
         width: 16px;
         margin: 3px;

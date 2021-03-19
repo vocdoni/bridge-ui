@@ -80,14 +80,14 @@ const ListItem = styled.div`
 
 const VocdoniLink = styled.a`
     font-weight: 500;
-    color: ${({ theme }) => theme.clear};
+    color: ${({ theme }) => theme.white};
     text-decoration: none;
     cursor: pointer;
 `;
 
 const ClickableLink = styled.a`
     text-decoration: none;
-    color: ${({ theme }) => theme.clear};
+    color: ${({ theme }) => theme.white};
 `;
 
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
@@ -98,7 +98,7 @@ const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background: ${({ theme }) => theme.clear};
+    background: ${({ theme }) => theme.white};
     z-index: 10;
     margin-top: 70px;
 

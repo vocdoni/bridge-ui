@@ -30,7 +30,7 @@ const ClickableText = styled.a`
 `;
 
 const MobileFooter = styled.div`
-    background-color: ${({ theme }) => theme.clear};
+    background-color: ${({ theme }) => theme.white};
     box-sizing: border-box;
     width: 100%;
     padding: 16px;

@@ -41,7 +41,7 @@ const Container = styled.div`
 
 const Card = styled.div`
     padding: 1.4em;
-    color: ${({ theme }) => theme.clear};
+    color: ${({ theme }) => theme.white};
 `;
 
 const TokenLogo = styled.img`

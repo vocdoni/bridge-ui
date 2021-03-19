@@ -10,7 +10,7 @@ import {
     ProcessMode,
     VotingApi,
 } from "dvote-js";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { usePool, useSigner } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
@@ -107,7 +107,7 @@ const ChoicesTitle = styled.h3`
     margin-bottom: 0;
 `;
 
-/* const plusbox = `
+const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -123,117 +123,40 @@ const ChoicesTitle = styled.h3`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-`;
-
-const add = `
     cursor: pointer;
-    background: ${({ theme }) => theme.accent2 + "0C"};
-    border: 1px solid ${({ theme }) => theme.accent2};
-    color: ${({ theme }) => theme.accent2};
-    width: calc(15px + 2em - 2px);
-    height: calc(15px + 2em - 2px);
-    &:hover {
-        background: ${({ theme }) => theme.accent2 + "1A"};
-    }
-    &:active {
-        background: ${({ theme }) => theme.accent2 + "27"};
-    }
-`;
 
-const remove = `
-    cursor: pointer;
-    background: ${({ theme }) => theme.accent1 + "0C"};
-    border: 1px solid ${({ theme }) => theme.accent1};
-    color: ${({ theme }) => theme.accent1};
-    width: calc(15px + 2em - 2px);
-    height: calc(15px + 2em - 2px);
-    &:hover {
-        background: ${({ theme }) => theme.accent1 + "1A"};
-    }
-    &:active {
-        background: ${({ theme }) => theme.accent1 + "27"};
-    }
-`; */
+    ${({ add }) =>
+        add &&
+        css`
+            background: ${({ theme }) => theme.white};
+            border: 1px solid ${({ theme }) => theme.lightBorder};
+            color: ${({ theme }) => theme.darkMidFg};
+            width: calc(15px + 2em - 2px);
+            height: calc(15px + 2em - 2px);
+            &:hover {
+                background: ${({ theme }) => theme.lightBg2 + "80"};
+            }
+            &:active {
+                background: ${({ theme }) => theme.lightBg2 + "B3"};
+            }
+        `}
 
-// @TODO: Apply DRY with these three PlusBox divs
-const PlusBoxContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    background-color: ${({ theme }) => theme.inputBackground};
-    margin-top: 1em;
-    border-radius: 8px;
-    width: calc(15px + 2em);
-    height: calc(15px + 2em);
-    text-align: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-`;
-
-const PlusBoxAdd = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    background-color: ${({ theme }) => theme.inputBackground};
-    margin-top: 1em;
-    border-radius: 8px;
-    width: calc(15px + 2em);
-    height: calc(15px + 2em);
-    text-align: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    cursor: pointer;
-    background: ${({ theme }) => theme.accent2 + "0C"};
-    border: 1px solid ${({ theme }) => theme.accent2};
-    color: ${({ theme }) => theme.accent2};
-    width: calc(15px + 2em - 2px);
-    height: calc(15px + 2em - 2px);
-    &:hover {
-        background: ${({ theme }) => theme.accent2 + "1A"};
-    }
-    &:active {
-        background: ${({ theme }) => theme.accent2 + "27"};
-    }
-`;
-
-const PlusBoxRemove = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    background-color: ${({ theme }) => theme.inputBackground};
-    margin-top: 1em;
-    border-radius: 8px;
-    width: calc(15px + 2em);
-    height: calc(15px + 2em);
-    text-align: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    cursor: pointer;
-    background: ${({ theme }) => theme.accent1 + "0C"};
-    border: 1px solid ${({ theme }) => theme.accent1};
-    color: ${({ theme }) => theme.accent1};
-    width: calc(15px + 2em - 2px);
-    height: calc(15px + 2em - 2px);
-    &:hover {
-        background: ${({ theme }) => theme.accent1 + "1A"};
-    }
-    &:active {
-        background: ${({ theme }) => theme.accent1 + "27"};
-    }
+    ${({ remove }) =>
+        remove &&
+        css`
+            cursor: pointer;
+            background: ${({ theme }) => theme.accent1 + "0C"};
+            border: 1px solid ${({ theme }) => theme.accent1};
+            color: ${({ theme }) => theme.accent1};
+            width: calc(15px + 2em - 2px);
+            height: calc(15px + 2em - 2px);
+            &:hover {
+                background: ${({ theme }) => theme.accent1 + "1A"};
+            }
+            &:active {
+                background: ${({ theme }) => theme.accent1 + "27"};
+            }
+        `}
 `;
 
 const QuestionNumber = styled.h6`
@@ -279,19 +202,22 @@ const PlusBox = ({
     const lastChoice = choices.length - 1;
     const isDefault = choices[currentChoice].title.default;
 
-    let Box = PlusBoxRemove;
+    const modifier = {};
     if (currentChoice === lastChoice && isDefault) {
-        Box = PlusBoxAdd;
+        modifier["add"] = true;
     } else if (choices.length === 2) {
-        Box = PlusBoxContainer;
+        modifier["remove"] = true;
     }
 
+    console.log(modifier);
+
     return (
-        <Box
+        <PlusBoxContainer
+            {...modifier}
             onClick={() => onClick({ currentQuestion, choices, currentChoice })}
         >
             {currentChoice === lastChoice && isDefault ? "+" : "⨯"}
-        </Box>
+        </PlusBoxContainer>
     );
 };
 
@@ -667,10 +593,7 @@ const NewProcessPage = () => {
                     </div>
 
                     {qIdx == metadata.questions.length - 1 ? (
-                        <AddQuestionButton
-                            mode="positive"
-                            onClick={onAddQuestion}
-                        >
+                        <AddQuestionButton onClick={onAddQuestion}>
                             Add question
                         </AddQuestionButton>
                     ) : null}
