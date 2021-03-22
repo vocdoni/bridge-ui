@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react'
+import React, { FC } from 'react'
 import { NextComponentType, NextPageContext } from 'next'
 import { AppInitialProps } from 'next/app'
 import Head from 'next/head'
