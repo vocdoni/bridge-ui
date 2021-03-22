@@ -32,14 +32,14 @@ export const WALLETS: ConnectorData[] = [
             rpcUrl: `https://${process.env.ETH_NETWORK_ID}.infura.io/v3/b76cba91dc954ceebff27244923224b1`,
         },
     },
-    {
-        name: "Ledger",
-        connector: "ledger",
-        properties: {
-            url: `https://${process.env.ETH_NETWORK_ID}.infura.io/v3/b76cba91dc954ceebff27244923224b1`,
-            chainId: 1,
-        },
-    },
+    // {
+    //     name: "Ledger",
+    //     connector: "ledger",
+    //     properties: {
+    //         url: `https://${process.env.ETH_NETWORK_ID}.infura.io/v3/b76cba91dc954ceebff27244923224b1`,
+    //         chainId: 1,
+    //     },
+    // },
 ];
 
 export const getConnectors = () => {
