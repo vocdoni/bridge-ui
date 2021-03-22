@@ -9,7 +9,7 @@ const Radio = styled.label`
     user-select: none;
     padding: 5px 0;
     font-weight: 500;
-    color: var(--main-text);
+    color: ${({ theme }) => theme.mainText};
 
     display: flex;
     flex-direction: row;

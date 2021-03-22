@@ -113,31 +113,31 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
     justify-content: center;
     align-items: center;
     font-weight: 500;
-    background-color: ${({ theme }) => theme.inputBackground};
-    margin-top: 1em;
+    background-color: ${({ theme }) => theme.white};
+    border: 1px solid ${({ theme }) => theme.inputBackground};
+    color: ${({ theme }) => theme.text3}80;
+    margin-top: 0.5em;
+    -webkit-margin-before: 1em;
     border-radius: 8px;
-    width: calc(15px + 2em);
-    height: calc(15px + 2em);
     text-align: center;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    cursor: pointer;
+    width: calc(15px + 2em - 2px);
+    height: calc(15px + 2em - 2px);
 
     ${({ add }) =>
         add &&
         css`
+            cursor: pointer;
             background: ${({ theme }) => theme.white};
-            border: 1px solid ${({ theme }) => theme.lightBorder};
-            color: ${({ theme }) => theme.darkMidFg};
-            width: calc(15px + 2em - 2px);
-            height: calc(15px + 2em - 2px);
+            color: ${({ theme }) => theme.text3};
             &:hover {
-                background: ${({ theme }) => theme.lightBg2 + "80"};
+                background: ${({ theme }) => theme.inputBackground + "80"};
             }
             &:active {
-                background: ${({ theme }) => theme.lightBg2 + "B3"};
+                background: ${({ theme }) => theme.white + "B3"};
             }
         `}
 
@@ -145,16 +145,14 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
         remove &&
         css`
             cursor: pointer;
-            background: ${({ theme }) => theme.accent1 + "0C"};
-            border: 1px solid ${({ theme }) => theme.accent1};
-            color: ${({ theme }) => theme.accent1};
-            width: calc(15px + 2em - 2px);
-            height: calc(15px + 2em - 2px);
+            background: ${({ theme }) => theme.white};
+            border: 1px solid ${({ theme }) => theme.negative};
+            color: ${({ theme }) => theme.negative};
             &:hover {
-                background: ${({ theme }) => theme.accent1 + "1A"};
+                background: ${({ theme }) => theme.negative + "1A"};
             }
             &:active {
-                background: ${({ theme }) => theme.accent1 + "27"};
+                background: ${({ theme }) => theme.negative + "27"};
             }
         `}
 `;
@@ -205,11 +203,9 @@ const PlusBox = ({
     const modifier = {};
     if (currentChoice === lastChoice && isDefault) {
         modifier["add"] = true;
-    } else if (choices.length === 2) {
+    } else if (!(choices.length === 2)) {
         modifier["remove"] = true;
     }
-
-    console.log(modifier);
 
     return (
         <PlusBoxContainer

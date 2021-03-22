@@ -3,6 +3,7 @@ export type Color = string;
 export interface Colors {
     text1: Color;
     text2: Color;
+    text3: Color;
     accent1: Color;
     accent2: Color;
     white: Color;
@@ -18,6 +19,9 @@ export interface Colors {
     lighterText: Color;
 
     inputBackground: Color;
+    negative: Color;
+
+    positive: Color;
 }
 
 export interface Screens {
@@ -34,11 +38,11 @@ export interface Margins {
     mobile: {
         horizontal: string;
         vertical: string;
-    }
+    };
     desktop: {
         horizontal: string;
         vertical: string;
-    }
+    };
 }
 
 declare module "styled-components" {
