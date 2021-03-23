@@ -186,6 +186,12 @@ const RowContinue = styled.div`
     }
 `;
 
+const Remove = styled.h6`
+    color: ${({ theme }) => theme.accent1};
+    margin-top: 10px;
+    cursor: pointer;
+`;
+
 const AddQuestionButton = styled(Button)`
     margin-top: 10px;
 `;
@@ -314,6 +320,16 @@ const NewProcessPage = () => {
         );
         setMetadata(Object.assign({}, metadata));
     };
+
+    const onRemoveQuestion = (questionToRemove: number) => {
+        const newQuestions = metadata.questions.filter((_, id) => {
+            return questionToRemove !== id;
+        });
+
+        const newMetadata = { ...metadata, questions: newQuestions };
+        setMetadata(newMetadata);
+    };
+
     const onAddChoice = (qIdx: number) => {
         if (!metadata.questions[qIdx]) return;
         metadata.questions[qIdx].choices.push({
@@ -619,6 +635,11 @@ const NewProcessPage = () => {
                                     </ChoiceRightSection>
                                 </RowQuestions>
                             ))}
+                            {qIdx > 0 ? (
+                                <Remove onClick={() => onRemoveQuestion(qIdx)}>
+                                    Remove question
+                                </Remove>
+                            ) : null}
                         </div>
 
                         {qIdx == metadata.questions.length - 1 ? (
