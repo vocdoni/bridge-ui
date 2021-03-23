@@ -9,12 +9,15 @@ import styled from "styled-components";
 import Button from "./button";
 
 const WalletContainer = styled.div`
+    display: flex;
     justify-content: flex-end;
     align-items: center;
     font-weight: 500;
     margin-bottom: 0.7em;
     display: block;
     text-align: center;
+    max-width: 300px;
+    width: 260px;
 
     input[type="text"] {
         border: 1px solid #dde4e9;
@@ -70,8 +73,8 @@ const Wallet = () => {
         <Button
             label="Connect with MetaMask"
             icon={<IconEthereum />}
-            onClick={activate}
             wide
+            onClick={activate}
         />
     );
 };
