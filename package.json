@@ -21,9 +21,7 @@
     "homepage": "https://github.com/vocdoni/bridge-ui#readme",
     "dependencies": {
         "@aragon/ui": "^1.7.0",
-        "@types/react": "^17.0.0",
         "@vocdoni/react-hooks": "^0.3.3",
-        "@zeit/next-less": "^1.0.1",
         "bluebird": "^3.7.2",
         "dexie": "^3.0.3",
         "dvote-js": "^0.26.2",
@@ -31,7 +29,6 @@
         "hamburger-react": "^2.4.0",
         "identicon.js": "^2.3.3",
         "iso-language-codes": "^1.0.6",
-        "less": "^3.12.2",
         "moment": "^2.29.0",
         "next": "10.0.5",
         "react": "^17.0.1",
@@ -47,6 +44,7 @@
     },
     "devDependencies": {
         "@types/node": "^14.14.22",
+        "@types/react": "^17.0.0",
         "@types/styled-components": "^5.1.7",
         "eslint": "^7.12.1",
         "eslint-plugin-react": "^7.21.5"

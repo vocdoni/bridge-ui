@@ -3,23 +3,18 @@ import {
     ConnectionRejectedError,
     useWallet,
 } from "use-wallet";
-import {
-    LoadingRing,
-    IconPower,
-    IconEthereum,
-    AddressField,
-} from "@aragon/ui";
+import { LoadingRing, IconPower, IconEthereum, AddressField } from "@aragon/ui";
 import styled from "styled-components";
 
-
-import Button from "./button"
+import Button from "./button";
 
 const WalletContainer = styled.div`
-    display: flex;
     justify-content: flex-end;
     align-items: center;
     font-weight: 500;
     margin-bottom: 0.7em;
+    display: block;
+    text-align: center;
 
     input[type="text"] {
         border: 1px solid #dde4e9;
@@ -75,8 +70,8 @@ const Wallet = () => {
         <Button
             label="Connect with MetaMask"
             icon={<IconEthereum />}
-            wide
             onClick={activate}
+            wide
         />
     );
 };

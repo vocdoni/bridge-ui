@@ -29,6 +29,7 @@ export interface Screens {
     mobileM: string;
     mobileL: string;
     tablet: string;
+    tabletL: string;
     laptop: string;
     laptopL: string;
     desktop: string;

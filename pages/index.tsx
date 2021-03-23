@@ -68,7 +68,6 @@ const RightSection = styled.div`
 `;
 
 const ConnectButton = styled(Button)`
-    max-width: 300px;
     margin: 15px auto;
 `;
 

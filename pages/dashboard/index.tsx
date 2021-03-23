@@ -19,8 +19,21 @@ import { useRouter } from "next/router";
 export const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
+
+    & > div:first-child {
+        margin-left: 0px;
+    }
+    & > div:nth-child(4n) {
+        margin-left: 0px;
+    }
     
-    @media ${({ theme }) => theme.screens.tablet} {
+    @media ${({ theme }) => theme.screens.tabletL} {
+        & > div:first-child {
+            margin-left: 10px;
+        }
+        & > div:nth-child(4n) {
+            margin-left: 10px;
+        }
         margin: 0 10px;
         justify-content: center;
         text-align: start;
