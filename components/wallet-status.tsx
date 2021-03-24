@@ -9,12 +9,14 @@ import styled from "styled-components";
 import Button from "./button";
 
 const WalletContainer = styled.div`
+    display: flex;
     justify-content: flex-end;
     align-items: center;
     font-weight: 500;
     margin-bottom: 0.7em;
     display: block;
     text-align: center;
+    max-width: 300px;
 
     input[type="text"] {
         border: 1px solid #dde4e9;
@@ -25,6 +27,18 @@ const WalletContainer = styled.div`
         width: calc(100% - 2 * 1em);
 
         padding: 0 38px 0 12px;
+    }
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+    }
+`;
+
+const AddressContainer = styled.div`
+    width: 260px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        width: 100%;
+        text-align: center;
     }
 `;
 
@@ -63,15 +77,19 @@ const Wallet = () => {
             <Button icon={<IconPower />} size="mini" onClick={wallet.reset} />
         );
 
-        return <AddressField address={wallet.account} icon={icon} />;
+        return (
+            <AddressContainer>
+                <AddressField address={wallet.account} icon={icon} />
+            </AddressContainer>
+        );
     }
 
     return (
         <Button
             label="Connect with MetaMask"
             icon={<IconEthereum />}
-            onClick={activate}
             wide
+            onClick={activate}
         />
     );
 };

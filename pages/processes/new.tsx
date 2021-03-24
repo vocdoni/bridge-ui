@@ -25,6 +25,8 @@ import Button from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { WalletStatus } from "../../components/wallet-status";
 
 const NewProcessContainer = styled.div`
     input[type="text"],
@@ -44,19 +46,25 @@ const NewProcessContainer = styled.div`
 
 const FieldRow = styled.div`
     margin-top: 2em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    @media ${({ theme }) => theme.screens.tablet} {
+        flex-direction: column;
+    }
 `;
 
-const FieldRowRightSection = styled.div`
-    display: flex;
-    margin-top: ${({ marginTop }: CSSProperties) => marginTop}px;
-    @media ${({ theme }) => theme.screens.tablet} {
-        margin-top: ${({ marginTop }: CSSProperties) =>
-            marginTop === 82 ? 98 : marginTop}px;
-    }
-    flex-wrap: wrap;
+const FieldRowLeftSection = styled.div`
+    flex: 55%;
+`;
 
-    & > * {
-        margin-right: 35px;
+const FieldRowRightSection = styled.div<{ marginTop: number }>`
+    flex: 35%;
+    margin-left: 2em;
+    margin-top: ${({ marginTop }) => marginTop}px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        margin-top: 25px;
+        margin-left: 0;
     }
 `;
 
@@ -178,6 +186,12 @@ const RowContinue = styled.div`
     }
 `;
 
+const Remove = styled.h6`
+    color: ${({ theme }) => theme.accent1};
+    margin-top: 10px;
+    cursor: pointer;
+`;
+
 const AddQuestionButton = styled(Button)`
     margin-top: 10px;
 `;
@@ -217,11 +231,25 @@ const PlusBox = ({
     );
 };
 
-// MAIN COMPONENT
+const SubmitButton = ({ submitting, onSubmit }) =>
+    submitting ? (
+        <p>
+            Please wait...
+            <Spinner />
+        </p>
+    ) : (
+        <Button mode="strong" onClick={onSubmit}>
+            Submit process
+        </Button>
+    );
+
 const NewProcessPage = () => {
     const { poolPromise } = usePool();
     const signer = useSigner();
     const wallet = useWallet();
+
+    const isMobile = useIsMobile();
+
     const [metadata, setMetadata] = useState<ProcessMetadata>(
         JSON.parse(JSON.stringify(ProcessMetadataTemplate))
     );
@@ -292,6 +320,16 @@ const NewProcessPage = () => {
         );
         setMetadata(Object.assign({}, metadata));
     };
+
+    const onRemoveQuestion = (questionToRemove: number) => {
+        const newQuestions = metadata.questions.filter((_, id) => {
+            return questionToRemove !== id;
+        });
+
+        const newMetadata = { ...metadata, questions: newQuestions };
+        setMetadata(newMetadata);
+    };
+
     const onAddChoice = (qIdx: number) => {
         if (!metadata.questions[qIdx]) return;
         metadata.questions[qIdx].choices.push({
@@ -453,162 +491,177 @@ const NewProcessPage = () => {
     };
 
     return (
-        <NewProcessContainer>
+        <div>
             <TopSection
                 title="New governance process"
                 description="Enter the details of a new governance process and submit
                 them."
             />
-
-            <FieldRow>
-                <InfoTitle>Title</InfoTitle>
-                <InfoPlaceholder>
-                    Short name to identify the process
-                </InfoPlaceholder>
-                <input
-                    type="text"
-                    placeholder="Title"
-                    onChange={(e) => setMainTitle(e.target.value)}
-                    value={metadata.title.default}
-                />
-                <FieldRowRightSection marginTop={25}>
-                    <RadioChoice onClick={() => setEncryptedVotes(false)}>
-                        {" "}
+            <NewProcessContainer>
+                <FieldRow>
+                    <FieldRowLeftSection>
+                        <InfoTitle>Title</InfoTitle>
+                        <InfoPlaceholder>
+                            Short name to identify the process
+                        </InfoPlaceholder>
                         <input
-                            type="radio"
-                            readOnly
-                            checked={!envelopeType.hasEncryptedVotes}
-                            name="vote-encryption"
+                            type="text"
+                            placeholder="Title"
+                            onChange={(e) => setMainTitle(e.target.value)}
+                            value={metadata.title.default}
                         />
-                        <div className="checkmark"></div> Real-time results
-                    </RadioChoice>
-                    <RadioChoice onClick={() => setEncryptedVotes(true)}>
-                        {" "}
-                        <input
-                            type="radio"
-                            readOnly
-                            checked={envelopeType.hasEncryptedVotes}
-                            name="vote-encryption"
-                        />
-                        <div className="checkmark"></div> Encrypted results
-                    </RadioChoice>
-                </FieldRowRightSection>
-            </FieldRow>
-
-            <FieldRow>
-                <InfoTitle>Description</InfoTitle>
-                <InfoPlaceholder>
-                    An introduction of about 2-3 lines
-                </InfoPlaceholder>
-                <textarea
-                    placeholder="Description"
-                    onChange={(e) => setMainDescription(e.target.value)}
-                    value={metadata.description.default}
-                />
-                <FieldRowRightSection marginTop={25}>
-                    <Datetime
-                        value={startDate}
-                        inputProps={{
-                            placeholder: "Start date (d/m/y h:m)",
-                        }}
-                        isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-                        dateFormat="D/MM/YYYY"
-                        timeFormat="HH:mm[h]"
-                        onChange={(date) => onStartDate(date)}
-                        strictParsing
-                    />
-                    <Datetime
-                        value={endDate}
-                        inputProps={{ placeholder: "End date (d/m/y h:m)" }}
-                        isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-                        dateFormat="D/MM/YYYY"
-                        timeFormat="HH:mm[h]"
-                        onChange={(date) => onEndDate(date)}
-                        strictParsing
-                    />
-                </FieldRowRightSection>
-            </FieldRow>
-
-            {metadata.questions.map((question, qIdx) => (
-                <div key={qIdx}>
-                    <RowQuestions>
-                        <RowQuestionLeftSection>
-                            <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                            <QuestionText>Question</QuestionText>
+                    </FieldRowLeftSection>
+                    <FieldRowRightSection marginTop={75}>
+                        <RadioChoice onClick={() => setEncryptedVotes(false)}>
+                            {" "}
                             <input
-                                type="text"
-                                placeholder="Title"
-                                value={question.title.default}
-                                onChange={(ev) =>
-                                    setQuestionTitle(qIdx, ev.target.value)
-                                }
+                                type="radio"
+                                readOnly
+                                checked={!envelopeType.hasEncryptedVotes}
+                                name="vote-encryption"
                             />
+                            <div className="checkmark"></div> Real-time results
+                        </RadioChoice>
+                        <RadioChoice onClick={() => setEncryptedVotes(true)}>
+                            {" "}
+                            <input
+                                type="radio"
+                                readOnly
+                                checked={envelopeType.hasEncryptedVotes}
+                                name="vote-encryption"
+                            />
+                            <div className="checkmark"></div> Encrypted results
+                        </RadioChoice>
+                    </FieldRowRightSection>
+                </FieldRow>
 
-                            <QuestionText>Description</QuestionText>
-                            <textarea
-                                placeholder="Description"
-                                value={question.description.default}
-                                onChange={(ev) =>
-                                    setQuestionDescription(
-                                        qIdx,
-                                        ev.target.value
-                                    )
-                                }
-                            />
-                        </RowQuestionLeftSection>
-                        <RowQuestionRightSection />
-                    </RowQuestions>
-                    <div>
-                        <ChoicesTitle>Choices</ChoicesTitle>
-                        {question.choices.map((choice, cIdx) => (
-                            <RowQuestions key={cIdx}>
-                                <RowQuestionLeftSection>
-                                    <input
-                                        type="text"
-                                        placeholder="Choice"
-                                        value={choice.title.default}
-                                        onChange={(ev) =>
-                                            setChoiceText(
-                                                qIdx,
-                                                cIdx,
-                                                ev.target.value
-                                            )
-                                        }
-                                    />
-                                </RowQuestionLeftSection>
-                                <ChoiceRightSection>
-                                    <PlusBox
-                                        onClick={handleChoice}
-                                        currentChoice={cIdx}
-                                        choices={question.choices}
-                                        currentQuestion={qIdx}
-                                    />
-                                </ChoiceRightSection>
-                            </RowQuestions>
-                        ))}
+                <FieldRow>
+                    <FieldRowLeftSection>
+                        <InfoTitle>Description</InfoTitle>
+                        <InfoPlaceholder>
+                            An introduction of about 2-3 lines
+                        </InfoPlaceholder>
+                        <textarea
+                            placeholder="Description"
+                            onChange={(e) => setMainDescription(e.target.value)}
+                            value={metadata.description.default}
+                        />
+                    </FieldRowLeftSection>
+
+                    <FieldRowRightSection marginTop={82}>
+                        <Datetime
+                            value={startDate}
+                            inputProps={{
+                                placeholder: "Start date (d/m/y h:m)",
+                            }}
+                            isValidDate={(cur: Moment) =>
+                                isValidFutureDate(cur)
+                            }
+                            dateFormat="D/MM/YYYY"
+                            timeFormat="HH:mm[h]"
+                            onChange={(date) => onStartDate(date)}
+                            strictParsing
+                        />
+                        <Datetime
+                            value={endDate}
+                            inputProps={{ placeholder: "End date (d/m/y h:m)" }}
+                            isValidDate={(cur: Moment) =>
+                                isValidFutureDate(cur)
+                            }
+                            dateFormat="D/MM/YYYY"
+                            timeFormat="HH:mm[h]"
+                            onChange={(date) => onEndDate(date)}
+                            strictParsing
+                        />
+                    </FieldRowRightSection>
+                </FieldRow>
+
+                {metadata.questions.map((question, qIdx) => (
+                    <div key={qIdx}>
+                        <RowQuestions>
+                            <RowQuestionLeftSection>
+                                <QuestionNumber>
+                                    Question {qIdx + 1}
+                                </QuestionNumber>
+                                <QuestionText>Question</QuestionText>
+                                <input
+                                    type="text"
+                                    placeholder="Title"
+                                    value={question.title.default}
+                                    onChange={(ev) =>
+                                        setQuestionTitle(qIdx, ev.target.value)
+                                    }
+                                />
+
+                                <QuestionText>Description</QuestionText>
+                                <textarea
+                                    placeholder="Description"
+                                    value={question.description.default}
+                                    onChange={(ev) =>
+                                        setQuestionDescription(
+                                            qIdx,
+                                            ev.target.value
+                                        )
+                                    }
+                                />
+                            </RowQuestionLeftSection>
+                            <RowQuestionRightSection />
+                        </RowQuestions>
+                        <div>
+                            <ChoicesTitle>Choices</ChoicesTitle>
+                            {question.choices.map((choice, cIdx) => (
+                                <RowQuestions key={cIdx}>
+                                    <RowQuestionLeftSection>
+                                        <input
+                                            type="text"
+                                            placeholder="Choice"
+                                            value={choice.title.default}
+                                            onChange={(ev) =>
+                                                setChoiceText(
+                                                    qIdx,
+                                                    cIdx,
+                                                    ev.target.value
+                                                )
+                                            }
+                                        />
+                                    </RowQuestionLeftSection>
+                                    <ChoiceRightSection>
+                                        <PlusBox
+                                            onClick={handleChoice}
+                                            currentChoice={cIdx}
+                                            choices={question.choices}
+                                            currentQuestion={qIdx}
+                                        />
+                                    </ChoiceRightSection>
+                                </RowQuestions>
+                            ))}
+                            {qIdx > 0 ? (
+                                <Remove onClick={() => onRemoveQuestion(qIdx)}>
+                                    Remove question
+                                </Remove>
+                            ) : null}
+                        </div>
+
+                        {qIdx == metadata.questions.length - 1 ? (
+                            <AddQuestionButton onClick={onAddQuestion}>
+                                Add question
+                            </AddQuestionButton>
+                        ) : null}
                     </div>
+                ))}
 
-                    {qIdx == metadata.questions.length - 1 ? (
-                        <AddQuestionButton onClick={onAddQuestion}>
-                            Add question
-                        </AddQuestionButton>
+                <RowContinue>
+                    {wallet.status === "connected" ? (
+                        <SubmitButton
+                            submitting={submitting}
+                            onSubmit={onSubmit}
+                        />
+                    ) : !isMobile ? (
+                        <WalletStatus />
                     ) : null}
-                </div>
-            ))}
-
-            <RowContinue>
-                {submitting ? (
-                    <p>
-                        Please wait...
-                        <Spinner />
-                    </p>
-                ) : (
-                    <Button mode="strong" onClick={onSubmit}>
-                        Submit process
-                    </Button>
-                )}
-            </RowContinue>
-        </NewProcessContainer>
+                </RowContinue>
+            </NewProcessContainer>
+        </div>
     );
 };
 

@@ -69,6 +69,10 @@ const RightSection = styled.div`
 
 const ConnectButton = styled(Button)`
     margin: 15px auto;
+    max-width: 300px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+    }
 `;
 
 const Description = styled.h4`
@@ -167,8 +171,8 @@ export const HandleConnector = () => {
         <ConnectButton
             label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
             icon={<IconEthereum />}
-            mode="strong"
             wide
+            mode="strong"
             onClick={onSignIn}
         />
     );
