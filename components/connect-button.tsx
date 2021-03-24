@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useRouter } from "next/router";
+import styled from "styled-components";
 import {
     Button,
     IconEthereum,
@@ -16,9 +17,31 @@ import {
 
 import { useModal, ActionTypes } from "./Modal/context";
 
+const ButtonContainer = styled.div`
+    margin: 15px auto;
+    max-width: 300px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+        text-align: center;
+    }
+`;
+
+const AddressContainer = styled.div`
+    margin-bottom: 15px;
+    max-width: 260px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+        text-align: center;
+    }
+`;
+
 const WalletAddress = ({ reset, account }) => {
     const icon = <Button icon={<IconPower />} size="mini" onClick={reset} />;
-    return <AddressField address={account} icon={icon} />;
+    return (
+        <AddressContainer>
+            <AddressField address={account} icon={icon} />
+        </AddressContainer>
+    );
 };
 
 export const ConnectButton = () => {
@@ -54,9 +77,9 @@ export const ConnectButton = () => {
 
     const mode = useMemo(() => {
         if (error) return "negative";
-        if (loadingOrConnecting) return "normal";
+        if (inLanding) return "strong";
 
-        return "strong";
+        return "normal";
     }, [error, loadingOrConnecting]);
 
     const handleButtonClick = async () => {
@@ -74,20 +97,18 @@ export const ConnectButton = () => {
     };
 
     if (isConnected && !inLanding) {
-        return (
-            <div id="wallet-status" className="v-center">
-                <WalletAddress account={account} reset={reset} />
-            </div>
-        );
+        return <WalletAddress account={account} reset={reset} />;
     }
 
     return (
-        <Button
-            wide
-            icon={loadingOrConnecting ? <LoadingRing /> : <IconEthereum />}
-            mode={mode}
-            onClick={handleButtonClick}
-            label={label}
-        />
+        <ButtonContainer>
+            <Button
+                wide
+                icon={loadingOrConnecting ? <LoadingRing /> : <IconEthereum />}
+                mode={mode}
+                onClick={handleButtonClick}
+                label={label}
+            />
+        </ButtonContainer>
     );
 };

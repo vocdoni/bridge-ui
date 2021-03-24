@@ -1,12 +1,5 @@
-const withLess = require('@zeit/next-less')
-const env = require("./env-config.js")
+const env = require("./env-config.js");
 
-// Where your antd-custom.less file lives
-module.exports = withLess({
+module.exports = {
     env,
-    trailingSlash: true,
-})
-
-///////////////////////////////////////////////////////////////////////////////
-// HELPERS
-///////////////////////////////////////////////////////////////////////////////
+};

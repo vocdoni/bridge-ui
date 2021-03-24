@@ -1,53 +1,105 @@
-import { useState } from 'react'
-import Link from 'next/link'
+import styled from "styled-components";
+import Link from "next/link";
 
-import TokenCard from '../../components/token-card'
-// import Select from 'react-select'
-import { ConnectButton } from '../../components/connect-button'
-// import { usePool } from '../../lib/hooks/pool'
-import { useTokens } from '../../lib/hooks/tokens'
-import { useRegisteredTokens } from '../../lib/hooks/registered-tokens'
-import { FALLBACK_TOKEN_ICON } from '../../lib/constants'
+import TokenCard from "../../components/token-card";
+import { useTokens } from "../../lib/hooks/tokens";
+import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
+import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
+import { TopSection } from "../../components/top-section";
 
+const Container = styled.div`
+    width: 100%;
+`;
+
+const NotListedMessage = styled.h6`
+    color: ${({ theme }) => theme.accent1};
+    text-align: right;
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
+`;
+
+const ActiveTokensDescription = styled.p`
+    color: ${({ theme }) => theme.lightText};
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
+`;
+
+const ActiveTokens = styled.h2`
+    @media ${({ theme }) => theme.screens.tablet} {
+        text-align: center;
+    }
+`;
+
+const TokenList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1em;
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        justify-content: center;
+    }
+`;
 
 // MAIN COMPONENT
 const TokensPage = () => {
-    const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens()
-    // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] ) 
-    const tokenInfos = useTokens(tokenAddrs)
+    const {
+        registeredTokens: tokenAddrs,
+        error: tokenListError,
+    } = useRegisteredTokens();
+    // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
+    const tokenInfos = useTokens(tokenAddrs);
 
-    return <div id="tokens">
-        <div className="page-head">
-            <div className="left">
-                <h1>All Tokens</h1>
-                <h4 className="accent-1">Click at the tokens you own and cast your votes</h4>
-            </div>
-            <div className="right">
-                <ConnectButton />
+    return (
+        <Container>
+            <TopSection
+                title={"All Tokens"}
+                description={"Click at the tokens you own and cast your votes"}
+                Action={() => (
+                    <Link href="/tokens/add">
+                        <NotListedMessage>
+                            My token is not listed
+                        </NotListedMessage>
+                    </Link>
+                )}
+            />
 
-                {/* <Select options={options} onChange={(value, options) => this.onTokenFilter(value, options)} /> */}
-                <h6 className="accent-1"><Link href="/tokens/add"><a>My token is not listed</a></Link></h6>
-            </div>
-        </div>
+            <ActiveTokens>Active tokens</ActiveTokens>
+            <ActiveTokensDescription>
+                Below are the processes belonging to tokens that you currently
+                hold.
+            </ActiveTokensDescription>
 
-        <div className="row-main">
-            <h2>Active tokens</h2>
-            <p className="light">Below are the processes belonging to tokens that you currently hold.</p>
+            <TokenList>
+                {tokenAddrs
+                    .map((addr) => tokenInfos.get(addr))
+                    .map((token, idx) => (
+                        <TokenCard
+                            name={token?.symbol}
+                            icon={token?.icon || FALLBACK_TOKEN_ICON}
+                            rightText={""}
+                            href={
+                                token?.address
+                                    ? "/tokens/info#/" + token?.address
+                                    : ""
+                            }
+                            key={idx}
+                        >
+                            <p>
+                                {token?.name || "(loading)"}
+                                <br />
+                                {token?.totalSupply && (
+                                    <small>
+                                        Total supply: {token?.totalSupply}
+                                    </small>
+                                )}
+                            </p>
+                        </TokenCard>
+                    ))}
+            </TokenList>
+        </Container>
+    );
+};
 
-            <div className="token-list">
-                {
-                    tokenAddrs.map(addr => tokenInfos.get(addr)).map((token, idx) => <TokenCard name={token?.symbol} icon={token?.icon || FALLBACK_TOKEN_ICON} rightText={""} href={token?.address ? ("/tokens/info#/" + token?.address) : ""} key={idx}>
-                        <p>
-                            {token?.name || "(loading)"}<br />
-                            {token?.totalSupply && <small>Total supply: {token?.totalSupply}</small>}
-                        </p>
-                    </TokenCard>)
-                }
-
-            </div>
-        </div>
-
-    </div>
-}
-
-export default TokensPage
+export default TokensPage;

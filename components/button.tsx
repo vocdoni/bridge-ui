@@ -1,19 +1,30 @@
-import Link from "next/link"
+import Link from "next/link";
+import React from "react";
+import { Button as AragonButton } from "@aragon/ui";
 
-type Props = {
-    children: any,
-    href?: string,
-    onClick?: () => any
+type AragonButtonProps = {
+    mode?: "normal" | "strong" | "positive" | "negative";
+    size?: "medium" | "small" | "mini";
+    wide?: boolean;
+    label?: string;
+    icon?: React.ReactNode;
+};
+
+interface ButtonProps {
+    children?: React.ReactNode;
+    href?: string;
+    onClick?: () => void;
 }
 
-export default function Button({ children, ...props }: Props) {
-    if (props.onClick) return <div className="button accent-2" onClick={() => props.onClick()}>
-        {children}
-    </div>
-
-    return <Link href={props.href}>
-        <div className="button accent-2">
-            {children}
-        </div>
-    </Link>
+function Button({ href, ...props }: ButtonProps & AragonButtonProps) {
+    if (href) {
+        return (
+            <Link href={href}>
+                <AragonButton {...props} />
+            </Link>
+        );
+    }
+    return <AragonButton {...props} />;
 }
+
+export default Button;
