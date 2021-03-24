@@ -17,7 +17,6 @@ const WalletContainer = styled.div`
     display: block;
     text-align: center;
     max-width: 300px;
-    width: 260px;
 
     input[type="text"] {
         border: 1px solid #dde4e9;
@@ -28,6 +27,18 @@ const WalletContainer = styled.div`
         width: calc(100% - 2 * 1em);
 
         padding: 0 38px 0 12px;
+    }
+
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+    }
+`;
+
+const AddressContainer = styled.div`
+    width: 260px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        width: 100%;
+        text-align: center;
     }
 `;
 
@@ -66,7 +77,11 @@ const Wallet = () => {
             <Button icon={<IconPower />} size="mini" onClick={wallet.reset} />
         );
 
-        return <AddressField address={wallet.account} icon={icon} />;
+        return (
+            <AddressContainer>
+                <AddressField address={wallet.account} icon={icon} />
+            </AddressContainer>
+        );
     }
 
     return (
