@@ -14,6 +14,7 @@ const Container = styled.div`
 const NotListedMessage = styled.h6`
     color: ${({ theme }) => theme.accent1};
     text-align: right;
+    cursor: pointer;
     @media ${({ theme }) => theme.screens.tablet} {
         text-align: center;
     }

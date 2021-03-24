@@ -22,7 +22,7 @@ export const colors: Colors = {
 
     inputBackground: "#EAEAEA",
     negative: "#FF6969",
-    positive: "#08BEE5"
+    positive: "#08BEE5",
 };
 
 export const size = {
@@ -83,7 +83,7 @@ h1 {
     font-size: 45px; 
     font-weight: 900; 
     @media ${({ theme }) => theme.screens.tablet} {
-        font-size: 30px; 
+        font-size: 24px; 
         font-weight: 800; 
     }
 }
@@ -92,7 +92,7 @@ h2 {
     font-size: 30px; 
     font-weight: 900; 
     @media ${({ theme }) => theme.screens.tablet} {
-        font-size: 24px; 
+        font-size: 20px; 
         font-weight: 700; 
     }
 }
@@ -117,17 +117,11 @@ h4 {
 h5 { 
     font-size: 14px; 
     font-weight: 500; 
-    @media ${({ theme }) => theme.screens.tablet} {
-        font-size: 12px; 
-    }
 }
 
 h6 { 
     font-size: 13px; 
     font-weight: 500; 
-    @media ${({ theme }) => theme.screens.tablet} {
-        font-size: 11px; 
-    }
 }
 
 p { 
@@ -135,7 +129,11 @@ p {
     @media ${({ theme }) => theme.screens.tablet} {
         font-size: 12px; 
     }
+    
+}
 
+a {
+    font-size: 12px; 
 }
 
 
