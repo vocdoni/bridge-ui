@@ -7,10 +7,25 @@ import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
 
 const ModalContainer = styled.div`
-    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+`;
+
+const ModalTitle = styled.div`
+    display: flex;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+    margin-top: 10px;
+    padding-left: 10px;
+`;
+
+const Body = styled.div`
+    height: 100%;
+    padding: 15px;
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
+    justify-content: space-evenly;
 `;
 
 const WalletOption = styled.div`
@@ -42,8 +57,26 @@ const WalletLogo = styled.img`
 const OptionContainer = styled.div`
     height: 100px;
     width: 45%;
-    padding: 2%;
 `;
+
+const ExternalLinkOption = styled.a`
+    font-weight: bold;
+    display: flex;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    color: #393939;
+`;
+
+const DontHaveAccount = styled.h5`
+    display: flex;
+    margin: auto;
+    margin-bottom: 10px;
+    color: blue;
+`;
+
+const HARDWARE_WALLETS_METAMASK_ARTICLE =
+    "https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet";
 
 export const WalletList = () => {
     const { connect, error } = useWallet();
@@ -58,7 +91,13 @@ export const WalletList = () => {
         });
     };
 
+    // @TODO: Remove this when ledger and trezor are implemented in useWallet
+    const isHardwareWallet = (wallet: string) =>
+        wallet === "Ledger" || wallet === "Trezor";
+
     const handleConnection = async (wallet: string) => {
+        // @TODO: Remove this when ledger and trezor are implemented in useWallet
+        if (isHardwareWallet(wallet)) return;
         try {
             await connect(WALLETS[wallet].connector);
             if (!error && inLanding) push("/dashboard");
@@ -67,25 +106,44 @@ export const WalletList = () => {
             console.log(e);
         }
     };
-
     return (
-        <Modal open={state.walletList.open} height={500} width={446}>
+        <Modal open={state.walletList.open} height={530} width={430}>
             <ModalContainer>
-                {Object.keys(WALLETS).map((wallet) => {
-                    const { connector, name } = WALLETS[wallet];
-                    return (
-                        <OptionContainer key={"wallet_" + wallet}>
+                <ModalTitle>USE ACCOUNT FROM</ModalTitle>
+                <Body>
+                    {Object.keys(WALLETS).map((wallet) => {
+                        const { connector, name } = WALLETS[wallet];
+                        const Option = () => (
                             <WalletOption
-                                onClick={() => handleConnection(wallet)}
+                                onClick={() => handleConnection(name)}
                             >
                                 <WalletLogo
                                     src={`/media/wallets/${connector}.svg`}
                                 />
                                 <WalletName>{name}</WalletName>
                             </WalletOption>
-                        </OptionContainer>
-                    );
-                })}
+                        );
+                        return (
+                            <OptionContainer key={"wallet_" + wallet}>
+                                {/* @TODO: Remove this when ledger and trezor are implemented in useWallet */}
+                                {isHardwareWallet(name) ? (
+                                    <ExternalLinkOption
+                                        rel="noreferrer noopener"
+                                        target="_blank"
+                                        href={HARDWARE_WALLETS_METAMASK_ARTICLE}
+                                    >
+                                        <Option />
+                                    </ExternalLinkOption>
+                                ) : (
+                                    <Option />
+                                )}
+                            </OptionContainer>
+                        );
+                    })}
+                </Body>
+                <DontHaveAccount>
+                    Don't have an Ethereum account?
+                </DontHaveAccount>
             </ModalContainer>
         </Modal>
     );
