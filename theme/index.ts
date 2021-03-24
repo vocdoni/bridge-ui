@@ -133,7 +133,9 @@ p {
 }
 
 a {
-    font-size: 12px; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 12px; 
+    }
 }
 
 

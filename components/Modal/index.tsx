@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { ActionTypes, useModal } from "./context";
 
 const ModalContainer = styled.div<{
     height: number;
@@ -15,13 +16,45 @@ const ModalContainer = styled.div<{
     height: ${({ height }) => height}px;
     width: ${({ width }) => width}px;
     display: ${({ open }) => (open ? "flex" : "none")};
-    background: rgba(234, 234, 234);
-    border-radius: 12px;
+    background: white;
+    border-radius: 6px;
+    filter: drop-shadow(0px 7px 16px rgba(0, 0, 0, 0.25));
 `;
 
+function useOutsideAlerter(ref) {
+    const { dispatch } = useModal();
+    useEffect(() => {
+        function handleClickOutside(event) {
+            const isOutside = !ref.current.contains(event.target);
+            const pressedEscape = event.keyCode === 27;
+            if (ref.current && (isOutside || pressedEscape)) {
+                dispatch({
+                    type: ActionTypes.CLOSE,
+                });
+            }
+        }
+        // Bind the event listener
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleClickOutside);
+        return () => {
+            // Unbind the event listener on clean up
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleClickOutside);
+        };
+    }, [ref]);
+}
+
 export const Modal = ({ children, height = 400, width = 600, open }) => {
+    const modalRef = useRef(null);
+    useOutsideAlerter(modalRef);
+
     return (
-        <ModalContainer height={height} width={width} open={open}>
+        <ModalContainer
+            ref={modalRef}
+            height={height}
+            width={width}
+            open={open}
+        >
             {children}
         </ModalContainer>
     );

@@ -12,9 +12,6 @@ type WalletListAction = {
 
 type CloseAction = {
     type: ActionTypes.CLOSE;
-    payload: {
-        modal: keyof ModalContextState;
-    };
 };
 
 type ModalsContextAction = WalletListAction | CloseAction;

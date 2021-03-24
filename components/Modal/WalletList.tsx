@@ -45,14 +45,6 @@ const OptionContainer = styled.div`
     padding: 2%;
 `;
 
-const CloseButton = styled.h2`
-    margin-left: -35px;
-    padding-right: 10px;
-    margin-top: 10px;
-    cursos: pointer;
-}    
-`;
-
 export const WalletList = () => {
     const { connect, error } = useWallet();
     const { push, pathname } = useRouter();
@@ -63,13 +55,9 @@ export const WalletList = () => {
     const closeModal = () => {
         dispatch({
             type: ActionTypes.CLOSE,
-            payload: {
-                modal: "walletList",
-            },
         });
     };
 
-    console.log(error);
     const handleConnection = async (wallet: string) => {
         try {
             await connect(WALLETS[wallet].connector);
@@ -81,7 +69,7 @@ export const WalletList = () => {
     };
 
     return (
-        <Modal open={state.walletList.open} height={500} width={400}>
+        <Modal open={state.walletList.open} height={500} width={446}>
             <ModalContainer>
                 {Object.keys(WALLETS).map((wallet) => {
                     const { connector, name } = WALLETS[wallet];
@@ -99,7 +87,6 @@ export const WalletList = () => {
                     );
                 })}
             </ModalContainer>
-            <CloseButton onClick={closeModal}>X</CloseButton>
         </Modal>
     );
 };
