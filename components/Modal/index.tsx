@@ -26,8 +26,7 @@ function useOutsideAlerter(ref) {
     useEffect(() => {
         function handleClickOutside(event) {
             const isOutside = !ref.current.contains(event.target);
-            const pressedEscape = event.keyCode === 27;
-            if (ref.current && (isOutside || pressedEscape)) {
+            if (ref.current && isOutside) {
                 dispatch({
                     type: ActionTypes.CLOSE,
                 });
@@ -35,11 +34,9 @@ function useOutsideAlerter(ref) {
         }
         // Bind the event listener
         document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("keydown", handleClickOutside);
         return () => {
             // Unbind the event listener on clean up
             document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("keydown", handleClickOutside);
         };
     }, [ref]);
 }

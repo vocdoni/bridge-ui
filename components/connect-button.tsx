@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import {
-    Button,
+    Button as AragonButton,
     IconEthereum,
     IconPower,
     AddressField,
@@ -35,8 +35,17 @@ const AddressContainer = styled.div`
     }
 `;
 
+const Button = styled(AragonButton)`
+    max-width: 300px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        max-width: 100%;
+    }
+`;
+
 const WalletAddress = ({ reset, account }) => {
-    const icon = <Button icon={<IconPower />} size="mini" onClick={reset} />;
+    const icon = (
+        <AragonButton icon={<IconPower />} size="mini" onClick={reset} />
+    );
     return (
         <AddressContainer>
             <AddressField address={account} icon={icon} />

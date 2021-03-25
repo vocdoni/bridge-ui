@@ -4,6 +4,13 @@ export interface ConnectorData {
     properties?: Record<string, string | number>;
 }
 
+export type SUPPORTED_CONNECTORS =
+    | "injected"
+    | "authereum"
+    | "portis"
+    | "fortmatic"
+    | "walletconnect";
+
 export const WALLETS: ConnectorData[] = [
     {
         name: "Metamask",
@@ -48,7 +55,7 @@ export const WALLETS: ConnectorData[] = [
 
 export const getConnectors = () => {
     const connectors = {};
-    WALLETS.forEach(({ connector, properties }) => {
+    WALLETS.forEach(({ connector, ...properties }) => {
         connectors[connector] = properties || {};
     });
     return connectors;

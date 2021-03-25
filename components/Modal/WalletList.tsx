@@ -3,21 +3,28 @@ import styled from "styled-components";
 import { useWallet } from "use-wallet";
 
 import { Modal } from ".";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
 
 const ModalContainer = styled.div`
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 `;
 
 const ModalTitle = styled.div`
     display: flex;
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid #dfe3e8;
     padding-bottom: 10px;
     box-sizing: border-box;
     margin-top: 10px;
-    padding-left: 10px;
+    padding-left: 16px;
+    font-family: Overpass;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    color: #637381;
 `;
 
 const Body = styled.div`
@@ -25,26 +32,34 @@ const Body = styled.div`
     padding: 15px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    @media ${({ theme }) => theme.screens.mobileL} {
+        justify-content: center;
+    }
 `;
 
 const WalletOption = styled.div`
-    background: lightgrey;
     width: 100%;
     height: 100px;
     border-radius: 8px;
     text-align: center;
     white-space: normal;
-    border: 1px solid grey;
+    box-shadow: 0px 2px 4px rgba(180, 188, 202, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
+    @media ${({ theme }) => theme.screens.tablet} {
+        margin-top: 10px;
+    }
 `;
 
 const WalletName = styled.h4`
-    font-weight: bold;
     display: flex;
     margin-top: 10px;
+    color: #25314d;
+    font-family: Overpass;
+    font-weight: 300;
+    font-size: 22px;
 `;
 
 const WalletLogo = styled.img`
@@ -55,24 +70,34 @@ const WalletLogo = styled.img`
 `;
 
 const OptionContainer = styled.div`
-    height: 100px;
-    width: 45%;
+    height: 104px;
+    width: 204px;
+    cursor: pointer;
+    margin-top: 10px;
 `;
 
 const ExternalLinkOption = styled.a`
-    font-weight: bold;
     display: flex;
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
-    color: #393939;
+    font-family: Overpass;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    color: #637381;
 `;
 
 const DontHaveAccount = styled.h5`
+    font-family: Overpass;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    color: #3361eb;
     display: flex;
     margin: auto;
     margin-bottom: 10px;
-    color: blue;
+    cursor: pointer;
 `;
 
 const HARDWARE_WALLETS_METAMASK_ARTICLE =
@@ -82,6 +107,7 @@ export const WalletList = () => {
     const { connect, error } = useWallet();
     const { push, pathname } = useRouter();
     const { state, dispatch } = useModal();
+    const isMobile = useIsMobile();
 
     const inLanding = pathname === "/";
 
@@ -91,15 +117,11 @@ export const WalletList = () => {
         });
     };
 
-    // @TODO: Remove this when ledger and trezor are implemented in useWallet
-    const isHardwareWallet = (wallet: string) =>
-        wallet === "Ledger" || wallet === "Trezor";
-
-    const handleConnection = async (wallet: string) => {
+    const handleConnection = async (wallet) => {
         // @TODO: Remove this when ledger and trezor are implemented in useWallet
-        if (isHardwareWallet(wallet)) return;
+        if (wallet === "ledger" || wallet === "trezor") return;
         try {
-            await connect(WALLETS[wallet].connector);
+            await connect(wallet);
             if (!error && inLanding) push("/dashboard");
             closeModal();
         } catch (e) {
@@ -107,7 +129,7 @@ export const WalletList = () => {
         }
     };
     return (
-        <Modal open={state.walletList.open} height={530} width={430}>
+        <Modal open={state.walletList.open} height={530} width={452}>
             <ModalContainer>
                 <ModalTitle>USE ACCOUNT FROM</ModalTitle>
                 <Body>
@@ -115,7 +137,7 @@ export const WalletList = () => {
                         const { connector, name } = WALLETS[wallet];
                         const Option = () => (
                             <WalletOption
-                                onClick={() => handleConnection(name)}
+                                onClick={() => handleConnection(connector)}
                             >
                                 <WalletLogo
                                     src={`/media/wallets/${connector}.svg`}
@@ -126,7 +148,7 @@ export const WalletList = () => {
                         return (
                             <OptionContainer key={"wallet_" + wallet}>
                                 {/* @TODO: Remove this when ledger and trezor are implemented in useWallet */}
-                                {isHardwareWallet(name) ? (
+                                {name === "ledger" || name === "trezor" ? (
                                     <ExternalLinkOption
                                         rel="noreferrer noopener"
                                         target="_blank"
@@ -141,9 +163,11 @@ export const WalletList = () => {
                         );
                     })}
                 </Body>
-                <DontHaveAccount>
-                    Don't have an Ethereum account?
-                </DontHaveAccount>
+                {isMobile ? null : (
+                    <DontHaveAccount>
+                        Don't have an Ethereum account?
+                    </DontHaveAccount>
+                )}
             </ModalContainer>
         </Modal>
     );
