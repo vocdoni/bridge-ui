@@ -10,7 +10,6 @@ import { ActionTypes, useModal } from "./context";
 const ModalContainer = styled.div`
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
 `;
 
 const ModalTitle = styled.div`
@@ -33,8 +32,13 @@ const Body = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+
     @media ${({ theme }) => theme.screens.mobileL} {
+        overflow-y: auto;
         justify-content: center;
+        & > div:last-child {
+            padding-bottom: 20px;
+        }
     }
 `;
 
@@ -98,6 +102,11 @@ const DontHaveAccount = styled.h5`
     margin: auto;
     margin-bottom: 10px;
     cursor: pointer;
+    padding-top: 20px;
+    @media ${({ theme }) => theme.screens.mobileL} {
+        padding-top: 20px;
+        margin-bottom: 0px;
+    }
 `;
 
 const HARDWARE_WALLETS_METAMASK_ARTICLE =
@@ -129,12 +138,13 @@ export const WalletList = () => {
         }
     };
     return (
-        <Modal open={state.walletList.open} height={530} width={452}>
+        <Modal open={state.walletList.open} height={565} width={452}>
             <ModalContainer>
                 <ModalTitle>USE ACCOUNT FROM</ModalTitle>
                 <Body>
                     {Object.keys(WALLETS).map((wallet) => {
                         const { connector, name } = WALLETS[wallet];
+                        console.log(name);
                         const Option = () => (
                             <WalletOption
                                 onClick={() => handleConnection(connector)}
@@ -148,7 +158,7 @@ export const WalletList = () => {
                         return (
                             <OptionContainer key={"wallet_" + wallet}>
                                 {/* @TODO: Remove this when ledger and trezor are implemented in useWallet */}
-                                {name === "ledger" || name === "trezor" ? (
+                                {name === "Ledger" || name === "Trezor" ? (
                                     <ExternalLinkOption
                                         rel="noreferrer noopener"
                                         target="_blank"
@@ -162,12 +172,10 @@ export const WalletList = () => {
                             </OptionContainer>
                         );
                     })}
-                </Body>
-                {isMobile ? null : (
                     <DontHaveAccount>
                         Don't have an Ethereum account?
                     </DontHaveAccount>
-                )}
+                </Body>
             </ModalContainer>
         </Modal>
     );
