@@ -29,7 +29,7 @@ export const WALLETS: ConnectorData[] = [
         name: "Fortmatic",
         connector: "fortmatic",
         properties: {
-            apiKey: "pk_test_2A28633418BA689E",
+            apiKey: "pk_live_5C08E0B6C4BEF5CE",
         },
     },
     {

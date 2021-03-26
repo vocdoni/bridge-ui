@@ -12,9 +12,14 @@ const ModalContainer = styled.div`
     flex-direction: column;
 `;
 
-const ModalTitle = styled.div`
+const Header = styled.div`
     display: flex;
+    justify-content: space-between;
     border-bottom: 1px solid #dfe3e8;
+`;
+
+const ModalTitle = styled.div`
+    flex-direction: column;
     padding-bottom: 10px;
     box-sizing: border-box;
     margin-top: 10px;
@@ -92,7 +97,15 @@ const ExternalLinkOption = styled.a`
     color: #637381;
 `;
 
-const DontHaveAccount = styled.h5`
+const CloseIcon = styled.div`
+    flex-direction: column;
+    margin-top: 10px;
+    padding-right: 16px;
+    cursor: pointer;
+`;
+
+const DontHaveAccount = styled.a`
+    text-decoration: none;
     font-family: Overpass;
     font-style: normal;
     font-weight: 300;
@@ -140,11 +153,15 @@ export const WalletList = () => {
     return (
         <Modal open={state.walletList.open} height={565} width={452}>
             <ModalContainer>
-                <ModalTitle>USE ACCOUNT FROM</ModalTitle>
+                <Header>
+                    <ModalTitle>USE ACCOUNT FROM</ModalTitle>
+                    <CloseIcon onClick={closeModal}>
+                        <img src="media/close.svg" />
+                    </CloseIcon>
+                </Header>
                 <Body>
                     {Object.keys(WALLETS).map((wallet) => {
                         const { connector, name } = WALLETS[wallet];
-                        console.log(name);
                         const Option = () => (
                             <WalletOption
                                 onClick={() => handleConnection(connector)}
@@ -172,7 +189,11 @@ export const WalletList = () => {
                             </OptionContainer>
                         );
                     })}
-                    <DontHaveAccount>
+                    <DontHaveAccount
+                        rel="noreferrer noopener"
+                        target="_blank"
+                        href={"https://ethereum.org/en/wallets/"}
+                    >
                         Don't have an Ethereum account?
                     </DontHaveAccount>
                 </Body>
