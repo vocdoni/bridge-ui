@@ -27,6 +27,7 @@ import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { WalletStatus } from "../../components/wallet-status";
+import { validateProcess } from "../../lib/processValidator";
 
 const NewProcessContainer = styled.div`
     input[type="text"],
@@ -349,6 +350,23 @@ const NewProcessPage = () => {
         setMetadata(Object.assign({}, metadata));
     };
     const onSubmit = async () => {
+        const questions = metadata.questions.map((q, id) => {
+            const choices = q.choices.map((c, id) => ({ ...c, id }));
+            const question = {
+                ...q,
+                choices,
+            };
+            return {
+                ...question,
+                id,
+            };
+        });
+
+        console.log(questions);
+        const allSizeAreOk = validateProcess(questions);
+
+        console.log(allSizeAreOk);
+
         if (!metadata.title || metadata.title.default.trim().length < 2)
             return setAlertMessage("Please enter a title");
         else if (metadata.title.default.trim().length > 50)
@@ -403,7 +421,7 @@ const NewProcessPage = () => {
         }
 
         if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
-            return setAlertMessage("The token address it not valid");
+            return setAlertMessage("The token address is not valid");
 
         if (!wallet?.account)
             return setAlertMessage(
