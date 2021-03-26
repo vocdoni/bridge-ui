@@ -55,7 +55,7 @@ export const WALLETS: ConnectorData[] = [
 
 export const getConnectors = () => {
     const connectors = {};
-    WALLETS.forEach(({ connector, ...properties }) => {
+    WALLETS.forEach(({ connector, properties }) => {
         connectors[connector] = properties || {};
     });
     return connectors;
