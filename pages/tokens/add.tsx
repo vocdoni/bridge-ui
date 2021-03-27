@@ -4,16 +4,16 @@ import Router from "next/router";
 import styled from "styled-components";
 import { useWallet } from "use-wallet";
 import Spinner from "react-svg-spinner";
-import { usePool, useSigner } from "@vocdoni/react-hooks";
+import { usePool } from "@vocdoni/react-hooks";
 
 import Button from "../../components/button";
-import { WalletStatus } from "../../components/wallet-status";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
 import { TopSection } from "../../components/top-section";
+import { useSigner } from "../../lib/hooks/useSigner";
 
 const StyledSpinner = styled(Spinner)`
     color: ${({ theme }) => theme.accent2};

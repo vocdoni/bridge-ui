@@ -11,7 +11,7 @@ import {
     VotingApi,
 } from "dvote-js";
 import styled, { css } from "styled-components";
-import { usePool, useSigner } from "@vocdoni/react-hooks";
+import { usePool } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
 import { ProcessMetadataTemplate } from "dvote-js";
@@ -27,6 +27,7 @@ import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { WalletStatus } from "../../components/wallet-status";
+import { useSigner } from "../../lib/hooks/useSigner";
 
 const NewProcessContainer = styled.div`
     input[type="text"],

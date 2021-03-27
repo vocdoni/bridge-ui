@@ -9,7 +9,7 @@ import {
 } from "dvote-js";
 import { withRouter, useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
-import { usePool, useProcess, useSigner } from "@vocdoni/react-hooks";
+import { usePool, useProcess } from "@vocdoni/react-hooks";
 import { Button } from "@aragon/ui";
 import { BigNumber, providers } from "ethers";
 import TokenAmount from "token-amount";
@@ -26,6 +26,7 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { useSigner } from "../../lib/hooks/useSigner";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -304,6 +305,7 @@ const ProcessPage = () => {
     const { process: proc } = useProcess(processId);
     const token = useToken(proc?.entity);
     const [tokenRegistered, setTokenRegistered] = useState(null);
+    const [weight, setWeight] = useState(null);
     const [startDate, setStartDate] = useState(null as Date);
     const [endDate, setEndDate] = useState(null as Date);
     const [censusProof, setCensusProof] = useState(
@@ -382,14 +384,21 @@ const ProcessPage = () => {
                 console.error(err);
             });
     };
-    const updateResults = () => {
+    const updateResults = async () => {
         if (!processId) return;
 
-        poolPromise
-            .then((pool) => VotingApi.getResultsDigest(processId, pool))
-            .then((results) => setResults(results))
-            .catch((err) => console.error(err));
+        try {
+            const pool = await poolPromise;
+            const results = await VotingApi.getResultsDigest(processId, pool);
+            console.log(results);
+            setResults(results);
+            const weight = await VotingApi.getResultsWeight(processId, pool);
+            setWeight(weight);
+        } catch (e) {
+            console.error(e);
+        }
     };
+
     const updateCensusStatus = async () => {
         if (!token?.address) {
             setTokenRegistered(false);
@@ -612,6 +621,7 @@ const ProcessPage = () => {
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
                     {isMobile ? null : <LightText>{remainingTime}</LightText>}
+                    {weight ? <LightText>Turnout: {weight} </LightText> : null}
                 </RowDescriptionRightSection>
             </RowDescription>
 
