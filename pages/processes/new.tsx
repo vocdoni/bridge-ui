@@ -26,7 +26,7 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
-import { WalletStatus } from "../../components/wallet-status";
+import { ConnectButton } from "../../components/connect-button";
 
 const NewProcessContainer = styled.div`
     input[type="text"],
@@ -657,7 +657,7 @@ const NewProcessPage = () => {
                             onSubmit={onSubmit}
                         />
                     ) : !isMobile ? (
-                        <WalletStatus />
+                        <ConnectButton />
                     ) : null}
                 </RowContinue>
             </NewProcessContainer>

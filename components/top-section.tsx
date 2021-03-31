@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
-import { WalletStatus } from "./wallet-status";
+import { ConnectButton } from "./connect-button";
 
 const Head = styled.div`
     display: flex;
@@ -54,7 +54,7 @@ export const TopSection = ({ title, description, Action }: TopSectionProps) => {
                 <Subtitle>{description}</Subtitle>
             </LeftSection>
             <RightSection>
-                {isMobile ? null : <WalletStatus />}
+                {isMobile ? null : <ConnectButton />}
                 {Action ? <Action /> : null}
             </RightSection>
         </Head>

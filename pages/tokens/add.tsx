@@ -7,7 +7,6 @@ import Spinner from "react-svg-spinner";
 import { usePool, useSigner } from "@vocdoni/react-hooks";
 
 import Button from "../../components/button";
-import { WalletStatus } from "../../components/wallet-status";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";

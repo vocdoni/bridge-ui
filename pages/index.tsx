@@ -1,21 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { withRouter, useRouter } from "next/router";
-import { IconEthereum, LoadingRing } from "@aragon/ui";
-import { ChainUnsupportedError, useWallet, Wallet } from "use-wallet";
-import styled, { CSSProperties, useTheme } from "styled-components";
-import { usePool } from "@vocdoni/react-hooks";
-// import Spinner from "react-svg-spinner"
+import { withRouter } from "next/router";
+import styled, { CSSProperties } from "styled-components";
 
 import TokenCard from "../components/token-card";
 import Button from "../components/button";
 import { featuredTokens } from "../lib/tokens";
-import { INVALID_CHAIN_ID, METAMASK_IS_NOT_AVAILABLE } from "../lib/errors";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
-import { useMessageAlert } from "../lib/hooks/message-alert";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
+import { ConnectButton } from "../components/connect-button";
 
 const Head = styled.div`
     display: flex;
@@ -67,14 +62,6 @@ const RightSection = styled.div`
     }
 `;
 
-const ConnectButton = styled(Button)`
-    margin: 15px auto;
-    max-width: 300px;
-    @media ${({ theme }) => theme.screens.tablet} {
-        max-width: 100%;
-    }
-`;
-
 const Description = styled.h4`
     font-size: 20px;
     margin-bottom: 10px;
@@ -105,78 +92,6 @@ const ClickableLink = styled.a`
     color: ${({ theme }) => theme.accent1};
     text-decoration: none;
 `;
-
-//@TODO: This will be improved with the Wallet Modal PR
-export const HandleConnector = () => {
-    const { setAlertMessage } = useMessageAlert();
-    const [connecting, setConnecting] = useState(false);
-    const router = useRouter();
-    const { pool, loading: poolLoading } = usePool();
-    const wallet = useWallet();
-
-    const isConnected = wallet.status == "connected";
-    const onSignIn = () => {
-        if (pool && isConnected) {
-            return router.push("/dashboard");
-        }
-
-        setConnecting(true);
-
-        return wallet
-            .connect("injected")
-            .then(() => {
-                if (!wallet.connectors.injected)
-                    throw new Error(METAMASK_IS_NOT_AVAILABLE);
-                router.push("/dashboard");
-            })
-            .catch((err) => {
-                setConnecting(false);
-
-                if (
-                    (err && err.message == INVALID_CHAIN_ID) ||
-                    err instanceof ChainUnsupportedError
-                ) {
-                    const msg = "Please, switch to the {{NAME}} network".replace(
-                        "{{NAME}}",
-                        process.env.ETH_NETWORK_ID
-                    );
-                    return setAlertMessage(msg);
-                } else if (err && err.message == METAMASK_IS_NOT_AVAILABLE) {
-                    return setAlertMessage(
-                        "Please, install Metamask or a Web3 compatible wallet"
-                    );
-                }
-                console.error(err);
-                setAlertMessage(
-                    "Could not access Metamask or connect to the network"
-                );
-            });
-    };
-
-    if (poolLoading || connecting) {
-        const connectingToVocdoni = "Conneting to Vocdoni";
-        const connectingToWeb3 = "Connecting to " + wallet.networkName;
-        const label = poolLoading ? connectingToVocdoni : connectingToWeb3;
-        return (
-            <ConnectButton
-                label={label}
-                icon={<LoadingRing />}
-                wide
-                onClick={wallet.reset}
-            />
-        );
-    }
-
-    return (
-        <ConnectButton
-            label={isConnected ? "Show dashboard" : "Connect with MetaMask"}
-            icon={<IconEthereum />}
-            wide
-            mode="strong"
-            onClick={onSignIn}
-        />
-    );
-};
 
 // MAIN COMPONENT
 const IndexPage = () => {
@@ -212,7 +127,7 @@ const IndexPage = () => {
                 </LeftSection>
                 {isMobile ? null : (
                     <RightSection width="100%" textAlign="center">
-                        <HandleConnector />
+                        <ConnectButton />
                     </RightSection>
                 )}
             </Row>
@@ -275,9 +190,7 @@ const IndexPage = () => {
             <br />
 
             <Row justifyContent={"space-around"}>
-                <ShowMoreButton href="/tokens">
-                    Show more
-                </ShowMoreButton>
+                <ShowMoreButton href="/tokens">Show more</ShowMoreButton>
             </Row>
         </div>
     );

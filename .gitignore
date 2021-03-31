@@ -3,6 +3,7 @@ build
 node_modules
 .vscode
 .env
+.DS_Store
 
 # Lockfiles
 package-lock.json

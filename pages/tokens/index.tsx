@@ -1,12 +1,10 @@
 import styled from "styled-components";
+import Link from "next/link";
+
 import TokenCard from "../../components/token-card";
-// import Select from 'react-select'
-import { WalletStatus } from "../../components/wallet-status";
-// import { usePool } from '../../lib/hooks/pool'
 import { useTokens } from "../../lib/hooks/tokens";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
-import Link from "next/link";
 import { TopSection } from "../../components/top-section";
 
 const Container = styled.div`

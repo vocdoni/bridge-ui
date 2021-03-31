@@ -1,12 +1,10 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
-import { useIsMobile } from "../lib/hooks/useWindowSize";
-import { WalletStatus } from "./wallet-status";
 import { LINKS } from "./header";
-import { HandleConnector } from "../pages";
+import { ConnectButton } from "./connect-button";
+import { useIsMobile } from "../lib/hooks/useWindowSize";
 
 const Container = styled.div`
     padding: 30px 0 30px;
@@ -43,14 +41,13 @@ const MobileFooter = styled.div`
 
 export const Footer = () => {
     const theme = useTheme();
-    const { pathname } = useRouter();
     const isMobile = useIsMobile();
 
     const FOOTER_LINKS = LINKS.filter((l) => l.footer);
 
     return isMobile ? (
         <MobileFooter>
-            {pathname === "/" ? <HandleConnector /> : <WalletStatus />}
+            <ConnectButton />
         </MobileFooter>
     ) : (
         <Container>
