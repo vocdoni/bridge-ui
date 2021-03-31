@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useWallet } from "use-wallet";
+import { ChainUnsupportedError, useWallet } from "use-wallet";
 
 import { Modal } from ".";
+import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
@@ -126,10 +127,10 @@ const HARDWARE_WALLETS_METAMASK_ARTICLE =
     "https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet";
 
 export const WalletList = () => {
-    const { connect, error } = useWallet();
+    const { connect, error, reset } = useWallet();
     const { push, pathname } = useRouter();
     const { state, dispatch } = useModal();
-    const isMobile = useIsMobile();
+    const { setAlertMessage } = useMessageAlert();
 
     const inLanding = pathname === "/";
 
@@ -147,7 +148,10 @@ export const WalletList = () => {
             if (!error && inLanding) push("/dashboard");
             closeModal();
         } catch (e) {
-            console.log(e);
+            reset()
+            if (e.message.includes("Unsupported chainId")) {
+                setAlertMessage(`${wallet} is not supported on current chain`);
+            }
         }
     };
     return (
@@ -156,7 +160,7 @@ export const WalletList = () => {
                 <Header>
                     <ModalTitle>USE ACCOUNT FROM</ModalTitle>
                     <CloseIcon onClick={closeModal}>
-                        <img src="media/close.svg" />
+                        <img src="/media/close.svg" />
                     </CloseIcon>
                 </Header>
                 <Body>
