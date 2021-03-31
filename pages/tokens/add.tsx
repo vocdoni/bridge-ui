@@ -260,7 +260,7 @@ const TokenAddPage = () => {
                         </Info>
                         <Info>
                             <Title>Total supply</Title>
-                            <Description>{tokenInfo?.totalSupply}</Description>
+                            <Description>{tokenInfo?.totalSupplyFormatted}</Description>
                         </Info>
                         <Info>
                             <Title>Token address</Title>

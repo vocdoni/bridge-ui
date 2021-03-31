@@ -335,9 +335,10 @@ const ProcessPage = () => {
         const refreshInterval = setInterval(() => {
             if (skip) return;
 
-            Promise.all([updateVoteStatus(), updateResults()]).catch((err) =>
-                console.error(err)
-            );
+            Promise.all([
+                updateVoteStatus(),
+                updateWeight(),
+            ]).catch((err) => console.error(err));
         }, 1000 * 20);
 
         return () => {
@@ -349,6 +350,7 @@ const ProcessPage = () => {
     // Vote results
     useEffect(() => {
         updateResults();
+        updateWeight();
     }, [processId]);
 
     // Vote status
@@ -390,13 +392,17 @@ const ProcessPage = () => {
         try {
             const pool = await poolPromise;
             const results = await VotingApi.getResultsDigest(processId, pool);
-            console.log(results);
             setResults(results);
-            const weight = await VotingApi.getResultsWeight(processId, pool);
-            setWeight(weight);
         } catch (e) {
             console.error(e);
         }
+    };
+
+    const updateWeight = async () => {
+        if (!processId) return;
+        const pool = await poolPromise;
+        const weightResults = await VotingApi.getResultsWeight(processId, pool);
+        setWeight(weightResults.toString());
     };
 
     const updateCensusStatus = async () => {

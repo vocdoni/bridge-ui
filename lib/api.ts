@@ -145,7 +145,8 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         return {
             name,
             symbol,
-            totalSupply: new TokenAmount(totalSupply.toString(), decimals, { symbol }).format(),
+            totalSupply,
+            totalSupplyFormatted: new TokenAmount(totalSupply.toString(), decimals, { symbol }).format(),
             decimals,
             address,
             balanceMappingPosition: balMappingPos.toNumber(),

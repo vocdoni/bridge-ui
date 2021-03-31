@@ -258,7 +258,7 @@ const TokenPage = () => {
                 <Info>
                     <InfoTitle>Total supply</InfoTitle>
                     <InfoDescription>
-                        {token?.totalSupply || "-"}
+                        {token?.totalSupplyFormatted || "-"}
                     </InfoDescription>
                 </Info>
                 <Info>
