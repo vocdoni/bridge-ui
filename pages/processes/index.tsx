@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     VotingApi,
     CensusErc20Api,
@@ -305,7 +305,11 @@ const ProcessPage = () => {
     const { process: proc } = useProcess(processId);
     const token = useToken(proc?.entity);
     const [tokenRegistered, setTokenRegistered] = useState(null);
-    const [weight, setWeight] = useState(null);
+    const [weights, setWeights] = useState({
+        absolute: null,
+        relative: null,
+        votesEmitted: null,
+    });
     const [startDate, setStartDate] = useState(null as Date);
     const [endDate, setEndDate] = useState(null as Date);
     const [censusProof, setCensusProof] = useState(
@@ -327,6 +331,31 @@ const ProcessPage = () => {
         router.replace("/tokens");
     }
 
+    const descriptions = {
+        absolute: "Absolute Weight",
+        relative: "Relative Weight",
+        votesEmitted: "Votes emitted",
+    };
+
+    const info = useMemo(() => {
+        if (token) {
+            return {
+                absolute: " " + token.symbol,
+                relative: "%",
+            };
+        }
+
+        return {};
+    }, [token]);
+
+    const weightsObject = useMemo(() => {
+        return Object.keys(weights).map((weight) => ({
+            value: weights[weight],
+            description: descriptions[weight],
+            info: info[weight],
+        }));
+    }, [weights]);
+
     // Effects
 
     useEffect(() => {
@@ -335,10 +364,9 @@ const ProcessPage = () => {
         const refreshInterval = setInterval(() => {
             if (skip) return;
 
-            Promise.all([
-                updateVoteStatus(),
-                updateWeight(),
-            ]).catch((err) => console.error(err));
+            Promise.all([updateVoteStatus()]).catch((err) =>
+                console.error(err)
+            );
         }, 1000 * 20);
 
         return () => {
@@ -350,8 +378,11 @@ const ProcessPage = () => {
     // Vote results
     useEffect(() => {
         updateResults();
-        updateWeight();
     }, [processId]);
+
+    useEffect(() => {
+        updateWeight();
+    }, [token]);
 
     // Vote status
     useEffect(() => {
@@ -399,10 +430,24 @@ const ProcessPage = () => {
     };
 
     const updateWeight = async () => {
-        if (!processId) return;
+        if (!processId || !token) return;
         const pool = await poolPromise;
-        const weightResults = await VotingApi.getResultsWeight(processId, pool);
-        setWeight(weightResults.toString());
+        const votes = await VotingApi.getEnvelopeHeight(processId, pool);
+        const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
+
+        const decimal = Number("1e" + token.decimals);
+        const absolute = resultsWeight.div(decimal).toString();
+        const relative = resultsWeight
+            .mul(100)
+            .div(token.totalSupply)
+            .toString();
+
+        const votesEmitted = votes.toString();
+        setWeights({
+            absolute,
+            relative,
+            votesEmitted,
+        });
     };
 
     const updateCensusStatus = async () => {
@@ -627,7 +672,14 @@ const ProcessPage = () => {
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
                     {isMobile ? null : <LightText>{remainingTime}</LightText>}
-                    {weight ? <LightText>Turnout: {weight} </LightText> : null}
+                    {weightsObject.map(({ value, description, info }) => {
+                        return value ? (
+                            <LightText>
+                                {description}: {value}
+                                {info}
+                            </LightText>
+                        ) : null;
+                    })}
                 </RowDescriptionRightSection>
             </RowDescription>
 
