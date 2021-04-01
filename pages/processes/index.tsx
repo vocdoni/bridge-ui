@@ -27,6 +27,7 @@ import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { useSigner } from "../../lib/hooks/useSigner";
+import { start } from "repl";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -331,33 +332,11 @@ const ProcessPage = () => {
         router.replace("/tokens");
     }
 
-    const descriptions = {
-        absolute: "Absolute Weight",
-        relative: "Relative Weight",
-        votesEmitted: "Votes emitted",
-    };
-
-    const info = useMemo(() => {
-        if (token) {
-            return {
-                absolute: " " + token.symbol,
-                relative: "%",
-            };
-        }
-
-        return {};
-    }, [token]);
-
-    const weightsObject = useMemo(() => {
-        return Object.keys(weights).map((weight) => ({
-            value: weights[weight],
-            description: descriptions[weight],
-            info: info[weight],
-        }));
-    }, [weights]);
+    const hasStarted = useMemo(() => {
+        return startDate && startDate.getTime() <= Date.now();
+    }, [startDate]);
 
     // Effects
-
     useEffect(() => {
         let skip = false;
 
@@ -382,7 +361,7 @@ const ProcessPage = () => {
 
     useEffect(() => {
         updateWeight();
-    }, [token]);
+    }, [token, processId, hasStarted]);
 
     // Vote status
     useEffect(() => {
@@ -430,23 +409,24 @@ const ProcessPage = () => {
     };
 
     const updateWeight = async () => {
-        if (!processId || !token) return;
+        if (!processId || !token || !hasStarted) return;
         const pool = await poolPromise;
         const votes = await VotingApi.getEnvelopeHeight(processId, pool);
         const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
 
         const decimal = Number("1e" + token.decimals);
-        const absolute = resultsWeight.div(decimal).toString();
-        const relative = resultsWeight
-            .mul(100)
-            .div(token.totalSupply)
-            .toString();
+        const totalSupply = token.totalSupply.div(decimal);
+        const weight = resultsWeight.div(decimal);
 
+        const absolute = weight.toString();
+        const relativeNotFixed = weight.mul(100).toNumber() / totalSupply.toNumber();
+        const relative = relativeNotFixed.toFixed(2);
         const votesEmitted = votes.toString();
+
         setWeights({
-            absolute,
-            relative,
-            votesEmitted,
+            absolute: absolute ? `${absolute} ${token.symbol}'s used` : null,
+            relative: relative ? `${relative}% turnout` : null,
+            votesEmitted: votesEmitted ? `${votesEmitted} votes` : null,
         });
     };
 
@@ -481,29 +461,27 @@ const ProcessPage = () => {
 
         setCensusProof(proofFields.proof.storageProof[0]);
     };
-    const updateDates = () => {
+    const updateDates = async () => {
         if (!proc?.parameters?.startBlock) return;
+        try {
+            const pool = await poolPromise;
+            const getStartDate = VotingApi.estimateDateAtBlock(
+                proc.parameters.startBlock,
+                pool
+            );
 
-        return poolPromise
-            .then((pool) =>
-                Promise.all([
-                    VotingApi.estimateDateAtBlock(
-                        proc.parameters.startBlock,
-                        pool
-                    ),
-                    VotingApi.estimateDateAtBlock(
-                        proc.parameters.startBlock + proc.parameters.blockCount,
-                        pool
-                    ),
-                ])
-            )
-            .then(([startDate, endDate]) => {
-                setStartDate(startDate);
-                setEndDate(endDate);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+            const getEndDate = VotingApi.estimateDateAtBlock(
+                proc.parameters.startBlock + proc.parameters.blockCount,
+                pool
+            );
+
+            const [start, end] = await Promise.all([getStartDate, getEndDate]);
+
+            setStartDate(start);
+            setEndDate(end);
+        } catch (error) {
+            console.log(error.message);
+        }
     };
 
     // Callbacks
@@ -610,12 +588,9 @@ const ProcessPage = () => {
         }
     };
 
-    // Render params
-
     const allQuestionsChosen =
         areAllNumbers(choices) &&
         choices.length == proc?.metadata?.questions?.length;
-    const hasStarted = startDate && startDate.getTime() <= Date.now();
     const hasEnded = endDate && endDate.getTime() < Date.now();
     const isInCensus = !!censusProof;
 
@@ -672,12 +647,9 @@ const ProcessPage = () => {
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
                     {isMobile ? null : <LightText>{remainingTime}</LightText>}
-                    {weightsObject.map(({ value, description, info }) => {
-                        return value ? (
-                            <LightText>
-                                {description}: {value}
-                                {info}
-                            </LightText>
+                    {Object.keys(weights).map((description) => {
+                        return weights[description] ? (
+                            <LightText>{weights[description]}</LightText>
                         ) : null;
                     })}
                 </RowDescriptionRightSection>

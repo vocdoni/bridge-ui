@@ -16,6 +16,8 @@ import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
+import { ModalsProvider } from "../components/Modal/context";
+import { getConnectors } from "../lib/wallets";
 
 type NextAppProps = AppInitialProps & {
     Component: NextComponentType<NextPageContext, any, any>;
@@ -28,6 +30,8 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
     const networkId = process.env.ETH_NETWORK_ID as EthNetworkID;
     const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment;
     const appTitle = process.env.APP_TITLE;
+
+    const connectors = getConnectors();
 
     return (
         <UseMessageAlertProvider>
@@ -43,19 +47,22 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                                 <UseProcessProvider>
                                     <UseWalletProvider
                                         chainId={chainId}
-                                        connectors={{}}
+                                        connectors={connectors || {}}
                                     >
-                                        <FixedGlobalStyle />
-                                        <Head>
-                                            <meta
-                                                name="viewport"
-                                                content="width=device-width, initial-scale=1.0"
-                                            />
-                                            <title>{appTitle}</title>
-                                        </Head>
-                                        <Layout>
-                                            <Component {...pageProps} />
-                                        </Layout>
+                                        <ModalsProvider>
+                                            <FixedGlobalStyle />
+
+                                            <Head>
+                                                <meta
+                                                    name="viewport"
+                                                    content="width=device-width, initial-scale=1.0"
+                                                />
+                                                <title>{appTitle}</title>
+                                            </Head>
+                                            <Layout>
+                                                <Component {...pageProps} />
+                                            </Layout>
+                                        </ModalsProvider>
                                     </UseWalletProvider>
                                 </UseProcessProvider>
                             </UseTokenProvider>

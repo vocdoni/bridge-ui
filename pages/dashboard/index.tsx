@@ -19,14 +19,8 @@ import { useRouter } from "next/router";
 export const TokenList = styled.div`
     display: flex;
     flex-wrap: wrap;
+    margin-left: -10px;
 
-    & > div:first-child {
-        margin-left: 0px;
-    }
-    & > div:nth-child(4n) {
-        margin-left: 0px;
-    }
-    
     @media ${({ theme }) => theme.screens.tabletL} {
         & > div:first-child {
             margin-left: 10px;
@@ -116,11 +110,6 @@ const DashboardPage = () => {
             router.replace("/");
         }
     }, [account]);
-
-    // RENDER
-
-    // const options = allTokens.map(token => ({ label: token.name, value: token.symbol }))
-    // options.unshift({ label: "(all tokens)", value: "" })
 
     const upcomingProcesses = processes.filter(
         (proc) => blockNumber < proc.parameters.startBlock

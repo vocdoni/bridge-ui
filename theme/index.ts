@@ -28,7 +28,7 @@ export const colors: Colors = {
 export const size = {
     mobileS: 320,
     mobileM: 375,
-    mobileL: 425,
+    mobileL: 440,
     tablet: 768,
     tabletL: 900,
     laptop: 1024,
@@ -133,14 +133,15 @@ p {
 }
 
 a {
-    font-size: 12px; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 12px; 
+    }
 }
 
 
 textarea {
     min-height: 72px;
 }
-
 
 @font-face {
     font-family: 'Roboto';
@@ -166,4 +167,23 @@ textarea {
     src: local('Roboto Black'), local('Roboto-Black'), url(/fonts/roboto-black.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/overpass/v5/qFdA35WCmI96Ajtm81kOcc7D4hoiiVI6DLE.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/overpass/v5/qFdA35WCmI96Ajtm81kOcc7N4hoiiVI6.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 `;
