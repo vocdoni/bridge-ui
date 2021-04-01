@@ -27,7 +27,6 @@ import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { useSigner } from "../../lib/hooks/useSigner";
-import { start } from "repl";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -343,7 +342,7 @@ const ProcessPage = () => {
         const refreshInterval = setInterval(() => {
             if (skip) return;
 
-            Promise.all([updateVoteStatus()]).catch((err) =>
+            Promise.all([updateVoteStatus(), updateResults()]).catch((err) =>
                 console.error(err)
             );
         }, 1000 * 20);
