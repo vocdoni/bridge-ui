@@ -331,9 +331,7 @@ const ProcessPage = () => {
         router.replace("/tokens");
     }
 
-    const hasStarted = useMemo(() => {
-        return startDate && startDate.getTime() <= Date.now();
-    }, [startDate]);
+    const hasStarted = startDate && startDate.getTime() <= Date.now();
 
     // Effects
     useEffect(() => {
@@ -360,7 +358,7 @@ const ProcessPage = () => {
 
     useEffect(() => {
         updateWeight();
-    }, [token, processId, hasStarted]);
+    }, [token, processId, hasStarted, hasVoted]);
 
     // Vote status
     useEffect(() => {
@@ -413,17 +411,20 @@ const ProcessPage = () => {
         const votes = await VotingApi.getEnvelopeHeight(processId, pool);
         const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
 
-        const decimal = Number("1e" + token.decimals);
+        const decimal = BigNumber.from(10 ** token.decimals);
         const totalSupply = token.totalSupply.div(decimal);
         const weight = resultsWeight.div(decimal);
 
-        const absolute = weight.toString();
-        const relativeNotFixed = weight.mul(100).toNumber() / totalSupply.toNumber();
+        const absolute = new TokenAmount(weight.toString(), token.decimals, {
+            symbol: token.symbol,
+        });
+        const relativeNotFixed =
+            weight.mul(100).toNumber() / totalSupply.toNumber();
         const relative = relativeNotFixed.toFixed(2);
         const votesEmitted = votes.toString();
 
         setWeights({
-            absolute: absolute ? `${absolute} ${token.symbol}'s used` : null,
+            absolute: absolute ? `${absolute}'s used` : null,
             relative: relative ? `${relative}% turnout` : null,
             votesEmitted: votesEmitted ? `${votesEmitted} votes` : null,
         });
