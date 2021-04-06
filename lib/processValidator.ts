@@ -1,55 +1,65 @@
 import { MultiLanguage } from "dvote-js";
 
-type Questions = Array<{
-    id: number;
+type Questions = {
     title: MultiLanguage<string>;
     description?: MultiLanguage<string>;
-    choices: Array<{
-        id: number;
+    choices: {
         title: MultiLanguage<string>;
         value: number;
-    }>;
-}>;
+    }[];
+}[];
+
+const checkTitles = (previousValue, question, index) => {
+    const isBig = new Blob([question.title.default]).size > 256;
+    if (isBig) {
+        return {
+            hasErrors: true,
+            message: `Title of  question #${index + 1} is too big`,
+        };
+    }
+
+    return previousValue;
+};
+
+const checkDescriptions = (previousValue, question, index) => {
+    const isBig = new Blob([question.description.default]).size > 256;
+    if (isBig) {
+        return {
+            hasErrors: true,
+            message: `Description of  question #${index + 1} is too big`,
+        };
+    }
+
+    return previousValue;
+};
+
+const checkChoices = (previousValue, { choices }, questionIndex) => {
+    const isBig = (title) => new Blob([title]).size > 256;
+    const choice = choices.findIndex(({ title }) => isBig(title.default));
+
+    if (choice > -1) {
+        return {
+            hasErrors: true,
+            message: `Choice #${choice + 1} of question #${questionIndex + 1} is too big`,
+        };
+    }
+
+    return previousValue;
+};
 
 export const validateProcess = (questions: Questions): string | undefined => {
-    const titleSizeAccepted = questions.filter(
-        ({ title }) => new Blob([title.default]).size > 256
-    );
+    const titles = questions.reduce(checkTitles, { hasErrors: false });
+    if (titles.hasErrors) return titles.message;
 
-    if (!!titleSizeAccepted.length) {
-        return `Title of question ${titleSizeAccepted[0].id + 1} it's too big`;
-    }
+    const descriptions = questions.reduce(checkDescriptions, {
+        hasErrors: false,
+    });
+    if (descriptions.hasErrors) return descriptions.message;
 
-    const descriptionSizeAccepted = questions.filter(
-        ({ description }) => new Blob([description.default]).size > 256
-    );
-
-    if (!!descriptionSizeAccepted.length) {
-        return `Description of question ${
-            descriptionSizeAccepted[0].id + 1
-        } it's too big`;
-    }
-
-    const checkChoices = (question) => {
-        const tooBigChoices = question.choices.map(
-            ({ title }) => new Blob([title.default]).size > 256
-        );
-        if (!!tooBigChoices.length) {
-            return tooBigChoices;
-        }
-    };
-
-    const choiceSizeAccepted = questions.filter(checkChoices);
-
-    if (!!choiceSizeAccepted.length) {
-        const choiceNumber = choiceSizeAccepted[0].choices[0].id + 1;
-        return `Choice number ${choiceNumber} of question ${
-            choiceSizeAccepted[0].id + 1
-        } is too big`;
-    }
+    const choices = questions.reduce(checkChoices, { hasErrors: false });
+    if (choices.hasErrors) return choices.message;
 
     const numberOfQuestionsAccepted = questions.length > 64;
-
     if (numberOfQuestionsAccepted) {
         return "Maximum number of questions supported is 64";
     }

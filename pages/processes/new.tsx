@@ -350,22 +350,9 @@ const NewProcessPage = () => {
         setMetadata(Object.assign({}, metadata));
     };
     const onSubmit = async () => {
-        const questions = metadata.questions.map((q, id) => {
-            const choices = q.choices.map((c, id) => ({ ...c, id }));
-            const question = {
-                ...q,
-                choices,
-            };
-            return {
-                ...question,
-                id,
-            };
-        });
+        const sizeErrorMessage = validateProcess(metadata.questions);
 
-        console.log(questions);
-        const allSizeAreOk = validateProcess(questions);
-
-        console.log(allSizeAreOk);
+        if (sizeErrorMessage) return setAlertMessage(sizeErrorMessage);
 
         if (!metadata.title || metadata.title.default.trim().length < 2)
             return setAlertMessage("Please enter a title");
