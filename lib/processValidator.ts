@@ -10,7 +10,7 @@ export const handleValidation = ({ title, description, choices }, index) => {
     }
 
     const choice = choices.findIndex(
-        ({ title }) => new Blob([title.default]).size > 256
+        ({ title }) => new Blob([title.default]).size > 32
     );
 
     if (choice > -1) {
