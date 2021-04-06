@@ -26,6 +26,7 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 
@@ -350,6 +351,12 @@ const NewProcessPage = () => {
         setMetadata(Object.assign({}, metadata));
     };
     const onSubmit = async () => {
+        try {
+            metadata.questions.map(handleValidation);
+        } catch (error) {
+            return setAlertMessage(error.message);
+        }
+
         if (!metadata.title || metadata.title.default.trim().length < 2)
             return setAlertMessage("Please enter a title");
         else if (metadata.title.default.trim().length > 50)
@@ -404,7 +411,7 @@ const NewProcessPage = () => {
         }
 
         if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
-            return setAlertMessage("The token address it not valid");
+            return setAlertMessage("The token address is not valid");
 
         if (!wallet?.account)
             return setAlertMessage(
