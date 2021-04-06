@@ -92,7 +92,7 @@ const TokensPage = () => {
                                 <br />
                                 {token?.totalSupply && (
                                     <small>
-                                        Total supply: {token?.totalSupply}
+                                        Total supply: {token?.totalSupplyFormatted}
                                     </small>
                                 )}
                             </p>
