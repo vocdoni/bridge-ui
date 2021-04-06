@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     VotingApi,
     CensusErc20Api,
@@ -9,7 +9,7 @@ import {
 } from "dvote-js";
 import { withRouter, useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
-import { usePool, useProcess, useSigner } from "@vocdoni/react-hooks";
+import { usePool, useProcess } from "@vocdoni/react-hooks";
 import { Button } from "@aragon/ui";
 import { BigNumber, providers } from "ethers";
 import TokenAmount from "token-amount";
@@ -26,6 +26,7 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { useSigner } from "../../lib/hooks/useSigner";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -304,6 +305,11 @@ const ProcessPage = () => {
     const { process: proc } = useProcess(processId);
     const token = useToken(proc?.entity);
     const [tokenRegistered, setTokenRegistered] = useState(null);
+    const [weights, setWeights] = useState({
+        absolute: null,
+        relative: null,
+        votesEmitted: null,
+    });
     const [startDate, setStartDate] = useState(null as Date);
     const [endDate, setEndDate] = useState(null as Date);
     const [censusProof, setCensusProof] = useState(
@@ -325,17 +331,23 @@ const ProcessPage = () => {
         router.replace("/tokens");
     }
 
-    // Effects
+    const hasStarted = startDate && startDate.getTime() <= Date.now();
 
+    // Effects
     useEffect(() => {
         let skip = false;
 
         const refreshInterval = setInterval(() => {
             if (skip) return;
 
-            Promise.all([updateVoteStatus(), updateResults()]).catch((err) =>
-                console.error(err)
-            );
+            Promise.all([
+                updateVoteStatus(),
+                updateResults(),
+                updateWeight(),
+            ]).catch((err) => {
+                setAlertMessage(err.message);
+                console.error(err);
+            });
         }, 1000 * 20);
 
         return () => {
@@ -347,7 +359,8 @@ const ProcessPage = () => {
     // Vote results
     useEffect(() => {
         updateResults();
-    }, [processId]);
+        updateWeight();
+    }, [token, processId, hasStarted, hasVoted]);
 
     // Vote status
     useEffect(() => {
@@ -382,14 +395,41 @@ const ProcessPage = () => {
                 console.error(err);
             });
     };
-    const updateResults = () => {
+    const updateResults = async () => {
         if (!processId) return;
 
-        poolPromise
-            .then((pool) => VotingApi.getResultsDigest(processId, pool))
-            .then((results) => setResults(results))
-            .catch((err) => console.error(err));
+        try {
+            const pool = await poolPromise;
+            const results = await VotingApi.getResultsDigest(processId, pool);
+            setResults(results);
+        } catch (e) {
+            console.error(e);
+        }
     };
+
+    const updateWeight = async () => {
+        if (!processId || !token || !hasStarted) return;
+        const pool = await poolPromise;
+        const votes = await VotingApi.getEnvelopeHeight(processId, pool);
+        const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
+
+        const totalSupply = new TokenAmount(token.totalSupply, token.decimals);
+        const absolute = new TokenAmount(resultsWeight, token.decimals, {
+            symbol: token.symbol,
+        });
+
+        const weight = BigNumber.from(absolute.value).mul(1000);
+        const supply = BigNumber.from(totalSupply.value);
+        const relative = (weight.div(supply).toNumber() / 10).toFixed(2);
+        const votesEmitted = votes.toString();
+
+        setWeights({
+            absolute: absolute ? `${absolute}'s used` : null,
+            relative: relative ? `${relative}% turnout` : null,
+            votesEmitted: votesEmitted ? `${votesEmitted} votes` : null,
+        });
+    };
+
     const updateCensusStatus = async () => {
         if (!token?.address) {
             setTokenRegistered(false);
@@ -421,29 +461,27 @@ const ProcessPage = () => {
 
         setCensusProof(proofFields.proof.storageProof[0]);
     };
-    const updateDates = () => {
+    const updateDates = async () => {
         if (!proc?.parameters?.startBlock) return;
+        try {
+            const pool = await poolPromise;
+            const getStartDate = VotingApi.estimateDateAtBlock(
+                proc.parameters.startBlock,
+                pool
+            );
 
-        return poolPromise
-            .then((pool) =>
-                Promise.all([
-                    VotingApi.estimateDateAtBlock(
-                        proc.parameters.startBlock,
-                        pool
-                    ),
-                    VotingApi.estimateDateAtBlock(
-                        proc.parameters.startBlock + proc.parameters.blockCount,
-                        pool
-                    ),
-                ])
-            )
-            .then(([startDate, endDate]) => {
-                setStartDate(startDate);
-                setEndDate(endDate);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+            const getEndDate = VotingApi.estimateDateAtBlock(
+                proc.parameters.startBlock + proc.parameters.blockCount,
+                pool
+            );
+
+            const [start, end] = await Promise.all([getStartDate, getEndDate]);
+
+            setStartDate(start);
+            setEndDate(end);
+        } catch (error) {
+            console.log(error.message);
+        }
     };
 
     // Callbacks
@@ -550,12 +588,9 @@ const ProcessPage = () => {
         }
     };
 
-    // Render params
-
     const allQuestionsChosen =
         areAllNumbers(choices) &&
         choices.length == proc?.metadata?.questions?.length;
-    const hasStarted = startDate && startDate.getTime() <= Date.now();
     const hasEnded = endDate && endDate.getTime() < Date.now();
     const isInCensus = !!censusProof;
 
@@ -612,6 +647,11 @@ const ProcessPage = () => {
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
                     {isMobile ? null : <LightText>{remainingTime}</LightText>}
+                    {Object.keys(weights).map((description) => {
+                        return weights[description] ? (
+                            <LightText>{weights[description]}</LightText>
+                        ) : null;
+                    })}
                 </RowDescriptionRightSection>
             </RowDescription>
 
