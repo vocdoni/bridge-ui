@@ -15,7 +15,7 @@ export const handleValidation = ({ title, description, choices }, index) => {
 
     if (choice > -1) {
         throw new Error(
-            `Choice #${choice + 1} of question #${index + 1} is too big`
+            `The text for choice #${choice + 1} of question #${index + 1} is too long`
         );
     }
 };
