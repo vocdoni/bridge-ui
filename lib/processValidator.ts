@@ -1,7 +1,7 @@
 export const handleValidation = ({ title, description, choices }, index) => {
     const isLongTitle = new Blob([title.default]).size > 128
     if (isBigTitle) {
-        throw new Error(`Title of  question #${index + 1} is too big`);
+        throw new Error(`The title for question #${index + 1} is too long`);
     }
 
     const isBigDescription = new Blob([description.default]).size > 256;
