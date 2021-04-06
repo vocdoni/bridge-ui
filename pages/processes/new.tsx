@@ -26,7 +26,7 @@ import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
-import { validateProcess } from "../../lib/processValidator";
+import { handleValidation } from "../../lib/processValidator";
 import { ConnectButton } from "../../components/connect-button";
 
 const NewProcessContainer = styled.div`
@@ -350,9 +350,11 @@ const NewProcessPage = () => {
         setMetadata(Object.assign({}, metadata));
     };
     const onSubmit = async () => {
-        const sizeErrorMessage = validateProcess(metadata.questions);
-
-        if (sizeErrorMessage) return setAlertMessage(sizeErrorMessage);
+        try {
+            metadata.questions.map(handleValidation);
+        } catch (error) {
+            return setAlertMessage(error.message);
+        }
 
         if (!metadata.title || metadata.title.default.trim().length < 2)
             return setAlertMessage("Please enter a title");
