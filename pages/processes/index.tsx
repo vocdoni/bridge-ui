@@ -344,7 +344,10 @@ const ProcessPage = () => {
                 updateVoteStatus(),
                 updateResults(),
                 updateWeight(),
-            ]).catch((err) => console.error(err));
+            ]).catch((err) => {
+                setAlertMessage(err.message);
+                console.error(err);
+            });
         }, 1000 * 20);
 
         return () => {
@@ -352,7 +355,7 @@ const ProcessPage = () => {
             clearInterval(refreshInterval);
         };
     }, [processId]);
-    
+
     // Vote results
     useEffect(() => {
         updateResults();
@@ -415,9 +418,9 @@ const ProcessPage = () => {
             symbol: token.symbol,
         });
 
-        const weight = BigNumber.from(absolute.value).mul(100).toNumber();
-        const supply = BigNumber.from(totalSupply.value).toNumber();
-        const relative = (weight / supply).toFixed(2);
+        const weight = BigNumber.from(absolute.value).mul(1000);
+        const supply = BigNumber.from(totalSupply.value);
+        const relative = (weight.div(supply).toNumber() / 10).toFixed(2);
         const votesEmitted = votes.toString();
 
         setWeights({
