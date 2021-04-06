@@ -340,9 +340,11 @@ const ProcessPage = () => {
         const refreshInterval = setInterval(() => {
             if (skip) return;
 
-            Promise.all([updateVoteStatus(), updateResults()]).catch((err) =>
-                console.error(err)
-            );
+            Promise.all([
+                updateVoteStatus(),
+                updateResults(),
+                updateWeight(),
+            ]).catch((err) => console.error(err));
         }, 1000 * 20);
 
         return () => {
@@ -350,13 +352,10 @@ const ProcessPage = () => {
             clearInterval(refreshInterval);
         };
     }, [processId]);
-
+    
     // Vote results
     useEffect(() => {
         updateResults();
-    }, [processId]);
-
-    useEffect(() => {
         updateWeight();
     }, [token, processId, hasStarted, hasVoted]);
 
@@ -411,16 +410,14 @@ const ProcessPage = () => {
         const votes = await VotingApi.getEnvelopeHeight(processId, pool);
         const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
 
-        const decimal = BigNumber.from(10 ** token.decimals);
-        const totalSupply = token.totalSupply.div(decimal);
-        const weight = resultsWeight.div(decimal);
-
-        const absolute = new TokenAmount(weight.toString(), token.decimals, {
+        const totalSupply = new TokenAmount(token.totalSupply, token.decimals);
+        const absolute = new TokenAmount(resultsWeight, token.decimals, {
             symbol: token.symbol,
         });
-        const relativeNotFixed =
-            weight.mul(100).toNumber() / totalSupply.toNumber();
-        const relative = relativeNotFixed.toFixed(2);
+
+        const weight = BigNumber.from(absolute.value).mul(100).toNumber();
+        const supply = BigNumber.from(totalSupply.value).toNumber();
+        const relative = (weight / supply).toFixed(2);
         const votesEmitted = votes.toString();
 
         setWeights({
