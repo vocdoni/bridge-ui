@@ -64,7 +64,7 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
 export async function registerToken(tokenAddress: string, holderAddress: string, pool: GatewayPool, signer: Signer) {
     try {
         const tokenBalanceMappingPosition = await findTokenBalanceMappingPosition(tokenAddress, holderAddress, pool)
-        const blockNumber = await pool.provider.getBlockNumber()
+        const blockNumber = await pool.provider.getBlockNumber() - 1
         const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddress, tokenBalanceMappingPosition)
         const result = await CensusErc20Api.generateProof(tokenAddress, [balanceSlot], blockNumber, pool.provider as providers.JsonRpcProvider)
         const { blockHeaderRLP, accountProofRLP, storageProofsRLP } = result
