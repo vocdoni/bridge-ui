@@ -636,13 +636,15 @@ const ProcessPage = () => {
                 title={`${token?.symbol || "Token"} governance process`}
                 description="Cast your vote and see the ongoing results as they are received."
             />
-
             <RowDescription>
                 <RowDescriptionLeftSection>
                     <h2>{proc.metadata.title.default || "No title"}</h2>
                     <Status>{isMobile ? remainingTime : status}</Status>
                     <LightText>
                         {proc.metadata.description.default || "No description"}
+                    </LightText>
+                    <LightText>
+                        Register this process for execution with Govern:
                     </LightText>
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
@@ -652,6 +654,13 @@ const ProcessPage = () => {
                             <LightText>{weights[description]}</LightText>
                         ) : null;
                     })}
+                    <Button
+                        mode="negative"
+                        href="https://console.aragon.org"
+                        external={true}
+                    >
+                        Schedule
+                    </Button>
                 </RowDescriptionRightSection>
             </RowDescription>
 
