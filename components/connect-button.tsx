@@ -8,6 +8,7 @@ import {
     AddressField,
     LoadingRing,
 } from "@aragon/ui";
+import Button from "../components/button"
 import { usePool } from "@vocdoni/react-hooks";
 import {
     ChainUnsupportedError,
@@ -35,7 +36,7 @@ const AddressContainer = styled.div`
     }
 `;
 
-const Button = styled(AragonButton)`
+const MyButton = styled(Button)`
     max-width: 300px;
     @media ${({ theme }) => theme.screens.tablet} {
         max-width: 100%;
@@ -111,7 +112,7 @@ export const ConnectButton = () => {
 
     return (
         <ButtonContainer>
-            <Button
+            <MyButton
                 wide
                 icon={loadingOrConnecting ? <LoadingRing /> : <IconEthereum />}
                 mode={mode}
