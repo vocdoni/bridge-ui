@@ -10,7 +10,7 @@ import {
 import { withRouter, useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { usePool, useProcess } from "@vocdoni/react-hooks";
-import { Button } from "@aragon/ui";
+import { Button, Tag } from "@aragon/ui";
 import { BigNumber, providers } from "ethers";
 import TokenAmount from "token-amount";
 import { useWallet } from "use-wallet";
@@ -643,9 +643,6 @@ const ProcessPage = () => {
                     <LightText>
                         {proc.metadata.description.default || "No description"}
                     </LightText>
-                    <LightText>
-                        Register this process for execution with Govern:
-                    </LightText>
                 </RowDescriptionLeftSection>
                 <RowDescriptionRightSection>
                     {isMobile ? null : <LightText>{remainingTime}</LightText>}
@@ -654,6 +651,7 @@ const ProcessPage = () => {
                             <LightText>{weights[description]}</LightText>
                         ) : null;
                     })}
+
                     <Button
                         mode="negative"
                         href="https://console.aragon.org"
