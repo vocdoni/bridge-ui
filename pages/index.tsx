@@ -95,7 +95,8 @@ const ClickableLink = styled.a`
 
 // MAIN COMPONENT
 const IndexPage = () => {
-    const tokenInfos = useTokens(featuredTokens);
+    const featuredTokenIds: string[] = featuredTokens[process.env.NETWORK_ID] || []
+    const tokenInfos = useTokens(featuredTokenIds);
     const isMobile = useIsMobile();
 
     return (
