@@ -1,0 +1,31 @@
+{
+    "name": "bridge-ui",
+    "scripts": {
+        "start": "next start -p $PORT"
+    },
+    "env": {
+        "BOOTNODES_URL": {
+            "required": true
+        },
+        "BRIDGE_UI_TAG": {
+            "required": true
+        },
+        "ETH_NETWORK_ID": {
+            "required": true
+        },
+        "VOCDONI_ENVIRONMENT": {
+            "required": true
+        }
+    },
+    "formation": {
+        "web": {
+            "quantity": 1
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/nodejs"
+        }
+    ],
+    "stack": "heroku-20"
+}
