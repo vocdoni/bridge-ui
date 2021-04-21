@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { VotingApi } from "dvote-js";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
+import { useWallet } from "use-wallet";
+import { useRouter } from "next/router";
 
 import TokenCard from "../../components/token-card";
 // import Select from 'react-select'
@@ -13,8 +15,6 @@ import { ProcessInfo, TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/util";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
-import { useWallet } from "use-wallet";
-import { useRouter } from "next/router";
 
 export const TokenList = styled.div`
     display: flex;
@@ -159,6 +159,7 @@ const DashboardPage = () => {
             {VOTING_SECTIONS.map((section) => (
                 <VoteSection
                     {...section}
+                    key={`key_${section.title}`}
                     loadingProcesses={loadingProcesses}
                     tokenInfos={tokenInfos}
                 />
@@ -175,8 +176,8 @@ export const VoteSection = ({
     noProcessesMessage,
     processesMessage,
 }) => {
-    const Processes = () =>
-        useMemo(() => {
+    const Processes = () => {
+        return useMemo(() => {
             return processes.map((proc) => {
                 if (tokenInfos.size) {
                     const token = tokenInfos.get(proc.tokenAddress);
@@ -184,6 +185,7 @@ export const VoteSection = ({
                 }
             });
         }, [tokenInfos, processes]);
+    };
 
     return (
         <VoteSectionContainer>

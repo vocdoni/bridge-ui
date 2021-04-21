@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
     VotingApi,
     CensusErc20Api,
@@ -290,7 +290,7 @@ const ProcessQuestions = ({
             onSelect,
             hasEnded,
         };
-        return <QuestionRow {...questionProps} />;
+        return <QuestionRow key={`question_${qIdx}`} {...questionProps} />;
     });
 };
 
@@ -608,7 +608,7 @@ const ProcessPage = () => {
             : strDateDiff("start-date", startDate)
         : "";
 
-    let status: string = "";
+    let status = "";
     switch (proc?.parameters.status.value) {
         case ProcessStatus.READY:
             if (hasEnded) status = "The process is closed";
@@ -697,7 +697,7 @@ const ProcessPage = () => {
                     else if (!censusProof)
                         return (
                             <CurrentStatus>
-                                You are not part of the process holders' census
+                                You are not part of the process holders census
                             </CurrentStatus>
                         );
                     else if (!allQuestionsChosen)

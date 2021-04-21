@@ -76,6 +76,7 @@ type CardProps = {
     onClick?: () => void;
 };
 
+// eslint-disable-next-line react/display-name
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
     ({ onClick, icon, rightText, name, children }, ref) => {
         return (

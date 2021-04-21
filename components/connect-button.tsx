@@ -1,3 +1,4 @@
+import React from "react";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
@@ -8,7 +9,7 @@ import {
     AddressField,
     LoadingRing,
 } from "@aragon/ui";
-import Button from "../components/button"
+import Button from "../components/button";
 import { usePool } from "@vocdoni/react-hooks";
 import {
     ChainUnsupportedError,

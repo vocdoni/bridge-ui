@@ -1,64 +1,83 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { getRegisteredTokenList } from '../api'
-import { TokenListCache } from "../storage"
-import { usePool } from '@vocdoni/react-hooks'
-import { useMessageAlert } from './message-alert'
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+import { getRegisteredTokenList } from "../api";
+import { TokenListCache } from "../storage";
+import { usePool } from "@vocdoni/react-hooks";
+import { useMessageAlert } from "./message-alert";
 
 const UseRegisteredTokensContext = React.createContext<{
-    registeredTokens: string[],
-    refreshRegisteredTokens: (lastKnownTokenCount?: number) => Promise<void>,
-    error?: string
-}>(null)
+    registeredTokens: string[];
+    refreshRegisteredTokens: (lastKnownTokenCount?: number) => Promise<void>;
+    error?: string;
+}>(null);
 
 /** Returns an arran containing the list of registered ERC20 tokens */
 export function useRegisteredTokens() {
-    const tokenContext = useContext(UseRegisteredTokensContext)
+    const tokenContext = useContext(UseRegisteredTokensContext);
 
     if (tokenContext === null) {
         throw new Error(
-            'useRegisteredTokens() can only be used inside of <UseRegisteredTokens />, ' +
-            'please declare it at a higher level.'
-        )
+            "useRegisteredTokens() can only be used inside of <UseRegisteredTokens />, " +
+                "please declare it at a higher level."
+        );
     }
-    return tokenContext
+    return tokenContext;
 }
 
 export function UseRegisteredTokens({ children }) {
-    const { poolPromise } = usePool()
-    const [registeredTokens, setRegisteredTokens] = useState<string[]>([])
-    const [error, setError] = useState<string>(null)
-    const { setAlertMessage } = useMessageAlert()
+    const { poolPromise } = usePool();
+    const [registeredTokens, setRegisteredTokens] = useState<string[]>([]);
+    const [error, setError] = useState<string>(null);
+    const { setAlertMessage } = useMessageAlert();
 
     const refreshRegisteredTokens = (lastKnownTokenCount?: number) => {
-        return poolPromise.then(pool => getRegisteredTokenList(lastKnownTokenCount || 0, pool))
-            .then(addrs => {
+        return poolPromise
+            .then((pool) =>
+                getRegisteredTokenList(lastKnownTokenCount || 0, pool)
+            )
+            .then((addrs) => {
                 // Do we have more tokens? Otherwise exit
-                if (addrs === null) { return }
+                if (addrs === null) {
+                    return;
+                }
 
-                setRegisteredTokens(addrs)
+                setRegisteredTokens(addrs);
 
-                const db = new TokenListCache()
-                return db.write(addrs)
+                const db = new TokenListCache();
+                return db.write(addrs);
             })
-            .catch(err => {
-                setAlertMessage("Could not fetch the list of tokens")
-            })
-    }
+            .catch((err) => {
+                setAlertMessage("Could not fetch the list of tokens");
+            });
+    };
 
     // Initial set up
     useEffect(() => {
         // Read the locally stored addresses
-        const db = new TokenListCache()
-        db.read().then(tokenAddrs => {
-            // Set the address list in memory
-            setRegisteredTokens(tokenAddrs)
+        const db = new TokenListCache();
+        db.read()
+            .then((tokenAddrs) => {
+                // Set the address list in memory
+                setRegisteredTokens(tokenAddrs);
 
-            // Start a remote refresh of the tokens, the first time
-            return refreshRegisteredTokens(tokenAddrs.length).catch(err => console.error(err))
-        }).catch(err => {
-            setError(err?.message || err?.toString?.() || "Could not fetch the registered token list")
-        })
-    }, [])
+                // Start a remote refresh of the tokens, the first time
+                return refreshRegisteredTokens(tokenAddrs.length).catch((err) =>
+                    console.error(err)
+                );
+            })
+            .catch((err) => {
+                setError(
+                    err?.message ||
+                        err?.toString?.() ||
+                        "Could not fetch the registered token list"
+                );
+            });
+    }, []);
 
     return (
         <UseRegisteredTokensContext.Provider
@@ -66,5 +85,5 @@ export function UseRegisteredTokens({ children }) {
         >
             {children}
         </UseRegisteredTokensContext.Provider>
-    )
+    );
 }

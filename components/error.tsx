@@ -1,3 +1,4 @@
+import React from "react";
 import { main } from "../i18n";
 
 const ErrorPage = (props: { message?: string }) => (

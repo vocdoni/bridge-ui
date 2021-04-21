@@ -98,10 +98,10 @@ const Address = styled.h4`
 
 const RowContinue = styled.div`
     margin-top: 5em;
-    
+
     display: flex;
     justify-content: space-around;
-    
+
     & > * {
         margin-top: -3em;
         min-width: 250px;
@@ -110,7 +110,7 @@ const RowContinue = styled.div`
 
 const TokenContractDetails = styled.div`
     text-align: center;
-`
+`;
 
 const LightText = styled.p`
     color: ${({ theme }) => theme.lightText};
@@ -231,10 +231,9 @@ const TokenAddPage = () => {
                     <Button
                         mode="strong"
                         onClick={loadingToken ? undefined : checkToken}
-                        children={
-                            loadingToken ? <StyledSpinner /> : "Check token"
-                        }
-                    />
+                    >
+                        {loadingToken ? <StyledSpinner /> : "Check token"}
+                    </Button>
                 </RightSection>
             </Row>
 
@@ -260,7 +259,9 @@ const TokenAddPage = () => {
                         </Info>
                         <Info>
                             <Title>Total supply</Title>
-                            <Description>{tokenInfo?.totalSupplyFormatted}</Description>
+                            <Description>
+                                {tokenInfo?.totalSupplyFormatted}
+                            </Description>
                         </Info>
                         <Info>
                             <Title>Token address</Title>
@@ -270,7 +271,9 @@ const TokenAddPage = () => {
 
                     <RowContinue>
                         {registeringToken ? (
-                            <Button children={<StyledSpinner />} />
+                            <Button>
+                                <StyledSpinner />
+                            </Button>
                         ) : (
                             <Button mode="strong" onClick={onSubmit}>
                                 Register token

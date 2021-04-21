@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import { useMessageAlert } from "../lib/hooks/message-alert";
 
@@ -21,7 +22,6 @@ const AlertContainer = styled.div<{ visible: boolean }>`
     text-align: center;
     user-select: none;
     font-size: 16px;
-
 
     box-sizing: border-box;
     padding: ${({ visible }) => (visible ? "16px" : "0")};

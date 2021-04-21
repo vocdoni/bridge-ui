@@ -75,7 +75,12 @@ const VoteSection = ({
                     allProcesses.get(processId).metadata.title.default ||
                     "No title";
                 return (
-                    <ProcessCard id={processId} title={title} token={token} />
+                    <ProcessCard
+                        key={processId}
+                        id={processId}
+                        title={title}
+                        token={token}
+                    />
                 );
             });
         }, [processes]);
@@ -270,6 +275,7 @@ const TokenPage = () => {
             {VOTING_SECTIONS.map((section) => (
                 <VoteSection
                     {...section}
+                    key={token.name}
                     allProcesses={processes}
                     loadingProcesses={loadingProcessList}
                     token={token}

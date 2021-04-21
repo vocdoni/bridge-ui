@@ -95,7 +95,8 @@ const ClickableLink = styled.a`
 
 // MAIN COMPONENT
 const IndexPage = () => {
-    const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || []
+    const featuredTokenIds: string[] =
+        featuredTokens[process.env.ETH_NETWORK_ID] || [];
     const tokenInfos = useTokens(featuredTokenIds);
     const isMobile = useIsMobile();
 
@@ -165,36 +166,45 @@ const IndexPage = () => {
             <br />
             <br />
 
-            { featuredTokenIds?.length ? <>
-                <TopTokensContainer>
-                    <h2>Top Tokens</h2>
-                    <p>
-                        Below is a list of some of the most relevant tokens on the
-                        platform
-                </p>
-                </TopTokensContainer>
+            {featuredTokenIds?.length ? (
+                <>
+                    <TopTokensContainer>
+                        <h2>Top Tokens</h2>
+                        <p>
+                            Below is a list of some of the most relevant tokens
+                            on the platform
+                        </p>
+                    </TopTokensContainer>
 
-                <TokenList>
-                    {featuredTokenIds.map((tokenAddr) => (
-                        <TokenCard
-                            key={tokenAddr}
-                            name={tokenInfos.get(tokenAddr)?.symbol}
-                            icon={FALLBACK_TOKEN_ICON}
-                            rightText=""
-                            href={tokenAddr ? "/tokens/info#/" + tokenAddr : ""}
-                        >
-                            <p>{tokenInfos.get(tokenAddr)?.name || "(loading)"}</p>
-                        </TokenCard>
-                    ))}
-                </TokenList>
-
-                <br />
-                <br />
-
-                <Row justifyContent={"space-around"}>
-                    <ShowMoreButton href="/tokens">Show more</ShowMoreButton>
-                </Row>
-            </> : null}
+                    <TokenList>
+                        {featuredTokenIds.map((tokenAddr) => (
+                            <TokenCard
+                                key={tokenAddr}
+                                name={tokenInfos.get(tokenAddr)?.symbol}
+                                icon={FALLBACK_TOKEN_ICON}
+                                rightText=""
+                                href={
+                                    tokenAddr
+                                        ? "/tokens/info#/" + tokenAddr
+                                        : ""
+                                }
+                            >
+                                <p>
+                                    {tokenInfos.get(tokenAddr)?.name ||
+                                        "(loading)"}
+                                </p>
+                            </TokenCard>
+                        ))}
+                    </TokenList>
+                    <br />
+                    <br />
+                    <Row justifyContent={"space-around"}>
+                        <ShowMoreButton href="/tokens">
+                            Show more
+                        </ShowMoreButton>
+                    </Row>
+                </>
+            ) : null}
         </div>
     );
 };

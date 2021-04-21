@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
@@ -92,7 +93,8 @@ const TokensPage = () => {
                                 <br />
                                 {token?.totalSupply && (
                                     <small>
-                                        Total supply: {token?.totalSupplyFormatted}
+                                        Total supply:{" "}
+                                        {token?.totalSupplyFormatted}
                                     </small>
                                 )}
                             </p>

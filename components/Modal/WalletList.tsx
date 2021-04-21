@@ -1,10 +1,10 @@
-import { useRouter } from "next/router";
+import React from "react";
 import styled from "styled-components";
-import { ChainUnsupportedError, useWallet } from "use-wallet";
+import { useRouter } from "next/router";
+import { useWallet } from "use-wallet";
 
 import { Modal } from ".";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
 
@@ -148,7 +148,7 @@ export const WalletList = () => {
             if (!error && inLanding) push("/dashboard");
             closeModal();
         } catch (e) {
-            reset()
+            reset();
             if (e.message.includes("Unsupported chainId")) {
                 setAlertMessage(`${wallet} is not supported on current chain`);
             }
@@ -198,7 +198,7 @@ export const WalletList = () => {
                         target="_blank"
                         href={"https://ethereum.org/en/wallets/"}
                     >
-                        Don't have an Ethereum account?
+                        {"Don't have an Ethereum account?"}
                     </DontHaveAccount>
                 </Body>
             </ModalContainer>
