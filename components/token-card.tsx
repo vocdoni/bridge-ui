@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 
 const Container = styled.div`
     background: white;
@@ -80,7 +81,7 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
     ({ onClick, icon, rightText, name, children }, ref) => {
         return (
             <Card onClick={onClick} ref={ref}>
-                <TokenLogo src={icon} />
+                <TokenLogo src={icon} onError={loadFallback} />
                 {rightText && <RightText>{rightText}</RightText>}
                 <Text>
                     <Name>{name}</Name>
@@ -90,6 +91,10 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
         );
     }
 );
+
+function loadFallback(event) {
+    event.target.src = FALLBACK_TOKEN_ICON;
+}
 
 const TokenCard = ({ children, ...props }: CardProps) => (
     <Container>
