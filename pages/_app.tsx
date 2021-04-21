@@ -20,58 +20,52 @@ import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
 
 type NextAppProps = AppInitialProps & {
-    Component: NextComponentType<NextPageContext, any, any>;
-    router: Router;
+  Component: NextComponentType<NextPageContext, any, any>;
+  router: Router;
 };
 
 const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
-    const chainId = parseInt(process.env.ETH_CHAIN_ID);
-    const bootnodeUri = process.env.BOOTNODES_URL;
-    const networkId = process.env.ETH_NETWORK_ID as EthNetworkID;
-    const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment;
-    const appTitle = process.env.APP_TITLE;
+  const chainId = parseInt(process.env.ETH_CHAIN_ID);
+  const bootnodeUri = process.env.BOOTNODES_URL;
+  const networkId = process.env.ETH_NETWORK_ID as EthNetworkID;
+  const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment;
+  const appTitle = process.env.APP_TITLE;
 
-    const connectors = getConnectors();
+  const connectors = getConnectors();
 
-    return (
-        <UseMessageAlertProvider>
-            <ThemeProvider theme={theme}>
-                <UseLoadingAlertProvider>
-                    <UsePoolProvider
-                        bootnodeUri={bootnodeUri}
-                        networkId={networkId}
-                        environment={environment}
-                    >
-                        <UseRegisteredTokens>
-                            <UseTokenProvider>
-                                <UseProcessProvider>
-                                    <UseWalletProvider
-                                        chainId={chainId}
-                                        connectors={connectors || {}}
-                                    >
-                                        <ModalsProvider>
-                                            <FixedGlobalStyle />
+  return (
+    <UseMessageAlertProvider>
+      <ThemeProvider theme={theme}>
+        <UseLoadingAlertProvider>
+          <UsePoolProvider
+            bootnodeUri={bootnodeUri}
+            networkId={networkId}
+            environment={environment}
+          >
+            <UseRegisteredTokens>
+              <UseTokenProvider>
+                <UseProcessProvider>
+                  <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                    <ModalsProvider>
+                      <FixedGlobalStyle />
 
-                                            <Head>
-                                                <meta
-                                                    name="viewport"
-                                                    content="width=device-width, initial-scale=1.0"
-                                                />
-                                                <title>{appTitle}</title>
-                                            </Head>
-                                            <Layout>
-                                                <Component {...pageProps} />
-                                            </Layout>
-                                        </ModalsProvider>
-                                    </UseWalletProvider>
-                                </UseProcessProvider>
-                            </UseTokenProvider>
-                        </UseRegisteredTokens>
-                    </UsePoolProvider>
-                </UseLoadingAlertProvider>
-            </ThemeProvider>
-        </UseMessageAlertProvider>
-    );
+                      <Head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <title>{appTitle}</title>
+                      </Head>
+                      <Layout>
+                        <Component {...pageProps} />
+                      </Layout>
+                    </ModalsProvider>
+                  </UseWalletProvider>
+                </UseProcessProvider>
+              </UseTokenProvider>
+            </UseRegisteredTokens>
+          </UsePoolProvider>
+        </UseLoadingAlertProvider>
+      </ThemeProvider>
+    </UseMessageAlertProvider>
+  );
 };
 
 export default BridgeApp;

@@ -9,7 +9,7 @@
     "start": "next start",
     "export": "next build && next export -o build",
     "lint:check": "eslint --quiet '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'",
-    "lint:fix": "eslint --fix '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'"
+    "lint:fix": "prettier --write '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'"
   },
   "repository": {
     "type": "git",

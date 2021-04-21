@@ -2,7 +2,7 @@ import React from "react";
 import { main } from "../i18n";
 
 const ErrorPage = (props: { message?: string }) => (
-    <div>{(props && props.message) || main.generalErrorMessage}</div>
+  <div>{(props && props.message) || main.generalErrorMessage}</div>
 );
 
 export default ErrorPage;

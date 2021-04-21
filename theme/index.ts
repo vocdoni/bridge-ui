@@ -2,66 +2,66 @@ import { createGlobalStyle, DefaultTheme } from "styled-components";
 import { Colors, Margins, Screens } from "./types";
 
 export const colors: Colors = {
-    text1: "#F9694F",
-    text2: "#ED57E9",
-    text3: "#212B36",
-    accent1: "#F9694F",
-    accent2: "#ED57E9",
-    white: "white",
-    darkFg: "#333",
-    darkMidFg: "#555",
-    darkLightFg: "#888",
-    lightBg: "#F4F4F4",
-    lightBg2: "#E8E8E8",
-    lightBorder: "#DDE4E9",
+  text1: "#F9694F",
+  text2: "#ED57E9",
+  text3: "#212B36",
+  accent1: "#F9694F",
+  accent2: "#ED57E9",
+  white: "white",
+  darkFg: "#333",
+  darkMidFg: "#555",
+  darkLightFg: "#888",
+  lightBg: "#F4F4F4",
+  lightBg2: "#E8E8E8",
+  lightBorder: "#DDE4E9",
 
-    // bridge/styles/constants
-    lightText: "#777777",
-    mainText: "#393939",
-    lighterText: "#999",
+  // bridge/styles/constants
+  lightText: "#777777",
+  mainText: "#393939",
+  lighterText: "#999",
 
-    inputBackground: "#EAEAEA",
-    negative: "#FF6969",
-    positive: "#08BEE5",
+  inputBackground: "#EAEAEA",
+  negative: "#FF6969",
+  positive: "#08BEE5",
 };
 
 export const size = {
-    mobileS: 320,
-    mobileM: 375,
-    mobileL: 440,
-    tablet: 768,
-    tabletL: 900,
-    laptop: 1024,
-    laptopL: 1440,
-    desktop: 3000,
+  mobileS: 320,
+  mobileM: 375,
+  mobileL: 440,
+  tablet: 768,
+  tabletL: 900,
+  laptop: 1024,
+  laptopL: 1440,
+  desktop: 3000,
 };
 
 export const screens: Screens = {
-    mobileS: `(max-width: ${size.mobileS}px)`,
-    mobileM: `(max-width: ${size.mobileM}px)`,
-    mobileL: `(max-width: ${size.mobileL}px)`,
-    tablet: `(max-width: ${size.tablet}px)`,
-    tabletL: `(max-width: ${size.tabletL}px)`,
-    laptop: `(max-width: ${size.laptop}px)`,
-    laptopL: `(max-width: ${size.laptopL}px)`,
-    desktop: `(max-width: ${size.desktop}px)`,
+  mobileS: `(max-width: ${size.mobileS}px)`,
+  mobileM: `(max-width: ${size.mobileM}px)`,
+  mobileL: `(max-width: ${size.mobileL}px)`,
+  tablet: `(max-width: ${size.tablet}px)`,
+  tabletL: `(max-width: ${size.tabletL}px)`,
+  laptop: `(max-width: ${size.laptop}px)`,
+  laptopL: `(max-width: ${size.laptopL}px)`,
+  desktop: `(max-width: ${size.desktop}px)`,
 };
 
 export const margins: Margins = {
-    desktop: {
-        horizontal: "40px",
-        vertical: "",
-    },
-    mobile: {
-        horizontal: "15px",
-        vertical: "",
-    },
+  desktop: {
+    horizontal: "40px",
+    vertical: "",
+  },
+  mobile: {
+    horizontal: "15px",
+    vertical: "",
+  },
 };
 
 export const theme: DefaultTheme = {
-    ...colors,
-    screens,
-    margins,
+  ...colors,
+  screens,
+  margins,
 };
 
 export const FixedGlobalStyle = createGlobalStyle`

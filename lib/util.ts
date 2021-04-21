@@ -1,22 +1,20 @@
 export const areAllNumbers = (slice: any[]) => {
-    for (let i = 0; i < slice.length; i++) {
-        if (typeof slice[i] !== "number") {
-            return false;
-        }
+  for (let i = 0; i < slice.length; i++) {
+    if (typeof slice[i] !== "number") {
+      return false;
     }
-    return true;
+  }
+  return true;
 };
 
 export function limitedText(str: string, maxLength = 60): string {
-    if (!str || !str.length || str.length < maxLength) return str;
+  if (!str || !str.length || str.length < maxLength) return str;
 
-    return str.substr(0, maxLength) + "...";
+  return str.substr(0, maxLength) + "...";
 }
 export function throwIfNotBrowser() {
-    if (typeof window == "undefined")
-        throw new Error(
-            "The storage component should only be used on the web browser side"
-        );
+  if (typeof window == "undefined")
+    throw new Error("The storage component should only be used on the web browser side");
 }
 
 /**
@@ -25,6 +23,6 @@ export function throwIfNotBrowser() {
  * @returns formatted address
  */
 export function shortAddress(address: string, slashIndex = 15): string {
-    // An ethereum address has 42 characters
-    return address.slice(0, slashIndex) + "..." + address.slice(38, 42);
+  // An ethereum address has 42 characters
+  return address.slice(0, slashIndex) + "..." + address.slice(38, 42);
 }
