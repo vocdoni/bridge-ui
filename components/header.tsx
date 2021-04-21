@@ -4,7 +4,7 @@ import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.p`
     width: 100%;
     z-index: 100;
     min-height: 50px;
@@ -23,6 +23,24 @@ const HeaderContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+`;
+
+const BetaLabel = styled.label`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 1px 8px 2px;
+
+    width: 43px;
+    height: 19px;
+    left: calc(50% - 43px / 2 - 549.5px);
+    top: calc(50% - 19px / 2 - 750px);
+
+    background: linear-gradient(97.3deg, #01c3ff 13.16%, #01e6f8 90.26%);
+    border-radius: 40px;
+    color: white;
+    margin-left: 10px;
 `;
 
 const ListContainer = styled.div`
@@ -134,12 +152,6 @@ export const LINKS: LinkProps[] = [
         header: true,
     },
     {
-        url: "https://blog.vocdoni.io",
-        name: "Blog",
-        external: true,
-        header: true,
-    },
-    {
         url: "https://docs.vocdoni.io",
         name: "Docs",
         external: true,
@@ -205,9 +217,14 @@ export const Header = () => {
             )}
             <HeaderContainer>
                 <ListContainer>
-                    <Link href="/" passHref>
-                        <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
-                    </Link>
+                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                        <Link href="/" passHref>
+                            <VocdoniLink target="_self">
+                                Vocdoni Bridge
+                            </VocdoniLink>
+                        </Link>
+                        <BetaLabel>Beta</BetaLabel>
+                    </div>
                     <MenuItemsContainer>
                         {!isMobile &&
                             HEADER_LINKS.map((link) => (
