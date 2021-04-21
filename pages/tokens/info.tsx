@@ -243,7 +243,7 @@ const TokenPage = () => {
       {VOTING_SECTIONS.map((section) => (
         <VoteSection
           {...section}
-          key={token.name}
+          key={`${token?.name}_vote`}
           allProcesses={processes}
           loadingProcesses={loadingProcessList}
           token={token}

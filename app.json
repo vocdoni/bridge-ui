@@ -1,0 +1,23 @@
+{
+  "name": "bridge-ui",
+  "env": {
+    "BOOTNODES_URL": {
+      "required": true
+    },
+    "BRIDGE_UI_TAG": {
+      "required": true
+    },
+    "ETH_NETWORK_ID": {
+      "required": true
+    },
+    "VOCDONI_ENVIRONMENT": {
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "stack": "heroku-20"
+}

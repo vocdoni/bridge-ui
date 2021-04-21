@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev -p 8080",
     "build": "next build",
-    "start": "next start",
+    "start": "[ \"$IS_REVIEW_APP\" = \"true\" ] && next start -p $PORT || next start",
     "export": "next build && next export -o build",
     "lint:check": "eslint --quiet '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "prettier --write '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'"
@@ -68,5 +68,8 @@
     "{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}": [
       "yarn lint:fix"
     ]
-  }
+  },
+  "cacheDirectories": [
+    ".next/cache"
+  ]
 }
