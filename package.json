@@ -1,56 +1,76 @@
 {
-    "name": "bridge-ui",
-    "version": "1.0.0",
-    "description": "Frontend for the Vocdoni Bridge voting client",
-    "main": "index.js",
-    "scripts": {
-        "dev": "next dev -p 8080",
-        "build": "next build",
-        "start": "[ \"$IS_REVIEW_APP\" = \"true\" ] && next start -p $PORT || next start",
-        "export": "next build && next export -o build"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/vocdoni/bridge-ui.git"
-    },
-    "keywords": [],
-    "author": "",
-    "bugs": {
-        "url": "https://github.com/vocdoni/bridge-ui/issues"
-    },
-    "homepage": "https://github.com/vocdoni/bridge-ui#readme",
-    "dependencies": {
-        "@aragon/ui": "^1.7.0",
-        "@vocdoni/react-hooks": "^0.4.0",
-        "bluebird": "^3.7.2",
-        "dexie": "^3.0.3",
-        "dvote-js": "^1.1.6",
-        "ethers": "^5.0.25",
-        "ethers-multicall": "^0.1.6",
-        "hamburger-react": "^2.4.0",
-        "identicon.js": "^2.3.3",
-        "iso-language-codes": "^1.0.6",
-        "moment": "^2.29.0",
-        "next": "10.0.5",
-        "react": "^17.0.1",
-        "react-datetime": "^3.0.4",
-        "react-dom": "^17.0.1",
-        "react-select": "^3.1.0",
-        "react-svg-spinner": "^1.0.4",
-        "styled-components": "^5.2.1",
-        "token-amount": "^0.3.0",
-        "typescript": "^4.0.5",
-        "use-url-hash": "^0.1.0",
-        "use-wallet": "0.8.1"
-    },
-    "devDependencies": {
-        "@types/node": "^14.14.22",
-        "@types/react": "^17.0.0",
-        "@types/styled-components": "^5.1.7",
-        "eslint": "^7.12.1",
-        "eslint-plugin-react": "^7.21.5"
-    },
-    "cacheDirectories": [
-        ".next/cache"
+  "name": "bridge-ui",
+  "version": "1.0.0",
+  "description": "Frontend for the Vocdoni Bridge voting client",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev -p 8080",
+    "build": "next build",
+    "start": "[ \"$IS_REVIEW_APP\" = \"true\" ] && next start -p $PORT || next start",
+    "export": "next build && next export -o build",
+    "lint:check": "eslint --quiet '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "prettier --write '{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vocdoni/bridge-ui.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/vocdoni/bridge-ui/issues"
+  },
+  "homepage": "https://github.com/vocdoni/bridge-ui#readme",
+  "dependencies": {
+    "@aragon/ui": "^1.7.0",
+    "@vocdoni/react-hooks": "^0.4.0",
+    "bluebird": "^3.7.2",
+    "dexie": "^3.0.3",
+    "dvote-js": "^1.1.6",
+    "eslint": "^7.14.0",
+    "ethers": "^5.0.25",
+    "ethers-multicall": "^0.1.6",
+    "hamburger-react": "^2.4.0",
+    "identicon.js": "^2.3.3",
+    "iso-language-codes": "^1.0.6",
+    "moment": "^2.29.0",
+    "next": "10.0.5",
+    "react": "^17.0.1",
+    "react-datetime": "^3.0.4",
+    "react-dom": "^17.0.1",
+    "react-select": "^3.1.0",
+    "react-svg-spinner": "^1.0.4",
+    "styled-components": "^5.2.1",
+    "token-amount": "^0.3.0",
+    "typescript": "^4.0.5",
+    "use-url-hash": "^0.1.0",
+    "use-wallet": "0.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "@types/react": "^17.0.0",
+    "@types/styled-components": "^5.1.7",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "4.2.0",
+    "husky": "6.0.0",
+    "lint-staged": "10.5.4",
+    "prettier": "2.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn lint:check"
+    }
+  },
+  "lint-staged": {
+    "{pages,theme,components,lib,i18n}/**/*.{js,jsx,ts,tsx}": [
+      "yarn lint:fix"
     ]
+  },
+  "cacheDirectories": [
+    ".next/cache"
+  ]
 }
