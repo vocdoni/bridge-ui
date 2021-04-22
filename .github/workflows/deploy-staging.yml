@@ -18,3 +18,4 @@ jobs:
           heroku_app_name: bridge-ui-staging
           heroku_email: cesar@dorg.tech
           dontuseforce: 1
+
