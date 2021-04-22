@@ -24,9 +24,6 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Run linter
-      run: npm run lint:check
-
   docker-release:
     runs-on: self-hosted
     if:
