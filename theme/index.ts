@@ -1,5 +1,5 @@
 import { createGlobalStyle, DefaultTheme } from "styled-components";
-import { Colors, Margins, Screens, Colors2 } from "./types";
+import { Colors, Margins, Screens, ColorsNewTheme } from "./types";
 
 export const colors: Colors = {
     text1: "#F9694F",
@@ -25,31 +25,39 @@ export const colors: Colors = {
     positive: "#08BEE5",
 };
 
-export const colors2: Colors2 = {
-    s_1: "#00C2FF",
-    s_2: "#01E8F7",
-    s_3: "#635BFF",
-    s_4: "#FF8286",
-    s_5: "#FFC260",
-    s_6: "#8991FF",
-    s_7: "#69FFDD",
-    s_8: "#FF96FA",
-
-    sv_1: "#A3EC93",
-    sv_2: "#46C4C2",
-
-    g_1: "#F6F9FC",
-    g_2: "#EFF1F7",
-    g_3: "#D2D9EE",
-    g_4: "#B4C1E4",
-    g_5: "#7483AB",
-
-    b_3: "#FF6A60",
-    b_4: "#4BDD7C",
-    b_5: "#FFB53A",
-
-    b_1: "#20232C",
-    w_1: "#FFFFFF",   
+export const newTheme_colors: ColorsNewTheme = {
+    primary: {
+        p1: "#00C2FF",
+        p2: "#01E8F7",
+    },
+    secondary: {
+        s3: "#635BFF",
+        s4: "#FF8286",
+        s5: "#FFC260",
+        s6: "#8991FF",
+        s7: "#69FFDD",
+        s8: "#FF96FA",
+    },
+    primaryVocdoni: {
+        pv1: "#A3EC93",
+        pv2: "#46C4C2",
+    },
+    grayScale: {
+        g1: "#F6F9FC",
+        g2: "#EFF1F7",
+        g3: "#D2D9EE",
+        g4: "#B4C1E4",
+        g5: "#7483AB",
+    },
+    functionality: {
+        f3: "#FF6A60",
+        f4: "#4BDD7C",
+        f5: "#FFB53A",
+    },
+    blackAndWhite: {
+        b1: "#20232C",
+        w1: "#FFFFFF",  
+    } 
 }
 
 export const size = {

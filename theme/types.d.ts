@@ -24,31 +24,39 @@ export interface Colors {
     positive: Color;
 }
 
-export interface Colors2 {
-    s_1: Color;
-    s_2: Color;
-    s_3: Color;
-    s_4: Color;
-    s_5: Color;
-    s_6: Color;
-    s_7: Color;
-    s_8: Color;
-
-    sv_1: Color;
-    sv_2: Color;
-
-    g_1: Color;
-    g_2: Color;
-    g_3: Color;
-    g_4: Color;
-    g_5: Color;
-
-    b_3: Color;
-    b_4: Color;
-    b_5: Color;
-
-    b_1: Color;
-    w_1: Color;
+export interface ColorsNewTheme {
+    primary: {
+        p1: Color;
+        p2: Color;
+    };
+    secondary: {
+        s3: Color;
+        s4: Color;
+        s5: Color;
+        s6: Color;
+        s7: Color;
+        s8: Color;
+    };
+    primaryVocdoni: {
+        pv1: Color;
+        pv2: Color;
+    }; 
+    grayScale: {   
+        g1: Color;
+        g2: Color;
+        g3: Color;
+        g4: Color;
+        g5: Color;
+    };
+    functionality: {
+        f3: Color;
+        f4: Color;
+        f5: Color;
+    };
+    blackAndWhite: {
+        b1: Color;
+        w1: Color;
+    };
 }
 
 export interface Screens {
