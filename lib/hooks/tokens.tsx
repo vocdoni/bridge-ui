@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { getTokenInfo } from "../api";
 import { TokenInfo } from "../types";
 import { usePool } from "@vocdoni/react-hooks";

@@ -1,17 +1,10 @@
+import { BigNumber, Contract, providers, Signer, utils } from "ethers";
 import { CensusErc20Api, GatewayPool, ITokenStorageProofContract, VotingApi } from "dvote-js";
+import TokenAmount from "token-amount";
+import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
 import { ProcessInfo, TokenInfo } from "./types";
-import { BigNumber, Contract, providers, Signer, utils } from "ethers";
-import TokenAmount from "token-amount";
-import { FALLBACK_TOKEN_ICON } from "./constants";
-import Bluebird from "bluebird";
-
-// from aragon/use-wallet
-const TRUST_WALLET_BASE_URL =
-  "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";
-const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
-
-// VOCDONI API's
+import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
 
 export async function getTokenProcesses(
   tokenAddr: string,
