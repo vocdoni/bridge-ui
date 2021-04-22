@@ -1,1 +1,1 @@
-export const FALLBACK_TOKEN_ICON = "/media/coin.svg"
+export const FALLBACK_TOKEN_ICON = "/media/coin.svg";
