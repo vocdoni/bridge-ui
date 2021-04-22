@@ -438,7 +438,7 @@ const NewProcessPage = () => {
         metadata: ProcessMetadata;
       } = {
         mode: ProcessMode.make({ autoStart: true }),
-        envelopeType: ProcessEnvelopeType.make({}), // bit mask
+        envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
         censusOrigin: ProcessCensusOrigin.ERC20,
         metadata: metadata,
         censusRoot: proof.storageHash,
