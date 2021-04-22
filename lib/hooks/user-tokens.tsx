@@ -19,7 +19,7 @@ export function useUserTokens() {
 
   if (userTokenContext === null) {
       throw new Error(
-          'useRegisteredTokens() can only be used inside of <UseRegisteredTokens />, ' +
+          'useUserTokens() can only be used inside of <UseUserTokens />, ' +
           'please declare it at a higher level.'
       )
   }
