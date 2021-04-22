@@ -25,6 +25,7 @@ export const colors: Colors = {
     positive: "#08BEE5",
 };
 
+// New Theme Colors
 export const newTheme_colors: ColorsNewTheme = {
     primary: {
         p1: "#00C2FF",
@@ -219,6 +220,129 @@ textarea {
   font-display: swap;
   src: url(https://fonts.gstatic.com/s/overpass/v5/qFdA35WCmI96Ajtm81kOcc7N4hoiiVI6.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+`;
+
+// New Theme Style | TODO: Modify screens sizes
+export const NewThemeFixedGlobalStyle = createGlobalStyle`
+
+body {
+    padding: 0;
+    margin: 0;
+    font-size: 20px;
+    font-family: 'Manrope', sans-serif !important;
+    background-color: ${({ theme }) => theme.white} !important;
+    color: ${({ theme }) => theme.mainText};
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.01em;
+}
+
+h1 { 
+    font-size: 74px; 
+    font-weight: 700; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 24px; 
+        font-weight: 800; 
+    }
+}
+
+h2 { 
+    font-size: 64px; 
+    font-weight: 700; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 20px; 
+        font-weight: 700; 
+    }
+}
+
+h3 { 
+    font-size: 54px; 
+    font-weight: 600; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 18px; 
+        font-weight: 700; 
+    }
+}
+
+h4 { 
+    font-size: 44px; 
+    font-weight: 500; 
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 15px; 
+    }
+}
+
+h5 { 
+    font-size: 34px; 
+    font-weight: 500; 
+}
+
+h6 { 
+    font-size: 24px; 
+    font-weight: 500; 
+}
+
+p { 
+    font-size: 20px;
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 12px; 
+    }
+    
+}
+
+a {
+    @media ${({ theme }) => theme.screens.tablet} {
+        font-size: 12px; 
+    }
+}
+
+
+textarea {
+    min-height: 72px;
+}
+
+@font-face {
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@300&display=swap) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.googleapis.com/css2?family=Manrope&display=swap) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@500&display=swap) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@600&display=swap) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Manrope', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 `;
