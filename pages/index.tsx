@@ -11,24 +11,65 @@ import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
 import { ConnectButton } from "../components/connect-button";
+import { newTheme_colors } from "../theme";
 
 const Head = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  background: url('media/landingpage_header_backgroung.svg');
+  width: 1248px;
+  height: 335px;
+  border: solid red;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 16px;
 `;
 
-const Title = styled.h1`
-  margin-bottom: 5px;
+const Title = styled.h4`
+  font-style: normal;
+  font-weight: 600;
+  line-height: 60px;
+  margin: 0px;
   text-align: center;
+  letter-spacing: -0.03em;
+  color:${newTheme_colors.blackAndWhite.w1};
 `;
 
-const Subtitle = styled.h4`
-  margin-top: 5px;
-  font-size: 20px;
+const Subtitle = styled.p`
+  width: 526px;
   text-align: center;
-  max-width: 300px;
-  color: ${({ theme }) => theme.accent1};
+  line-height: 150%;
+  color: ${newTheme_colors.blackAndWhite.w1};
+`;
+
+const SearchRow = styled.div`
+  display: flex;  
+  justify-content: space-between;
+`;
+
+const SearchField = styled.input`
+  type: text;
+  border: 2px solid #EFF1F7;
+  box-sizing: border-box;
+  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.35);
+  border-radius: 8px;
+  width: 394px;
+  height: 46px;
+  padding-left: 10px;
+`;
+
+const SearchButton = styled.button`
+  background: linear-gradient(${newTheme_colors.gradients.primary.mg1.a}, ${newTheme_colors.gradients.primary.mg1.c1}, ${newTheme_colors.gradients.primary.mg1.c2});
+  box-shadow: 0px 3px 3px rgba(100, 115, 155, 0.35);
+  border-radius: 8px;
+  color: ${newTheme_colors.blackAndWhite.w1};
+  width: 140px;
+  height: 46px;
+  padding: 12px 20px;
+  margin-left: 10px;
+  font-size: 16px;
 `;
 
 const Row = styled.div`
@@ -102,8 +143,12 @@ const IndexPage = () => {
   return (
     <div>
       <Head>
-        <Title>Bridge</Title>
-        <Subtitle>Trustless governance for Token holders</Subtitle>
+        <Title>Welcome to Aragon Voice</Title>
+        <Subtitle>Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end verifiable layer 2.</Subtitle>
+        <SearchRow>
+          <SearchField placeholder="ERC Token address..."/>
+          <SearchButton disabled={false} onClick={() => {console.log("hi")}}>Find Token</SearchButton>
+        </SearchRow>
       </Head>
 
       <Row alignItems="center">

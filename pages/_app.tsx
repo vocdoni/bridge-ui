@@ -14,7 +14,7 @@ import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
 
-import { FixedGlobalStyle, theme } from "../theme";
+import { NewThemeFixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
 import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
@@ -47,7 +47,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                 <UseProcessProvider>
                   <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
                     <ModalsProvider>
-                      <FixedGlobalStyle />
+                      <NewThemeFixedGlobalStyle />
 
                       <Head>
                         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
