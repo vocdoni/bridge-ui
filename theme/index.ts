@@ -62,31 +62,37 @@ export const newTheme_colors: ColorsNewTheme = {
     gradients: {
         primary: {
             mg1: {
-                c1: "#00C2FF",
-                c2: "#01E8F7"
+              a: "107.79deg",
+              c1: "#00C2FF",
+              c2: "#01E8F7"
             },
             mg1_soft: {
-                c1: "#66DAFF",
-                c2: "#80F7FF",
-                c3: "#01E8F7"
+              a: "107.79deg",
+              c1: "#66DAFF",
+              c2: "#80F7FF",
+              c3: "#01E8F7"
             },
             mgi_dark: {
-                c1: "#00ACE2",
-                c2: "#02DFED"
+              a: "107.79deg",
+              c1: "#00ACE2",
+              c2: "#02DFED"
             }
         },
         primaryVocdoni: {
             mgv1: {
-                c1: "#A3EC93",
-                c2: "#46C4C2"
+              a: "110.89deg",
+              c1: "#A3EC93",
+              c2: "#46C4C2"
             },
             mgv1_soft: {
-                c1: "#F0FFDE",
-                c2: "#E0FFFF"
+              a: "110.89deg",
+              c1: "#F0FFDE",
+              c2: "#E0FFFF"
             },
             mgvi_dark: {
-                c1: "#8DD67D",
-                c2: "#35AFAD"
+              a: "110.89deg",
+              c1: "#8DD67D",
+              c2: "#35AFAD"
             }
         },
         secondary: {

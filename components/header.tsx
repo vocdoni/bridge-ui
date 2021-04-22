@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { newTheme_colors } from "../theme";
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -26,21 +27,21 @@ const HeaderContainer = styled.div`
 `;
 
 const BetaLabel = styled.label`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 1px 8px 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 1px 8px 2px;
 
-    width: 43px;
-    height: 19px;
-    left: calc(50% - 43px / 2 - 549.5px);
-    top: calc(50% - 19px / 2 - 750px);
+  width: 43px;
+  height: 19px;
+  left: calc(50% - 43px / 2 - 549.5px);
+  top: calc(50% - 19px / 2 - 750px);
 
-    background: linear-gradient(97.3deg, #01c3ff 13.16%, #01e6f8 90.26%);
-    border-radius: 40px;
-    color: white;
-    margin-left: 10px;
+  background: linear-gradient(${newTheme_colors.gradients.primary.mg1.a}, ${newTheme_colors.gradients.primary.mg1.c1}, ${newTheme_colors.gradients.primary.mg1.c2});
+  border-radius: 40px;
+  color: white;
+  margin-left: 10px;
 `;
 
 const ListContainer = styled.div`
