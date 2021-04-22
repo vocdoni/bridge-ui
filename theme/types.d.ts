@@ -24,6 +24,33 @@ export interface Colors {
     positive: Color;
 }
 
+export interface Colors2 {
+    s_1: Color;
+    s_2: Color;
+    s_3: Color;
+    s_4: Color;
+    s_5: Color;
+    s_6: Color;
+    s_7: Color;
+    s_8: Color;
+
+    sv_1: Color;
+    sv_2: Color;
+
+    g_1: Color;
+    g_2: Color;
+    g_3: Color;
+    g_4: Color;
+    g_5: Color;
+
+    b_3: Color;
+    b_4: Color;
+    b_5: Color;
+
+    b_1: Color;
+    w_1: Color;
+}
+
 export interface Screens {
     mobileS: string;
     mobileM: string;
