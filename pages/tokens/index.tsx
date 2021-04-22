@@ -4,6 +4,7 @@ import Link from "next/link";
 import TokenCard from "../../components/token-card";
 import { useTokens } from "../../lib/hooks/tokens";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
+import { useUserTokens } from "../../lib/hooks/user-tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 
@@ -49,6 +50,10 @@ const TokensPage = () => {
         registeredTokens: tokenAddrs,
         error: tokenListError,
     } = useRegisteredTokens();
+    const { 
+        userTokens, 
+        error: userTokenError, 
+    } = useUserTokens()
     // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
     const tokenInfos = useTokens(tokenAddrs);
 
@@ -66,10 +71,43 @@ const TokensPage = () => {
                 )}
             />
 
-            <ActiveTokens>Active tokens</ActiveTokens>
+            <ActiveTokens>Tokens You Hold</ActiveTokens>
             <ActiveTokensDescription>
                 Below are the processes belonging to tokens that you currently
                 hold.
+            </ActiveTokensDescription>
+
+            <TokenList>
+                {userTokens
+                    .map((token) => tokenInfos.get(token.address))
+                    .map((token, idx) => (
+                        <TokenCard
+                            name={token?.symbol}
+                            icon={token?.icon || FALLBACK_TOKEN_ICON}
+                            rightText={""}
+                            href={
+                                token?.address
+                                    ? "/tokens/info#/" + token?.address
+                                    : ""
+                            }
+                            key={idx}
+                        >
+                            <p>
+                                {token?.name || "(loading)"}
+                                <br />
+                                {token?.totalSupply && (
+                                    <small>
+                                        Total supply: {token?.totalSupplyFormatted}
+                                    </small>
+                                )}
+                            </p>
+                        </TokenCard>
+                    ))}
+            </TokenList>
+
+            <ActiveTokens>Top Tokens</ActiveTokens>
+            <ActiveTokensDescription>
+                Some of the most relevant tokens on the platform.
             </ActiveTokensDescription>
 
             <TokenList>

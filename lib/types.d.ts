@@ -19,3 +19,9 @@ export type ProcessInfo = {
     parameters: ProcessContractParameters,
     tokenAddress: string
 }
+
+export type TokenBalance = {
+    address: string
+    balance: string
+  }
+  

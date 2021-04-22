@@ -10,6 +10,7 @@ import { ThemeProvider } from "styled-components";
 
 import { Layout } from "../components/layout";
 import { UseTokenProvider } from "../lib/hooks/tokens";
+import { UseUserTokens } from '../lib/hooks/user-tokens'
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
@@ -49,20 +50,22 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                                         chainId={chainId}
                                         connectors={connectors || {}}
                                     >
-                                        <ModalsProvider>
-                                            <FixedGlobalStyle />
+                                        <UseUserTokens>
+                                            <ModalsProvider>
+                                                <FixedGlobalStyle />
 
-                                            <Head>
-                                                <meta
-                                                    name="viewport"
-                                                    content="width=device-width, initial-scale=1.0"
-                                                />
-                                                <title>{appTitle}</title>
-                                            </Head>
-                                            <Layout>
-                                                <Component {...pageProps} />
-                                            </Layout>
-                                        </ModalsProvider>
+                                                <Head>
+                                                    <meta
+                                                        name="viewport"
+                                                        content="width=device-width, initial-scale=1.0"
+                                                    />
+                                                    <title>{appTitle}</title>
+                                                </Head>
+                                                <Layout>
+                                                    <Component {...pageProps} />
+                                                </Layout>
+                                            </ModalsProvider>
+                                        </UseUserTokens>
                                     </UseWalletProvider>
                                 </UseProcessProvider>
                             </UseTokenProvider>
