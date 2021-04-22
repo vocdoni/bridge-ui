@@ -10,10 +10,9 @@ import { size } from "../theme";
 const LayoutContainer = styled.div`
   padding: 0 ${({ theme }) => theme.margins.desktop.horizontal};
   margin-top: 77px;
-  max-width: 1600px;
+  max-width: 1249px;
   margin-left: auto;
   margin-right: auto;
-  border: solid;
   
   @media ${size.tablet} {
     margin-bottom: 110px;

@@ -204,7 +204,7 @@ body {
 	margin: 0;
 	font-size: 14px;
 	font-family: "Roboto", Arial, Helvetica, sans-serif !important;
-	background-color: ${({ theme }) => theme.white} !important;
+	background-color: ${newTheme_colors.grayScale.g1} !important;
 	color: ${({ theme }) => theme.mainText};
 }
 
@@ -328,11 +328,12 @@ body {
     margin: 0;
     font-size: 20px;
     font-family: 'Manrope', sans-serif !important;
-    background-color: ${({ theme }) => theme.white} !important;
+    background-color: ${newTheme_colors.grayScale.g1} !important;
     color: ${({ theme }) => theme.mainText};
 }
 
 h1, h2, h3, h4, h5, h6 {
+    margin: 0:
     letter-spacing: 0.01em;
 }
 
