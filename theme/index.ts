@@ -186,12 +186,12 @@ export const margins: Margins = {
 };
 
 export const theme: DefaultTheme = {
-  ...colors,
+  ...newTheme_colors,
   screens,
   margins,
 };
 
-export const FixedGlobalStyle = createGlobalStyle`
+export const oldFixedGlobalStyle = createGlobalStyle`
 
 body {
 	padding: 0;
@@ -315,15 +315,15 @@ textarea {
 `;
 
 // New Theme Style | TODO: Modify screens sizes
-export const NewThemeFixedGlobalStyle = createGlobalStyle`
+export const FixedGlobalStyle = createGlobalStyle`
 
 body {
     padding: 0;
     margin: 0;
     font-size: 20px;
     font-family: 'Manrope', sans-serif !important;
-    background-color: ${({ theme }) => theme.white} !important;
-    color: ${({ theme }) => theme.mainText};
+    background-color: ${({ theme }) => theme.blackAndWhite.w1} !important;
+    color: ${({ theme }) => theme.blackAndWhite.b1};
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -376,7 +376,7 @@ h6 {
 }
 
 p { 
-    font-size: 20px;
+    font-size: 18px;
     @media ${({ theme }) => theme.screens.tablet} {
         font-size: 12px; 
     }
@@ -395,43 +395,11 @@ textarea {
 }
 
 @font-face {
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Manrope';
     font-style: normal;
     font-weight: 300;
     font-display: swap;
-    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@300&display=swap) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-    font-family: 'Manrope', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.googleapis.com/css2?family=Manrope&display=swap) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-    font-family: 'Manrope', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@500&display=swap) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-    font-family: 'Manrope', sans-serif;
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@600&display=swap) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-    font-family: 'Manrope', sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url(https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap) format('woff2');
+    src: url(https://fonts.gstatic.com/s/manrope/v4/xn7_YHE41ni1AdIRqAuZuw1Bx9mbZk6jFN_C-bk.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 

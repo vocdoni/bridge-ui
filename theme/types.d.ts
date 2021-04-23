@@ -173,7 +173,7 @@ export interface Margins {
 }
 
 declare module "styled-components" {
-  export interface DefaultTheme extends Colors {
+  export interface DefaultTheme extends ColorsNewTheme {
     // Screens for media queries
     screens: Screens;
     margins: Margins;

@@ -4,36 +4,37 @@ import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 
 const Container = styled.div`
-  background: white;
-  cursor: pointer;
 
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  cursor: pointer;
   flex: 1 0 500px;
   box-sizing: border-box;
   margin: 1rem 1em;
-
-  background: linear-gradient(
-    101.6deg,
-    ${({ theme }) => theme.accent1} 0%,
-    ${({ theme }) => theme.accent2} 100%
-  );
   border-radius: 13px;
-  box-shadow: 1px 4px 9px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.1s ease-in-out;
-  opacity: 1;
+  box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
+  border: 1px solid ${({ theme }) => theme.grayScale.g2};
 
   &:hover {
-    box-shadow: 1px 4px 9px rgba(0, 0, 0, 0.35);
-    opacity: 0.95;
+    box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
+    background: linear-gradient(
+      101.6deg,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c1} 0%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 100%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
+    );
   }
 
   max-width: calc(33.3333333% - 2em);
-  min-width: 250px;
+  min-width: 414px;
+  max-height: 164px;
+  left: 176px;
+  top: 633px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin: 10px;
     max-width: calc(50% - 2em);
     text-align: start;
-    justify-content: center;
+    justify-content: center;Pass through
   }
   @media ${({ theme }) => theme.screens.mobileL} {
     max-width: calc(100% - 2em);
@@ -42,30 +43,67 @@ const Container = styled.div`
 
 const Card = styled.div`
   padding: 1.4em;
-  color: ${({ theme }) => theme.white};
+  padding-top: 18px;
+  line-height: 0px;
 `;
 
 const TokenLogo = styled.img`
   position: absolute;
-  width: 40px;
-  height: 40px;
-  margin-right: 20px;
+  padding-top: 10px;
+  width: 71px;
+  height: 71px;
 `;
 
-const Text = styled.div`
-  padding-left: 60px;
+const Symbol = styled.h4`
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  padding-left: 90px;
+  font-weight: 600;
+  font-size: 29px;
+  margin-top: 0px;
+  align-items: center;
+  letter-spacing: 0.01em;
 `;
 
-const Name = styled.h3`
+const Name = styled.p`
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  padding-left: 90px;
+  font-weight: 400;
+  font-size: 18px;
+  align-items: center;
+  letter-spacing: 0.01em;
+`;
+
+const Proposals = styled.p`
+  color: ${({ theme }) => theme.primary.p1};
+  padding-left: 90px;
+  padding-top: 15px;
   font-weight: 500;
-  font-size: 28px;
-  margin-top: 0;
-  margin-bottom: 0.5em;
+  font-size: 18px;
+  align-items: center;
+  letter-spacing: 0.01em;
+`;
+
+const Cap = styled.p`
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  padding-left: 270px;
+  font-weight: 500;
+  font-size: 18px;
+  align-items: center;
+  letter-spacing: 0.01em;
 `;
 
 const RightText = styled.span`
   float: right;
 `;
+
+interface Token {
+  address: string;
+  symbol: string;
+  icon: string;
+  name: string;
+  cap?: string;
+  activeProposals?: number
+}
 
 type CardProps = {
   key?: string | number;
@@ -84,10 +122,10 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
         {rightText && <RightText>{rightText}</RightText>}
-        <Text>
-          <Name>{name}</Name>
-          {children}
-        </Text>
+          <Cap>($915M)</Cap>
+          <Symbol>{name}</Symbol>
+          <Name>{children}</Name>
+          <Proposals>7 Active Proposals</Proposals>
       </Card>
     );
   }
