@@ -3,8 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 
 import TokenCard from "../../components/token-card";
-import { useTokens } from "../../lib/hooks/tokens/useTokens";
-import { useRegisteredTokens } from "../../lib/hooks/tokens/useRegisteredTokens";
+import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 

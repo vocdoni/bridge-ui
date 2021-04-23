@@ -9,10 +9,9 @@ import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
 import { Layout } from "../components/layout";
-import { UseTokenProvider } from "../lib/hooks/tokens/useTokens";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
-import { UseRegisteredTokens } from "../lib/hooks/tokens/useRegisteredTokens";
+import { UseRegisteredTokens, UseTokenProvider } from "../lib/hooks/tokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
