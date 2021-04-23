@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
 import { shortAddress } from "../../lib/util";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
+import { title } from "node:process";
 
 const RowSummary = styled.div`
   margin-top: 2em;
@@ -72,7 +73,7 @@ const VoteSection = ({
     useMemo(() => {
       return processes.map((processId) => {
         const title = allProcesses.get(processId).metadata.title.default || "No title";
-        return <ProcessCard key={processId} id={processId} title={title} token={token} />;
+        return (<ProcessCard id={processId} title={title} token={token} />);
       });
     }, [processes]);
 
@@ -240,10 +241,10 @@ const TokenPage = () => {
         </Info>
       </RowSummary>
 
-      {VOTING_SECTIONS.map((section) => (
+      {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
           {...section}
-          key={`${token?.name}_vote`}
+          key={`${i}_vote`}
           allProcesses={processes}
           loadingProcesses={loadingProcessList}
           token={token}
