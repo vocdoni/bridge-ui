@@ -1,10 +1,11 @@
-import { BigNumber, Contract, providers, Signer, utils } from "ethers";
+import { BigNumber, Contract, providers, Signer } from "ethers";
 import { CensusErc20Api, GatewayPool, ITokenStorageProofContract, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
 import { ProcessInfo, TokenInfo } from "./types";
-import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
+import { ERC20_ABI } from "./constants";
+import { tokenIconUrl } from "./utils";
 
 export async function getTokenProcesses(
   tokenAddr: string,
@@ -141,17 +142,6 @@ export async function findTokenBalanceMappingPosition(
   }
 }
 
-// ERC20 API
-
-const ERC20_ABI = [
-  // Read-Only Functions
-  "function name() public view returns (string)",
-  "function symbol() public view returns (string)",
-  "function decimals() public view returns (uint8)",
-  "function balanceOf(address _owner) public view returns (uint256 balance)",
-  "function totalSupply() public view returns (uint256)",
-];
-
 export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenInfo> {
   const tokenInstance = new Contract(address, ERC20_ABI, pool.provider);
 
@@ -240,41 +230,4 @@ export function getRegisteredTokenCount(pool: GatewayPool): Promise<number> {
 
     return contractInstance.tokenCount();
   });
-}
-
-// INTERNAL HELPERS
-
-function tokenIconUrl(address = "") {
-  if (process.env.ETH_NETWORK_ID == "goerli") return FALLBACK_TOKEN_ICON;
-
-  try {
-    address = toChecksumAddress(address.trim());
-  } catch (err) {
-    return null;
-  }
-
-  if (address === EMPTY_ADDRESS) {
-    return `${TRUST_WALLET_BASE_URL}/info/logo.png`;
-  }
-
-  return `${TRUST_WALLET_BASE_URL}/assets/${address}/logo.png`;
-}
-
-function toChecksumAddress(address) {
-  if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-    throw new Error('Given address "' + address + '" is not a valid Ethereum address.');
-  }
-
-  const addressHash = utils.keccak256(address).replace(/^0x/i, "");
-  let checksumAddress = "0x";
-
-  for (let i = 0; i < address.length; i++) {
-    // If ith character is 9 to f then make it uppercase
-    if (parseInt(addressHash[i], 16) > 7) {
-      checksumAddress += address[i].toUpperCase();
-    } else {
-      checksumAddress += address[i];
-    }
-  }
-  return checksumAddress;
 }

@@ -9,16 +9,19 @@ import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
 import { Layout } from "../components/layout";
-import { UseTokenProvider } from "../lib/hooks/tokens";
-import { UseUserTokens } from '../lib/hooks/userTokens'
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
-import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
+import { UseRegisteredTokens, UseTokenProvider, UseUserTokens } from "../lib/hooks/tokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
 import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
+import { SWRConfig } from "swr";
+
+const swrOptions = {
+  refreshInterval: 5000,
+};
 
 type NextAppProps = AppInitialProps & {
   Component: NextComponentType<NextPageContext, any, any>;
@@ -36,37 +39,39 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
 
   return (
     <UseMessageAlertProvider>
-      <ThemeProvider theme={theme}>
-        <UseLoadingAlertProvider>
-          <UsePoolProvider
-            bootnodeUri={bootnodeUri}
-            networkId={networkId}
-            environment={environment}
-          >
-            <UseRegisteredTokens>
+      <SWRConfig value={swrOptions}>
+        <ThemeProvider theme={theme}>
+          <UseLoadingAlertProvider>
+            <UsePoolProvider
+              bootnodeUri={bootnodeUri}
+              networkId={networkId}
+              environment={environment}
+            >
               <UseTokenProvider>
-                <UseProcessProvider>
-                  <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
-                    <UseUserTokens>
-                      <ModalsProvider>
-                        <FixedGlobalStyle />
+                <UseRegisteredTokens>
+                  <UseProcessProvider>
+                    <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                      <UseUserTokens>
+                        <ModalsProvider>
+                          <FixedGlobalStyle />
 
-                        <Head>
-                          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                          <title>{appTitle}</title>
-                        </Head>
-                        <Layout>
-                          <Component {...pageProps} />
-                        </Layout>
-                      </ModalsProvider>
-                    </UseUserTokens>
-                  </UseWalletProvider>
-                </UseProcessProvider>
+                          <Head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                            <title>{appTitle}</title>
+                          </Head>
+                          <Layout>
+                            <Component {...pageProps} />
+                          </Layout>
+                        </ModalsProvider>
+                      </UseUserTokens>
+                    </UseWalletProvider>
+                  </UseProcessProvider>
+                </UseRegisteredTokens>
               </UseTokenProvider>
-            </UseRegisteredTokens>
-          </UsePoolProvider>
-        </UseLoadingAlertProvider>
-      </ThemeProvider>
+            </UsePoolProvider>
+          </UseLoadingAlertProvider>
+        </ThemeProvider>
+      </SWRConfig>
     </UseMessageAlertProvider>
   );
 };
