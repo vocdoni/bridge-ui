@@ -5,11 +5,12 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { getTokenInfo } from "../api";
-import { TokenInfo } from "../types";
 import { usePool } from "@vocdoni/react-hooks";
+
+import { getTokenInfo } from "../../api";
+import { TokenInfo } from "../../types";
 // import { useLoadingAlert } from './loading-alert'
-import { useMessageAlert } from "./message-alert";
+import { useMessageAlert } from "./../message-alert";
 
 const UseTokenContext = React.createContext<{
   currentTokens: Map<string, TokenInfo>;

@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Link from "next/link";
 
 import TokenCard from "../../components/token-card";
-import { useTokens } from "../../lib/hooks/tokens";
-import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
+import { useTokens } from "../../lib/hooks/tokens/useTokens";
+import { useRegisteredTokens } from "../../lib/hooks/tokens/useRegisteredTokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 
@@ -66,26 +66,29 @@ const TokensPage = () => {
       <ActiveTokensDescription>
         Below are the processes belonging to tokens that you currently hold.
       </ActiveTokensDescription>
-
-      <TokenList>
-        {tokenAddrs
-          .map((addr) => tokenInfos.get(addr))
-          .map((token, idx) => (
-            <TokenCard
-              name={token?.symbol}
-              icon={token?.icon || FALLBACK_TOKEN_ICON}
-              rightText={""}
-              href={token?.address ? "/tokens/info#/" + token?.address : ""}
-              key={idx}
-            >
-              <p>
-                {token?.name || "(loading)"}
-                <br />
-                {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
-              </p>
-            </TokenCard>
-          ))}
-      </TokenList>
+      {tokenAddrs ? (
+        <TokenList>
+          {tokenAddrs
+            .map((addr) => tokenInfos.get(addr))
+            .map((token, idx) => (
+              <TokenCard
+                name={token?.symbol}
+                icon={token?.icon || FALLBACK_TOKEN_ICON}
+                rightText={""}
+                href={token?.address ? "/tokens/info#/" + token?.address : ""}
+                key={idx}
+              >
+                <p>
+                  {token?.name || "(loading)"}
+                  <br />
+                  {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
+                </p>
+              </TokenCard>
+            ))}
+        </TokenList>
+      ) : (
+        <div>LOADING BRO</div>
+      )}
     </Container>
   );
 };

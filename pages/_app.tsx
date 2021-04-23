@@ -9,15 +9,20 @@ import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
 import { Layout } from "../components/layout";
-import { UseTokenProvider } from "../lib/hooks/tokens";
+import { UseTokenProvider } from "../lib/hooks/tokens/useTokens";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
-import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";
+import { UseRegisteredTokens } from "../lib/hooks/tokens/useRegisteredTokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
 import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
+import { SWRConfig } from "swr";
+
+const swrOptions = {
+  refreshInterval: 5000,
+};
 
 type NextAppProps = AppInitialProps & {
   Component: NextComponentType<NextPageContext, any, any>;
@@ -35,35 +40,37 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
 
   return (
     <UseMessageAlertProvider>
-      <ThemeProvider theme={theme}>
-        <UseLoadingAlertProvider>
-          <UsePoolProvider
-            bootnodeUri={bootnodeUri}
-            networkId={networkId}
-            environment={environment}
-          >
-            <UseRegisteredTokens>
-              <UseTokenProvider>
-                <UseProcessProvider>
-                  <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
-                    <ModalsProvider>
-                      <FixedGlobalStyle />
+      <SWRConfig value={swrOptions}>
+        <ThemeProvider theme={theme}>
+          <UseLoadingAlertProvider>
+            <UsePoolProvider
+              bootnodeUri={bootnodeUri}
+              networkId={networkId}
+              environment={environment}
+            >
+              <UseRegisteredTokens>
+                <UseTokenProvider>
+                  <UseProcessProvider>
+                    <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                      <ModalsProvider>
+                        <FixedGlobalStyle />
 
-                      <Head>
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                        <title>{appTitle}</title>
-                      </Head>
-                      <Layout>
-                        <Component {...pageProps} />
-                      </Layout>
-                    </ModalsProvider>
-                  </UseWalletProvider>
-                </UseProcessProvider>
-              </UseTokenProvider>
-            </UseRegisteredTokens>
-          </UsePoolProvider>
-        </UseLoadingAlertProvider>
-      </ThemeProvider>
+                        <Head>
+                          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                          <title>{appTitle}</title>
+                        </Head>
+                        <Layout>
+                          <Component {...pageProps} />
+                        </Layout>
+                      </ModalsProvider>
+                    </UseWalletProvider>
+                  </UseProcessProvider>
+                </UseTokenProvider>
+              </UseRegisteredTokens>
+            </UsePoolProvider>
+          </UseLoadingAlertProvider>
+        </ThemeProvider>
+      </SWRConfig>
     </UseMessageAlertProvider>
   );
 };
