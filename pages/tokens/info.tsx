@@ -72,7 +72,7 @@ const VoteSection = ({
     useMemo(() => {
       return processes.map((processId) => {
         const title = allProcesses.get(processId).metadata.title.default || "No title";
-        return (<ProcessCard id={processId} title={title} token={token} />);
+        return <ProcessCard key={processId} id={processId} title={title} token={token} />;
       });
     }, [processes]);
 
