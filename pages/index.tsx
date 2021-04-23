@@ -134,17 +134,21 @@ const IndexPage = () => {
       <Head>
         <HeaderTitle>Welcome to Aragon Voice</HeaderTitle>
         <HeaderSubtitle>Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end verifiable layer 2.</HeaderSubtitle>
-        <SearchRow>
+        {/* NOTE temporarily removed this section, as it is not part of landing page's must 
+        haves. VR 23-04-2021 */}
+        {/* <SearchRow>
           <SearchField placeholder="ERC Token address..."/>
           <SearchButton disabled={false}>Find Token</SearchButton>
-        </SearchRow>
+        </SearchRow> */}
       </Head>
 
       <br />
       <br />
 
+      {/* NOTE temporarily removed this section, as it is not part of landing page's must 
+      haves. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
       {/* YOUR TOKENS */}
-      <TokenSection>
+      {/* <TokenSection>
         <TokenSectionTitle>Your Tokens</TokenSectionTitle>
         <TokenSectionSubtitle>Some of the tokens belonging to your wallet</TokenSectionSubtitle>
         
@@ -167,7 +171,7 @@ const IndexPage = () => {
       </TokenSection>
 
       <br />
-      <br />
+      <br /> */}
 
       {/* TOP TOKENS */}
        <TokenSection>
