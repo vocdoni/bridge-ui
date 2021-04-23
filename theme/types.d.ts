@@ -25,7 +25,7 @@ export interface Colors {
   positive: Color;
 }
 
-export interface ColorsNewTheme {
+export interface ColorsNewTheme extends Partial<Colors> {
     primary: {
         p1: Color;
         p2: Color;
@@ -180,7 +180,7 @@ export interface Margins {
 }
 
 declare module "styled-components" {
-  export interface DefaultTheme extends Colors {
+  export interface DefaultTheme extends ColorsNewTheme {
     // Screens for media queries
     screens: Screens;
     margins: Margins;

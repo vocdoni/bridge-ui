@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
-import { newTheme_colors } from "../theme";
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -38,10 +37,11 @@ const BetaLabel = styled.label`
   left: calc(50% - 43px / 2 - 549.5px);
   top: calc(50% - 19px / 2 - 750px);
 
-  background: linear-gradient(${newTheme_colors.gradients.primary.mg1.a}, ${newTheme_colors.gradients.primary.mg1.c1}, ${newTheme_colors.gradients.primary.mg1.c2});
   border-radius: 40px;
   color: white;
   margin-left: 10px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 `;
 
 const ListContainer = styled.div`
@@ -138,6 +138,11 @@ const Section = styled.div`
   color: ${({ color }) => color};
 `;
 
+const LinkContainer = styled.div`
+  display: flex;
+  align-items: baseline;
+`;
+
 interface LinkProps {
   name: string;
   url: string;
@@ -210,39 +215,23 @@ export const Header = () => {
       {isMobile && (
         <MobileMenuContainer showMenu={showMenu}>
           {LINKS.map((link) => (
-            <LinkItem
-              {...link}
-              key={link.name}
-              onClick={() => setShowMenu(false)}
-            />
+            <LinkItem {...link} key={link.name} onClick={() => setShowMenu(false)} />
           ))}
           <Section>Vocdoni {new Date().getFullYear()}</Section>
         </MobileMenuContainer>
       )}
       <HeaderContainer>
         <ListContainer>
-          <div style={{ display: "flex", alignItems: "baseline" }}>
+          <LinkContainer>
             <Link href="/" passHref>
-              <VocdoniLink target="_self">
-                Vocdoni Bridge
-              </VocdoniLink>
+              <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
             </Link>
             <BetaLabel>Beta</BetaLabel>
-          </div>
+          </LinkContainer>
           <MenuItemsContainer>
-            {!isMobile &&
-              HEADER_LINKS.map((link) => (
-                <LinkItem {...link} key={link.name} />
-            ))}
+            {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
           </MenuItemsContainer>
-          {isMobile && (
-            <Hamburger
-              toggled={showMenu}
-              toggle={setShowMenu}
-              color="#fff"
-              size={25}
-            />
-          )}
+          {isMobile && <Hamburger toggled={showMenu} toggle={setShowMenu} color="#fff" size={25} />}
         </ListContainer>
       </HeaderContainer>
     </>
