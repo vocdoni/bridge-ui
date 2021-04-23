@@ -93,6 +93,10 @@ const Cap = styled.p`
   letter-spacing: 0.01em;
 `;
 
+const RightText = styled.span`
+  float: right;
+`;
+
 interface Token {
   address: string;
   symbol: string;
@@ -107,16 +111,18 @@ type CardProps = {
   children: React.ReactNode;
   name: string;
   icon: string;
+  rightText?: string;
   href: string;
   onClick?: () => void;
 };
 
 // eslint-disable-next-line react/display-name
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ onClick, icon, name, children }, ref) => {
+  ({ onClick, icon, rightText, name, children }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
+        {rightText && <RightText>{rightText}</RightText>}
         <Cap>($915M)</Cap>
         <Symbol>{name}</Symbol>
         <Name>{children}</Name>
