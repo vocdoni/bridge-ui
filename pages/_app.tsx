@@ -47,8 +47,8 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
               networkId={networkId}
               environment={environment}
             >
-              <UseRegisteredTokens>
-                <UseTokenProvider>
+              <UseTokenProvider>
+                <UseRegisteredTokens>
                   <UseProcessProvider>
                     <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
                       <ModalsProvider>
@@ -64,8 +64,8 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                       </ModalsProvider>
                     </UseWalletProvider>
                   </UseProcessProvider>
-                </UseTokenProvider>
-              </UseRegisteredTokens>
+                </UseRegisteredTokens>
+              </UseTokenProvider>
             </UsePoolProvider>
           </UseLoadingAlertProvider>
         </ThemeProvider>

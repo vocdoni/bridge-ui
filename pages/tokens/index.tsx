@@ -48,7 +48,6 @@ const TokensPage = () => {
   const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
   // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
   const tokenInfos = useTokens(tokenAddrs);
-
   return (
     <Container>
       <TopSection
@@ -67,23 +66,21 @@ const TokensPage = () => {
       </ActiveTokensDescription>
 
       <TokenList>
-        {tokenAddrs
-          .map((addr) => tokenInfos.get(addr))
-          .map((token, idx) => (
-            <TokenCard
-              name={token?.symbol}
-              icon={token?.icon || FALLBACK_TOKEN_ICON}
-              rightText={""}
-              href={token?.address ? "/tokens/info#/" + token?.address : ""}
-              key={idx}
-            >
-              <p>
-                {token?.name || "(loading)"}
-                <br />
-                {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
-              </p>
-            </TokenCard>
-          ))}
+        {tokenInfos.map((token, idx) => (
+          <TokenCard
+            name={token?.symbol}
+            icon={token?.icon || FALLBACK_TOKEN_ICON}
+            rightText={""}
+            href={token?.address ? "/tokens/info#/" + token?.address : ""}
+            key={idx}
+          >
+            <p>
+              {token?.name || "(loading)"}
+              <br />
+              {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
+            </p>
+          </TokenCard>
+        ))}
       </TokenList>
     </Container>
   );
