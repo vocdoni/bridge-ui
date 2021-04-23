@@ -65,29 +65,25 @@ const TokensPage = () => {
       <ActiveTokensDescription>
         Below are the processes belonging to tokens that you currently hold.
       </ActiveTokensDescription>
-      {tokenAddrs ? (
-        <TokenList>
-          {tokenAddrs
-            .map((addr) => tokenInfos.get(addr))
-            .map((token, idx) => (
-              <TokenCard
-                name={token?.symbol}
-                icon={token?.icon || FALLBACK_TOKEN_ICON}
-                rightText={""}
-                href={token?.address ? "/tokens/info#/" + token?.address : ""}
-                key={idx}
-              >
-                <p>
-                  {token?.name || "(loading)"}
-                  <br />
-                  {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
-                </p>
-              </TokenCard>
-            ))}
-        </TokenList>
-      ) : (
-        <div>LOADING BRO</div>
-      )}
+      <TokenList>
+        {tokenAddrs
+          .map((addr) => tokenInfos.get(addr))
+          .map((token, idx) => (
+            <TokenCard
+              name={token?.symbol}
+              icon={token?.icon || FALLBACK_TOKEN_ICON}
+              rightText={""}
+              href={token?.address ? "/tokens/info#/" + token?.address : ""}
+              key={idx}
+            >
+              <p>
+                {token?.name || "(loading)"}
+                <br />
+                {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
+              </p>
+            </TokenCard>
+          ))}
+      </TokenList>
     </Container>
   );
 };
