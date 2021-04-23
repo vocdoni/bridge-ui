@@ -12,6 +12,12 @@
     },
     "VOCDONI_ENVIRONMENT": {
       "required": true
+    },
+    "ETH_CHAIN_ID": {
+      "required": true
+    },
+    "IS_REVIEW_APP": {
+      "required": true
     }
   },
   "buildpacks": [

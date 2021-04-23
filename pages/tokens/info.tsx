@@ -240,10 +240,10 @@ const TokenPage = () => {
         </Info>
       </RowSummary>
 
-      {VOTING_SECTIONS.map((section) => (
+      {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
           {...section}
-          key={`${token?.name}_vote`}
+          key={`${i}_vote`}
           allProcesses={processes}
           loadingProcesses={loadingProcessList}
           token={token}
