@@ -24,8 +24,8 @@ const Container = styled.div`
     );
   }
 
-  max-width: calc(33.3333333% - 2em);
-  min-width: 414px;
+  max-width: calc(33.3333333% - 1em);
+  min-width: 395px;
   max-height: 164px;
   left: 176px;
   top: 633px;

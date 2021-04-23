@@ -6,7 +6,7 @@ import TokenCard from "../components/token-card";
 import Button from "../components/button";
 import { featuredTokens } from "../lib/tokens";
 import { useTokens } from "../lib/hooks/tokens";
-import { FALLBACK_TOKEN_ICON } from "../lib/constants";
+import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA } from "../lib/constants";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
 import { newTheme_colors } from "../theme";
@@ -16,12 +16,12 @@ const Head = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: url('media/landingpage_header_backgroung.svg');
+  background: url(${LANDING_PAGE_CTA});
   width: 1248px;
   height: 335px;
   border-radius: 16px;
   color:${newTheme_colors.blackAndWhite.w1};
-  font-family: "Tahoma"
+  font-family: "Manrope"
 `;
 
 const HeaderTitle = styled.h4`
@@ -57,10 +57,13 @@ const SearchField = styled.input`
 `;
 
 const SearchButton = styled.button`
-  background: linear-gradient(${newTheme_colors.gradients.primary.mg1.a}, ${newTheme_colors.gradients.primary.mg1.c1}, ${newTheme_colors.gradients.primary.mg1.c2});
+  background: linear-gradient(
+    ${({ theme }) => theme.gradients.primary.mg1.a}, 
+    ${({ theme }) => theme.gradients.primary.mg1.c1}, 
+    ${({ theme }) => theme.gradients.primary.mg1.c2});
   box-shadow: 0px 3px 3px rgba(100, 115, 155, 0.35);
   border-radius: 8px;
-  color: ${newTheme_colors.blackAndWhite.w1};
+  color: ${({ theme }) => theme.blackAndWhite.w1};
   width: 140px;
   height: 46px;
   padding: 12px 20px;
@@ -94,7 +97,7 @@ const TokenSectionTitle = styled.h4`
   font-weight: 500;
   line-height: 52px;
   letter-spacing: -0.03em;
-  color: ${newTheme_colors.blackAndWhite.b1};
+  color:  ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const TokenSectionSubtitle = styled.p`
@@ -111,7 +114,7 @@ const TokenSectionSubtitle = styled.p`
 const ShowMoreButton = styled(Button)`
   width: 150px;
   height: 46px;
-  color: ${newTheme_colors.primary.p1};
+  color: ${({ theme }) => theme.primary.p1};
   padding: 12px 20px;
   background: #FFFFFF;
   box-sizing: border-box;
