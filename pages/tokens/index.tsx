@@ -65,6 +65,7 @@ const TokensPage = () => {
       <ActiveTokensDescription>
         Below are the processes belonging to tokens that you currently hold.
       </ActiveTokensDescription>
+
       <TokenList>
         {tokenAddrs
           .map((addr) => tokenInfos.get(addr))

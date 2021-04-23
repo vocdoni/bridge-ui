@@ -40,7 +40,6 @@ export function tokenIconUrl(address = "") {
   }
 
   if (address === EMPTY_ADDRESS) {
-    console.log(address);
     return `${TRUST_WALLET_BASE_URL}/info/logo.png`;
   }
 
