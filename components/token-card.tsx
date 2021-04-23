@@ -18,9 +18,9 @@ const Container = styled.div`
     box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
     background: linear-gradient(
       101.6deg,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c1} 0%,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 99.99%,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
+      rgb(102,218,255,0.2),
+      rgb(1, 232, 247,0.2),
+      rgb(128, 247, 255,0.2)
     );
   }
 
@@ -93,10 +93,6 @@ const Cap = styled.p`
   letter-spacing: 0.01em;
 `;
 
-const RightText = styled.span`
-  float: right;
-`;
-
 interface Token {
   address: string;
   symbol: string;
@@ -111,22 +107,20 @@ type CardProps = {
   children: React.ReactNode;
   name: string;
   icon: string;
-  rightText?: string;
   href: string;
   onClick?: () => void;
 };
 
 // eslint-disable-next-line react/display-name
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ onClick, icon, rightText, name, children }, ref) => {
+  ({ onClick, icon, name, children }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
-        {rightText && <RightText>{rightText}</RightText>}
-          <Cap>($915M)</Cap>
-          <Symbol>{name}</Symbol>
-          <Name>{children}</Name>
-          <Proposals>7 active proposals</Proposals>
+        <Cap>($915M)</Cap>
+        <Symbol>{name}</Symbol>
+        <Name>{children}</Name>
+        <Proposals>7 active proposals</Proposals>
       </Card>
     );
   }
@@ -145,3 +139,4 @@ const TokenCard = ({ children, ...props }: CardProps) => (
 );
 
 export default TokenCard;
+
