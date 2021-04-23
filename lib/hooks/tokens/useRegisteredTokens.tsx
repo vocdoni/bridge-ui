@@ -36,6 +36,8 @@ export function useRegisteredTokens() {
   return tokenContext;
 }
 
+// These are the tokens we want to show at first
+// Convert this to an array of tokens
 const EXISTING_TOKENS = [
   "0xca0ea2002a4177f9eb1822092ee0b4c183d91bba",
   "0x8255e1faf4d977708f622dba724c62ee2c0ab0fc",
@@ -69,7 +71,9 @@ export function UseRegisteredTokens({ children }) {
 
   useEffect(() => {
     // @TODO: Add validation before updating local storage
-    updateCache(data);
+    if (data) {
+      updateCache(data);
+    }
   }, [data]);
 
   return (
