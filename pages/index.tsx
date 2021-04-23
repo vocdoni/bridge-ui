@@ -9,7 +9,6 @@ import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA } from "../lib/constants";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
-import { newTheme_colors } from "../theme";
 
 const Head = styled.div`
   display: flex;
@@ -20,7 +19,7 @@ const Head = styled.div`
   width: 1248px;
   height: 335px;
   border-radius: 16px;
-  color:${newTheme_colors.blackAndWhite.w1};
+  color: ${({ theme }) => theme.blackAndWhite.w1};
   font-family: "Manrope"
 `;
 

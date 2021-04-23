@@ -206,7 +206,7 @@ body {
     margin: 0;
     font-size: 20px;
     font-family: 'Manrope', sans-serif !important;
-    background-color: ${({ theme }) => theme.blackAndWhite.w1} !important;
+    background-color: ${({ theme }) => theme.grayScale.g1} !important;
     color: ${({ theme }) => theme.blackAndWhite.b1};
 }
 h1, h2, h3, h4, h5, h6 {

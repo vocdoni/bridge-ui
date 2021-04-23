@@ -11,6 +11,7 @@ const HeaderContainer = styled.div`
   position: fixed;
   top: 0;
   padding: 10px 0 10px;
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
 
   font-size: 16px;
   display: flex;
@@ -101,7 +102,7 @@ const VocdoniLink = styled.a`
 
 const ClickableLink = styled.a`
   text-decoration: none;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
