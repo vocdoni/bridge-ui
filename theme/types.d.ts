@@ -1,4 +1,5 @@
 export type Color = string;
+export type Degree = string;
 
 export interface Colors {
   text1: Color;
@@ -24,7 +25,7 @@ export interface Colors {
   positive: Color;
 }
 
-export interface ColorsNewTheme {
+export interface ColorsNewTheme extends Partial<Colors> {
     primary: {
         p1: Color;
         p2: Color;
@@ -60,31 +61,37 @@ export interface ColorsNewTheme {
     gradients: {
         primary: {
             mg1: {
-                c1: Color;
-                c2: Color;
+              a: Degree;
+              c1: Color;
+              c2: Color;
             };
             mg1_soft: {
-                c1: Color;
-                c2: Color;
-                c3: Color;
+              a: Degree;
+              c1: Color;
+              c2: Color;
+              c3: Color;
             };
             mgi_dark: {
-                c1: Color;
-                c2: Color;
+              a: Degree;
+              c1: Color;
+              c2: Color;
             };
         };
         primaryVocdoni: {
             mgv1: {
-                c1: Color;
-                c2: Color;
+              a: Degree;
+              c1: Color;
+              c2: Color;
             };
             mgv1_soft: {
-                c1: Color;
-                c2: Color;
+              a: Degree;
+              c1: Color;
+              c2: Color;
             };
             mgvi_dark: {
-                c1: Color;
-                c2: Color;
+              a: Degree;
+              c1: Color;
+              c2: Color;
             };
         };
         secondary: {
@@ -173,7 +180,7 @@ export interface Margins {
 }
 
 declare module "styled-components" {
-  export interface DefaultTheme extends Colors {
+  export interface DefaultTheme extends ColorsNewTheme {
     // Screens for media queries
     screens: Screens;
     margins: Margins;
