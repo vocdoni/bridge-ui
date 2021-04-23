@@ -15,7 +15,6 @@ import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
 import { shortAddress } from "../../lib/util";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
-import { title } from "node:process";
 
 const RowSummary = styled.div`
   margin-top: 2em;
