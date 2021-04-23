@@ -5,15 +5,16 @@ import { Header } from "./header";
 import { Footer } from "./footer";
 import { MessageAlert } from "./msg-alert";
 import { LoadingAlert } from "./loading-alert";
+import { size } from "../theme";
 
 const LayoutContainer = styled.div`
   padding: 0 ${({ theme }) => theme.margins.desktop.horizontal};
   margin-top: 77px;
-  max-width: 992px;
+  max-width: 1249px;
   margin-left: auto;
   margin-right: auto;
-
-  @media ${({ theme }) => theme.screens.tablet} {
+  
+  @media ${size.tablet} {
     margin-bottom: 110px;
     margin-top: 50px;
     padding: 0 ${({ theme }) => theme.margins.mobile.horizontal};
