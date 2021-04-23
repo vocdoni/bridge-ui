@@ -2,13 +2,15 @@ import React from "react";
 import { withRouter } from "next/router";
 import styled from "styled-components";
 
-import TokenCard from "../components/token-card";
-import Button from "../components/button";
 import { featuredTokens } from "../lib/tokens";
 import { useTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA } from "../lib/constants";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
+
+import TokenCard from "../components/token-card";
+import Button from "../components/button";
+import SectionTitle from "../components/sectionTitle";
 
 const Head = styled.div`
   display: flex;
@@ -88,28 +90,6 @@ const TokenSection = styled.div`
   }
 `;
 
-const TokenSectionTitle = styled.h4`
-  margin-top: 0;
-  margin-bottom: 9px;
-  font-size: 38px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 52px;
-  letter-spacing: -0.03em;
-  color:  ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
-const TokenSectionSubtitle = styled.p`
-  margin-top: 0;
-  margin-bottom: 9;
-  line-height: 27px;
-  color: #7483AB;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-`;
-
-
 const ShowMoreButton = styled(Button)`
   width: 150px;
   height: 46px;
@@ -148,9 +128,7 @@ const IndexPage = () => {
       haves. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
       {/* YOUR TOKENS */}
       {/* <TokenSection>
-        <TokenSectionTitle>Your Tokens</TokenSectionTitle>
-        <TokenSectionSubtitle>Some of the tokens belonging to your wallet</TokenSectionSubtitle>
-        
+        <SectionTitle title="Your Tokens" subtitle="Some of the tokens belonging to your wallet" />
         <TokenList>
           {featuredTokenIds.map((tokenAddr) => (
             <TokenCard
@@ -174,9 +152,7 @@ const IndexPage = () => {
 
       {/* TOP TOKENS */}
        <TokenSection>
-          <TokenSectionTitle>Top Tokens</TokenSectionTitle>
-          <TokenSectionSubtitle>Some of the most relevant tokens on the platform</TokenSectionSubtitle>
-          
+          <SectionTitle title="Top Tokens" subtitle="Some of the most relevant tokens on the platform" />
           <TokenList>
             {featuredTokenIds.map((tokenAddr) => (
               <TokenCard
