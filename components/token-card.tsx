@@ -34,7 +34,7 @@ const Container = styled.div`
     margin: 10px;
     max-width: calc(50% - 2em);
     text-align: start;
-    justify-content: center;Pass through
+    justify-content: center;
   }
   @media ${({ theme }) => theme.screens.mobileL} {
     max-width: calc(100% - 2em);

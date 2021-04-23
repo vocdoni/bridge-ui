@@ -34,7 +34,7 @@ const NewProcessContainer = styled.div`
   input[type="text"],
   textarea {
     border: none;
-    background-color: ${({ theme }) => theme.inputBackground};
+    background-color: ${({ theme }) => theme.blackAndWhite.w1};
     padding: 1em;
     margin-top: 1em;
     border-radius: 8px;
@@ -109,7 +109,7 @@ const InfoTitle = styled.h2`
 `;
 
 const InfoPlaceholder = styled.div`
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const ChoicesTitle = styled.h3`
@@ -123,9 +123,9 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   justify-content: center;
   align-items: center;
   font-weight: 500;
-  background-color: ${({ theme }) => theme.white};
-  border: 1px solid ${({ theme }) => theme.inputBackground};
-  color: ${({ theme }) => theme.text3}80;
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
+  border: 1px solid ${({ theme }) => theme.blackAndWhite.w1};
+  color: ${({ theme }) => theme.blackAndWhite.b1}80;
   margin-top: 0.5em;
   -webkit-margin-before: 1em;
   border-radius: 8px;
@@ -141,13 +141,13 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
     add &&
     css`
       cursor: pointer;
-      background: ${({ theme }) => theme.white};
-      color: ${({ theme }) => theme.text3};
+      background: ${({ theme }) => theme.blackAndWhite.w1};
+      color: ${({ theme }) => theme.blackAndWhite.b1};
       &:hover {
-        background: ${({ theme }) => theme.inputBackground + "80"};
+        background: ${({ theme }) => theme.blackAndWhite.w1 + "80"};
       }
       &:active {
-        background: ${({ theme }) => theme.white + "B3"};
+        background: ${({ theme }) => theme.blackAndWhite.w1 + "B3"};
       }
     `}
 
@@ -155,20 +155,20 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
     remove &&
     css`
       cursor: pointer;
-      background: ${({ theme }) => theme.white};
-      border: 1px solid ${({ theme }) => theme.negative};
-      color: ${({ theme }) => theme.negative};
+      background: ${({ theme }) => theme.blackAndWhite.w1};
+      border: 1px solid ${({ theme }) => theme.blackAndWhite.b1};
+      color: ${({ theme }) => theme.blackAndWhite.b1};
       &:hover {
-        background: ${({ theme }) => theme.negative + "1A"};
+        background: ${({ theme }) => theme.blackAndWhite.b1 + "1A"};
       }
       &:active {
-        background: ${({ theme }) => theme.negative + "27"};
+        background: ${({ theme }) => theme.blackAndWhite.b1 + "27"};
       }
     `}
 `;
 
 const QuestionNumber = styled.h6`
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   margin-bottom: 0;
 `;
 
@@ -189,7 +189,7 @@ const RowContinue = styled.div`
 `;
 
 const Remove = styled.h6`
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   margin-top: 10px;
   cursor: pointer;
 `;

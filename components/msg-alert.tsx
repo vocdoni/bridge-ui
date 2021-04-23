@@ -30,8 +30,8 @@ const AlertContainer = styled.div<{ visible: boolean }>`
   justify-content: center;
   align-items: center;
 
-  background-color: ${({ theme }) => theme.white};
-  border: 1px solid ${({ theme }) => theme.lightBorder};
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
+  border: 1px solid ${({ theme }) => theme.blackAndWhite.b1};
   border-radius: 4px;
 
   transform: ${({ visible }) => `translate(0px, ${visible ? 0 : 90} px)`};

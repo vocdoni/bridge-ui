@@ -11,11 +11,6 @@ const HeaderContainer = styled.div`
   position: fixed;
   top: 0;
   padding: 10px 0 10px;
-  background: linear-gradient(
-    90deg,
-    ${({ theme }) => theme.accent1} 0%,
-    ${({ theme }) => theme.accent2} 100%
-  );
 
   font-size: 16px;
   display: flex;
@@ -67,12 +62,12 @@ const ListItem = styled.div`
     }
 
     & > a {
-      color: ${({ theme }) => theme.mainText};
+      color: ${({ theme }) => theme.blackAndWhite.b1};
       font-size: 20px;
       font-weight: 500;
 
       &:hover {
-        color: ${({ theme }) => theme.accent1};
+        color: ${({ theme }) => theme.blackAndWhite.b1};
       }
     }
   }
@@ -80,14 +75,14 @@ const ListItem = styled.div`
 
 const VocdoniLink = styled.a`
   font-weight: 500;
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.blackAndWhite.w1};
   text-decoration: none;
   cursor: pointer;
 `;
 
 const ClickableLink = styled.a`
   text-decoration: none;
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.blackAndWhite.w1};
 `;
 
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
@@ -98,7 +93,7 @@ const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
   left: 0;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.white};
+  background: ${({ theme }) => theme.blackAndWhite.w1};
   z-index: 10;
   margin-top: 70px;
 

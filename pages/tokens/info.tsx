@@ -37,7 +37,7 @@ const Info = styled.div`
 
 const InfoTitle = styled.p`
   font-weight: 500;
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const Address = styled.h4`

@@ -28,7 +28,7 @@ const Subtitle = styled.h4`
   font-size: 20px;
   text-align: center;
   max-width: 300px;
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const Row = styled.div`
@@ -68,7 +68,7 @@ const Description = styled.h4`
 `;
 
 const ColorText = styled.span`
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const GreyCircle = styled.div`
@@ -89,7 +89,7 @@ const ShowMoreButton = styled(Button)`
 `;
 
 const ClickableLink = styled.a`
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   text-decoration: none;
 `;
 
