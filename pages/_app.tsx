@@ -10,7 +10,7 @@ import { ThemeProvider } from "styled-components";
 
 import { Layout } from "../components/layout";
 import { UseTokenProvider } from "../lib/hooks/tokens";
-import { UseUserTokens } from '../lib/hooks/user-tokens'
+import { UseUserTokens } from '../lib/hooks/userTokens'
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseRegisteredTokens } from "../lib/hooks/registered-tokens";

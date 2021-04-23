@@ -5,7 +5,7 @@ import Link from "next/link";
 import TokenCard from "../../components/token-card";
 import { useTokens } from "../../lib/hooks/tokens";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
-import { useUserTokens } from "../../lib/hooks/user-tokens";
+import { useUserTokens } from "../../lib/hooks/userTokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 
@@ -64,7 +64,7 @@ const TokensPage = () => {
         )}
       />
 
-      <ActiveTokens>Active tokens</ActiveTokens>
+      <ActiveTokens>My tokens</ActiveTokens>
       <ActiveTokensDescription>
         Some of your tokens belonging to your wallet
       </ActiveTokensDescription>

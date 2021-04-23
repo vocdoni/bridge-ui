@@ -16,7 +16,7 @@ export const TRUST_WALLET_BASE_URL =
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // for ethers-multicall
-export const tokenAbi = [
+export const ERC20JsonAbi = [
   {
       "constant": true,
       "inputs": [
