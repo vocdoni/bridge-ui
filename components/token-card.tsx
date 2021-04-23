@@ -9,7 +9,7 @@ const Container = styled.div`
   cursor: pointer;
   flex: 1 0 500px;
   box-sizing: border-box;
-  margin: 1rem 1em;
+  margin: 0.5rem 0.5em;
   border-radius: 13px;
   box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
   border: 1px solid ${({ theme }) => theme.grayScale.g2};
@@ -19,7 +19,7 @@ const Container = styled.div`
     background: linear-gradient(
       101.6deg,
       ${({ theme }) => theme.gradients.primary.mg1_soft.c1} 0%,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 100%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 99.99%,
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
     );
   }
@@ -42,14 +42,14 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
-  padding: 1.4em;
-  padding-top: 18px;
+  padding: 1.8em;
+  padding-top: 35px;
   line-height: 0px;
 `;
 
 const TokenLogo = styled.img`
   position: absolute;
-  padding-top: 10px;
+  padding-top: 2px;
   width: 71px;
   height: 71px;
 `;
@@ -57,7 +57,9 @@ const TokenLogo = styled.img`
 const Symbol = styled.h4`
   color: ${({ theme }) => theme.blackAndWhite.b1};
   padding-left: 90px;
-  font-weight: 600;
+  padding-top: 22px;
+  position: absolute;
+  font-weight: 500;
   font-size: 29px;
   margin-top: 0px;
   align-items: center;
@@ -65,10 +67,9 @@ const Symbol = styled.h4`
 `;
 
 const Name = styled.p`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+  color: ${({ theme }) => theme.grayScale.g5};
   padding-left: 90px;
-  font-weight: 400;
-  font-size: 18px;
+  padding-top: 18px;
   align-items: center;
   letter-spacing: 0.01em;
 `;
@@ -76,18 +77,18 @@ const Name = styled.p`
 const Proposals = styled.p`
   color: ${({ theme }) => theme.primary.p1};
   padding-left: 90px;
-  padding-top: 15px;
-  font-weight: 500;
-  font-size: 18px;
+  padding-top: 10px;
+  font-weight: 400;
   align-items: center;
   letter-spacing: 0.01em;
 `;
 
 const Cap = styled.p`
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-left: 270px;
-  font-weight: 500;
-  font-size: 18px;
+  padding-left: 250px;
+  position: absolute;
+  font-weight: 400;
+  font-size: 20px;
   align-items: center;
   letter-spacing: 0.01em;
 `;
@@ -125,7 +126,7 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
           <Cap>($915M)</Cap>
           <Symbol>{name}</Symbol>
           <Name>{children}</Name>
-          <Proposals>7 Active Proposals</Proposals>
+          <Proposals>7 active proposals</Proposals>
       </Card>
     );
   }
