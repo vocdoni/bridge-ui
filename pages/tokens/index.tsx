@@ -1,12 +1,91 @@
 import React from "react";
 import styled from "styled-components";
-import Link from "next/link";
 
-import TokenCard from "../../components/token-card";
 import { useTokens } from "../../lib/hooks/tokens";
 import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
+
+import TokenCard from "../../components/token-card";
+import SectionTitle from "../../components/sectionTitle";
+import Button from "../../components/button";
+import SearchWidget from "../../components/search-widget";
+
+const TokenList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -1em;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    justify-content: center;
+  }
+`;
+
+const TokenSection = styled.div`
+  @media ${({ theme }) => theme.screens.tablet} {
+    text-align: center;
+  }
+`;
+
+const RegisterButton = styled(Button)`
+  width: 200px;
+  height: 46px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  color: ${({ theme }) => theme.primary.p1};
+  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  border: 2px solid #EFF1F7;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-left: 10px;
+  font-size: 16px;
+  line-height: 22px;
+`;
+
+
+// MAIN COMPONENT
+const TokensPage = () => {
+  const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
+  // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
+  const tokenInfos = useTokens(tokenAddrs);
+
+  return (
+    <div>
+      <TokenSection>
+        <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
+        <br/>
+        <div style={{ display: "flex", justifyContent: "space-between"}}>
+          {/* NOTE temporarily removed search bar, as it is not part of the page's must 
+      haves. VR 23-04-2021 */}
+          {/* <SearchWidget /> */}
+          <p></p>
+          <RegisterButton href="/tokens/add">My Token is not listed</RegisterButton>
+        </div>
+        <br/>
+        <TokenList>
+          {tokenAddrs.map((tokenAddr) => (
+            <TokenCard
+              key={tokenAddr}
+              name={tokenInfos.get(tokenAddr)?.symbol}
+              icon={FALLBACK_TOKEN_ICON}
+              rightText=""
+              href={tokenAddr ? "/tokens/info#/" + tokenAddr : ""}
+            >
+              <p>{tokenInfos.get(tokenAddr)?.name || "(loading)"}</p>
+            </TokenCard>
+          ))}
+        </TokenList>
+      </TokenSection>
+    </div>
+  );
+};
+
+export default TokensPage;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Leaving old implementation here for reference. Should be deleted ASAP. VR 23-04-2021 //
+//////////////////////////////////////////////////////////////////////////////////////////
+
 import { TopSection } from "../../components/top-section";
+import Link from "next/link";
 
 const Container = styled.div`
   width: 100%;
@@ -34,18 +113,7 @@ const ActiveTokens = styled.h2`
   }
 `;
 
-const TokenList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -1em;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    justify-content: center;
-  }
-`;
-
-// MAIN COMPONENT
-const TokensPage = () => {
+const OldTokensPage = () => {
   const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
   // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
   const tokenInfos = useTokens(tokenAddrs);
@@ -89,5 +157,3 @@ const TokensPage = () => {
     </Container>
   );
 };
-
-export default TokensPage;
