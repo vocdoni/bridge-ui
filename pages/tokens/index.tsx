@@ -46,8 +46,9 @@ const TokenList = styled.div`
 // MAIN COMPONENT
 const TokensPage = () => {
   const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
-  // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
+  console.log(tokenAddrs)
   const tokenInfos = useTokens(tokenAddrs);
+  console.log(tokenInfos)
   return (
     <Container>
       <TopSection

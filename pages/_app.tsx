@@ -20,7 +20,7 @@ import { getConnectors } from "../lib/wallets";
 import { SWRConfig } from "swr";
 
 const swrOptions = {
-  refreshInterval: 5000,
+  // refreshInterval: 5000,
 };
 
 type NextAppProps = AppInitialProps & {

@@ -30,9 +30,8 @@ export function useRegisteredTokens() {
 
 // These are the tokens we want to show at first
 // Convert this to an array of tokens
-
 export function UseRegisteredTokens({ children }) {
-  // const [registeredAddresses, updateRegisteredAddresses] = useState();
+  const [registeredTokens, updateRegisteredAddresses] = useState<string[]>();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
@@ -42,7 +41,7 @@ export function UseRegisteredTokens({ children }) {
     const addresses = await getRegisteredTokenList(lastKnownTokenCount || 0, pool);
 
     if (!addresses) {
-      return null;
+      return undefined;
     }
 
     return addresses;
@@ -54,12 +53,14 @@ export function UseRegisteredTokens({ children }) {
     if (error) setAlertMessage(error);
   }, [error]);
 
-  console.log("this is the data in useRegisteredTokens ", data);
+  useEffect(() => {
+    if (data) updateRegisteredAddresses(data);
+  }, [data]);
 
   return (
     <UseRegisteredTokensContext.Provider
       value={{
-        registeredTokens: data,
+        registeredTokens,
         refreshRegisteredTokens: mutate,
         error,
       }}

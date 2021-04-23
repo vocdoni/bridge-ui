@@ -67,32 +67,29 @@ export function useToken(address: string): TokenInfo | null {
   return tokenInfo;
 }
 
-/** Returns an arran containing the available information about the given addresses */
+/** Returns an array containing the available information about the given addresses */
 export function useTokens(addresses: string[]) {
   const [_, updateCache] = useLocalStorage("voting:tokens", EXISTING_TOKENS);
   const tokenContext = useContext(UseTokenContext);
   // const { setAlertMessage } = useMessageAlert()
 
-  const fetchTokensInfo = async () => {
-    console.log("in fetch tokens info");
-    console.log("these are the addesses", addresses);
+  const fetchTokensInfo = async (addresses: string[]) => {
     // @TODO: Add multicall + fetch of token information
     const fetchPromises = addresses.map((a) => tokenContext.refreshTokenInfo(a));
-    console.log("before the promis");
     const allTokensInfo = await Promise.all(fetchPromises);
-    console.log("after the promis");
     updateCache(allTokensInfo);
     console.log("in fetch tokens info: ", allTokensInfo);
     return allTokensInfo;
     // updateCache(allTokensInfo);
   };
 
-  const { data } = useSWR("fetchTokensInfo", fetchTokensInfo, {
-    refreshInterval: 0,
-    isPaused: () => !!addresses
+  console.log("these are the addresses ", addresses);
+  const { data } = useSWR(addresses, fetchTokensInfo, {
+    isPaused: () => !addresses,
   });
 
   console.log("data outside  ", data);
+
   if (tokenContext === null) {
     throw new Error(
       "useTokens() can only be used inside of <UseTokenProvider />, " +
