@@ -20,6 +20,14 @@ const HeaderContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+const Logo = styled.div`
+  background: url('media/LOGO01.svg');
+  width: 57px;
+  height: 57px;
+  left: 40px;
+  top: 7px;
+`;
+
 const BetaLabel = styled.label`
   display: flex;
   flex-direction: row;
@@ -218,6 +226,7 @@ export const Header = () => {
       <HeaderContainer>
         <ListContainer>
           <LinkContainer>
+            <Logo></Logo>
             <Link href="/" passHref>
               <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
             </Link>
