@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -26,6 +27,26 @@ const Logo = styled.div`
   height: 57px;
   left: 40px;
   top: 7px;
+`;
+
+const ConnectAccount = styled.label`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 11px 20px 12px;
+  width: 173px;
+  height: 45px;
+  left: calc(50% - 173px/2 + 673.5px);
+  top: calc(50% - 45px/2 - 749px);
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-weight: 600;
+  font-size: 18px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+
+  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  border-radius: 8px;
 `;
 
 const BetaLabel = styled.label`
@@ -101,15 +122,28 @@ const ListItem = styled.div`
 `;
 
 const VocdoniLink = styled.a`
-  font-weight: 500;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+  position: absolute;
+  width: 665px;
+  height: 24px;
+  left: 111px;
+  top: 22px;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 25px;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  cursor: pointer;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const ClickableLink = styled.a`
   text-decoration: none;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  &:hover {
+    color: ${({ theme }) => theme.primary.p1};
+    );
 `;
 
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
@@ -156,14 +190,14 @@ interface LinkProps {
 
 export const LINKS: LinkProps[] = [
   {
-    url: "/tokens",
-    name: "Find Tokens",
+    url: "/",
+    name: "Home",
+    external: true,
     header: true,
   },
   {
-    url: "https://blog.vocdoni.io",
-    name: "Blog",
-    external: true,
+    url: "/tokens",
+    name: "Find Tokens",
     header: true,
   },
   {
@@ -176,7 +210,7 @@ export const LINKS: LinkProps[] = [
     url: "https://discord.gg/sQCxgYs",
     name: "Discord",
     external: true,
-    header: true,
+    header: false,
     footer: true,
   },
   {
@@ -228,12 +262,13 @@ export const Header = () => {
           <LinkContainer>
             <Logo></Logo>
             <Link href="/" passHref>
-              <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
+              <VocdoniLink target="_self">Aragon Voice</VocdoniLink>
             </Link>
             <BetaLabel>Beta</BetaLabel>
           </LinkContainer>
           <MenuItemsContainer>
             {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
+            <ConnectAccount>Connect account</ConnectAccount>
           </MenuItemsContainer>
           {isMobile && <Hamburger toggled={showMenu} toggle={setShowMenu} color="#fff" size={25} />}
         </ListContainer>

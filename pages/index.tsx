@@ -21,7 +21,6 @@ const Head = styled.div`
   height: 335px;
   border-radius: 16px;
   color:${newTheme_colors.blackAndWhite.w1};
-  font-family: "Tahoma"
 `;
 
 const HeaderTitle = styled.h4`
