@@ -13,7 +13,7 @@ const Container = styled.div`
 `;
 
 const NotListedMessage = styled.h6`
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   text-align: right;
   cursor: pointer;
   @media ${({ theme }) => theme.screens.tablet} {
@@ -22,7 +22,7 @@ const NotListedMessage = styled.h6`
 `;
 
 const ActiveTokensDescription = styled.p`
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   @media ${({ theme }) => theme.screens.tablet} {
     text-align: center;
   }

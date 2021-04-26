@@ -36,7 +36,7 @@ const Title = styled.h1`
 const Subtitle = styled.h4`
   margin-top: 5px;
   font-size: 20px;
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 interface TopSectionProps {
