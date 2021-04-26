@@ -18,14 +18,14 @@ const Container = styled.div`
     box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
     background: linear-gradient(
       101.6deg,
-      rgb(102,218,255,0.2),
-      rgb(1, 232, 247,0.2),
-      rgb(128, 247, 255,0.2)
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c1}33,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2}33,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}33
     );
   }
 
-  max-width: calc(33.3333333% - 2em);
-  min-width: 414px;
+  max-width: calc(33.3333333% - 1em);
+  min-width: 395px;
   max-height: 164px;
   left: 176px;
   top: 633px;
@@ -116,6 +116,8 @@ type CardProps = {
   onClick?: () => void;
 };
 
+{/* NOTE temporarily removed information on the cards, as they are not must haves right 
+now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
 // eslint-disable-next-line react/display-name
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children }, ref) => {
@@ -123,10 +125,10 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
         {rightText && <RightText>{rightText}</RightText>}
-        <Cap>($915M)</Cap>
+        {/* <Cap>($915M)</Cap> */}
         <Symbol>{name}</Symbol>
         <Name>{children}</Name>
-        <Proposals>7 active proposals</Proposals>
+        {/* <Proposals>7 active proposals</Proposals> */}
       </Card>
     );
   }

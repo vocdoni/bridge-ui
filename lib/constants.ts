@@ -14,3 +14,5 @@ export const TRUST_WALLET_BASE_URL =
   "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";
   
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+export const LANDING_PAGE_CTA = "media/landingpage_header_backgroung.svg";
