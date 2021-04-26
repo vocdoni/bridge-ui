@@ -182,7 +182,7 @@ export const screens: Screens = {
 
 export const margins: Margins = {
   desktop: {
-    horizontal: "40px",
+    horizontal: "38px",
     vertical: "",
   },
   mobile: {

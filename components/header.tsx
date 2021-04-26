@@ -3,16 +3,13 @@ import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { HEADER_LOGO } from "../lib/constants";
 import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;
-  z-index: 100;
-  min-height: 50px;
   position: fixed;
   top: 0;
-  padding: 10px 0 10px;
-  background-color: ${({ theme }) => theme.blackAndWhite.w1};
 
   font-size: 16px;
   display: flex;
@@ -20,39 +17,42 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  background: ${({ theme }) => theme.blackAndWhite.w1};
+  background: ${({ theme }) => theme.blackAndWhite.w1}99;
 `;
 
 const Logo = styled.div`
-  background: url('media/LOGO01.svg');
+  background: url(${HEADER_LOGO});
   position: asbsolute;
   width: 57px;
   height: 57px;
-  left: 40px;
-  top: 7px;
+  margin-left: 40px;
+  margin-top: 7px;
 `;
 
-const ConnectAccount = styled.label`
+const ConnectAccount = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 11px 20px 12px;
   width: 173px;
   height: 45px;
   left: calc(50% - 173px/2 + 673.5px);
   top: calc(50% - 45px/2 - 749px);
+  margin-top: 15px;
+  margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
-  font-size: 18px;
+  font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 
   box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
   border-radius: 8px;
+  cursor: pointer;
 `;
 
 const BetaLabel = styled.label`
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -70,14 +70,14 @@ const BetaLabel = styled.label`
 
   border-radius: 40px;
   color: white;
-  margin-top: 22px;
+  margin-top: 15px;
   margin-left: 10px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 `;
 
 const ListContainer = styled.div`
-  padding: ${({ theme }) => "0 " + theme.margins.desktop.horizontal};
+  padding: ${({ theme }) => "25 " + theme.margins.desktop.horizontal};
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -98,7 +98,7 @@ const MenuItemsContainer = styled.div`
 `;
 
 const TextOne = styled.span`
-  margin-top: 22px;
+  margin-top: 15px;
   font-family: Manrope;
   font-weight: 500;
   font-size: 18px;
@@ -109,7 +109,7 @@ const TextOne = styled.span`
 `;
 
 const TextTwo = styled.span`
-  margin-top: 22px;
+  margin-top: 15px;
   margin-left: 3px;
   font-family: Manrope;
   font-weight: 500;
@@ -121,8 +121,6 @@ const TextTwo = styled.span`
 `;
 
 const ListItem = styled.div`
-  margin-right: 20px;
-
   &:last-child {
     margin-right: 0;
   }
@@ -152,9 +150,9 @@ const ListItem = styled.div`
   }
 `;
 
-const VocdoniLink = styled.a`
+const VoiceLink = styled.a`
   position: absolute;
-  width: 665px;
+  width: 200px;
   height: 24px;
   left: 111px;
   top: 22px;
@@ -166,12 +164,11 @@ const VocdoniLink = styled.a`
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const ClickableLink = styled.a`
   display: flex;
-  padding: 25px 0px;
+  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
@@ -213,6 +210,7 @@ const Section = styled.div`
 const LinkContainer = styled.div`
   display: flex;
   align-items: baseline;
+  cursor: pointer;
 `;
 
 interface LinkProps {
@@ -260,6 +258,12 @@ export const LINKS: LinkProps[] = [
     external: true,
     footer: true,
   },
+  {
+    url: "https://t.me/vocdoni", /* Forum link ? */
+    name: "Forum",
+    external: true,
+    footer: true,
+  },
 ];
 
 const LinkItem = ({
@@ -297,7 +301,7 @@ export const Header = () => {
           <LinkContainer>
             <Logo></Logo>
             <Link href="/" passHref>
-              <VocdoniLink target="_self"><TextOne>Aragon</TextOne><TextTwo>Voice</TextTwo><BetaLabel>Beta</BetaLabel></VocdoniLink>
+              <VoiceLink target="_self"><TextOne>Aragon</TextOne><TextTwo>Voice</TextTwo><BetaLabel>Beta</BetaLabel></VoiceLink>
             </Link>
             
           </LinkContainer>

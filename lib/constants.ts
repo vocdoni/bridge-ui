@@ -16,3 +16,5 @@ export const TRUST_WALLET_BASE_URL =
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export const LANDING_PAGE_CTA = "media/landingpage_header_backgroung.svg";
+export const HEADER_LOGO = "media/logo01.svg";
+export const FOOTER_LOGO = "media/footer_logo.svg";

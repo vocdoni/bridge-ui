@@ -5,35 +5,43 @@ import Link from "next/link";
 import { LINKS } from "./header";
 import { ConnectButton } from "./connect-button";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { FOOTER_LOGO } from "../lib/constants";
 
-const Container = styled.div`
-  padding: 30px 0 30px;
-  font-size: 13px;
+const Container = styled.div`  
+
+  height: 71px;
+  font-size: 16px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  background: ${({ theme }) => theme.blackAndWhite.w1}CC;
 `;
 
 const Logo = styled.div`
-  background: url('media/footer_logo.svg');
+  background: url(${FOOTER_LOGO});
   position: absolute;
   display: flex;
   width: 155px;
+  margin-top: 15px;
   height: 40px;
-  left: 150px;
+  left: 176px;
 `;
 
 const Section = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 40px 40px 0;
+  padding: 0px 40px 0;
   color: ${({ color }) => color};
 `;
 
 const ClickableText = styled.a`
+  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
   display: flex;
-  padding: 25px 20px;
+  width: 100%;
+  justify-content: space-between;
+  
+  align-items: center;
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
