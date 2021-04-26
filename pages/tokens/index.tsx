@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 
 import TokenCard from "../../components/token-card";
-import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
+import { useTokens, useRegisteredTokens, useUserTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 
@@ -44,9 +44,10 @@ const TokenList = styled.div`
 
 // MAIN COMPONENT
 const TokensPage = () => {
-  const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
-  // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
+  const { registeredTokens: tokenAddrs } = useRegisteredTokens();
   const tokenInfos = useTokens(tokenAddrs);
+  // const userTokens = useUserTokens();
+  // console.log(userTokens);
   return (
     <Container>
       <TopSection
@@ -59,10 +60,13 @@ const TokensPage = () => {
         )}
       />
 
-      <ActiveTokens>Active tokens</ActiveTokens>
+      <ActiveTokens>My tokens</ActiveTokens>
       <ActiveTokensDescription>
         Below are the processes belonging to tokens that you currently hold.
       </ActiveTokensDescription>
+
+      <ActiveTokens>Active tokens</ActiveTokens>
+      <ActiveTokensDescription>Below are all the processes</ActiveTokensDescription>
 
       <TokenList>
         {tokenInfos.map((token, idx) => (
@@ -74,7 +78,7 @@ const TokensPage = () => {
             key={idx}
           >
             <p>
-              {token?.name || "(loading)"}
+              {token?.name || "Loading..."}
               <br />
               {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
             </p>

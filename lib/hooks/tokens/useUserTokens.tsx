@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useMessageAlert } from "../message-alert";
 import { useWallet } from "use-wallet";
 import { Contract, Provider, setMulticallAddress } from "ethers-multicall";
@@ -18,7 +18,7 @@ interface TokenBalances {
   error?: string;
 }
 
-const UseUserTokensContext = React.createContext<TokenBalances>(null)
+const UseUserTokensContext = React.createContext<TokenBalances>(null);
 
 /** Returns an array containing the list of registered ERC20 tokens */
 export function useUserTokens() {
@@ -38,7 +38,8 @@ export function UseUserTokens({ children }) {
   const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
 
-  const fetchUserTokens = async (): Promise<TokenBalance[]> => {
+  const fetchUserTokens = async (wallet, registeredTokens) => {
+    console.log("happening");
     if (!wallet?.ethereum || !wallet?.account || !registeredTokens) {
       return [];
     }
@@ -64,16 +65,19 @@ export function UseUserTokens({ children }) {
       });
   };
 
-  const { data, error, mutate } = useSWR("fetchUserTokens", fetchUserTokens);
+  const { data, error, mutate } = useSWR([wallet, registeredTokens], fetchUserTokens, {
+    isPaused: () => !wallet.account,
+  });
+  console.log(data);
 
   useEffect(() => {
     if (error) setAlertMessage(error);
   }, [error]);
 
   return (
-    <UseUserTokensContext.Provider 
-      value={{ 
-        userTokens: data,
+    <UseUserTokensContext.Provider
+      value={{
+        userTokens: data as any,
         refreshUserTokens: mutate,
         error,
       }}
