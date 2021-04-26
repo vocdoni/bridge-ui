@@ -158,7 +158,7 @@ export const newTheme_colors: ColorsNewTheme = {
   },
 };
 
-export const size = {
+export const size: Size = {
   mobileS: 320,
   mobileM: 375,
   mobileL: 440,

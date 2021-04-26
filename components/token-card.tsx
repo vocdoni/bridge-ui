@@ -18,9 +18,9 @@ const Container = styled.div`
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       101.6deg,
-      rgb(102,218,255,0.2),
-      rgb(1, 232, 247,0.2),
-      rgb(128, 247, 255,0.2)
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c1}33,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2}33,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}33
     );
   }
 
