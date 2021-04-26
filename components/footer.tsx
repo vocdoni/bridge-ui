@@ -8,6 +8,8 @@ import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { FOOTER_LOGO } from "../lib/constants";
 
 const Container = styled.div`  
+  width: 100%;
+  position: absolute;
 
   height: 71px;
   font-size: 16px;
@@ -38,7 +40,6 @@ const Section = styled.div`
 const ClickableText = styled.a`
   padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
   display: flex;
-  width: 100%;
   justify-content: space-between;
   
   align-items: center;
