@@ -120,10 +120,6 @@ export function UseTokenProvider({ children }) {
     [poolPromise]
   );
 
-  useEffect(() => {
-    setTokens(tokens);
-  }, [tokens]);
-
   return (
     <UseTokenContext.Provider
       value={{

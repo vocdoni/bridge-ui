@@ -29,6 +29,7 @@
     "dvote-js": "^1.1.6",
     "eslint": "^7.14.0",
     "ethers": "^5.0.25",
+    "ethers-multicall": "^0.1.6",
     "hamburger-react": "^2.4.0",
     "identicon.js": "^2.3.3",
     "iso-language-codes": "^1.0.6",

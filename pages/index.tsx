@@ -35,7 +35,6 @@ const Row = styled.div`
   display: flex;
   align-items: ${({ alignItems }: CSSProperties) => alignItems};
   justify-content: ${({ justifyContent }) => justifyContent};
-
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
     align-items: center;
@@ -46,7 +45,6 @@ const Row = styled.div`
 const LeftSection = styled.div`
   max-width: ${({ maxWidth }: CSSProperties) => maxWidth};
   width: ${({ width }) => width};
-
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
   }
@@ -56,7 +54,6 @@ const RightSection = styled.div`
   width: ${({ width }: CSSProperties) => width};
   text-align: ${({ textAlign }) => textAlign};
   max-width: ${({ maxWidth }) => maxWidth};
-
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
   }

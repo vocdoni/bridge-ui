@@ -11,7 +11,7 @@ import { ThemeProvider } from "styled-components";
 import { Layout } from "../components/layout";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
-import { UseRegisteredTokens, UseTokenProvider } from "../lib/hooks/tokens";
+import { UseRegisteredTokens, UseTokenProvider, UseUserTokens } from "../lib/hooks/tokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
@@ -51,17 +51,19 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                 <UseRegisteredTokens>
                   <UseProcessProvider>
                     <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
-                      <ModalsProvider>
-                        <FixedGlobalStyle />
+                      <UseUserTokens>
+                        <ModalsProvider>
+                          <FixedGlobalStyle />
 
-                        <Head>
-                          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                          <title>{appTitle}</title>
-                        </Head>
-                        <Layout>
-                          <Component {...pageProps} />
-                        </Layout>
-                      </ModalsProvider>
+                          <Head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                            <title>{appTitle}</title>
+                          </Head>
+                          <Layout>
+                            <Component {...pageProps} />
+                          </Layout>
+                        </ModalsProvider>
+                      </UseUserTokens>
                     </UseWalletProvider>
                   </UseProcessProvider>
                 </UseRegisteredTokens>
