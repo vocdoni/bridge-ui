@@ -27,6 +27,7 @@ const Logo = styled.div`
   height: 57px;
   margin-left: 40px;
   margin-top: 7px;
+  margin-right: 19px;
 `;
 
 const ConnectAccount = styled.div`
@@ -51,13 +52,11 @@ const ConnectAccount = styled.div`
   cursor: pointer;
 `;
 
-const BetaLabel = styled.label`
-  cursor: pointer;
+const BetaLabel = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 1px 8px 2px;
 
   width: 43px;
   height: 19px;
@@ -70,7 +69,7 @@ const BetaLabel = styled.label`
 
   border-radius: 40px;
   color: white;
-  margin-top: 15px;
+  margin-top: 5px;
   margin-left: 10px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
@@ -98,7 +97,7 @@ const MenuItemsContainer = styled.div`
 `;
 
 const TextOne = styled.span`
-  margin-top: 15px;
+  margin-top: 5px;
   font-family: Manrope;
   font-weight: 500;
   font-size: 18px;
@@ -109,7 +108,7 @@ const TextOne = styled.span`
 `;
 
 const TextTwo = styled.span`
-  margin-top: 15px;
+  margin-top: 5px;
   margin-left: 3px;
   font-family: Manrope;
   font-weight: 500;
@@ -152,18 +151,18 @@ const ListItem = styled.div`
 
 const VoiceLink = styled.a`
   position: absolute;
-  width: 200px;
   height: 24px;
   left: 111px;
   top: 22px;
+
   font-family: Manrope;
-  font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   font-size: 18px;
-  line-height: 25px;
+
   display: flex;
   align-items: center;
   text-decoration: none;
+  cursor: pointer;
 `;
 
 const ClickableLink = styled.a`
@@ -299,11 +298,9 @@ export const Header = () => {
       <HeaderContainer>
         <ListContainer>
           <LinkContainer>
-            <Logo></Logo>
             <Link href="/" passHref>
-              <VoiceLink target="_self"><TextOne>Aragon</TextOne><TextTwo>Voice</TextTwo><BetaLabel>Beta</BetaLabel></VoiceLink>
+              <VoiceLink target="_self"><Logo></Logo><TextOne>Aragon</TextOne><TextTwo>Voice</TextTwo><BetaLabel>Beta</BetaLabel></VoiceLink>
             </Link>
-            
           </LinkContainer>
           <MenuItemsContainer>
             {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
