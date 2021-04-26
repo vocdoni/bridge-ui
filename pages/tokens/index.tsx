@@ -46,8 +46,8 @@ const TokenList = styled.div`
 const TokensPage = () => {
   const { registeredTokens: tokenAddrs } = useRegisteredTokens();
   const tokenInfos = useTokens(tokenAddrs);
-  // const userTokens = useUserTokens();
-  // console.log(userTokens);
+  const userTokens = useUserTokens();
+  console.log(userTokens);
   return (
     <Container>
       <TopSection

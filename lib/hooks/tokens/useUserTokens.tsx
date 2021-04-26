@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from "react";
-import { useWallet } from "use-wallet";
+import React, { useCallback, useContext, useEffect } from "react";
 import { Contract, Provider, setMulticallAddress } from "ethers-multicall";
 import useSWR from "swr";
 import { providers } from "ethers";
@@ -7,6 +6,7 @@ import { useMessageAlert } from "../message-alert";
 import { useRegisteredTokens } from "./useRegisteredTokens";
 import { ERC20JsonAbi, GOERLI_MULTICALL, GOERLI_CHAINID } from "../../constants";
 import { useSigner } from "../useSigner";
+import { useWallet } from "use-wallet";
 
 type TokenBalance = {
   address: string;
@@ -37,37 +37,31 @@ export function useUserTokens() {
 export function UseUserTokens({ children }) {
   const { registeredTokens } = useRegisteredTokens();
   const { setAlertMessage } = useMessageAlert();
-  const signer = useSigner();
+  const wallet = useWallet<providers.JsonRpcFetchFunc>();
 
-  const fetchUserTokens = async (signer: providers.JsonRpcSigner, registeredTokens) => {
-    if (!registeredTokens) {
+  const fetchUserTokens = async (): Promise<TokenBalance[]> => {
+    if (!wallet?.ethereum || !wallet?.account || !registeredTokens) {
       return [];
     }
-    const chainId = await signer.getChainId();
-    if (chainId === GOERLI_CHAINID) {
-      setMulticallAddress(chainId, GOERLI_MULTICALL);
+    if (wallet.chainId === GOERLI_CHAINID) {
+      setMulticallAddress(wallet.chainId, GOERLI_MULTICALL);
     }
 
-    const account = await signer.getAddress();
-    const ethcallProvider = new Provider(signer.provider, chainId);
+    const provider = new providers.Web3Provider(wallet.ethereum);
+    const ethcallProvider = new Provider(provider, wallet.chainId);
     const contractCalls = registeredTokens.map((address) =>
-      new Contract(address, ERC20JsonAbi).balanceOf(account)
+      new Contract(address, ERC20JsonAbi).balanceOf(wallet.account)
     );
-    return ethcallProvider
-      .all(contractCalls)
-      .then((balances) => {
-        return registeredTokens.flatMap((address, index) =>
-          balances[index] == 0 ? [] : [{ address, balance: balances[index].toString() }]
-        );
-      })
-      .catch((err) => {
-        setAlertMessage("Could not fetch the list of user tokens");
-        return [];
-      });
+
+    const balances = await ethcallProvider.all(contractCalls);
+    const mappedBalances = registeredTokens.flatMap((address, index) =>
+      balances[index] == 0 ? [] : [{ address, balance: balances[index].toString() }]
+    );
+    return mappedBalances;
   };
 
-  const { data, error, mutate } = useSWR([signer, registeredTokens], fetchUserTokens, {
-    isPaused: () => !signer,
+  const { data, error, mutate } = useSWR([wallet, registeredTokens], fetchUserTokens, {
+    isPaused: () => !wallet.account,
   });
 
   useEffect(() => {
@@ -77,7 +71,7 @@ export function UseUserTokens({ children }) {
   return (
     <UseUserTokensContext.Provider
       value={{
-        userTokens: data,
+        userTokens: data as any,
         refreshUserTokens: mutate,
         error,
       }}
