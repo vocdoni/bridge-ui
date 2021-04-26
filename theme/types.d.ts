@@ -179,10 +179,16 @@ export interface Margins {
   };
 }
 
+export interface Shadows {
+  cardShadow: string;
+  buttonShadow: string;
+}
+
 declare module "styled-components" {
   export interface DefaultTheme extends ColorsNewTheme {
     // Screens for media queries
     screens: Screens;
     margins: Margins;
+    shadows: Shadows;
   }
 }

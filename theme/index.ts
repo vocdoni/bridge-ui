@@ -1,5 +1,5 @@
 import { createGlobalStyle, DefaultTheme } from "styled-components";
-import { Colors, Margins, Screens, ColorsNewTheme } from "./types";
+import { Colors, Margins, Screens, Shadows, ColorsNewTheme } from "./types";
 
 export const colors: Colors = {
   text1: "#F9694F",
@@ -191,11 +191,17 @@ export const margins: Margins = {
   },
 };
 
+export const shadows: Shadows = {
+  cardShadow: "0px 6px 6px rgba(180, 193, 228, 0.35);",
+  buttonShadow: "0px 3px 3px rgba(180, 193, 228, 0.35);"
+};
+
 export const theme: DefaultTheme = {
   ...newTheme_colors,
   ...colors,
   screens,
   margins,
+  shadows,
 };
 
 // New Theme Style | TODO: Modify screens sizes

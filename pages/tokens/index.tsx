@@ -31,7 +31,7 @@ const RegisterButton = styled(Button)`
   height: 46px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   color: ${({ theme }) => theme.primary.p1};
-  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border: 2px solid #EFF1F7;
   border-radius: 8px;
   padding: 12px 20px;

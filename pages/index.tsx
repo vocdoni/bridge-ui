@@ -65,7 +65,7 @@ const ShowMoreButton = styled(Button)`
   padding: 12px 20px;
   background: #FFFFFF;
   box-sizing: border-box;
-  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border: 2px solid #EFF1F7;
   border-radius: 8px;
 `;
