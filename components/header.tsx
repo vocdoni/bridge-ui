@@ -25,6 +25,25 @@ const HeaderContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+const BetaLabel = styled.label`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 1px 8px 2px;
+
+  width: 43px;
+  height: 19px;
+  left: calc(50% - 43px / 2 - 549.5px);
+  top: calc(50% - 19px / 2 - 750px);
+
+  border-radius: 40px;
+  color: white;
+  margin-left: 10px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+`;
+
 const ListContainer = styled.div`
   padding: ${({ theme }) => "0 " + theme.margins.desktop.horizontal};
   display: flex;
@@ -119,6 +138,11 @@ const Section = styled.div`
   color: ${({ color }) => color};
 `;
 
+const LinkContainer = styled.div`
+  display: flex;
+  align-items: baseline;
+`;
+
 interface LinkProps {
   name: string;
   url: string;
@@ -198,9 +222,12 @@ export const Header = () => {
       )}
       <HeaderContainer>
         <ListContainer>
-          <Link href="/" passHref>
-            <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
-          </Link>
+          <LinkContainer>
+            <Link href="/" passHref>
+              <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
+            </Link>
+            <BetaLabel>Beta</BetaLabel>
+          </LinkContainer>
           <MenuItemsContainer>
             {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
           </MenuItemsContainer>

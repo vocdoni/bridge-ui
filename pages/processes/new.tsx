@@ -444,7 +444,7 @@ const NewProcessPage = () => {
         censusRoot: proof.storageHash,
         startBlock,
         blockCount,
-        maxCount: 1,
+        maxCount: metadata.questions.length,
         maxValue: 3,
         maxTotalCost: 0,
         costExponent: 10000,
