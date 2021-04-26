@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useMessageAlert } from "../message-alert";
+import React, { useContext, useEffect } from "react";
 import { useWallet } from "use-wallet";
 import { Contract, Provider, setMulticallAddress } from "ethers-multicall";
+import useSWR from "swr";
 import { providers } from "ethers";
+import { useMessageAlert } from "../message-alert";
 import { useRegisteredTokens } from "./useRegisteredTokens";
 import { ERC20JsonAbi, GOERLI_MULTICALL, GOERLI_CHAINID } from "../../constants";
-import useSWR from "swr";
+import { useSigner } from "../useSigner";
 
 type TokenBalance = {
   address: string;
@@ -36,21 +37,21 @@ export function useUserTokens() {
 export function UseUserTokens({ children }) {
   const { registeredTokens } = useRegisteredTokens();
   const { setAlertMessage } = useMessageAlert();
-  const wallet = useWallet<providers.JsonRpcFetchFunc>();
+  const signer = useSigner();
 
-  const fetchUserTokens = async (wallet, registeredTokens) => {
-    console.log("happening");
-    if (!wallet?.ethereum || !wallet?.account || !registeredTokens) {
+  const fetchUserTokens = async (signer: providers.JsonRpcSigner, registeredTokens) => {
+    if (!registeredTokens) {
       return [];
     }
-    if (wallet.chainId === GOERLI_CHAINID) {
-      setMulticallAddress(wallet.chainId, GOERLI_MULTICALL);
+    const chainId = await signer.getChainId();
+    if (chainId === GOERLI_CHAINID) {
+      setMulticallAddress(chainId, GOERLI_MULTICALL);
     }
 
-    const provider = new providers.Web3Provider(wallet.ethereum);
-    const ethcallProvider = new Provider(provider, wallet.chainId);
+    const account = await signer.getAddress();
+    const ethcallProvider = new Provider(signer.provider, chainId);
     const contractCalls = registeredTokens.map((address) =>
-      new Contract(address, ERC20JsonAbi).balanceOf(wallet.account)
+      new Contract(address, ERC20JsonAbi).balanceOf(account)
     );
     return ethcallProvider
       .all(contractCalls)
@@ -65,10 +66,9 @@ export function UseUserTokens({ children }) {
       });
   };
 
-  const { data, error, mutate } = useSWR([wallet, registeredTokens], fetchUserTokens, {
-    isPaused: () => !wallet.account,
+  const { data, error, mutate } = useSWR([signer, registeredTokens], fetchUserTokens, {
+    isPaused: () => !signer,
   });
-  console.log(data);
 
   useEffect(() => {
     if (error) setAlertMessage(error);
@@ -77,7 +77,7 @@ export function UseUserTokens({ children }) {
   return (
     <UseUserTokensContext.Provider
       value={{
-        userTokens: data as any,
+        userTokens: data,
         refreshUserTokens: mutate,
         error,
       }}

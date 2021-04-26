@@ -27,59 +27,36 @@ export interface Colors {
 
 export interface ColorsNewTheme extends Partial<Colors> {
   primary: {
-    mg1: {
-      c1: Color;
-      c2: Color;
-    };
-    mg1_soft: {
-      c1: Color;
-      c2: Color;
-      c3: Color;
-    };
-    mgi_dark: {
-      c1: Color;
-      c2: Color;
-    };
-  };
-  primaryVocdoni: {
-    mgv1: {
-      c1: Color;
-      c2: Color;
-    };
-    mgv1_soft: {
-      c1: Color;
-      c2: Color;
-    };
-    mgvi_dark: {
-      c1: Color;
-      c2: Color;
-    };
+    p1: Color;
+    p2: Color;
   };
   secondary: {
-    mg2: {
-      c1: Color;
-      c2: Color;
-    };
-    mg3: {
-      c1: Color;
-      c2: Color;
-    };
-    mg4: {
-      c1: Color;
-      c2: Color;
-    };
-    mg5: {
-      c1: Color;
-      c2: Color;
-    };
-    mg6: {
-      c1: Color;
-      c2: Color;
-    };
-    mg7: {
-      c1: Color;
-      c2: Color;
-    };
+    s3: Color;
+    s4: Color;
+    s5: Color;
+    s6: Color;
+    s7: Color;
+    s8: Color;
+  };
+  primaryVocdoni: {
+    pv1: Color;
+    pv2: Color;
+  };
+  grayScale: {
+    g1: Color;
+    g2: Color;
+    g3: Color;
+    g4: Color;
+    g5: Color;
+  };
+  functionality: {
+    f3: Color;
+    f4: Color;
+    f5: Color;
+  };
+  blackAndWhite: {
+    b1: Color;
+    w1: Color;
   };
   gradients: {
     primary: {
