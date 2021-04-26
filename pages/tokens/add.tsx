@@ -23,7 +23,7 @@ const LeftSection = styled.div`
   flex: 7;
   input[type="text"] {
     border: none;
-    background-color: ${({ theme }) => theme.inputBackground};
+    background-color: ${({ theme }) => theme.blackAndWhite.w1};
     padding: 1em;
     margin-top: 1em;
     border-radius: 8px;
@@ -113,7 +113,7 @@ const TokenContractDetails = styled.div`
 `;
 
 const LightText = styled.p`
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.w1};
   letter-spacing: 0.01em;
 `;
 

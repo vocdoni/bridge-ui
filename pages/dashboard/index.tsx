@@ -34,7 +34,7 @@ export const TokenList = styled.div`
 `;
 
 export const LightText = styled.p`
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 export const VoteSectionContainer = styled.div`

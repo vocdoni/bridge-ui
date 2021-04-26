@@ -24,11 +24,11 @@ const Section = styled.div`
 
 const ClickableText = styled.a`
   text-decoration: underline;
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const MobileFooter = styled.div`
-  background-color: ${({ theme }) => theme.white};
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
   box-sizing: border-box;
   width: 100%;
   padding: 16px;
@@ -61,7 +61,7 @@ export const Footer = () => {
           </div>
         ))}
       </Section>
-      <Section color={theme.lightText}>Vocdoni {new Date().getFullYear()}</Section>
+      <Section color={theme.blackAndWhite.b1}>Vocdoni {new Date().getFullYear()}</Section>
     </Container>
   );
 };

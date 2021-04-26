@@ -55,11 +55,11 @@ const RowDescriptionRightSection = styled.div`
 `;
 
 const Status = styled.h4`
-  color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const LightText = styled.p`
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const Question = styled.div`
@@ -82,11 +82,11 @@ const QuestionLeftSection = styled.div`
 
 const QuestionNumber = styled.h6`
   margin-bottom: 0;
-  color: ${({ theme }) => theme.accent1}80;
+  color: ${({ theme }) => theme.blackAndWhite.b1}80;
 `;
 
 const QuestionDescription = styled.p`
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
   }
@@ -125,8 +125,8 @@ const Box = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: ${({ theme }) => theme.white};
-  background-color: ${({ theme }) => theme.accent1};
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  background-color: ${({ theme }) => theme.blackAndWhite.b1};
   width: 55px;
   height: 55px;
   border-radius: 50%;

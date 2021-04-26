@@ -157,6 +157,18 @@ export interface ColorsNewTheme extends Partial<Colors> {
   };
 }
 
+export interface Size {
+  mobileS: int,
+  mobileM: int,
+  mobileL: int,
+  tablet: int,
+  tabletL: int,
+  laptop: int,
+  laptopL: int,
+  desktop: int,
+};
+
+
 export interface Screens {
   mobileS: string;
   mobileM: string;

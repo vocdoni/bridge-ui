@@ -9,10 +9,10 @@ import { LoadingAlert } from "./loading-alert";
 const LayoutContainer = styled.div`
   padding: 0 ${({ theme }) => theme.margins.desktop.horizontal};
   margin-top: 77px;
-  max-width: 992px;
+  max-width: 1249px;
   margin-left: auto;
   margin-right: auto;
-
+  
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: 110px;
     margin-top: 50px;
