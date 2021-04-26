@@ -1,32 +1,7 @@
 import { createGlobalStyle, DefaultTheme } from "styled-components";
-import { Colors, Margins, Screens, Shadows, ColorsNewTheme } from "./types";
+import { Margins, Screens, Size, Shadows, Colors } from "./types";
 
 export const colors: Colors = {
-  text1: "#F9694F",
-  text2: "#ED57E9",
-  text3: "#212B36",
-  accent1: "#F9694F",
-  accent2: "#ED57E9",
-  white: "white",
-  darkFg: "#333",
-  darkMidFg: "#555",
-  darkLightFg: "#888",
-  lightBg: "#F4F4F4",
-  lightBg2: "#E8E8E8",
-  lightBorder: "#DDE4E9",
-
-  // bridge/styles/constants
-  lightText: "#777777",
-  mainText: "#393939",
-  lighterText: "#999",
-
-  inputBackground: "#EAEAEA",
-  negative: "#FF6969",
-  positive: "#08BEE5",
-};
-
-// New Theme Colors
-export const newTheme_colors: ColorsNewTheme = {
   primary: {
     p1: "#00C2FF",
     p2: "#01E8F7",
@@ -197,7 +172,6 @@ export const shadows: Shadows = {
 };
 
 export const theme: DefaultTheme = {
-  ...newTheme_colors,
   ...colors,
   screens,
   margins,

@@ -1,31 +1,7 @@
 export type Color = string;
 export type Degree = string;
 
-export interface Colors {
-  text1: Color;
-  text2: Color;
-  text3: Color;
-  accent1: Color;
-  accent2: Color;
-  white: Color;
-  darkFg: Color;
-  darkMidFg: Color;
-  darkLightFg: Color;
-  lightBg: Color;
-  lightBg2: Color;
-  lightBorder: Color;
-
-  lightText: Color;
-  mainText: Color;
-  lighterText: Color;
-
-  inputBackground: Color;
-  negative: Color;
-
-  positive: Color;
-}
-
-export interface ColorsNewTheme extends Partial<Colors> {
+export interface Colors extends Partial<Colors> {
     primary: {
         p1: Color;
         p2: Color;
@@ -197,7 +173,7 @@ export interface Shadows {
 }
 
 declare module "styled-components" {
-  export interface DefaultTheme extends ColorsNewTheme {
+  export interface DefaultTheme extends Colors {
     // Screens for media queries
     screens: Screens;
     margins: Margins;
