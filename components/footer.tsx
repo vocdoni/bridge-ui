@@ -15,6 +15,15 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
+const Logo = styled.div`
+  background: url('media/footer_logo.svg');
+  position: absolute;
+  display: flex;
+  width: 155px;
+  height: 40px;
+  left: 150px;
+`;
+
 const Section = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -23,8 +32,15 @@ const Section = styled.div`
 `;
 
 const ClickableText = styled.a`
-  text-decoration: underline;
+  display: flex;
+  padding: 25px 20px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+  &:hover {
+    color: ${({ theme }) => theme.primary.p1};
+    );
 `;
 
 const MobileFooter = styled.div`
@@ -52,16 +68,17 @@ export const Footer = () => {
   ) : (
     <Container>
       <Section>
-        {FOOTER_LINKS.map(({ url, name }, i) => (
-          <div key={name}>
-            <Link href={url} passHref>
-              <ClickableText target="_blank">{name}</ClickableText>
-            </Link>
-            {i < FOOTER_LINKS.length - 1 ? " · " : null}
-          </div>
-        ))}
+        <Logo></Logo>
       </Section>
-      <Section color={theme.blackAndWhite.b1}>Vocdoni {new Date().getFullYear()}</Section>
+      <Section>
+        {FOOTER_LINKS.map(({ url, name }, i) => (
+            <div key={name}>
+              <Link href={url} passHref>
+                <ClickableText target="_blank">{name}</ClickableText>
+              </Link>
+            </div>
+          ))}
+      </Section>
     </Container>
   );
 };

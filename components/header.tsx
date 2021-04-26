@@ -19,10 +19,12 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
 `;
 
 const Logo = styled.div`
   background: url('media/LOGO01.svg');
+  position: asbsolute;
   width: 57px;
   height: 57px;
   left: 40px;
@@ -61,8 +63,13 @@ const BetaLabel = styled.label`
   left: calc(50% - 43px / 2 - 549.5px);
   top: calc(50% - 19px / 2 - 750px);
 
+  font-family: Manrope;
+  font-size: 12px;
+  font-weight: 600;
+
   border-radius: 40px;
   color: white;
+  margin-top: 22px;
   margin-left: 10px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
@@ -87,6 +94,29 @@ const MenuItemsContainer = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 10px;
   }
+`;
+
+const TextOne = styled.span`
+  margin-top: 22px;
+  font-family: Manrope;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+  align-items: center;
+  text-decoration: none;
+  color: ${({ theme }) => theme.grayScale.g5};
+`;
+
+const TextTwo = styled.span`
+  margin-top: 22px;
+  margin-left: 3px;
+  font-family: Manrope;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+  align-items: center;
+  text-decoration: none;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const ListItem = styled.div`
@@ -139,7 +169,11 @@ const VocdoniLink = styled.a`
 `;
 
 const ClickableLink = styled.a`
+  display: flex;
+  padding: 25px 0px;
   text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
     color: ${({ theme }) => theme.primary.p1};
@@ -192,7 +226,7 @@ export const LINKS: LinkProps[] = [
   {
     url: "/",
     name: "Home",
-    external: true,
+    external: false,
     header: true,
   },
   {
@@ -262,9 +296,9 @@ export const Header = () => {
           <LinkContainer>
             <Logo></Logo>
             <Link href="/" passHref>
-              <VocdoniLink target="_self">Aragon Voice</VocdoniLink>
+              <VocdoniLink target="_self"><TextOne>Aragon</TextOne><TextTwo>Voice</TextTwo><BetaLabel>Beta</BetaLabel></VocdoniLink>
             </Link>
-            <BetaLabel>Beta</BetaLabel>
+            
           </LinkContainer>
           <MenuItemsContainer>
             {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
