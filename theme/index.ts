@@ -1,5 +1,5 @@
 import { createGlobalStyle, DefaultTheme } from "styled-components";
-import { Colors, Margins, Screens, ColorsNewTheme } from "./types";
+import { Colors, Margins, Screens, ColorsNewTheme, Size } from "./types";
 
 export const colors: Colors = {
   text1: "#F9694F",
@@ -158,7 +158,7 @@ export const newTheme_colors: ColorsNewTheme = {
   },
 };
 
-export const size = {
+export const size: Size = {
   mobileS: 320,
   mobileM: 375,
   mobileL: 440,
@@ -206,7 +206,7 @@ body {
     margin: 0;
     font-size: 20px;
     font-family: 'Manrope', sans-serif !important;
-    background-color: ${({ theme }) => theme.blackAndWhite.w1} !important;
+    background-color: ${({ theme }) => theme.grayScale.g1} !important;
     color: ${({ theme }) => theme.blackAndWhite.b1};
 }
 h1, h2, h3, h4, h5, h6 {

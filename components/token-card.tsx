@@ -24,8 +24,8 @@ const Container = styled.div`
     );
   }
 
-  max-width: calc(33.3333333% - 2em);
-  min-width: 414px;
+  max-width: calc(33.3333333% - 1em);
+  min-width: 395px;
   max-height: 164px;
   left: 176px;
   top: 633px;
@@ -116,6 +116,8 @@ type CardProps = {
   onClick?: () => void;
 };
 
+{/* NOTE temporarily removed information on the cards, as they are not must haves right 
+now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
 // eslint-disable-next-line react/display-name
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children }, ref) => {
@@ -123,10 +125,10 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
         {rightText && <RightText>{rightText}</RightText>}
-        <Cap>($915M)</Cap>
+        {/* <Cap>($915M)</Cap> */}
         <Symbol>{name}</Symbol>
         <Name>{children}</Name>
-        <Proposals>7 active proposals</Proposals>
+        {/* <Proposals>7 active proposals</Proposals> */}
       </Card>
     );
   }
