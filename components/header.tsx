@@ -4,6 +4,7 @@ import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { HEADER_LOGO } from "../lib/constants";
+import { ConnectButton } from "./connect-button";
 import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
@@ -28,28 +29,6 @@ const Logo = styled.div`
   margin-left: 40px;
   margin-top: 7px;
   margin-right: 19px;
-`;
-
-const ConnectAccount = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 173px;
-  height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
-  margin-top: 15px;
-  margin-right: 60px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-weight: 600;
-  font-size: 16px;
-  background: ${({ theme }) =>
-    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-
-  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
-  border-radius: 8px;
-  cursor: pointer;
 `;
 
 const BetaLabel = styled.div`
@@ -304,7 +283,7 @@ export const Header = () => {
           </LinkContainer>
           <MenuItemsContainer>
             {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
-            <ConnectAccount>Connect account</ConnectAccount>
+            <ConnectButton></ConnectButton>
           </MenuItemsContainer>
           {isMobile && <Hamburger toggled={showMenu} toggle={setShowMenu} color="#fff" size={25} />}
         </ListContainer>
