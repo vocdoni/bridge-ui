@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getRegisteredTokenList } from "../../api";
 import { useMessageAlert } from "../message-alert";
-import useLocalStorage from "../useLocalStorage";
 import useSWR from "swr";
-import { BigNumber } from "@ethersproject/bignumber";
 
 interface RegisteredTokens {
   registeredTokens: string[];
@@ -31,7 +29,6 @@ export function useRegisteredTokens() {
 // These are the tokens we want to show at first
 // Convert this to an array of tokens
 export function UseRegisteredTokens({ children }) {
-  const [registeredTokens, updateRegisteredAddresses] = useState<string[]>();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
@@ -53,14 +50,10 @@ export function UseRegisteredTokens({ children }) {
     if (error) setAlertMessage(error);
   }, [error]);
 
-  useEffect(() => {
-    if (data) updateRegisteredAddresses(data);
-  }, [data]);
-
   return (
     <UseRegisteredTokensContext.Provider
       value={{
-        registeredTokens,
+        registeredTokens: data,
         refreshRegisteredTokens: mutate,
         error,
       }}

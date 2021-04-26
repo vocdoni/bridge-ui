@@ -43,12 +43,28 @@ const TokenList = styled.div`
   }
 `;
 
+const RenderList = ({ list }) => {
+  return (token, idx) => (
+    <TokenCard
+      name={token?.symbol}
+      icon={token?.icon || FALLBACK_TOKEN_ICON}
+      rightText={""}
+      href={token?.address ? "/tokens/info#/" + token?.address : ""}
+      key={idx}
+    >
+      <p>
+        {token?.name || "(loading)"}
+        <br />
+        {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
+      </p>
+    </TokenCard>
+  );
+};
+
 // MAIN COMPONENT
 const TokensPage = () => {
-  const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
-  console.log(tokenAddrs)
+  const { registeredTokens: tokenAddrs } = useRegisteredTokens();
   const tokenInfos = useTokens(tokenAddrs);
-  console.log(tokenInfos)
   return (
     <Container>
       <TopSection
@@ -76,7 +92,7 @@ const TokensPage = () => {
             key={idx}
           >
             <p>
-              {token?.name || "(loading)"}
+              {token?.name || "Loading..."}
               <br />
               {token?.totalSupply && <small>Total supply: {token?.totalSupplyFormatted}</small>}
             </p>

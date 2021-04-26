@@ -1,23 +1,14 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
-import useSWR from "swr";
 
 import { getTokenInfo } from "../../api";
 import { TokenInfo } from "../../types";
-// import { useLoadingAlert } from './loading-alert'
 import { useMessageAlert } from "./../message-alert";
 import useLocalStorage from "../useLocalStorage";
 
 const UseTokenContext = React.createContext<{
   currentTokens: Partial<TokenInfo>[];
-  updateTokens: Dispatch<SetStateAction<Partial<TokenInfo[]>>>;
+  updateTokens: (value: TokenInfo[]) => void;
   resolveTokenInfo: (address: string) => Promise<Partial<TokenInfo>>;
   refreshTokenInfo: (address: string) => Promise<TokenInfo>;
 }>({
@@ -69,7 +60,6 @@ export function useToken(address: string): TokenInfo | null {
 
 /** Returns an array containing the available information about the given addresses */
 export function useTokens(addresses: string[]) {
-  const [_, updateCache] = useLocalStorage("voting:tokens", EXISTING_TOKENS);
   const tokenContext = useContext(UseTokenContext);
   // const { setAlertMessage } = useMessageAlert()
 
@@ -77,18 +67,15 @@ export function useTokens(addresses: string[]) {
     // @TODO: Add multicall + fetch of token information
     const fetchPromises = addresses.map((a) => tokenContext.refreshTokenInfo(a));
     const allTokensInfo = await Promise.all(fetchPromises);
-    updateCache(allTokensInfo);
-    console.log("in fetch tokens info: ", allTokensInfo);
+    tokenContext.updateTokens(allTokensInfo);
     return allTokensInfo;
-    // updateCache(allTokensInfo);
   };
 
-  console.log("these are the addresses ", addresses);
-  const { data } = useSWR(addresses, fetchTokensInfo, {
-    isPaused: () => !addresses,
-  });
-
-  console.log("data outside  ", data);
+  useEffect(() => {
+    if (addresses) {
+      fetchTokensInfo(addresses);
+    }
+  }, [addresses]);
 
   if (tokenContext === null) {
     throw new Error(
@@ -101,30 +88,27 @@ export function useTokens(addresses: string[]) {
 
 const EXISTING_TOKENS: Partial<TokenInfo>[] = [
   {
-    name: "Test",
-    symbol: "Test",
+    name: "DAI",
+    symbol: "DAI",
     address: "0xca0ea2002a4177f9eb1822092ee0b4c183d91bba",
     totalSupplyFormatted: "10.00",
-    icon: "test.png",
   },
 ];
 
 export function UseTokenProvider({ children }) {
-  const [cache, updateCache] = useLocalStorage("voting:tokens", EXISTING_TOKENS);
-  const [tokens, setTokens] = useState(cache);
+  const [tokens, setTokens] = useLocalStorage("voting:tokens", EXISTING_TOKENS);
 
   const { poolPromise } = usePool();
 
   const resolveTokenInfo = useCallback(
     async (address: string) => {
       // @TODO: Add validation address is correct
-      const tokenCached = cache.find(({ address: tokenAddress }) => address === tokenAddress);
-      if (tokenCached) {
-        return tokenCached;
-      }
+      const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
+      if (tokenCached) return tokenCached;
+
       return loadTokenInfo(address);
     },
-    [cache]
+    [tokens]
   );
 
   const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
@@ -137,9 +121,7 @@ export function UseTokenProvider({ children }) {
   );
 
   useEffect(() => {
-    if (tokens.length !== cache.length) {
-      updateCache(tokens);
-    }
+    setTokens(tokens);
   }, [tokens]);
 
   return (
