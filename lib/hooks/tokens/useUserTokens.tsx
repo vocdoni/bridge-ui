@@ -1,12 +1,11 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Contract, Provider, setMulticallAddress } from "ethers-multicall";
+import { useWallet } from "use-wallet";
 import useSWR from "swr";
 import { providers } from "ethers";
 import { useMessageAlert } from "../message-alert";
 import { useRegisteredTokens } from "./useRegisteredTokens";
 import { ERC20JsonAbi, GOERLI_MULTICALL, GOERLI_CHAINID } from "../../constants";
-import { useSigner } from "../useSigner";
-import { useWallet } from "use-wallet";
 
 type TokenBalance = {
   address: string;

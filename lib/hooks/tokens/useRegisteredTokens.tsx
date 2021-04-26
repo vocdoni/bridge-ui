@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from "react";
 import { usePool } from "@vocdoni/react-hooks";
+import useSWR from "swr";
 
 import { getRegisteredTokenList } from "../../api";
 import { useMessageAlert } from "../message-alert";
-import useSWR from "swr";
 
 interface RegisteredTokens {
   registeredTokens: string[];
