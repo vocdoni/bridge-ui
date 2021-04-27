@@ -177,7 +177,7 @@ const TokenAddPage = () => {
   return (
     <>
       <SectionTitle
-        title="Registrer a new token"
+        title="Register a new token"
         subtitle="Enter the detais of an ERC20 token and start submiiting governance processes"
       />
 
