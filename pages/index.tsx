@@ -76,7 +76,7 @@ const IndexPage = () => {
   const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
   const tokenInfos = useTokens(featuredTokenIds);
   const isMobile = useIsMobile();
-  console.log(tokenInfos)
+
   return (
     <div>
       <Head>

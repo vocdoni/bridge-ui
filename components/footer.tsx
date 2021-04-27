@@ -8,8 +8,7 @@ import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { FOOTER_LOGO } from "../lib/constants";
 
 const Container = styled.div`  
-  position: fixed;
-  bottom: 0px;
+  margin-bottom: -71px;
   width: 100%;
   height: 71px;
   display: flex;
