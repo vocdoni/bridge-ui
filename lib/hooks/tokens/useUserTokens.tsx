@@ -7,7 +7,7 @@ import { useMessageAlert } from "../message-alert";
 import { useRegisteredTokens } from "./useRegisteredTokens";
 import { ERC20JsonAbi, GOERLI_MULTICALL, GOERLI_CHAINID } from "../../constants";
 
-type TokenBalance = {
+interface TokenBalance {
   address: string;
   balance: string;
 };

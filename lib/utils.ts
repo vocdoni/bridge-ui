@@ -64,3 +64,22 @@ function toChecksumAddress(address) {
   }
   return checksumAddress;
 }
+
+/**
+ * Merge two sorted arrays of objects based on key
+ * @param shortArr shorter array
+ * @param longArr longer array
+ * @param key object key to merge on
+ * @returns 
+ */
+export function mergeOnKey(shortArr: any[], longArr: any[], key: string) {
+  let longStart = 0, shortStart = 0;
+  const merge = [];
+
+  while (shortStart < shortArr.length) {
+    while (shortArr[shortStart][key] != longArr[longStart][key]) longStart += 1;
+    merge.push({ ...longArr[longStart], ...shortArr[shortStart] });
+    shortStart += 1;
+  }
+  return merge;
+}

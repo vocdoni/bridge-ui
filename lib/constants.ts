@@ -41,6 +41,7 @@ export const ERC20JsonAbi = [
 ];
 
 export const GOERLI_MULTICALL = "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e";
-
 export const GOERLI_CHAINID = 5;
-export const LANDING_PAGE_CTA = "media/landingpage_header_backgroung.svg";
+
+export const LANDING_PAGE_CTA = "media/landingpage_header_background.svg";
+export const LIGHTNING_BOLT = "media/lightning_bolt.svg";

@@ -3,14 +3,19 @@ import { withRouter } from "next/router";
 import styled from "styled-components";
 
 import { featuredTokens } from "../lib/tokens";
-import { useTokens } from "../lib/hooks/tokens";
-import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA } from "../lib/constants";
+import { useTokens, useUserTokens } from "../lib/hooks/tokens";
+import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
 
 import TokenCard from "../components/token-card";
 import Button from "../components/button";
 import SectionTitle from "../components/sectionTitle";
+
+import Link from "next/link";
+import { mergeOnKey } from "../lib/utils"
+import { useWallet } from "use-wallet";
+import { ConnectButton } from "../components/connect-button";
 
 const Head = styled.div`
   display: flex;
@@ -102,10 +107,62 @@ const ShowMoreButton = styled(Button)`
   border-radius: 8px;
 `;
 
+const GrayRectangle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #EEF4FB;
+  width: 1248px;
+  height: 164px;
+  border-radius: 16px;
+  color: #7483AB;
+  font-family: "Manrope"
+`;
+
+const GrayRectangleLarge = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #EEF4FB;
+  width: 1248px;
+  height: 227px;
+  border-radius: 16px;
+  color: #7483AB;
+  font-family: "Manrope"
+`;
+
+const LightningBolt = styled.div`
+  margin: 15px auto;
+  background: url(${LIGHTNING_BOLT});
+  background-repeat: no-repeat;
+  width: 52px;
+  height: 54px;
+`;
+
+const GreyInfo = styled.p`
+  width: 600px;
+  text-align: center;
+  line-height: 0%;
+`;
+
+const NotListedLink = styled.p`
+  color: ${({ theme }) => theme.primary.p1};
+  width: 526px;
+  text-align: center;
+  line-height: 0%;
+`;
+
 // MAIN COMPONENT
 const IndexPage = () => {
   const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
   const tokenInfos = useTokens(featuredTokenIds);
+  const wallet = useWallet();
+  const userTokens = useUserTokens()
+  const userTokenInfos = userTokens.userTokens ?
+    mergeOnKey(userTokens.userTokens, tokenInfos, 'address')
+    : []
   const isMobile = useIsMobile();
 
   return (
@@ -124,31 +181,40 @@ const IndexPage = () => {
       <br />
       <br />
 
-      {/* NOTE temporarily removed this section, as it is not part of landing page's must 
-      haves. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
       {/* YOUR TOKENS */}
-      {/* <TokenSection>
-        <SectionTitle title="Your Tokens" subtitle="Some of the tokens belonging to your wallet" />
-        <TokenList>
-          {featuredTokenIds.map((tokenAddr) => (
-            <TokenCard
-              key={tokenAddr}
-              name={tokenInfos.get(tokenAddr)?.symbol}
-              icon={FALLBACK_TOKEN_ICON}
-              rightText=""
-              href={tokenAddr ? "/tokens/info#/" + tokenAddr : ""}
-            >
-              <p>{tokenInfos.get(tokenAddr)?.name || "(loading)"}</p>
-            </TokenCard>
-          ))}
-        </TokenList>
-        <Row>
-          <ShowMoreButton href="/tokens">View all tokens</ShowMoreButton>
-        </Row>
-      </TokenSection>
+      <TokenSection>
+          <SectionTitle title="Tokens you hold" subtitle="Some of the tokens belonging to your wallet" />
+          {(!wallet?.ethereum || !wallet?.account) ? 
+            <GrayRectangleLarge>
+              <LightningBolt />
+              <GreyInfo>Connect your account and discover the proposals related to your tokens</GreyInfo>
+              <ConnectButton />
+            </GrayRectangleLarge>
+            : userTokenInfos.length ?
+            <TokenList>
+              {userTokenInfos.map(({ symbol, address, name }) => (
+                <TokenCard
+                  key={address}
+                  name={symbol}
+                  icon={FALLBACK_TOKEN_ICON}
+                  rightText=""
+                  href={address ? "/tokens/info#/" + address : ""}
+                >
+                  <p>{name || "Loading..."}</p>
+                </TokenCard>
+              ))}
+            </TokenList>
+            :
+            <GrayRectangle>
+              <GreyInfo>No tokens here</GreyInfo>
+              <Link href="/tokens/add">
+                <NotListedLink>My token is not listed</NotListedLink>
+              </Link>
+            </GrayRectangle>}
+        </TokenSection>
 
       <br />
-      <br /> */}
+      <br /> 
 
       {/* TOP TOKENS */}
        <TokenSection>
