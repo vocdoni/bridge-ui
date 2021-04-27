@@ -94,9 +94,8 @@ export function UseTokenProvider({ children }) {
     async (address: string) => {
       // @TODO: Add validation address is correct
       const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
-      console.log("before token cached");
+
       if (tokenCached) return tokenCached;
-      console.log("in token load");
       return loadTokenInfo(address);
     },
     [tokens]

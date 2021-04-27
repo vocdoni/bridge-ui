@@ -215,7 +215,7 @@ const TokenPage = () => {
         title={"Token details"}
         description={`See the details of ${token?.symbol || "the token"}`}
         Action={() => (
-          <Button mode="strong" wide onClick={() => onCreateProcess(token.address)}>
+          <Button   wide onClick={() => onCreateProcess(token.address)}>
             Create a governance process
           </Button>
         )}

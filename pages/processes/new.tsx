@@ -240,7 +240,7 @@ const SubmitButton = ({ submitting, onSubmit }) =>
       <Spinner />
     </p>
   ) : (
-    <Button mode="strong" onClick={onSubmit}>
+    <Button   onClick={onSubmit}>
       Submit process
     </Button>
   );

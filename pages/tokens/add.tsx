@@ -216,7 +216,7 @@ const TokenAddPage = () => {
           />
         </LeftSection>
         <RightSection>
-          <Button mode="strong" onClick={loadingToken ? undefined : checkToken}>
+          <Button   onClick={loadingToken ? undefined : checkToken}>
             {loadingToken ? <StyledSpinner /> : "Check token"}
           </Button>
         </RightSection>
@@ -257,7 +257,7 @@ const TokenAddPage = () => {
                 <StyledSpinner />
               </Button>
             ) : (
-              <Button mode="strong" onClick={onSubmit}>
+              <Button onClick={onSubmit}>
                 Register token
               </Button>
             )}

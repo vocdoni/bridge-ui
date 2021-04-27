@@ -1,4 +1,51 @@
 import { BigNumber } from "@ethersproject/bignumber";
+import { DigestedProcessResults } from "dvote-js";
+
+export const reducer = () => {};
+
+type CensusProof = { key: string; proof: string[]; value: string };
+
+type Weights = {
+  absolute: string;
+  relative: string;
+  votesEmitted: string;
+};
+
+type Date = {
+  start: string;
+  end: string;
+};
+
+interface ProcessParams {
+  tokenRegistered?: boolean;
+  weights: Partial<Weights>;
+  date: Date;
+
+  results?: DigestedProcessResults;
+  choices: number[];
+
+  isSubmitting: boolean;
+  hasVoted: boolean;
+  refetchingVotedStatus: boolean;
+
+  censusProof?: CensusProof;
+}
+
+export const INITIAL_PROCESS_STATE: ProcessParams = {
+  weights: {
+    absolute: null,
+    relative: null,
+    votesEmitted: null,
+  },
+  date: {
+    start: "",
+    end: "",
+  },
+  choices: [],
+  isSubmitting: false,
+  hasVoted: false,
+  refetchingVotedStatus: false,
+};
 
 export const processState = () => {};
 
