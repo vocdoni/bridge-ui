@@ -51,7 +51,6 @@ const MyButton = styled.div`
   height: 45px;
   left: calc(50% - 173px/2 + 673.5px);
   top: calc(50% - 45px/2 - 749px);
-  margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
   font-size: 16px;
