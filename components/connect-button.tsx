@@ -33,7 +33,7 @@ const AddressContainer = styled.div`
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 
-  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
   @media ${({ theme }) => theme.screens.tablet} {
@@ -58,7 +58,7 @@ const MyButton = styled.div`
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 
-  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
   @media ${({ theme }) => theme.screens.tablet} {

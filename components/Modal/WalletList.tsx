@@ -54,7 +54,7 @@ const WalletOption = styled.div`
   border-radius: 8px;
   text-align: center;
   white-space: normal;
-  box-shadow: 0px 2px 4px rgba(180, 188, 202, 0.5);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};;
   display: flex;
   flex-direction: column;
   align-items: center;
