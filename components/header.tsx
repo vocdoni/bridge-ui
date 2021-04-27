@@ -3,15 +3,14 @@ import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { HEADER_LOGO } from "../lib/constants";
+import { ConnectButton } from "./connect-button";
+import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;
-  z-index: 100;
-  min-height: 50px;
   position: fixed;
   top: 0;
-  padding: 10px 0 10px;
-  background-color: ${({ theme }) => theme.blackAndWhite.w1};
 
   font-size: 16px;
   display: flex;
@@ -19,29 +18,44 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  background: ${({ theme }) => theme.blackAndWhite.w1}99;
 `;
 
-const BetaLabel = styled.label`
+const Logo = styled.div`
+  background: url(${HEADER_LOGO});
+  position: asbsolute;
+  width: 57px;
+  height: 57px;
+  margin-left: 40px;
+  margin-top: 7px;
+  margin-right: 19px;
+`;
+
+const BetaLabel = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 1px 8px 2px;
 
   width: 43px;
   height: 19px;
   left: calc(50% - 43px / 2 - 549.5px);
   top: calc(50% - 19px / 2 - 750px);
 
+  font-family: Manrope;
+  font-size: 12px;
+  font-weight: 600;
+
   border-radius: 40px;
   color: white;
+  margin-top: 5px;
   margin-left: 10px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 `;
 
 const ListContainer = styled.div`
-  padding: ${({ theme }) => "0 " + theme.margins.desktop.horizontal};
+  padding: ${({ theme }) => "25 " + theme.margins.desktop.horizontal};
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -61,9 +75,30 @@ const MenuItemsContainer = styled.div`
   }
 `;
 
-const ListItem = styled.div`
-  margin-right: 20px;
+const TextOne = styled.span`
+  margin-top: 5px;
+  font-family: Manrope;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+  align-items: center;
+  text-decoration: none;
+  color: ${({ theme }) => theme.grayScale.g5};
+`;
 
+const TextTwo = styled.span`
+  margin-top: 5px;
+  margin-left: 3px;
+  font-family: Manrope;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+  align-items: center;
+  text-decoration: none;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+`;
+
+const ListItem = styled.div`
   &:last-child {
     margin-right: 0;
   }
@@ -93,16 +128,32 @@ const ListItem = styled.div`
   }
 `;
 
-const VocdoniLink = styled.a`
+const VoiceLink = styled.a`
+  position: absolute;
+  height: 24px;
+  left: 111px;
+  top: 22px;
+
+  font-family: Manrope;
   font-weight: 500;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+  font-size: 18px;
+
+  display: flex;
+  align-items: center;
   text-decoration: none;
   cursor: pointer;
 `;
 
 const ClickableLink = styled.a`
+  display: flex;
+  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
   text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+  &:hover {
+    color: ${({ theme }) => theme.primary.p1};
+    );
 `;
 
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
@@ -137,6 +188,7 @@ const Section = styled.div`
 const LinkContainer = styled.div`
   display: flex;
   align-items: baseline;
+  cursor: pointer;
 `;
 
 interface LinkProps {
@@ -149,14 +201,14 @@ interface LinkProps {
 
 export const LINKS: LinkProps[] = [
   {
-    url: "/tokens",
-    name: "Find Tokens",
+    url: "/",
+    name: "Home",
+    external: false,
     header: true,
   },
   {
-    url: "https://blog.vocdoni.io",
-    name: "Blog",
-    external: true,
+    url: "/tokens",
+    name: "Find Tokens",
     header: true,
   },
   {
@@ -169,7 +221,7 @@ export const LINKS: LinkProps[] = [
     url: "https://discord.gg/sQCxgYs",
     name: "Discord",
     external: true,
-    header: true,
+    header: false,
     footer: true,
   },
   {
@@ -181,6 +233,12 @@ export const LINKS: LinkProps[] = [
   {
     url: "https://t.me/vocdoni",
     name: "Telegram",
+    external: true,
+    footer: true,
+  },
+  {
+    url: "https://t.me/vocdoni", /* Forum link ? */
+    name: "Forum",
     external: true,
     footer: true,
   },
@@ -220,12 +278,17 @@ export const Header = () => {
         <ListContainer>
           <LinkContainer>
             <Link href="/" passHref>
-              <VocdoniLink target="_self">Vocdoni Bridge</VocdoniLink>
+              <VoiceLink target="_self">
+                <Logo></Logo>
+                <TextOne>Aragon</TextOne>
+                <TextTwo>Voice</TextTwo>
+                <BetaLabel>Beta</BetaLabel>
+              </VoiceLink>
             </Link>
-            <BetaLabel>Beta</BetaLabel>
           </LinkContainer>
           <MenuItemsContainer>
             {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
+            <ConnectButton></ConnectButton>
           </MenuItemsContainer>
           {isMobile && <Hamburger toggled={showMenu} toggle={setShowMenu} color="#fff" size={25} />}
         </ListContainer>

@@ -40,38 +40,6 @@ const HeaderSubtitle = styled.p`
   line-height: 150%;
 `;
 
-
-const SearchRow = styled.div`
-  display: flex;  
-  justify-content: space-between;
-`;
-
-const SearchField = styled.input`
-  type: text;
-  border: 2px solid #EFF1F7;
-  box-sizing: border-box;
-  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.35);
-  border-radius: 8px;
-  width: 394px;
-  height: 46px;
-  padding-left: 10px;
-`;
-
-const SearchButton = styled.button`
-  background: linear-gradient(
-    ${({ theme }) => theme.gradients.primary.mg1.a}, 
-    ${({ theme }) => theme.gradients.primary.mg1.c1}, 
-    ${({ theme }) => theme.gradients.primary.mg1.c2});
-  box-shadow: 0px 3px 3px rgba(100, 115, 155, 0.35);
-  border-radius: 8px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  width: 140px;
-  height: 46px;
-  padding: 12px 20px;
-  margin-left: 10px;
-  font-size: 16px;
-`;
-
 const Row = styled.div`
   display: flex;
   justify-content: center};
@@ -97,7 +65,7 @@ const ShowMoreButton = styled(Button)`
   padding: 12px 20px;
   background: #FFFFFF;
   box-sizing: border-box;
-  box-shadow: 0px 3px 3px rgba(180, 193, 228, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border: 2px solid #EFF1F7;
   border-radius: 8px;
 `;

@@ -25,7 +25,7 @@ const ModalTitle = styled.div`
   box-sizing: border-box;
   margin-top: 10px;
   padding-left: 16px;
-  font-family: Overpass;
+  font-family: Manrope;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -54,7 +54,7 @@ const WalletOption = styled.div`
   border-radius: 8px;
   text-align: center;
   white-space: normal;
-  box-shadow: 0px 2px 4px rgba(180, 188, 202, 0.5);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,9 +67,10 @@ const WalletName = styled.h4`
   display: flex;
   margin-top: 10px;
   color: #25314d;
-  font-family: Overpass;
+  font-family: Manrope;
+  font-style: normal;
   font-weight: 300;
-  font-size: 22px;
+  font-size: 20px;
 `;
 
 const WalletLogo = styled.img`
@@ -91,9 +92,9 @@ const ExternalLinkOption = styled.a`
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  font-family: Overpass;
+  font-family: Manrope;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 300;
   font-size: 12px;
   color: #637381;
 `;
@@ -107,7 +108,7 @@ const CloseIcon = styled.div`
 
 const DontHaveAccount = styled.a`
   text-decoration: none;
-  font-family: Overpass;
+  font-family: Manrope;
   font-style: normal;
   font-weight: 300;
   font-size: 18px;
