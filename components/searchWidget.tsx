@@ -9,7 +9,7 @@ const SearchField = styled.input`
   type: text;
   border: 2px solid #EFF1F7;
   box-sizing: border-box;
-  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.35);
+  box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   width: 394px;
   height: 46px;
