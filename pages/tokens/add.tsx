@@ -33,6 +33,7 @@ const RowSummary = styled.div`
 `;
 
 const Info = styled.div`
+  max-width: 25%;
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: row;
   }
@@ -50,6 +51,7 @@ const TokenAttributeTitle = styled.p`
 
 const Description = styled.h4`
   font-size: 18px;
+  overflow-wrap: break-word;
   letter-spacing: 0;
 `;
 
