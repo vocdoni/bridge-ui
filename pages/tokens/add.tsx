@@ -6,59 +6,19 @@ import { useWallet } from "use-wallet";
 import Spinner from "react-svg-spinner";
 import { usePool } from "@vocdoni/react-hooks";
 
-import Button from "../../components/button";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { useRegisteredTokens } from "../../lib/hooks/tokens";
-import { TopSection } from "../../components/top-section";
 import { useSigner } from "../../lib/hooks/useSigner";
+import { useRegisteredTokens } from "../../lib/hooks/tokens";
+
+import Button from "../../components/button";
+import SectionTitle from "../../components/sectionTitle";
+import SearchWidget from "../../components/searchWidget";
 
 const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
-`;
-
-const LeftSection = styled.div`
-  flex: 7;
-  input[type="text"] {
-    border: none;
-    background-color: ${({ theme }) => theme.blackAndWhite.w1};
-    padding: 1em;
-    margin-top: 1em;
-    border-radius: 8px;
-    width: calc(100% - 2 * 1em);
-  }
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
-  }
-`;
-const RightSection = styled.div`
-  display: flex;
-  align-items: flex-end;
-  flex: 3;
-  margin-left: 2em;
-  & > * {
-    width: 100%;
-  }
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-top: 20px;
-    max-width: 100%;
-    margin-left: 0px;
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
 `;
 
 const RowSummary = styled.div`
@@ -78,8 +38,14 @@ const Info = styled.div`
   }
 `;
 
-const Title = styled.p`
-  font-weight: 500;
+const TokenAttributeTitle = styled.p`
+  margin-top: 0;
+  margin-bottom: 9;
+  line-height: 27px;
+  color: ${({ theme }) => theme.primary.p1};
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
 `;
 
 const Description = styled.h4`
@@ -96,7 +62,7 @@ const Address = styled.h4`
   letter-spacing: 0;
 `;
 
-const RowContinue = styled.div`
+const ButtonRow = styled.div`
   margin-top: 5em;
 
   display: flex;
@@ -104,17 +70,27 @@ const RowContinue = styled.div`
 
   & > * {
     margin-top: -3em;
-    min-width: 250px;
   }
 `;
 
-const TokenContractDetails = styled.div`
-  text-align: center;
+const WhiteSection = styled.div`
+  padding: 80px 230px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  border-radius: 13px;
 `;
 
-const LightText = styled.p`
+const RegisterButton = styled(Button)`
+  height: 46px;
+  padding: 12px 20px;
+  background: linear-gradient(
+    ${({ theme }) => theme.gradients.primary.mg1.a},
+    ${({ theme }) => theme.gradients.primary.mg1.c1},
+    ${({ theme }) => theme.gradients.primary.mg1.c2}
+  );
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
-  letter-spacing: 0.01em;
+  font-size: 16px;
 `;
 
 // MAIN COMPONENT
@@ -197,74 +173,65 @@ const TokenAddPage = () => {
   // RENDER
 
   return (
-    <div>
-      <TopSection
-        title="Register a Token"
-        description="Enter the details of an ERC20
-                             token and start submitting
-                             governance processes."
+    <>
+      <SectionTitle
+        title="Registrer a new token"
+        subtitle="Enter the detais of an ERC20 token and start submiiting governance processes"
       />
-      <Row>
-        <LeftSection>
-          <h2>Token contract address</h2>
-          <LightText>Enter the address of the ERC20 contract that you want to register</LightText>
-          <input
-            type="text"
-            placeholder="0x1234..."
-            onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
-            onChange={(ev) => setFormTokenAddress(ev.target.value)}
-          />
-        </LeftSection>
-        <RightSection>
-          <Button mode="strong" onClick={loadingToken ? undefined : checkToken}>
-            {loadingToken ? <StyledSpinner /> : "Check token"}
-          </Button>
-        </RightSection>
-      </Row>
+      <WhiteSection>
+        <SectionTitle
+          smallerTitle={true}
+          title="Token contract address"
+          subtitle="Enter the address of the ERC20 contract that you want to register"
+        />
+        <SearchWidget
+          onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
+          onChange={(ev) => setFormTokenAddress(ev.target.value)}
+          onClick={loadingToken ? undefined : checkToken}
+        />
 
-      {tokenInfo && (
-        <>
-          <TokenContractDetails>
-            <h2>Token contract details</h2>
-            <LightText>
-              The following token will be registered. All token holders will be able to submit new
-              governance processes.
-            </LightText>
-          </TokenContractDetails>
+        <br />
+        <br />
 
-          <RowSummary>
-            <Info>
-              <Title>Token symbol</Title>
-              <Description>{tokenInfo?.symbol}</Description>
-            </Info>
-            <Info>
-              <Title>Token name</Title>
-              <Description>{tokenInfo?.name}</Description>
-            </Info>
-            <Info>
-              <Title>Total supply</Title>
-              <Description>{tokenInfo?.totalSupplyFormatted}</Description>
-            </Info>
-            <Info>
-              <Title>Token address</Title>
-              <Address>{tokenInfo?.address}</Address>
-            </Info>
-          </RowSummary>
+        {tokenInfo && (
+          <>
+            <SectionTitle
+              smallerTitle={true}
+              title="Token contract details"
+              subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+            />
+            <RowSummary>
+              <Info>
+                <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
+                <Description>{tokenInfo?.symbol}</Description>
+              </Info>
+              <Info>
+                <TokenAttributeTitle>Token name</TokenAttributeTitle>
+                <Description>{tokenInfo?.name}</Description>
+              </Info>
+              <Info>
+                <TokenAttributeTitle>Total supply</TokenAttributeTitle>
+                <Description>{tokenInfo?.totalSupplyFormatted}</Description>
+              </Info>
+              <Info>
+                <TokenAttributeTitle>Token address</TokenAttributeTitle>
+                <Address>{tokenInfo?.address}</Address>
+              </Info>
+            </RowSummary>
 
-          <RowContinue>
-            {registeringToken ? (
-              <Button>
-                <StyledSpinner />
-              </Button>
-            ) : (
-              <Button mode="strong" onClick={onSubmit}>
-                Register token
-              </Button>
-            )}
-          </RowContinue>
-        </>
-      )}
-    </div>
+            <ButtonRow>
+              {registeringToken ? (
+                <Button>
+                  <StyledSpinner />
+                </Button>
+              ) : (
+                <RegisterButton onClick={onSubmit}>Register token</RegisterButton>
+              )}
+            </ButtonRow>
+          </>
+        )}
+      </WhiteSection>
+    </>
   );
 };
 
