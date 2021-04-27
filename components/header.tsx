@@ -278,7 +278,12 @@ export const Header = () => {
         <ListContainer>
           <LinkContainer>
             <Link href="/" passHref>
-              <VoiceLink target="_self"><Logo></Logo><TextOne>Aragon</TextOne><TextTwo>Voice</TextTwo><BetaLabel>Beta</BetaLabel></VoiceLink>
+              <VoiceLink target="_self">
+                <Logo></Logo>
+                <TextOne>Aragon</TextOne>
+                <TextTwo>Voice</TextTwo>
+                <BetaLabel>Beta</BetaLabel>
+              </VoiceLink>
             </Link>
           </LinkContainer>
           <MenuItemsContainer>

@@ -7,7 +7,7 @@ const SearchRow = styled.div`
 
 const SearchField = styled.input`
   type: text;
-  border: 2px solid #EFF1F7;
+  border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
