@@ -88,17 +88,8 @@ const GrayRectangle = styled.div`
   font-family: "Manrope"
 `;
 
-const GrayRectangleLarge = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #EEF4FB;
-  width: 1248px;
+const GrayRectangleTall = styled(GrayRectangle)`
   height: 227px;
-  border-radius: 16px;
-  color: #7483AB;
-  font-family: "Manrope"
 `;
 
 const LightningBolt = styled.div`
@@ -153,11 +144,11 @@ const IndexPage = () => {
       <TokenSection>
           <SectionTitle title="Tokens you hold" subtitle="Some of the tokens belonging to your wallet" />
           {(!wallet?.ethereum || !wallet?.account) ? 
-            <GrayRectangleLarge>
+            <GrayRectangleTall>
               <LightningBolt />
               <GreyInfo>Connect your account and discover the proposals related to your tokens</GreyInfo>
               <ConnectButton />
-            </GrayRectangleLarge>
+            </GrayRectangleTall>
             : userTokenInfos.length ?
             <TokenList>
               {userTokenInfos.map(({ symbol, address, name }) => (
