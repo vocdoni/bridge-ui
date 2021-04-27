@@ -2,17 +2,9 @@ import React from "react";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import {
-  Button as AragonButton,
-  IconEthereum,
-  IconPower,
-  AddressField,
-  LoadingRing,
-} from "@aragon/ui";
-import Button from "../components/button";
 import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
-
+import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
 
 const ButtonContainer = styled.div`
@@ -25,26 +17,59 @@ const ButtonContainer = styled.div`
 `;
 
 const AddressContainer = styled.div`
-  margin-bottom: 15px;
-  max-width: 260px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 173px;
+  height: 45px;
+  left: calc(50% - 173px/2 + 673.5px);
+  top: calc(50% - 45px/2 - 749px);
+  margin-top: 15px;
+  margin-right: 60px;
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-weight: 600;
+  font-size: 16px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  cursor: pointer;
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
     text-align: center;
   }
 `;
 
-const MyButton = styled(Button)`
-  max-width: 300px;
+const MyButton = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 173px;
+  height: 45px;
+  left: calc(50% - 173px/2 + 673.5px);
+  top: calc(50% - 45px/2 - 749px);
+  margin-right: 60px;
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-weight: 600;
+  font-size: 16px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  cursor: pointer;
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
   }
 `;
 
 const WalletAddress = ({ reset, account }) => {
-  const icon = <AragonButton icon={<IconPower />} size="mini" onClick={reset} />;
   return (
     <AddressContainer>
-      <AddressField address={account} icon={icon} />
+      {shortAddress(account)}
     </AddressContainer>
   );
 };
@@ -66,7 +91,7 @@ export const ConnectButton = () => {
   const loadingOrConnecting = poolLoading || status === "connecting";
 
   const label = useMemo(() => {
-    if (poolLoading) return "Connecting to Vocdoni";
+    if (poolLoading) return "Connecting...";
     if (status === "connecting") return "Connecting to " + networkName;
 
     if (error instanceof ChainUnsupportedError) {
@@ -77,7 +102,7 @@ export const ConnectButton = () => {
       return "Wallet connection rejected";
     }
 
-    return isConnected ? "Show dashboard" : "Connect to Wallet";
+    return isConnected ? "Show dashboard" : "Connect account";
   }, [poolLoading, status, error]);
 
   const mode = useMemo(() => {
@@ -108,12 +133,8 @@ export const ConnectButton = () => {
   return (
     <ButtonContainer>
       <MyButton
-        wide
-        icon={loadingOrConnecting ? <LoadingRing /> : <IconEthereum />}
-        mode={mode}
         onClick={handleButtonClick}
-        label={label}
-      />
+      >{label}</MyButton>
     </ButtonContainer>
   );
 };

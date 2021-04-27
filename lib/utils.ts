@@ -25,7 +25,7 @@ export function throwIfNotBrowser() {
  * @param slashIndex - number of letters to show at beginning of address
  * @returns formatted address
  */
-export function shortAddress(address: string, slashIndex = 15): string {
+export function shortAddress(address: string, slashIndex = 6): string {
   // An ethereum address has 42 characters
   return address.slice(0, slashIndex) + "..." + address.slice(38, 42);
 }

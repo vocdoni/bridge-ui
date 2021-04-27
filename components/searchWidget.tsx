@@ -7,7 +7,7 @@ const SearchRow = styled.div`
 
 const SearchField = styled.input`
   type: text;
-  border: 2px solid #EFF1F7;
+  border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
@@ -21,7 +21,7 @@ const SearchButton = styled.button`
     ${({ theme }) => theme.gradients.primary.mg1.a}, 
     ${({ theme }) => theme.gradients.primary.mg1.c1}, 
     ${({ theme }) => theme.gradients.primary.mg1.c2});
-  box-shadow: 0px 3px 3px rgba(100, 115, 155, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   width: 140px;
