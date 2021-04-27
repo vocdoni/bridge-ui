@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
-
+import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
 
 const ButtonContainer = styled.div`
@@ -21,7 +21,7 @@ const AddressContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  max-width: 300px;
+  width: 173px;
   height: 45px;
   left: calc(50% - 173px/2 + 673.5px);
   top: calc(50% - 45px/2 - 749px);
@@ -66,12 +66,10 @@ const MyButton = styled.div`
   }
 `;
 
-
-
 const WalletAddress = ({ reset, account }) => {
   return (
     <AddressContainer>
-      {account}
+      {shortAddress(account)}
     </AddressContainer>
   );
 };
