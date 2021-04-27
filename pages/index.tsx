@@ -23,7 +23,7 @@ const Head = styled.div`
   height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-family: "Manrope"
+  font-family: "Manrope";
 `;
 
 const HeaderTitle = styled.h4`
@@ -64,10 +64,10 @@ const ShowMoreButton = styled(Button)`
   height: 46px;
   color: ${({ theme }) => theme.primary.p1};
   padding: 12px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-sizing: border-box;
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border: 2px solid #EFF1F7;
+  border: 2px solid #eff1f7;
   border-radius: 8px;
 `;
 
@@ -78,10 +78,13 @@ const IndexPage = () => {
   const isMobile = useIsMobile();
 
   return (
-    <div>
+    <>
       <Head>
         <HeaderTitle>Welcome to Aragon Voice</HeaderTitle>
-        <HeaderSubtitle>Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end verifiable layer 2.</HeaderSubtitle>
+        <HeaderSubtitle>
+          Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end
+          verifiable layer 2.
+        </HeaderSubtitle>
         {/* NOTE temporarily removed this section, as it is not part of landing page's must 
         haves. VR 23-04-2021 */}
         {/* <SearchRow>
@@ -120,26 +123,29 @@ const IndexPage = () => {
       <br /> */}
 
       {/* TOP TOKENS */}
-       <TokenSection>
-          <SectionTitle title="Top Tokens" subtitle="Some of the most relevant tokens on the platform" />
-          <TokenList>
-            {tokenInfos.map(({ symbol, address, name }) => (
-              <TokenCard
-                key={address}
-                name={symbol}
-                icon={FALLBACK_TOKEN_ICON}
-                rightText=""
-                href={address ? "/tokens/info#/" + address : ""}
-              >
-                <p>{shortTokenName(name) || "Loading..."}</p>
-              </TokenCard>
-            ))}
-          </TokenList>
-          <Row>
-            <ShowMoreButton href="/tokens">View all tokens</ShowMoreButton>
-          </Row>
-        </TokenSection>
-    </div>
+      <TokenSection>
+        <SectionTitle
+          title="Top Tokens"
+          subtitle="Some of the most relevant tokens on the platform"
+        />
+        <TokenList>
+          {tokenInfos.map(({ symbol, address, name }) => (
+            <TokenCard
+              key={address}
+              name={symbol}
+              icon={FALLBACK_TOKEN_ICON}
+              rightText=""
+              href={address ? "/tokens/info#/" + address : ""}
+            >
+              <p>{shortTokenName(name) || "Loading..."}</p>
+            </TokenCard>
+          ))}
+        </TokenList>
+        <Row>
+          <ShowMoreButton href="/tokens">View all tokens</ShowMoreButton>
+        </Row>
+      </TokenSection>
+    </>
   );
 };
 
