@@ -154,15 +154,15 @@ const IndexPage = () => {
        <TokenSection>
           <SectionTitle title="Top Tokens" subtitle="Some of the most relevant tokens on the platform" />
           <TokenList>
-            {featuredTokenIds.map((tokenAddr) => (
+            {tokenInfos.map(({ symbol, address, name }) => (
               <TokenCard
-                key={tokenAddr}
-                name={tokenInfos.get(tokenAddr)?.symbol}
+                key={address}
+                name={symbol}
                 icon={FALLBACK_TOKEN_ICON}
                 rightText=""
-                href={tokenAddr ? "/tokens/info#/" + tokenAddr : ""}
+                href={address ? "/tokens/info#/" + address : ""}
               >
-                <p>{tokenInfos.get(tokenAddr)?.name || "(loading)"}</p>
+                <p>{name || "Loading..."}</p>
               </TokenCard>
             ))}
           </TokenList>
