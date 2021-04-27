@@ -11,11 +11,11 @@ const Container = styled.div`
   box-sizing: border-box;
   margin: 0.5rem 0.5em;
   border-radius: 13px;
-  box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
+  box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border: 1px solid ${({ theme }) => theme.grayScale.g2};
 
   &:hover {
-    box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       101.6deg,
       ${({ theme }) => theme.gradients.primary.mg1_soft.c1}33,
