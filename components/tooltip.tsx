@@ -39,13 +39,13 @@ const TooltipText = styled.div`
   border-radius: 10px;
   color: #865BFF;
   float: left;
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: ${props => props.newLine ? '8px' : '0px'};
   margin-left: ${props => props.newLine ? '-160px' : '40px'};
   margin-top: ${props => props.newLine ? (props.topText ? '19px' : '8px') : '0px'};
   text-align: left;
   visibility: hidden;
-  width: 160px;
+  width: ${props => props.newLine ? '180px' : '160px'};
   padding: 14px 16px;
   position: absolute;
   z-index: 1;
