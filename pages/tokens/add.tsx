@@ -11,7 +11,7 @@ import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
+import { useRegisteredTokens } from "../../lib/hooks/tokens";
 import { TopSection } from "../../components/top-section";
 import { useSigner } from "../../lib/hooks/useSigner";
 

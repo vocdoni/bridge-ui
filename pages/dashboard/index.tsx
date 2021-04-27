@@ -8,11 +8,10 @@ import { useRouter } from "next/router";
 
 import TokenCard from "../../components/token-card";
 // import Select from 'react-select'
-import { useTokens } from "../../lib/hooks/tokens";
-import { useRegisteredTokens } from "../../lib/hooks/registered-tokens";
+import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { getTokenProcesses } from "../../lib/api";
 import { ProcessInfo, TokenInfo } from "../../lib/types";
-import { limitedText } from "../../lib/util";
+import { limitedText } from "../../lib/utils";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 

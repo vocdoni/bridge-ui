@@ -20,7 +20,7 @@ import styled from "styled-components";
 import { TokenInfo } from "../../lib/types";
 import { strDateDiff } from "../../lib/date";
 import { HEX_REGEX } from "../../lib/regex";
-import { areAllNumbers } from "../../lib/util";
+import { areAllNumbers } from "../../lib/utils";
 import { useToken } from "../../lib/hooks/tokens";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
