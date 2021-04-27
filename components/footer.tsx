@@ -5,26 +5,52 @@ import Link from "next/link";
 import { LINKS } from "./header";
 import { ConnectButton } from "./connect-button";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
+import { FOOTER_LOGO } from "../lib/constants";
 
-const Container = styled.div`
-  padding: 30px 0 30px;
-  font-size: 13px;
+const Container = styled.div`  
+  width: 100%;
+  position: absolute;
+
+  margin-top: 73px;
+  height: 71px;
+  font-size: 16px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  background: ${({ theme }) => theme.blackAndWhite.w1}CC;
+`;
+
+const Logo = styled.div`
+  background: url(${FOOTER_LOGO});
+  position: absolute;
+  display: flex;
+  width: 155px;
+  margin-top: 15px;
+  height: 40px;
+  left: 176px;
 `;
 
 const Section = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 40px 40px 0;
+  padding: 0px 40px 0;
   color: ${({ color }) => color};
 `;
 
 const ClickableText = styled.a`
-  text-decoration: underline;
+  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
+  display: flex;
+  justify-content: space-between;
+  
+  align-items: center;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+  &:hover {
+    color: ${({ theme }) => theme.primary.p1};
+    );
 `;
 
 const MobileFooter = styled.div`
@@ -40,7 +66,6 @@ const MobileFooter = styled.div`
 `;
 
 export const Footer = () => {
-  const theme = useTheme();
   const isMobile = useIsMobile();
 
   const FOOTER_LINKS = LINKS.filter((l) => l.footer);
@@ -52,16 +77,17 @@ export const Footer = () => {
   ) : (
     <Container>
       <Section>
-        {FOOTER_LINKS.map(({ url, name }, i) => (
-          <div key={name}>
-            <Link href={url} passHref>
-              <ClickableText target="_blank">{name}</ClickableText>
-            </Link>
-            {i < FOOTER_LINKS.length - 1 ? " · " : null}
-          </div>
-        ))}
+        <Logo></Logo>
       </Section>
-      <Section color={theme.blackAndWhite.b1}>Vocdoni {new Date().getFullYear()}</Section>
+      <Section>
+        {FOOTER_LINKS.map(({ url, name }, i) => (
+            <div key={name}>
+              <Link href={url} passHref>
+                <ClickableText target="_blank">{name}</ClickableText>
+              </Link>
+            </div>
+          ))}
+      </Section>
     </Container>
   );
 };
