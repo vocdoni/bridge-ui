@@ -153,7 +153,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
     CensusErc20Api.getBalanceMappingPosition(address, pool).catch(() => BigNumber.from(-1)),
     getProcessList(address, pool),
   ]).then(
-    ([name, symbol, totalSupply, decimals, balMappingPos, pids]: [
+    ([name, symbol, supply, decimals, balMappingPos, pids]: [
       string,
       string,
       BigNumber,
@@ -161,13 +161,22 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
       BigNumber,
       string[]
     ]) => {
+      const totalSupply = new TokenAmount(supply.toString(), decimals, {
+        symbol,
+      });
+
+      const totalSupplyNumber = Number(
+        totalSupply.toString({
+          commify: false,
+          symbol: "",
+        })
+      );
+
       return {
         name,
         symbol,
-        totalSupply,
-        totalSupplyFormatted: new TokenAmount(totalSupply.toString(), decimals, {
-          symbol,
-        }).format(),
+        totalSupply: totalSupplyNumber.toFixed(0),
+        totalSupplyFormatted: totalSupply.format(),
         decimals,
         address,
         balanceMappingPosition: balMappingPos.toNumber(),

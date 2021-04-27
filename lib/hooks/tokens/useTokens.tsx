@@ -5,6 +5,7 @@ import { getTokenInfo } from "../../api";
 import { TokenInfo } from "../../types";
 import { useMessageAlert } from "./../message-alert";
 import useLocalStorage from "../useLocalStorage";
+import useSWR from "swr";
 
 const UseTokenContext = React.createContext<{
   currentTokens: Partial<TokenInfo>[];
@@ -18,35 +19,24 @@ const UseTokenContext = React.createContext<{
   refreshTokenInfo: () => Promise.reject(new Error("Not initialized")),
 });
 
-export function useToken(address: string): TokenInfo | null {
+export function useToken(address: string): Partial<TokenInfo> | null {
   const tokenContext = useContext(UseTokenContext);
-  const [tokenInfo, setTokenInfo] = useState(null);
   const { setAlertMessage } = useMessageAlert();
   // const { setLoadingMessage, hideLoading } = useLoadingAlert()
 
-  useEffect(() => {
-    let ignore = false;
+  const fetchToken = async () => {
+    try {
+      const newInfo = await tokenContext.resolveTokenInfo(address);
+      return newInfo;
+    } catch (error) {
+      setAlertMessage("The token details could not be loaded");
+      console.error(error);
+    }
+  };
 
-    const update = () => {
-      if (!address) return;
-
-      tokenContext
-        .resolveTokenInfo(address)
-        .then((newInfo) => {
-          if (ignore) return;
-          setTokenInfo(newInfo);
-        })
-        .catch((err) => {
-          setAlertMessage("The token details could not be loaded");
-          console.error(err);
-        });
-    };
-    update();
-
-    return () => {
-      ignore = true;
-    };
-  }, [address]);
+  const { data } = useSWR(address, fetchToken, {
+    isPaused: () => !address,
+  });
 
   if (tokenContext === null) {
     throw new Error(
@@ -55,7 +45,7 @@ export function useToken(address: string): TokenInfo | null {
     );
   }
 
-  return tokenInfo;
+  return data;
 }
 
 /** Returns an array containing the available information about the given addresses */
@@ -104,8 +94,9 @@ export function UseTokenProvider({ children }) {
     async (address: string) => {
       // @TODO: Add validation address is correct
       const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
+      console.log("before token cached");
       if (tokenCached) return tokenCached;
-
+      console.log("in token load");
       return loadTokenInfo(address);
     },
     [tokens]

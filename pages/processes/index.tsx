@@ -392,14 +392,12 @@ const ProcessPage = () => {
     const pool = await poolPromise;
     const votes = await VotingApi.getEnvelopeHeight(processId, pool);
     const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
-
-    const totalSupply = new TokenAmount(token.totalSupply, token.decimals);
     const absolute = new TokenAmount(resultsWeight, token.decimals, {
       symbol: token.symbol,
     });
 
     const weight = BigNumber.from(absolute.value).mul(1000);
-    const supply = BigNumber.from(totalSupply.value);
+    const supply = BigNumber.from(token.totalSupply);
     const relative = (weight.div(supply).toNumber() / 10).toFixed(2);
     const votesEmitted = votes.toString();
 
