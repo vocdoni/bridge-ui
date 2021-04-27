@@ -180,6 +180,9 @@ const TokenAddPage = () => {
         title="Registrer a new token"
         subtitle="Enter the detais of an ERC20 token and start submiiting governance processes"
       />
+
+      <br />
+
       <WhiteSection>
         <SectionTitle
           smallerTitle={true}
