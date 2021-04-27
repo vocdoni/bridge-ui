@@ -103,10 +103,6 @@ export const VotesAmount = styled.span`
   margin-top: 0.4em;
 `;
 
-export const Radio = styled(RadioChoice.Style)`
-  font-size: 15px;
-`;
-
 export const RowContinue = styled.div`
   display: flex;
   justify-content: space-around;
@@ -219,6 +215,7 @@ export const QuestionContainer = styled.div`
   box-sizing: border-box;
   box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
   border-radius: 13px;
+  display: flex;
 `;
 
 export const QuestionInformation = styled.div`
@@ -227,11 +224,6 @@ export const QuestionInformation = styled.div`
   box-sizing: border-box;
   padding: 52px 65px;
   max-width: 60%;
-`;
-
-export const QuestionOptions = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 export const QuestionNumber = styled.p`
   margin: 0;
@@ -254,4 +246,41 @@ export const QuestionDescription = styled.div`
   font-size: 18px;
   font-weight: 400;
   color: ${({ theme }) => theme.grayScale.g5};
+`;
+
+export const QuestionOptions = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+export const OptionLabel = styled.label`
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+`;
+
+export const Radio = styled.input`
+  flex-direction: column;
+  display: flex;
+
+  background: #ffffff;
+
+  border: 2px solid #eff1f7;
+  box-sizing: border-box;
+  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.25);
+  border-radius: 26px;
+`;
+
+export const OptionTitleContainer = styled.div`
+  margin-left: 10px;
+  flex-direction: column;
+  display: flex;
+`;
+
+export const OptionTitle = styled.p`
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
 `;

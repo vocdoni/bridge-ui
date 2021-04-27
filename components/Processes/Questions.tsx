@@ -1,4 +1,5 @@
 import React from "react";
+import { MOCK_QUESTIONS } from "./state";
 import {
   QuestionContainer,
   QuestionDescription,
@@ -6,21 +7,42 @@ import {
   QuestionNumber,
   QuestionOptions,
   QuestionTitle,
+  OptionLabel,
+  Radio,
+  OptionTitleContainer,
+  OptionTitle,
 } from "./styled";
+
+const Option = ({ title }) => {
+  return (
+    <OptionLabel>
+      <Radio type="checkbox" />
+      <OptionTitleContainer>
+        <OptionTitle>{title}</OptionTitle>
+      </OptionTitleContainer>
+    </OptionLabel>
+  );
+};
 
 export const Questions = () => {
   return (
-    <QuestionContainer>
-      <QuestionInformation>
-        <QuestionNumber>Question #1</QuestionNumber>
-        <QuestionTitle>Do you approve a minting of 900.000 new MKR Tokens?</QuestionTitle>
-        <QuestionDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </QuestionDescription>
-      </QuestionInformation>
-      <QuestionOptions></QuestionOptions>
-    </QuestionContainer>
+    <div>
+      {MOCK_QUESTIONS.map(({ title, description, results }, i) => {
+        return (
+          <QuestionContainer>
+            <QuestionInformation>
+              <QuestionNumber>Question #{i + 1}</QuestionNumber>
+              <QuestionTitle>{title}</QuestionTitle>
+              <QuestionDescription>{description}</QuestionDescription>
+            </QuestionInformation>
+            <QuestionOptions>
+              {results.map(({ title }) => {
+                return <Option title={title} />;
+              })}
+            </QuestionOptions>
+          </QuestionContainer>
+        );
+      })}
+    </div>
   );
 };

@@ -23,8 +23,10 @@ export const MOCK_STATS = [
 
 export const MOCK_QUESTIONS = [
   {
-    title: "This is the title",
-    description: "This is the description",
+    title: "Do you approve a minting of 900.000 new MKR Tokens?",
+    description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+    ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+    ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
     results: [
       {
         title: "First",

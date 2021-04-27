@@ -9,7 +9,7 @@ import {
   AddressField,
   LoadingRing,
 } from "@aragon/ui";
-import Button from "../components/button";
+import Button from "./button";
 import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
 
