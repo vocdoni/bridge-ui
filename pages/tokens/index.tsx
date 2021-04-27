@@ -25,7 +25,7 @@ const TokenSection = styled.div`
   }
 `;
 
-const RegisterButton = styled(Button)`
+const FindTokenButton = styled(Button)`
   width: 200px;
   height: 46px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
@@ -60,7 +60,7 @@ const TokensPage = () => {
       haves. VR 23-04-2021 */}
           {/* <SearchWidget /> */}
           <p></p>
-          <RegisterButton href="/tokens/add">My Token is not listed</RegisterButton>
+          <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
         </ButtonContainer>
         <br />
         <TokenList>

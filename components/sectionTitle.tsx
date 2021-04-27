@@ -34,10 +34,10 @@ type TitleProps = {
 };
 
 const SectionTitle = ({ smallerTitle, title, subtitle }: TitleProps) => (
-  <>
+  <div>
     {smallerTitle ? <SmallerTitle>{title}</SmallerTitle> : <Title>{title}</Title>}
     <Subtitle>{subtitle}</Subtitle>
-  </>
+  </div>
 );
 
 export default SectionTitle;

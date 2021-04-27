@@ -15,9 +15,27 @@ import styled from "styled-components";
 import { TopSection } from "../../components/top-section";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
+import SectionTitle from "../../components/sectionTitle";
+
+const HeaderRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const HeaderLeft = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const WhiteSection = styled.div`
+  padding: 42px 64px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  border-radius: 13px;
+`;
 
 const RowSummary = styled.div`
-  margin-top: 2em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -35,9 +53,19 @@ const Info = styled.div`
   }
 `;
 
-const InfoTitle = styled.p`
-  font-weight: 500;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+const TokenAttribute = styled.p`
+  margin-top: 0;
+  margin-bottom: 9;
+  color: ${({ theme }) => theme.primary.p1};
+  line-height: 27px;
+  font-size: 18px;
+  font-weight: 400;
+`;
+
+const TokenSection = styled.div`
+  @media ${({ theme }) => theme.screens.tablet} {
+    text-align: center;
+  }
 `;
 
 const Address = styled.h4`
@@ -57,6 +85,20 @@ const Address = styled.h4`
 const InfoDescription = styled.h4`
   font-size: 18px;
   letter-spacing: 0;
+`;
+
+const NewProcessButton = styled(Button)`
+  height: 46px;
+  padding: 12px 20px;
+  background: linear-gradient(
+    ${({ theme }) => theme.gradients.primary.mg1.a},
+    ${({ theme }) => theme.gradients.primary.mg1.c1},
+    ${({ theme }) => theme.gradients.primary.mg1.c2}
+  );
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-size: 16px;
 `;
 
 const VoteSection = ({
@@ -210,35 +252,48 @@ const TokenPage = () => {
   }, [token?.address]);
 
   return (
-    <div>
-      <TopSection
-        title={"Token details"}
-        description={`See the details of ${token?.symbol || "the token"}`}
-        Action={() => (
-          <Button mode="strong" wide onClick={() => onCreateProcess(token.address)}>
-            Create a governance process
-          </Button>
-        )}
-      />
+    <>
+      <HeaderRow>
+        <HeaderLeft>
+          <img
+            src={FALLBACK_TOKEN_ICON}
+            width={71}
+            height={71}
+            style={{ marginRight: 20, marginTop: 9 }}
+          />
+          <SectionTitle title="Token details" subtitle="See the details of XXX" />
+        </HeaderLeft>
+        <NewProcessButton onClick={() => onCreateProcess(token.address)}>
+          Create a governance process
+        </NewProcessButton>
+      </HeaderRow>
 
-      <RowSummary>
-        <Info>
-          <InfoTitle>Token symbol</InfoTitle>
-          <InfoDescription>{token?.symbol || "-"}</InfoDescription>
-        </Info>
-        <Info>
-          <InfoTitle>Token name</InfoTitle>
-          <InfoDescription>{token?.name || "-"}</InfoDescription>
-        </Info>
-        <Info>
-          <InfoTitle>Total supply</InfoTitle>
-          <InfoDescription>{token?.totalSupplyFormatted || "-"}</InfoDescription>
-        </Info>
-        <Info>
-          <InfoTitle>Token address</InfoTitle>
-          <Address>{address}</Address>
-        </Info>
-      </RowSummary>
+      <br />
+      <br />
+
+      <WhiteSection>
+        <RowSummary>
+          <Info>
+            <TokenAttribute>Token symbol</TokenAttribute>
+            <InfoDescription>{token?.symbol || "-"}</InfoDescription>
+          </Info>
+          <Info>
+            <TokenAttribute>Token name</TokenAttribute>
+            <InfoDescription>{token?.name || "-"}</InfoDescription>
+          </Info>
+          <Info>
+            <TokenAttribute>Total supply</TokenAttribute>
+            <InfoDescription>{token?.totalSupplyFormatted || "-"}</InfoDescription>
+          </Info>
+          <Info>
+            <TokenAttribute>Token address</TokenAttribute>
+            <Address>{address}</Address>
+          </Info>
+        </RowSummary>
+      </WhiteSection>
+
+      <br />
+      <br />
 
       {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
@@ -249,7 +304,7 @@ const TokenPage = () => {
           token={token}
         />
       ))}
-    </div>
+    </>
   );
 };
 
