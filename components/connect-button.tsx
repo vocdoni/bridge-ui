@@ -29,7 +29,7 @@ const AddressContainer = styled.div`
   margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
-  font-size: 12px;
+  font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 
