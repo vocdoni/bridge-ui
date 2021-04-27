@@ -9,6 +9,7 @@ import { LoadingAlert } from "./loading-alert";
 const LayoutContainer = styled.div`
   padding: 0 ${({ theme }) => theme.margins.desktop.horizontal};
   margin-top: 77px;
+  margin-bottom: 120px;
   max-width: 1249px;
   margin-left: auto;
   margin-right: auto;
