@@ -1,29 +1,26 @@
-import React, {
-    useCallback,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
-import { getTokenInfo } from "../api";
-import { TokenInfo } from "../types";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
-// import { useLoadingAlert } from './loading-alert'
-import { useMessageAlert } from "./message-alert";
+
+import { getTokenInfo } from "../../api";
+import { TokenInfo } from "../../types";
+import { useMessageAlert } from "./../message-alert";
+import useLocalStorage from "../useLocalStorage";
 
 const UseTokenContext = React.createContext<{
-  currentTokens: Map<string, TokenInfo>;
-  resolveTokenInfo: (address: string) => Promise<TokenInfo>;
+  currentTokens: Partial<TokenInfo>[];
+  updateTokens: (value: TokenInfo[]) => void;
+  resolveTokenInfo: (address: string) => Promise<Partial<TokenInfo>>;
   refreshTokenInfo: (address: string) => Promise<TokenInfo>;
 }>({
-  currentTokens: new Map(),
+  currentTokens: new Array(),
+  updateTokens: () => undefined,
   resolveTokenInfo: () => Promise.reject(new Error("Not initialized")),
   refreshTokenInfo: () => Promise.reject(new Error("Not initialized")),
 });
 
 export function useToken(address: string): TokenInfo | null {
   const tokenContext = useContext(UseTokenContext);
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
+  const [tokenInfo, setTokenInfo] = useState(null);
   const { setAlertMessage } = useMessageAlert();
   // const { setLoadingMessage, hideLoading } = useLoadingAlert()
 
@@ -61,29 +58,23 @@ export function useToken(address: string): TokenInfo | null {
   return tokenInfo;
 }
 
-/** Returns an arran containing the available information about the given addresses */
+/** Returns an array containing the available information about the given addresses */
 export function useTokens(addresses: string[]) {
   const tokenContext = useContext(UseTokenContext);
-  const [bool, setBool] = useState(false); // to force rerender
-  // const { pool } = usePool()
   // const { setAlertMessage } = useMessageAlert()
 
+  const fetchTokensInfo = async (addresses: string[]) => {
+    // @TODO: Add multicall + fetch of token information
+    const fetchPromises = addresses.map((a) => tokenContext.refreshTokenInfo(a));
+    const allTokensInfo = await Promise.all(fetchPromises);
+    tokenContext.updateTokens(allTokensInfo);
+    return allTokensInfo;
+  };
+
   useEffect(() => {
-    if (!addresses || !addresses.length) return;
-
-    // Signal a refresh on the current token addresses
-    Promise.all(addresses.map((address) => tokenContext.resolveTokenInfo(address)))
-      .then(() => {
-        setBool(!bool);
-      })
-      .catch((err) => {
-        // setAlertMessage("Some token details could not be loaded")
-
-        console.error(err);
-        setBool(!bool);
-      });
-
-    return () => undefined;
+    if (addresses) {
+      fetchTokensInfo(addresses);
+    }
   }, [addresses]);
 
   if (tokenContext === null) {
@@ -95,37 +86,45 @@ export function useTokens(addresses: string[]) {
   return tokenContext.currentTokens;
 }
 
-export function UseTokenProvider({ children }) {
-  // TODO: Use swr
+const EXISTING_TOKENS: Partial<TokenInfo>[] = [
+  {
+    name: "DAI",
+    symbol: "DAI",
+    address: "0xca0ea2002a4177f9eb1822092ee0b4c183d91bba",
+    totalSupplyFormatted: "10.00",
+  },
+];
 
-  const tokens = useRef(new Map<string, TokenInfo>());
+export function UseTokenProvider({ children }) {
+  const [tokens, setTokens] = useLocalStorage("voting:tokens", EXISTING_TOKENS);
+
   const { poolPromise } = usePool();
 
-  const resolveTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
-    (address: string) => {
-      if (!address) return Promise.resolve(null);
-      else if (tokens.current.has(address.toLowerCase())) {
-        // cached
-        return Promise.resolve(tokens.current.get(address.toLowerCase()));
-      }
+  const resolveTokenInfo = useCallback(
+    async (address: string) => {
+      // @TODO: Add validation address is correct
+      const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
+      if (tokenCached) return tokenCached;
+
       return loadTokenInfo(address);
     },
-    []
+    [tokens]
   );
 
-  const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback((address: string) => {
-    return poolPromise
-      .then((pool) => getTokenInfo(address, pool))
-      .then((tokenInfo) => {
-        tokens.current.set(address.toLowerCase(), tokenInfo);
-        return tokenInfo;
-      });
-  }, []);
+  const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
+    async (address: string) => {
+      const pool = await poolPromise;
+      const token = await getTokenInfo(address, pool);
+      return token;
+    },
+    [poolPromise]
+  );
 
   return (
     <UseTokenContext.Provider
       value={{
-        currentTokens: tokens.current,
+        currentTokens: tokens,
+        updateTokens: setTokens,
         resolveTokenInfo,
         refreshTokenInfo: loadTokenInfo,
       }}
