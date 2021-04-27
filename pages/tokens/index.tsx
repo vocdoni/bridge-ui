@@ -7,7 +7,7 @@ import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
 import Button from "../../components/button";
-import SearchWidget from "../../components/search-widget";
+import SearchWidget from "../../components/searchWidget";
 
 const TokenList = styled.div`
   display: flex;
