@@ -11,6 +11,7 @@ const Container = styled.div`
   width: 100%;
   position: absolute;
 
+  margin-top: 73px;
   height: 71px;
   font-size: 16px;
   display: flex;
@@ -65,7 +66,6 @@ const MobileFooter = styled.div`
 `;
 
 export const Footer = () => {
-  const theme = useTheme();
   const isMobile = useIsMobile();
 
   const FOOTER_LINKS = LINKS.filter((l) => l.footer);
