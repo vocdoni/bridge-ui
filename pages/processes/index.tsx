@@ -15,7 +15,6 @@ import { BigNumber, providers } from "ethers";
 import TokenAmount from "token-amount";
 import { useWallet } from "use-wallet";
 import { useUrlHash } from "use-url-hash";
-import styled from "styled-components";
 
 import { TokenInfo } from "../../lib/types";
 import { strDateDiff } from "../../lib/date";
@@ -24,147 +23,45 @@ import { areAllNumbers } from "../../lib/utils";
 import { useToken } from "../../lib/hooks/tokens";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { TopSection } from "../../components/top-section";
-import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { useSigner } from "../../lib/hooks/useSigner";
+import {
+  ChoiceResult,
+  ChoicePercent,
+  Box,
+  ChoiceText,
+  VotesAmount,
+  Radio,
+  ChoiceDescription,
+  RowDescription,
+  RowDescriptionLeftSection,
+  Status,
+  RowDescriptionRightSection,
+  RowContinue,
+  CurrentStatus,
+  Question,
+  QuestionLeftSection,
+  QuestionNumber,
+  QuestionDescription,
+  QuestionRightSection,
+  Title,
+  Subtitle,
+  ProcessTitle,
+  ProcessDescription,
+  ProcessInformation,
+  ProcessContainer,
+  ProcessData,
+  ProcessDataInfo,
+  ProcessDataContainer,
+  ProcessDataDescription,
+  ProcessDataValue,
+} from "../../components/Processes/styled";
+import { LightText } from "../dashboard";
+import SectionTitle from "../../components/sectionTitle";
+import { MOCK_STATS } from "../../components/Processes/state";
+import { Questions } from "../../components/Processes/Questions";
 
 const BN_ZERO = BigNumber.from(0);
-
-const RowDescription = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-    text-align: center;
-    width: 100%;
-  }
-`;
-
-const RowDescriptionLeftSection = styled.div`
-  flex: 6;
-`;
-
-const RowDescriptionRightSection = styled.div`
-  flex: 4;
-  text-align: right;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-  }
-`;
-
-const Status = styled.h4`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
-const LightText = styled.p`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
-const Question = styled.div`
-  display: flex;
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-    text-align: center;
-  }
-`;
-
-const QuestionLeftSection = styled.div`
-  flex: 6;
-  h3 {
-    margin-top: 10px;
-  }
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex: 12;
-  }
-`;
-
-const QuestionNumber = styled.h6`
-  margin-bottom: 0;
-  color: ${({ theme }) => theme.blackAndWhite.b1}80;
-`;
-
-const QuestionDescription = styled.p`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  @media ${({ theme }) => theme.screens.tablet} {
-    width: 100%;
-  }
-`;
-
-const QuestionRightSection = styled.div`
-  flex: 4;
-  text-align: left;
-  margin-left: 10%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding-top: 50px;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    padding-top: 20px;
-    width: 100%;
-    flex: 0;
-    margin-left: 0;
-  }
-`;
-
-const ChoiceResult = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const ChoicePercent = styled.div`
-  flex: 1;
-  margin-bottom: 1em;
-`;
-
-const Box = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  background-color: ${({ theme }) => theme.blackAndWhite.b1};
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-`;
-
-const ChoiceText = styled.div`
-  flex: 4;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-`;
-
-const VotesAmount = styled.span`
-  margin-top: 0.4em;
-`;
-
-const Radio = styled(RadioChoice.Style)`
-  font-size: 15px;
-`;
-
-const RowContinue = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 3em;
-
-  & > * {
-    min-width: 300px;
-  }
-`;
-
-const CurrentStatus = styled.p`
-  text-align: center;
-`;
-
-const ChoiceDescription = styled.div`
-  width: calc(100% - 2.5em);
-`;
 
 const ChoicesResults = ({ choices, resultsQuestion, token, totalVotes }) => {
   return choices.map((_, id) => {
@@ -310,6 +207,7 @@ const ProcessPage = () => {
   const [choices, setChoices] = useState([] as number[]);
   const [results, setResults] = useState(null as DigestedProcessResults);
 
+  console.log(results);
   const nullifier = VotingApi.getSignedVoteNullifier(wallet?.account || "", processId);
 
   if (typeof window != "undefined" && !processId.match(HEX_REGEX)) {
@@ -396,9 +294,8 @@ const ProcessPage = () => {
       symbol: token.symbol,
     });
 
-    const weight = BigNumber.from(absolute.value).mul(1000);
-    const supply = BigNumber.from(token.totalSupply);
-    const relative = (weight.div(supply).toNumber() / 10).toFixed(2);
+    const weight = BigNumber.from(absolute.value).mul(100);
+    const relative = weight.div(token.totalSupply).toBigInt();
     const votesEmitted = votes.toString();
 
     setWeights({
@@ -589,67 +486,32 @@ const ProcessPage = () => {
 
   return (
     <div>
-      <TopSection
+      <SectionTitle
         title={`${token?.symbol || "Token"} governance process`}
-        description="Cast your vote and see the ongoing results as they are received."
+        subtitle={"Cast your vote and see the ongoing results as they are received."}
       />
+      <ProcessContainer>
+        <ProcessInformation>
+          <ProcessTitle>{proc.metadata.title.default || "No title"}</ProcessTitle>
+          <ProcessDescription>
+            {proc.metadata.description.default || "No description"}
+          </ProcessDescription>
+        </ProcessInformation>
+        <ProcessData>
+          {MOCK_STATS.map(({ description, value }) => (
+            <ProcessDataContainer>
+              <ProcessDataInfo>
+                <ProcessDataDescription>{description}</ProcessDataDescription>
+              </ProcessDataInfo>
+              <ProcessDataInfo>
+                <ProcessDataValue>{value}</ProcessDataValue>
+              </ProcessDataInfo>
+            </ProcessDataContainer>
+          ))}
+        </ProcessData>
+      </ProcessContainer>
 
-      <RowDescription>
-        <RowDescriptionLeftSection>
-          <h2>{proc.metadata.title.default || "No title"}</h2>
-          <Status>{isMobile ? remainingTime : status}</Status>
-          <LightText>{proc.metadata.description.default || "No description"}</LightText>
-        </RowDescriptionLeftSection>
-        <RowDescriptionRightSection>
-          {isMobile ? null : <LightText>{remainingTime}</LightText>}
-          {Object.keys(weights).map((description) => {
-            return weights[description] ? <LightText>{weights[description]}</LightText> : null;
-          })}
-        </RowDescriptionRightSection>
-      </RowDescription>
-
-      <ProcessQuestions
-        proc={proc}
-        results={results}
-        token={token}
-        canVote={canVote}
-        hasVoted={hasVoted}
-        wallet={wallet}
-        onSelect={onSelect}
-        hasEnded={hasEnded}
-      />
-
-      <br />
-      <br />
-
-      <RowContinue>
-        {(() => {
-          if (!processId || !proc) return <></>;
-          else if (hasVoted) return <CurrentStatus>Your vote has been registered</CurrentStatus>;
-          else if (!hasStarted)
-            return <CurrentStatus>The process has not started yet</CurrentStatus>;
-          else if (hasEnded) return <CurrentStatus>The process has ended</CurrentStatus>;
-          else if (!wallet?.account)
-            return <CurrentStatus>You are not connected to MetaMask</CurrentStatus>;
-          else if (!censusProof)
-            return <CurrentStatus>You are not part of the process holders census</CurrentStatus>;
-          else if (!allQuestionsChosen)
-            return <CurrentStatus>Select a choice for every question</CurrentStatus>;
-          else if (isSubmitting || refreshingVotedStatus)
-            return (
-              <CurrentStatus>
-                Please wait...
-                <Spinner />
-              </CurrentStatus>
-            );
-
-          return (
-            <Button mode="strong" onClick={onSubmitVote}>
-              Sign and submit the vote
-            </Button>
-          );
-        })()}
-      </RowContinue>
+      <Questions />
     </div>
   );
 };

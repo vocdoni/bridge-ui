@@ -9,14 +9,14 @@ const Title = styled.h4`
   font-weight: 500;
   line-height: 52px;
   letter-spacing: -0.03em;
-  color:  ${({ theme }) => theme.blackAndWhite.b1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const Subtitle = styled.p`
   margin-top: 0;
   margin-bottom: 9;
   line-height: 27px;
-  color: #7483AB;
+  color: ${({ theme }) => theme.grayScale.g5};
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -27,7 +27,7 @@ type TitleProps = {
   subtitle: string;
 };
 
-const SectionTitle = ({ title, subtitle}: TitleProps) => (
+const SectionTitle = ({ title, subtitle }: TitleProps) => (
   <>
     <Title>{title}</Title>
     <Subtitle>{subtitle}</Subtitle>
