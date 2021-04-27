@@ -10,7 +10,6 @@ import {
 import { withRouter, useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { usePool, useProcess } from "@vocdoni/react-hooks";
-import { Button } from "@aragon/ui";
 import { BigNumber, providers } from "ethers";
 import TokenAmount from "token-amount";
 import { useWallet } from "use-wallet";
@@ -55,11 +54,13 @@ import {
   ProcessDataContainer,
   ProcessDataDescription,
   ProcessDataValue,
+  ButtonContainer,
 } from "../../components/Processes/styled";
 import { LightText } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
 import { MOCK_STATS } from "../../components/Processes/state";
 import { Questions } from "../../components/Processes/Questions";
+import Button from "../../components/button";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -512,6 +513,9 @@ const ProcessPage = () => {
       </ProcessContainer>
 
       <Questions />
+      <ButtonContainer>
+        <Button disabled>Submit your vote</Button>
+      </ButtonContainer>
     </div>
   );
 };

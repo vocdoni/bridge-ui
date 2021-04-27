@@ -216,6 +216,8 @@ export const QuestionContainer = styled.div`
   box-shadow: 0px 6px 6px rgba(180, 193, 228, 0.35);
   border-radius: 13px;
   display: flex;
+  margin-bottom: 50px;
+
 `;
 
 export const QuestionInformation = styled.div`
@@ -283,4 +285,9 @@ export const OptionTitle = styled.p`
   margin: 0;
   font-size: 20px;
   font-weight: 500;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `;
