@@ -1,34 +1,6 @@
 import styled from "styled-components";
 import RadioChoice from "../radio";
 
-export const RowDescription = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-    text-align: center;
-    width: 100%;
-  }
-`;
-
-export const RowDescriptionLeftSection = styled.div`
-  flex: 6;
-`;
-
-export const RowDescriptionRightSection = styled.div`
-  flex: 4;
-  text-align: right;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-  }
-`;
-
-export const Status = styled.h4`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
 export const LightText = styled.p`
   color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
@@ -103,37 +75,8 @@ export const VotesAmount = styled.span`
   margin-top: 0.4em;
 `;
 
-export const RowContinue = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 3em;
-
-  & > * {
-    min-width: 300px;
-  }
-`;
-
-export const CurrentStatus = styled.p`
-  text-align: center;
-`;
-
 export const ChoiceDescription = styled.div`
   width: calc(100% - 2.5em);
-`;
-
-export const Title = styled.h4`
-  font-size: 38px;
-  font-style: normal;
-  line-height: 52px;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  margin-bottom: -5px;
-`;
-
-export const Subtitle = styled.p`
-  font-style: normal;
-  font-weight: 400;
-  line-height: 27px;
-  color: ${({ theme }) => theme.grayScale.g5};
 `;
 
 export const ProcessTitle = styled.h5`
@@ -153,7 +96,7 @@ export const ProcessDescription = styled.p`
 export const ProcessInformation = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 70%;
+  width: 70%;
   margin-right: 15px;
 `;
 
@@ -217,7 +160,6 @@ export const QuestionContainer = styled.div`
   border-radius: 13px;
   display: flex;
   margin-bottom: 50px;
-
 `;
 
 export const QuestionInformation = styled.div`

@@ -32,19 +32,11 @@ import {
   VotesAmount,
   Radio,
   ChoiceDescription,
-  RowDescription,
-  RowDescriptionLeftSection,
-  Status,
-  RowDescriptionRightSection,
-  RowContinue,
-  CurrentStatus,
   Question,
   QuestionLeftSection,
   QuestionNumber,
   QuestionDescription,
   QuestionRightSection,
-  Title,
-  Subtitle,
   ProcessTitle,
   ProcessDescription,
   ProcessInformation,
@@ -56,11 +48,11 @@ import {
   ProcessDataValue,
   ButtonContainer,
 } from "../../components/Processes/styled";
-import { LightText } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
-import { MOCK_STATS } from "../../components/Processes/state";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/button";
+import { useWeights } from "../../lib/hooks/process/useWeights";
+import { useProcessInfo } from "../../lib/hooks/process/useProcessInfo";
 
 const BN_ZERO = BigNumber.from(0);
 
@@ -192,11 +184,6 @@ const ProcessPage = () => {
   const { process: proc } = useProcess(processId);
   const token = useToken(proc?.entity);
   const [tokenRegistered, setTokenRegistered] = useState(null);
-  const [weights, setWeights] = useState({
-    absolute: null,
-    relative: null,
-    votesEmitted: null,
-  });
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const [censusProof, setCensusProof] = useState(
@@ -208,7 +195,6 @@ const ProcessPage = () => {
   const [choices, setChoices] = useState([] as number[]);
   const [results, setResults] = useState(null as DigestedProcessResults);
 
-  console.log(results);
   const nullifier = VotingApi.getSignedVoteNullifier(wallet?.account || "", processId);
 
   if (typeof window != "undefined" && !processId.match(HEX_REGEX)) {
@@ -218,6 +204,15 @@ const ProcessPage = () => {
 
   const hasStarted = startDate && startDate.getTime() <= Date.now();
 
+  const weights = useWeights({
+    processId,
+    token,
+    start: startDate,
+    end: endDate,
+  });
+
+  const t = useProcessInfo({ processId });
+
   // Effects
   useEffect(() => {
     let skip = false;
@@ -225,7 +220,7 @@ const ProcessPage = () => {
     const refreshInterval = setInterval(() => {
       if (skip) return;
 
-      Promise.all([updateVoteStatus(), updateResults(), updateWeight()]).catch((err) => {
+      Promise.all([updateVoteStatus(), updateResults()]).catch((err) => {
         setAlertMessage(err.message);
         console.error(err);
       });
@@ -240,7 +235,6 @@ const ProcessPage = () => {
   // Vote results
   useEffect(() => {
     updateResults();
-    updateWeight();
   }, [token, processId, hasStarted, hasVoted]);
 
   // Vote status
@@ -284,26 +278,6 @@ const ProcessPage = () => {
     } catch (e) {
       console.error(e);
     }
-  };
-
-  const updateWeight = async () => {
-    if (!processId || !token || !hasStarted) return;
-    const pool = await poolPromise;
-    const votes = await VotingApi.getEnvelopeHeight(processId, pool);
-    const resultsWeight = await VotingApi.getResultsWeight(processId, pool);
-    const absolute = new TokenAmount(resultsWeight, token.decimals, {
-      symbol: token.symbol,
-    });
-
-    const weight = BigNumber.from(absolute.value).mul(100);
-    const relative = weight.div(token.totalSupply).toBigInt();
-    const votesEmitted = votes.toString();
-
-    setWeights({
-      absolute: absolute ? `${absolute}'s used` : null,
-      relative: relative ? `${relative}% turnout` : null,
-      votesEmitted: votesEmitted ? `${votesEmitted} votes` : null,
-    });
   };
 
   const updateCensusStatus = async () => {
@@ -499,16 +473,17 @@ const ProcessPage = () => {
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
-          {MOCK_STATS.map(({ description, value }) => (
-            <ProcessDataContainer>
-              <ProcessDataInfo>
-                <ProcessDataDescription>{description}</ProcessDataDescription>
-              </ProcessDataInfo>
-              <ProcessDataInfo>
-                <ProcessDataValue>{value}</ProcessDataValue>
-              </ProcessDataInfo>
-            </ProcessDataContainer>
-          ))}
+          {weights &&
+            weights.map(({ description, value }) => (
+              <ProcessDataContainer>
+                <ProcessDataInfo>
+                  <ProcessDataDescription>{description}</ProcessDataDescription>
+                </ProcessDataInfo>
+                <ProcessDataInfo>
+                  <ProcessDataValue>{value}</ProcessDataValue>
+                </ProcessDataInfo>
+              </ProcessDataContainer>
+            ))}
         </ProcessData>
       </ProcessContainer>
 
