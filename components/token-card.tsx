@@ -198,7 +198,6 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
             <VoteName>{name}</VoteName>
           </TokenDescription>
         </CardHeader>
-        {/* <ProposalTitle>{children}</ProposalTitle> */}
         <ProposalTitle>{children}</ProposalTitle>
       </Card>
     );
