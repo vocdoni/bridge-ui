@@ -12,24 +12,30 @@ const Title = styled.h4`
   color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
+const SmallerTitle = styled(Title)`
+  font-size: 28px;
+  line-height: 38px;
+`;
+
 const Subtitle = styled.p`
   margin-top: 0;
   margin-bottom: 9;
   line-height: 27px;
-  color: ${({ theme }) => theme.grayScale.g5};
+  color: #7483ab;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
 `;
 
 type TitleProps = {
+  smallerTitle?: boolean;
   title: string;
   subtitle: string;
 };
 
-const SectionTitle = ({ title, subtitle }: TitleProps) => (
+const SectionTitle = ({ smallerTitle, title, subtitle }: TitleProps) => (
   <>
-    <Title>{title}</Title>
+    {smallerTitle ? <SmallerTitle>{title}</SmallerTitle> : <Title>{title}</Title>}
     <Subtitle>{subtitle}</Subtitle>
   </>
 );
