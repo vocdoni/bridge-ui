@@ -485,7 +485,6 @@ const NewProcessPage = () => {
               smallerTitle
             />
             <TextInput
-              type="text"
               placeholder="Title"
               onChange={(e) => setMainTitle(e.target.value)}
               value={metadata.title.default}
@@ -517,8 +516,11 @@ const NewProcessPage = () => {
 
         <FieldRow>
           <FieldRowLeftSection>
-            <InfoTitle>Description</InfoTitle>
-            <InfoPlaceholder>An introduction of about 2-3 lines</InfoPlaceholder>
+            <SectionTitle
+              title="Description"
+              subtitle="An introduction of about 2-3 lines"
+              smallerTitle
+            />
             <textarea
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
@@ -555,15 +557,14 @@ const NewProcessPage = () => {
             <RowQuestions>
               <RowQuestionLeftSection>
                 <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                <QuestionText>Question</QuestionText>
+                <SectionTitle title="Question" smallerTitle />
                 <TextInput
-                  type="text"
                   placeholder="Title"
                   value={question.title.default}
                   onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
                 />
 
-                <QuestionText>Description</QuestionText>
+                <SectionTitle title="Description" smallerTitle />
                 <textarea
                   placeholder="Description"
                   value={question.description.default}
@@ -573,12 +574,11 @@ const NewProcessPage = () => {
               <RowQuestionRightSection />
             </RowQuestions>
             <div>
-              <ChoicesTitle>Choices</ChoicesTitle>
+              <SectionTitle title="Choices" smallerTitle />
               {question.choices.map((choice, cIdx) => (
                 <RowQuestions key={cIdx}>
                   <RowQuestionLeftSection>
                     <TextInput
-                      type="text"
                       placeholder="Choice"
                       value={choice.title.default}
                       onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
