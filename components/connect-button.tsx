@@ -36,6 +36,16 @@ const AddressContainer = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    background: linear-gradient(
+      ${({ theme }) => theme.gradients.primary.mg1_soft.a},
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c1},
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
+    );
+
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
     text-align: center;

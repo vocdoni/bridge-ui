@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Title = styled.h4`
-  margin-top: 0;
-  margin-bottom: 9px;
+  margin-bottom: 18px;
   font-size: 38px;
   font-style: normal;
   font-weight: 500;
@@ -19,7 +18,6 @@ const SmallerTitle = styled(Title)`
 
 const Subtitle = styled.p`
   margin-top: 0;
-  margin-bottom: 9;
   line-height: 27px;
   color: #7483ab;
   font-size: 18px;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   CensusErc20Api,
   IProcessCreateParams,
-  MultiLanguage,
   ProcessCensusOrigin,
   ProcessContractParameters,
   ProcessEnvelopeType,
@@ -10,7 +9,7 @@ import {
   ProcessMode,
   VotingApi,
 } from "dvote-js";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
@@ -21,16 +20,16 @@ import Router from "next/router";
 import Spinner from "react-svg-spinner";
 import { providers } from "ethers";
 
-import Button from "../../components/button";
+import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
+import { PlusBox } from "../../components/plusBox";
 import SectionTitle from "../../components/sectionTitle";
 import TextInput from "../../components/input";
-import { SecondaryButton } from "../../components/button";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -59,7 +58,7 @@ const FieldRow = styled.div`
 `;
 
 const FieldRowLeftSection = styled.div`
-  flex: 55%;
+  flex: 40%;
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number }>`
@@ -80,6 +79,7 @@ const RowQuestions = styled.div`
 
 const RowQuestionLeftSection = styled.div`
   flex: 6;
+  width: 700px;
   @media ${({ theme }) => theme.screens.tablet} {
     flex: 12;
   }
@@ -95,8 +95,8 @@ const RowQuestionRightSection = styled.div`
 `;
 
 const ChoiceRightSection = styled.div`
-  flex: 4;
-  padding-left: 2em;
+  flex: 6;
+  margin-left: 13px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -106,59 +106,12 @@ const ChoiceRightSection = styled.div`
   }
 `;
 
-const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  background-color: ${({ theme }) => theme.blackAndWhite.w1};
-  border: 1px solid ${({ theme }) => theme.blackAndWhite.w1};
-  color: ${({ theme }) => theme.blackAndWhite.b1}80;
-  margin-top: 0.5em;
-  -webkit-margin-before: 1em;
-  border-radius: 8px;
-  text-align: center;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: calc(15px + 2em - 2px);
-  height: calc(15px + 2em - 2px);
-
-  ${({ add }) =>
-    add &&
-    css`
-      cursor: pointer;
-      background: ${({ theme }) => theme.blackAndWhite.w1};
-      color: ${({ theme }) => theme.blackAndWhite.b1};
-      &:hover {
-        background: ${({ theme }) => theme.blackAndWhite.w1 + "80"};
-      }
-      &:active {
-        background: ${({ theme }) => theme.blackAndWhite.w1 + "B3"};
-      }
-    `}
-
-  ${({ remove }) =>
-    remove &&
-    css`
-      cursor: pointer;
-      background: ${({ theme }) => theme.blackAndWhite.w1};
-      border: 1px solid ${({ theme }) => theme.blackAndWhite.b1};
-      color: ${({ theme }) => theme.blackAndWhite.b1};
-      &:hover {
-        background: ${({ theme }) => theme.blackAndWhite.b1 + "1A"};
-      }
-      &:active {
-        background: ${({ theme }) => theme.blackAndWhite.b1 + "27"};
-      }
-    `}
-`;
-
 const QuestionNumber = styled.h6`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  margin-bottom: 0;
+  color: ${({ theme }) => theme.primary.p1};
+  font-size: 18px;
+  margin-bottom: -18px;
+  font-weight: 500;
+  line-height: 150%;
 `;
 
 const RowContinue = styled.div`
@@ -178,41 +131,6 @@ const Remove = styled.h6`
   cursor: pointer;
 `;
 
-interface PlusBoxProps {
-  currentChoice: number;
-  choices: Array<{
-    title: MultiLanguage<string>;
-    value: number;
-  }>;
-  currentQuestion: number;
-}
-
-const PlusBox = ({
-  currentChoice,
-  choices,
-  currentQuestion,
-  onClick,
-}: PlusBoxProps & { onClick: (params: PlusBoxProps) => void }) => {
-  const lastChoice = choices.length - 1;
-  const isDefault = choices[currentChoice].title.default;
-
-  const modifier = {};
-  if (currentChoice === lastChoice && isDefault) {
-    modifier["add"] = true;
-  } else if (!(choices.length === 2)) {
-    modifier["remove"] = true;
-  }
-
-  return (
-    <PlusBoxContainer
-      {...modifier}
-      onClick={() => onClick({ currentQuestion, choices, currentChoice })}
-    >
-      {currentChoice === lastChoice && isDefault ? "+" : "⨯"}
-    </PlusBoxContainer>
-  );
-};
-
 const SubmitButton = ({ submitting, onSubmit }) =>
   submitting ? (
     <p>
@@ -220,9 +138,7 @@ const SubmitButton = ({ submitting, onSubmit }) =>
       <Spinner />
     </p>
   ) : (
-    <Button mode="strong" onClick={onSubmit}>
-      Submit process
-    </Button>
+    <PrimaryButton onClick={onSubmit}>Submit process</PrimaryButton>
   );
 
 const NewProcessPage = () => {

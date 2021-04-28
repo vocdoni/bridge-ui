@@ -50,12 +50,12 @@ export const PrimaryButton = styled(Button)`
 export const SecondaryButton = styled(Button)`
   height: 45px;
   padding: 12px 20px;
-  margin-left: 10px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   border-radius: 8px;
+  margin-top: 10px;
   color: ${({ theme }) => theme.primary.p1};
   font-size: 16px;
   font-weight: 500;
