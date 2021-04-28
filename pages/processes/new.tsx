@@ -30,6 +30,7 @@ import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import TextInput from "../../components/input";
+import { SecondaryButton } from "../../components/button";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -175,10 +176,6 @@ const Remove = styled.h6`
   color: ${({ theme }) => theme.blackAndWhite.b1};
   margin-top: 10px;
   cursor: pointer;
-`;
-
-const AddQuestionButton = styled(Button)`
-  margin-top: 10px;
 `;
 
 interface PlusBoxProps {
@@ -581,7 +578,7 @@ const NewProcessPage = () => {
             </div>
 
             {qIdx == metadata.questions.length - 1 ? (
-              <AddQuestionButton onClick={onAddQuestion}>Add question</AddQuestionButton>
+              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
             ) : null}
           </div>
         ))}

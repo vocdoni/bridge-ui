@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { NormalButton } from "./button";
+import { PrimaryButton } from "./button";
 import TextInput from "./input";
 
 const SearchRow = styled.div`
@@ -18,7 +18,7 @@ const SearchWidget = ({ onChange, onKeyDown, onClick }: SearchWidgetProps) => {
   return (
     <SearchRow>
       <TextInput placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} />
-      <NormalButton onClick={onClick}>Check Token</NormalButton>
+      <PrimaryButton onClick={onClick}>Check Token</PrimaryButton>
     </SearchRow>
   );
 };

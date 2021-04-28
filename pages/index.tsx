@@ -9,7 +9,7 @@ import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
 
 import TokenCard from "../components/token-card";
-import Button from "../components/button";
+import { SecondaryButton } from "../components/button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 
@@ -59,18 +59,6 @@ const TokenSection = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     text-align: center;
   }
-`;
-
-const ShowMoreButton = styled(Button)`
-  width: 150px;
-  height: 46px;
-  color: ${({ theme }) => theme.primary.p1};
-  padding: 12px 20px;
-  background: #ffffff;
-  box-sizing: border-box;
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border: 2px solid #eff1f7;
-  border-radius: 8px;
 `;
 
 // MAIN COMPONENT
@@ -144,7 +132,7 @@ const IndexPage = () => {
           ))}
         </TokenList>
         <Row>
-          <ShowMoreButton href="/tokens">View all tokens</ShowMoreButton>
+          <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
         </Row>
       </TokenSection>
     </>

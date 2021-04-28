@@ -6,7 +6,7 @@ import { useTokens, useRegisteredTokens, useUserTokens } from "../../lib/hooks/t
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
-import Button from "../../components/button";
+import Button, { SecondaryButton } from "../../components/button";
 import SearchWidget from "../../components/searchWidget";
 import { shortTokenName } from "../../lib/utils";
 
@@ -60,7 +60,7 @@ const TokensPage = () => {
     haves. VR 23-04-2021 */}
         {/* <SearchWidget /> */}
         <p></p>
-        <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
+        <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
       </ButtonContainer>
       <br />
       <TokenList>
