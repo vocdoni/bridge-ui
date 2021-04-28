@@ -5,6 +5,4 @@ node_modules
 .env
 .DS_Store
 
-# Lockfiles
-package-lock.json
 yarn.lock
