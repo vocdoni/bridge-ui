@@ -30,6 +30,7 @@ import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
+import TextInput from "../../components/input";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -475,15 +476,15 @@ const NewProcessPage = () => {
         subtitle="Enter the details of a new governance process and submit
                 them."
       />
-      <NewProcessContainer style={{ border: "solid" }}>
-        <FieldRow style={{ border: "solid red" }}>
-          <FieldRowLeftSection style={{ border: "solid red" }}>
+      <NewProcessContainer>
+        <FieldRow>
+          <FieldRowLeftSection>
             <SectionTitle
               title="Proposal Title"
               subtitle="Short name to identify the process"
               smallerTitle
             />
-            <input
+            <TextInput
               type="text"
               placeholder="Title"
               onChange={(e) => setMainTitle(e.target.value)}
@@ -555,7 +556,7 @@ const NewProcessPage = () => {
               <RowQuestionLeftSection>
                 <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
                 <QuestionText>Question</QuestionText>
-                <input
+                <TextInput
                   type="text"
                   placeholder="Title"
                   value={question.title.default}
@@ -576,7 +577,7 @@ const NewProcessPage = () => {
               {question.choices.map((choice, cIdx) => (
                 <RowQuestions key={cIdx}>
                   <RowQuestionLeftSection>
-                    <input
+                    <TextInput
                       type="text"
                       placeholder="Choice"
                       value={choice.title.default}
