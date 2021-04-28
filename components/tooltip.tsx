@@ -2,6 +2,11 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import { useTooltipNewLine } from "../lib/hooks/useWindowSize";
 
+interface Props {
+  newLine: boolean
+  topText: boolean
+}
+
 const CircleContainer = styled.div`
   float: left;
   height: 24px;
@@ -34,7 +39,7 @@ const QuestionMark = styled.div`
   -webkit-user-select:none
 `;
 
-const TooltipText = styled.div`
+const TooltipText = styled.div<Props>`
   background-color: #F3F4FF;
   border-radius: 10px;
   color: #865BFF;
@@ -81,7 +86,7 @@ const Tooltip = () => {
           <QuestionMark>?</QuestionMark>
         </Circle>
         <br />
-        <TooltipText newLine>
+        <TooltipText newLine topText={false}>
           {encryptedText}
         </TooltipText >
       </CircleContainer>
@@ -92,7 +97,7 @@ const Tooltip = () => {
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
-        <TooltipText>
+        <TooltipText newLine={false} topText={false}>
           {realtimeText}
         </TooltipText>
       </CircleContainer>
@@ -104,7 +109,7 @@ const Tooltip = () => {
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
-        <TooltipText>
+        <TooltipText newLine={false} topText={false}>
           {encryptedText}
         </TooltipText>
       </CircleContainer>
