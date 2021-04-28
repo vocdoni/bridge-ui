@@ -18,7 +18,7 @@ class VocdiniBridge extends Document {
         ...initialProps,
         styles: (
           <>
-            <link rel="icon" type="image/png" href="/media/favicon.png" />
+            <link rel="icon" type="image/svg" href="/media/favicon.svg" />
 
             {initialProps.styles}
             {sheet.getStyleElement()}
