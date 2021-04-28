@@ -9,15 +9,13 @@ import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;
+  height: 71px;
   position: fixed;
   top: 0;
-
-  font-size: 16px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+
   background: ${({ theme }) => theme.blackAndWhite.w1}99;
 `;
 
@@ -55,9 +53,8 @@ const BetaLabel = styled.div`
 `;
 
 const ListContainer = styled.div`
-  padding: ${({ theme }) => "25 " + theme.margins.desktop.horizontal};
   display: flex;
-  width: 100%;
+  width: 1440px;
   justify-content: space-between;
   align-items: center;
 
@@ -129,15 +126,8 @@ const ListItem = styled.div`
 `;
 
 const VoiceLink = styled.a`
-  position: absolute;
-  height: 24px;
-  left: 111px;
-  top: 22px;
-
-  font-family: Manrope;
-  font-weight: 500;
+  height: 50px;
   font-size: 18px;
-
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -218,26 +208,26 @@ export const LINKS: LinkProps[] = [
     header: true,
   },
   {
-    url: "https://discord.gg/sQCxgYs",
+    url: "https://discordapp.com/invite/eqQJkdp",
     name: "Discord",
     external: true,
     header: false,
     footer: true,
   },
   {
-    url: "https://twitter.com/vocdoni",
+    url: "https://twitter.com/AragonProject",
     name: "Twitter",
     external: true,
     footer: true,
   },
   {
-    url: "https://t.me/vocdoni",
+    url: "https://t.me/AragonProject",
     name: "Telegram",
     external: true,
     footer: true,
   },
   {
-    url: "https://t.me/vocdoni", /* Forum link ? */
+    url: "https://forum.aragon.org/",
     name: "Forum",
     external: true,
     footer: true,

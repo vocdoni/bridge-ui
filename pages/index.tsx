@@ -11,6 +11,7 @@ import { TokenList } from "./dashboard";
 import TokenCard from "../components/token-card";
 import Button from "../components/button";
 import SectionTitle from "../components/sectionTitle";
+import { shortTokenName } from "../lib/utils";
 
 const Head = styled.div`
   display: flex;
@@ -136,7 +137,7 @@ const IndexPage = () => {
               rightText=""
               href={address ? "/tokens/info#/" + address : ""}
             >
-              <p>{name || "Loading..."}</p>
+              <p>{shortTokenName(name) || "Loading..."}</p>
             </TokenCard>
           ))}
         </TokenList>
