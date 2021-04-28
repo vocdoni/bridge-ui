@@ -168,7 +168,7 @@ export const margins: Margins = {
 
 export const shadows: Shadows = {
   cardShadow: "0px 6px 6px rgba(180, 193, 228, 0.35);",
-  buttonShadow: "0px 3px 3px rgba(180, 193, 228, 0.35);"
+  buttonShadow: "0px 3px 3px rgba(180, 193, 228, 0.35);",
 };
 
 export const theme: DefaultTheme = {

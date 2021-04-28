@@ -29,6 +29,7 @@ import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
+import SectionTitle from "../../components/sectionTitle";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -469,16 +470,19 @@ const NewProcessPage = () => {
 
   return (
     <div>
-      <TopSection
+      <SectionTitle
         title="New governance process"
-        description="Enter the details of a new governance process and submit
+        subtitle="Enter the details of a new governance process and submit
                 them."
       />
       <NewProcessContainer>
         <FieldRow>
           <FieldRowLeftSection>
-            <InfoTitle>Title</InfoTitle>
-            <InfoPlaceholder>Short name to identify the process</InfoPlaceholder>
+            <SectionTitle
+              title="Proposal Title"
+              subtitle="Short name to identify the process"
+              smallerTitle
+            />
             <input
               type="text"
               placeholder="Title"
