@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Button from "./button";
+import Button, { NormalButton } from "./button";
 
 const SearchRow = styled.div`
   display: flex;
@@ -18,22 +18,6 @@ const SearchField = styled.input`
   border-radius: 8px;
 `;
 
-const SearchButton = styled(Button)`
-  width: 140px;
-  height: 46px;
-  padding: 12px 20px;
-  margin-left: 10px;
-  background: linear-gradient(
-    ${({ theme }) => theme.gradients.primary.mg1.a},
-    ${({ theme }) => theme.gradients.primary.mg1.c1},
-    ${({ theme }) => theme.gradients.primary.mg1.c2}
-  );
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border-radius: 8px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-size: 16px;
-`;
-
 type SearchWidgetProps = {
   onChange: (ev: any) => void;
   onKeyDown: (ev: any) => void;
@@ -44,7 +28,7 @@ const SearchWidget = ({ onChange, onKeyDown, onClick }: SearchWidgetProps) => {
   return (
     <SearchRow>
       <SearchField placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} />
-      <SearchButton onClick={onClick}>Check Token</SearchButton>
+      <NormalButton onClick={onClick}>Check Token</NormalButton>
     </SearchRow>
   );
 };

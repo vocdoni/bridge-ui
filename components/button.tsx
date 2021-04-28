@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { Button as AragonButton } from "@aragon/ui";
+import styled from "styled-components";
 
 type AragonButtonProps = {
   mode?: "normal" | "strong" | "positive" | "negative";
@@ -15,6 +16,22 @@ interface ButtonProps {
   href?: string;
   onClick?: () => void;
 }
+
+export const NormalButton = styled(Button)`
+  // width: 140px;
+  // height: 46px;
+  padding: 12px 20px;
+  margin-left: 10px;
+  background: linear-gradient(
+    ${({ theme }) => theme.gradients.primary.mg1.a},
+    ${({ theme }) => theme.gradients.primary.mg1.c1},
+    ${({ theme }) => theme.gradients.primary.mg1.c2}
+  );
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-size: 16px;
+`;
 
 function Button({ href, ...props }: ButtonProps & AragonButtonProps) {
   if (href) {
