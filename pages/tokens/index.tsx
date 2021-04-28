@@ -52,33 +52,31 @@ const TokensPage = () => {
   const tokenInfos = useTokens(tokenAddrs);
 
   return (
-    <div>
-      <TokenSection>
-        <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
-        <br />
-        <ButtonContainer>
-          {/* NOTE temporarily removed search bar, as it is not part of the page's must 
-      haves. VR 23-04-2021 */}
-          {/* <SearchWidget /> */}
-          <p></p>
-          <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
-        </ButtonContainer>
-        <br />
-        <TokenList>
-          {tokenInfos.map(({ symbol, address, name }) => (
-            <TokenCard
-              key={address}
-              name={symbol}
-              icon={FALLBACK_TOKEN_ICON}
-              rightText=""
-              href={address ? "/tokens/info#/" + address : ""}
-            >
-              <p>{shortTokenName(name) || "Loading..."}</p>
-            </TokenCard>
-          ))}
-        </TokenList>
-      </TokenSection>
-    </div>
+    <TokenSection>
+      <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
+      <br />
+      <ButtonContainer>
+        {/* NOTE temporarily removed search bar, as it is not part of the page's must 
+    haves. VR 23-04-2021 */}
+        {/* <SearchWidget /> */}
+        <p></p>
+        <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
+      </ButtonContainer>
+      <br />
+      <TokenList>
+        {tokenInfos.map(({ symbol, address, name }) => (
+          <TokenCard
+            key={address}
+            name={symbol}
+            icon={FALLBACK_TOKEN_ICON}
+            rightText=""
+            href={address ? "/tokens/info#/" + address : ""}
+          >
+            <p>{shortTokenName(name) || "Loading..."}</p>
+          </TokenCard>
+        ))}
+      </TokenList>
+    </TokenSection>
   );
 };
 

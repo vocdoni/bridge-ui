@@ -14,13 +14,15 @@ import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 
 const Head = styled.div`
+  width: 1248px;
+  height: 335px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: url(${LANDING_PAGE_CTA});
-  width: 1248px;
-  height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-family: "Manrope";
