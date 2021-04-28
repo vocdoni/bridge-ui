@@ -1,3 +1,4 @@
+import { ProcessMetadata } from "dvote-js";
 import { utils } from "ethers";
 import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
 
@@ -78,3 +79,11 @@ function toChecksumAddress(address) {
   return checksumAddress;
 }
 
+/* find the question with the most choices */
+export function findMaxValue(metadata: ProcessMetadata) {
+  let longest = 0
+  metadata.questions.forEach(question => {
+    longest = Math.max(longest, question.choices.length)
+  });
+  return longest
+}
