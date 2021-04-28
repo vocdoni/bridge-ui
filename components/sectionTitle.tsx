@@ -30,13 +30,13 @@ const Subtitle = styled.p`
 type TitleProps = {
   smallerTitle?: boolean;
   title: string;
-  subtitle: string;
+  subtitle?: string;
 };
 
 const SectionTitle = ({ smallerTitle, title, subtitle }: TitleProps) => (
   <div>
     {smallerTitle ? <SmallerTitle>{title}</SmallerTitle> : <Title>{title}</Title>}
-    <Subtitle>{subtitle}</Subtitle>
+    {subtitle ? <Subtitle>{subtitle}</Subtitle> : null}
   </div>
 );
 

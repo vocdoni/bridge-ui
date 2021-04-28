@@ -12,12 +12,12 @@ import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import Spinner from "react-svg-spinner";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
-import { TopSection } from "../../components/top-section";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
 
-const HeaderRow = styled.div`
+const HeaderContainer = styled.div`
+  margin-bottom: 45px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -31,6 +31,7 @@ const HeaderLeft = styled.div`
 
 const WhiteSection = styled.div`
   padding: 42px 64px;
+  margin-bottom: 60px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
 `;
@@ -62,10 +63,11 @@ const TokenAttribute = styled.p`
   font-weight: 400;
 `;
 
-const TokenSection = styled.div`
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-  }
+const EmptySection = styled.div`
+  padding: 60px;
+  background: #eef4fb;
+  border-radius: 13px;
+  text-align: center;
 `;
 
 const Address = styled.h4`
@@ -120,8 +122,19 @@ const VoteSection = ({
 
   return (
     <VoteSectionContainer>
-      <h2>{title}</h2>
-      <LightText>{processes.length ? processesMessage : noProcessesMessage}</LightText>
+      {processes.length ? (
+        <>
+          <SectionTitle title={title} subtitle={processesMessage} />
+          <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
+        </>
+      ) : (
+        <>
+          <SectionTitle title={title} />
+          <EmptySection>
+            <LightText>{processes.length ? processesMessage : noProcessesMessage}</LightText>
+          </EmptySection>
+        </>
+      )}
       <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
     </VoteSectionContainer>
   );
@@ -179,6 +192,7 @@ const TokenPage = () => {
       .then((num) => setBlockNumber(num))
       .catch((err) => console.error(err));
   };
+
   const updateProcessIds = () => {
     if (!tokenAddr) return;
     setLoadingProcessList(true);
@@ -253,7 +267,7 @@ const TokenPage = () => {
 
   return (
     <>
-      <HeaderRow>
+      <HeaderContainer>
         <HeaderLeft>
           <img
             src={FALLBACK_TOKEN_ICON}
@@ -261,15 +275,12 @@ const TokenPage = () => {
             height={71}
             style={{ marginRight: 20, marginTop: 9 }}
           />
-          <SectionTitle title="Token details" subtitle="See the details of XXX" />
+          <SectionTitle title="Token details" subtitle={`See the details of ${token?.symbol}`} />
         </HeaderLeft>
         <NewProcessButton onClick={() => onCreateProcess(token.address)}>
           Create a governance process
         </NewProcessButton>
-      </HeaderRow>
-
-      <br />
-      <br />
+      </HeaderContainer>
 
       <WhiteSection>
         <RowSummary>
@@ -291,9 +302,6 @@ const TokenPage = () => {
           </Info>
         </RowSummary>
       </WhiteSection>
-
-      <br />
-      <br />
 
       {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
