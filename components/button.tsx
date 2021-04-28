@@ -18,8 +18,7 @@ interface ButtonProps {
 }
 
 export const NormalButton = styled(Button)`
-  // width: 140px;
-  // height: 46px;
+  height: 46px;
   padding: 12px 20px;
   margin-left: 10px;
   background: linear-gradient(
@@ -31,6 +30,7 @@ export const NormalButton = styled(Button)`
   border-radius: 8px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-size: 16px;
+  line-height: 22px;
 `;
 
 function Button({ href, ...props }: ButtonProps & AragonButtonProps) {

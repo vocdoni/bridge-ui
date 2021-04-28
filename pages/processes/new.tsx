@@ -475,9 +475,9 @@ const NewProcessPage = () => {
         subtitle="Enter the details of a new governance process and submit
                 them."
       />
-      <NewProcessContainer>
-        <FieldRow>
-          <FieldRowLeftSection>
+      <NewProcessContainer style={{ border: "solid" }}>
+        <FieldRow style={{ border: "solid red" }}>
+          <FieldRowLeftSection style={{ border: "solid red" }}>
             <SectionTitle
               title="Proposal Title"
               subtitle="Short name to identify the process"

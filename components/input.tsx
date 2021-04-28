@@ -1,0 +1,14 @@
+import styled from "styled-components";
+
+const TextInput = styled.input`
+  type: text;
+  width: 394px;
+  height: 46px;
+  padding-left: 10px;
+  border: 2px solid ${({ theme }) => theme.grayScale.g2};
+  box-sizing: border-box;
+  box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+`;
+
+export default TextInput;
