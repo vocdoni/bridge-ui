@@ -30,6 +30,8 @@ import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 
+import { findMaxValue } from "../../lib/utils"
+
 const NewProcessContainer = styled.div`
   input[type="text"],
   textarea {
@@ -445,7 +447,7 @@ const NewProcessPage = () => {
         startBlock,
         blockCount,
         maxCount: metadata.questions.length,
-        maxValue: 3,
+        maxValue: findMaxValue(metadata),
         maxTotalCost: 0,
         costExponent: 10000,
         maxVoteOverwrites: 1,
