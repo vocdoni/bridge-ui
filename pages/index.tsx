@@ -80,11 +80,11 @@ const GrayRectangle = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #EEF4FB;
+  background: ${({ theme }) => theme.grayScale.g2};
   width: 1248px;
   height: 164px;
   border-radius: 16px;
-  color: #7483AB;
+  color: ${({ theme }) => theme.grayScale.g5};
   font-family: "Manrope"
 `;
 
