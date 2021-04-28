@@ -111,6 +111,7 @@ const NotListedLink = styled.p`
   width: 526px;
   text-align: center;
   line-height: 0%;
+  cursor: pointer;
 `;
 
 // MAIN COMPONENT
