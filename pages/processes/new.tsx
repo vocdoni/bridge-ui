@@ -29,6 +29,7 @@ import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
+import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils"
 
@@ -489,26 +490,29 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={75}>
-            <RadioChoice onClick={() => setEncryptedVotes(false)}>
-              {" "}
-              <input
-                type="radio"
-                readOnly
-                checked={!envelopeType.hasEncryptedVotes}
-                name="vote-encryption"
-              />
-              <div className="checkmark"></div> Real-time results
-            </RadioChoice>
-            <RadioChoice onClick={() => setEncryptedVotes(true)}>
-              {" "}
-              <input
-                type="radio"
-                readOnly
-                checked={envelopeType.hasEncryptedVotes}
-                name="vote-encryption"
-              />
-              <div className="checkmark"></div> Encrypted results
-            </RadioChoice>
+            <div style={{float: 'left'}}>
+              <RadioChoice onClick={() => setEncryptedVotes(false)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={!envelopeType.hasEncryptedVotes}
+                  name="vote-encryption"
+                />
+                <div className="checkmark"></div> Real-time results
+              </RadioChoice>
+              <RadioChoice onClick={() => setEncryptedVotes(true)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={envelopeType.hasEncryptedVotes}
+                  name="vote-encryption"
+                />
+                <div className="checkmark"></div> Encrypted results
+              </RadioChoice>
+            </div>
+            <Tooltip />
           </FieldRowRightSection>
         </FieldRow>
 
