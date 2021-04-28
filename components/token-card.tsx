@@ -199,10 +199,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
           </TokenDescription>
         </CardHeader>
         {/* <ProposalTitle>{children}</ProposalTitle> */}
-        <ProposalTitle>
-          Can we have a really long description here, that will most definitely be longer that the
-          card
-        </ProposalTitle>
+        <ProposalTitle>{children}</ProposalTitle>
       </Card>
     );
   }
