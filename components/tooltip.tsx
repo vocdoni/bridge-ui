@@ -15,17 +15,17 @@ const CircleContainer = styled.div`
 `;
 
 const Circle = styled.div`
-  background: #635BFF;
+  background: ${({ theme }) => theme.secondary.s3};
   border-radius: 50%;
-  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.01);
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   color: white;
   cursor: pointer;
   float: left;
   width: 100%;
 
   ${CircleContainer}:hover & {
-    background: #8991FF;
-    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+    background: ${({ theme }) => theme.secondary.s6};
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     transition: all 0.2s ease-out;
     transform: translateY(-1px);
   }
@@ -42,7 +42,7 @@ const QuestionMark = styled.div`
 const TooltipText = styled.div<Props>`
   background-color: #F3F4FF;
   border-radius: 10px;
-  color: #865BFF;
+  color: ${({ theme }) => theme.secondary.s3};
   float: left;
   font-size: 16px;
   margin-bottom: ${props => props.newLine ? '8px' : '0px'};
