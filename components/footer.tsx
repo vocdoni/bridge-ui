@@ -7,28 +7,34 @@ import { ConnectButton } from "./connect-button";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { FOOTER_LOGO } from "../lib/constants";
 
-const Container = styled.div`  
+const Container = styled.div`
+  bottom: 0;  
   width: 100%;
-  position: absolute;
-
-  margin-top: 73px;
   height: 71px;
-  font-size: 16px;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   background: ${({ theme }) => theme.blackAndWhite.w1}CC;
+`;
+
+const ListContainer = styled.div`
+  display: flex;
+  width: 1440px;
+  justify-content: space-between;
+  align-items: center;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    padding: 0 20px;
+  }
 `;
 
 const Logo = styled.div`
   background: url(${FOOTER_LOGO});
-  position: absolute;
+  position: flex;
   display: flex;
   width: 155px;
-  margin-top: 15px;
+  margin-top: 5px;
+  margin-left: 50px;
   height: 40px;
-  left: 176px;
 `;
 
 const Section = styled.div`
@@ -39,10 +45,9 @@ const Section = styled.div`
 `;
 
 const ClickableText = styled.a`
-  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
+  margin-right: 80px;
   display: flex;
   justify-content: space-between;
-  
   align-items: center;
   text-decoration: none;
   font-size: 18px;
@@ -76,18 +81,20 @@ export const Footer = () => {
     </MobileFooter>
   ) : (
     <Container>
-      <Section>
-        <Logo></Logo>
-      </Section>
-      <Section>
-        {FOOTER_LINKS.map(({ url, name }, i) => (
-            <div key={name}>
-              <Link href={url} passHref>
-                <ClickableText target="_blank">{name}</ClickableText>
-              </Link>
-            </div>
-          ))}
-      </Section>
+      <ListContainer>
+        <Section>
+          <Logo></Logo>
+        </Section>
+        <Section>
+          {FOOTER_LINKS.map(({ url, name }, i) => (
+              <div key={name}>
+                <Link href={url} passHref>
+                  <ClickableText target="_blank">{name}</ClickableText>
+                </Link>
+              </div>
+            ))}
+        </Section>
+      </ListContainer>
     </Container>
   );
 };
