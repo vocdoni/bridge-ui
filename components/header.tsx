@@ -22,7 +22,7 @@ const HeaderContainer = styled.div`
 const Logo = styled.div`
   background: url(${HEADER_LOGO});
   position: asbsolute;
-  width: 57px;
+  width: 148px;
   height: 57px;
   margin-left: 40px;
   margin-top: 7px;
@@ -270,8 +270,8 @@ export const Header = () => {
             <Link href="/" passHref>
               <VoiceLink target="_self">
                 <Logo></Logo>
-                <TextOne>Aragon</TextOne>
-                <TextTwo>Voice</TextTwo>
+                {/* <TextOne>Aragon</TextOne>
+                <TextTwo>Voice</TextTwo> */}
                 <BetaLabel>Beta</BetaLabel>
               </VoiceLink>
             </Link>
