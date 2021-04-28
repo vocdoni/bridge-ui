@@ -72,29 +72,6 @@ const MenuItemsContainer = styled.div`
   }
 `;
 
-const TextOne = styled.span`
-  margin-top: 5px;
-  font-family: Manrope;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
-  align-items: center;
-  text-decoration: none;
-  color: ${({ theme }) => theme.grayScale.g5};
-`;
-
-const TextTwo = styled.span`
-  margin-top: 5px;
-  margin-left: 3px;
-  font-family: Manrope;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
-  align-items: center;
-  text-decoration: none;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
 const ListItem = styled.div`
   &:last-child {
     margin-right: 0;
@@ -269,9 +246,7 @@ export const Header = () => {
           <LinkContainer>
             <Link href="/" passHref>
               <VoiceLink target="_self">
-                <Logo></Logo>
-                {/* <TextOne>Aragon</TextOne>
-                <TextTwo>Voice</TextTwo> */}
+                <Logo />
                 <BetaLabel>Beta</BetaLabel>
               </VoiceLink>
             </Link>
