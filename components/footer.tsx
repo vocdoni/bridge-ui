@@ -7,8 +7,8 @@ import { ConnectButton } from "./connect-button";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { FOOTER_LOGO } from "../lib/constants";
 
-const Container = styled.div`  
-  margin-bottom: -71px;
+const Container = styled.div`
+  bottom: 0;  
   width: 100%;
   height: 71px;
   display: flex;
