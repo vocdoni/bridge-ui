@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ProcessMetadata, VotingApi } from "dvote-js";
+import { VotingApi } from "dvote-js";
 
 import { usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
@@ -215,7 +215,7 @@ const TokenPage = () => {
         title={"Token details"}
         description={`See the details of ${token?.symbol || "the token"}`}
         Action={() => (
-          <Button   wide onClick={() => onCreateProcess(token.address)}>
+          <Button mode="strong" wide onClick={() => onCreateProcess(token.address)}>
             Create a governance process
           </Button>
         )}

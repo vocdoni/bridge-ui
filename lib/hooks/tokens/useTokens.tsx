@@ -34,7 +34,7 @@ export function useToken(address: string): Partial<TokenInfo> | null {
     }
   };
 
-  const { data } = useSWR(address, fetchToken, {
+  const { data } = useSWR([address], fetchToken, {
     isPaused: () => !address,
   });
 

@@ -7,6 +7,7 @@ import Spinner from "react-svg-spinner";
 import { usePool } from "@vocdoni/react-hooks";
 
 import Button from "../../components/button";
+import { Button as AragonButton } from "@aragon/ui";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
@@ -216,9 +217,9 @@ const TokenAddPage = () => {
           />
         </LeftSection>
         <RightSection>
-          <Button   onClick={loadingToken ? undefined : checkToken}>
+          <AragonButton mode="strong" onClick={loadingToken ? undefined : checkToken}>
             {loadingToken ? <StyledSpinner /> : "Check token"}
-          </Button>
+          </AragonButton>
         </RightSection>
       </Row>
 
@@ -257,9 +258,9 @@ const TokenAddPage = () => {
                 <StyledSpinner />
               </Button>
             ) : (
-              <Button onClick={onSubmit}>
+              <AragonButton mode="strong" onClick={onSubmit}>
                 Register token
-              </Button>
+              </AragonButton>
             )}
           </RowContinue>
         </>

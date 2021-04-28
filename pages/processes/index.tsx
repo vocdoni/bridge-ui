@@ -193,7 +193,6 @@ const ProcessPage = () => {
   const [refreshingVotedStatus, setRefreshingVotedStatus] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [choices, setChoices] = useState([] as number[]);
-  const [results, setResults] = useState(null as DigestedProcessResults);
 
   const nullifier = VotingApi.getSignedVoteNullifier(wallet?.account || "", processId);
 
@@ -204,14 +203,14 @@ const ProcessPage = () => {
 
   const hasStarted = startDate && startDate.getTime() <= Date.now();
 
-  const weights = useWeights({
+  const { weights } = useWeights({
     processId,
     token,
     start: startDate,
     end: endDate,
   });
 
-  const t = useProcessInfo({ processId });
+  const { results, updateResults } = useProcessInfo(proc, startDate);
 
   // Effects
   useEffect(() => {
@@ -220,7 +219,7 @@ const ProcessPage = () => {
     const refreshInterval = setInterval(() => {
       if (skip) return;
 
-      Promise.all([updateVoteStatus(), updateResults()]).catch((err) => {
+      Promise.all([updateVoteStatus()]).catch((err) => {
         setAlertMessage(err.message);
         console.error(err);
       });
@@ -232,10 +231,10 @@ const ProcessPage = () => {
     };
   }, [processId]);
 
-  // Vote results
-  useEffect(() => {
-    updateResults();
-  }, [token, processId, hasStarted, hasVoted]);
+  // // Vote results
+  // useEffect(() => {
+  //   updateResults();
+  // }, [token, processId, hasStarted, hasVoted]);
 
   // Vote status
   useEffect(() => {
@@ -267,17 +266,6 @@ const ProcessPage = () => {
         setRefreshingVotedStatus(false);
         console.error(err);
       });
-  };
-  const updateResults = async () => {
-    if (!processId) return;
-
-    try {
-      const pool = await poolPromise;
-      const results = await VotingApi.getResultsDigest(processId, pool);
-      setResults(results);
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const updateCensusStatus = async () => {
@@ -340,6 +328,7 @@ const ProcessPage = () => {
     setChoices([].concat(choices));
   };
 
+  //@TODO: Move this into a hook
   const onSubmitVote: () => Promise<void> = async () => {
     if (
       !confirm(
@@ -487,7 +476,7 @@ const ProcessPage = () => {
         </ProcessData>
       </ProcessContainer>
 
-      <Questions />
+      <Questions {...results.questions} />
       <ButtonContainer>
         <Button disabled>Submit your vote</Button>
       </ButtonContainer>

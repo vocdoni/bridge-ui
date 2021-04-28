@@ -1,5 +1,5 @@
 import React from "react";
-import { MOCK_QUESTIONS } from "./state";
+
 import {
   QuestionContainer,
   QuestionDescription,
@@ -24,10 +24,10 @@ const Option = ({ title }) => {
   );
 };
 
-export const Questions = () => {
+export const Questions = (questions) => {
   return (
     <div>
-      {MOCK_QUESTIONS.map(({ title, description, results }, i) => {
+      {questions.map(({ title, description, choices }, i) => {
         return (
           <QuestionContainer>
             <QuestionInformation>
@@ -36,7 +36,7 @@ export const Questions = () => {
               <QuestionDescription>{description}</QuestionDescription>
             </QuestionInformation>
             <QuestionOptions>
-              {results.map(({ title }) => {
+              {choices.map(({ title }) => {
                 return <Option title={title} />;
               })}
             </QuestionOptions>

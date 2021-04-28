@@ -31,7 +31,6 @@ export const useWeights = ({ processId, token, start, end }) => {
       const statusValue = retrieveStatus(start, end);
 
       const hasNotStarted = statusValue.includes("Starts");
-
       if (hasNotStarted) {
         return [
           {
@@ -88,14 +87,15 @@ export const useWeights = ({ processId, token, start, end }) => {
         },
       ];
     } catch (e) {
-      console.log("Error: ", e.message);
+      console.log("Error in useWeights hook: ", e.message);
+      throw new Error(e.message);
     }
   };
 
-  const { data } = useSWR([processId, token, start, end], updateWeight, {
+  const { data, mutate, error } = useSWR([processId, token, start, end], updateWeight, {
     isPaused: () => !processId || !token,
     refreshInterval: 20000,
   });
 
-  return data;
+  return { weights: data, updateWeights: mutate, weightsError: error };
 };
