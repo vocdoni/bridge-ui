@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react";
+import React, { useState } from "react";
 import {
   CensusErc20Api,
   IProcessCreateParams,
@@ -23,7 +23,6 @@ import { providers } from "ethers";
 
 import Button from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { handleValidation } from "../../lib/processValidator";
@@ -106,19 +105,6 @@ const ChoiceRightSection = styled.div`
   }
 `;
 
-const InfoTitle = styled.h2`
-  margin-bottom: 5px;
-`;
-
-const InfoPlaceholder = styled.div`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
-const ChoicesTitle = styled.h3`
-  margin-top: 1em;
-  margin-bottom: 0;
-`;
-
 const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -171,11 +157,6 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
 
 const QuestionNumber = styled.h6`
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  margin-bottom: 0;
-`;
-
-const QuestionText = styled.h3`
-  margin-top: 1em;
   margin-bottom: 0;
 `;
 
