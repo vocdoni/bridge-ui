@@ -144,7 +144,7 @@ const SubmitButton = ({ submitting, onSubmit }) =>
       <Spinner />
     </p>
   ) : (
-    <PrimaryButton onClick={onSubmit}>Submit process</PrimaryButton>
+    <PrimaryButton onClick={onSubmit}>Create proposal</PrimaryButton>
   );
 
 const NewProcessPage = () => {
