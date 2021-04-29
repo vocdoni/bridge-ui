@@ -31,6 +31,24 @@ const Circle = styled.div`
   }
 `;
 
+const CircleEncrypted = styled.div`
+  background: ${({ theme }) => theme.secondary.s3};
+  border-radius: 50%;
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  color: white;
+  float: left;
+  width: 16px;
+  height: 16px;
+  margin-top: -20px;
+
+  ${CircleContainer}:hover & {
+    background: ${({ theme }) => theme.secondary.s6};
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    transition: all 0.2s ease-out;
+    transform: translateY(-1px);
+  }
+`;
+
 const QuestionMark = styled.div`
   font-size: 14px;
   font-weight: 500;
@@ -53,7 +71,6 @@ const TooltipText = styled.div<Props>`
   text-align: left;
   visibility: hidden;
   width: ${(props) => (props.newLine ? "180px" : "160px")};
-  padding: 14px 16px;
   position: absolute;
   z-index: 1;
 
@@ -83,10 +100,10 @@ const Tooltip = () => {
       <br />
       <br />
 
-      <CircleContainer style={{ marginTop: "-10px" }}>
-        <Circle>
+      <CircleContainer>
+        <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
-        </Circle>
+        </CircleEncrypted>
         <br />
         <TooltipText newLine topText={false}>
           {encryptedText}
@@ -107,10 +124,10 @@ const Tooltip = () => {
       <br />
       <br />
 
-      <CircleContainer style={{ marginTop: "-10px" }}>
-        <Circle>
+      <CircleContainer>
+        <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
-        </Circle>
+        </CircleEncrypted>
         <TooltipText newLine={false} topText={false}>
           {encryptedText}
         </TooltipText>
