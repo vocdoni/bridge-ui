@@ -27,9 +27,9 @@ import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
-import { PlusBox } from "../../components/plusBox";
+import { PlusBox, MinusContainer } from "../../components/plusBox";
 import SectionTitle from "../../components/sectionTitle";
-import TextInput from "../../components/input";
+import TextInput, { DescriptionInput } from "../../components/input";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -64,6 +64,16 @@ const FieldRowLeftSection = styled.div`
 const FieldRowRightSection = styled.div<{ marginTop: number }>`
   flex: 35%;
   margin-left: 2em;
+  margin-top: ${({ marginTop }) => marginTop}px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: 25px;
+    margin-left: 0;
+  }
+`;
+
+const RemoveButton = styled.div<{ marginTop: number }>`
+  flex: 35%;
+  margin-left: 6.5em;
   margin-top: ${({ marginTop }) => marginTop}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
@@ -415,7 +425,7 @@ const NewProcessPage = () => {
               subtitle="An introduction of about 2-3 lines"
               smallerTitle
             />
-            <textarea
+            <DescriptionInput
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
@@ -451,7 +461,10 @@ const NewProcessPage = () => {
             <RowQuestions>
               <RowQuestionLeftSection>
                 <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                <SectionTitle title="Question" smallerTitle />
+                <SectionTitle title="Question" smallerTitle /> 
+                <RemoveButton marginTop={-57} >
+                  {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+                </RemoveButton>
                 <TextInput
                   placeholder="Title"
                   value={question.title.default}
@@ -459,7 +472,7 @@ const NewProcessPage = () => {
                 />
 
                 <SectionTitle title="Description" smallerTitle />
-                <textarea
+                <DescriptionInput
                   placeholder="Description"
                   value={question.description.default}
                   onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
@@ -488,9 +501,6 @@ const NewProcessPage = () => {
                   </ChoiceRightSection>
                 </RowQuestions>
               ))}
-              {qIdx > 0 ? (
-                <Remove onClick={() => onRemoveQuestion(qIdx)}>Remove question</Remove>
-              ) : null}
             </div>
 
             {qIdx == metadata.questions.length - 1 ? (

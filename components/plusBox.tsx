@@ -16,7 +16,11 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   left: calc(50% - 46px / 2 + 95px);
   top: calc(50% - 44px / 2 + 679px);
 
-  background: ${({ theme }) => theme.blackAndWhite.w1};
+  background-image: url(${MINUS_ICON});
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
 
@@ -26,6 +30,12 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   ${({ add }) =>
     add &&
     css`
+      background-image: url(${PLUS_ICON});
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: ${({ theme }) => theme.blackAndWhite.w1};
+      &:hover {
       cursor: pointer;
       color: ${({ theme }) => theme.blackAndWhite.b1};
       &:hover {
@@ -36,12 +46,46 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   ${({ remove }) =>
     remove &&
     css`
+      background-image: url(${MINUS_ICON});
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: center;
       cursor: pointer;
       color: ${({ theme }) => theme.blackAndWhite.b1};
       &:hover {
         box-shadow: ${({ theme }) => theme.shadows.cardShadow};
       }
     `}
+`;
+
+export const MinusContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px;
+  margin-bottom: 16px;
+  margin-right: 200px;
+  width: 46px;
+  height: 44px;
+  left: calc(50% - 46px / 2 + 95px);
+  top: calc(50% - 44px / 2 + 679px);
+
+  background-image: url(${MINUS_ICON});
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
+  border: 2px solid ${({ theme }) => theme.grayScale.g2};
+  box-sizing: border-box;
+
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  cursor: pointer;
+  
+  &:hover {
+    cursor: pointer;
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
 `;
 
 interface PlusBoxProps {
@@ -73,8 +117,6 @@ export const PlusBox = ({
     <PlusBoxContainer
       {...modifier}
       onClick={() => onClick({ currentQuestion, choices, currentChoice })}
-    >
-      {currentChoice === lastChoice && isDefault ? "+" : "-"}
-    </PlusBoxContainer>
+    />
   );
 };
