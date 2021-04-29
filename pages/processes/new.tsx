@@ -382,6 +382,7 @@ const NewProcessPage = () => {
               placeholder="Title"
               onChange={(e) => setMainTitle(e.target.value)}
               value={metadata.title.default}
+              widthValue={735}
             />
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={125}>
@@ -462,6 +463,7 @@ const NewProcessPage = () => {
                   placeholder="Title"
                   value={question.title.default}
                   onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                  widthValue={735}
                 />
 
                 <SectionTitle title="Description" smallerTitle />
@@ -482,6 +484,7 @@ const NewProcessPage = () => {
                       placeholder="Choice"
                       value={choice.title.default}
                       onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                      widthValue={683}
                     />
                   </RowQuestionLeftSection>
                   <ChoiceRightSection>

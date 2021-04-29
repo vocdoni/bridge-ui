@@ -11,6 +11,7 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   padding: 12px 20px;
   margin-bottom: 16px;
   margin-right: 200px;
+  margin-left: -5px;
   width: 46px;
   height: 44px;
   left: calc(50% - 46px / 2 + 95px);

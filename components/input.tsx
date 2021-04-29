@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const TextInput = styled.input`
+const TextInput = styled.input<{ widthValue: number }>`
   type: text;
-  width: 735px;
+  width: ${({ widthValue }) => widthValue}px;
   height: 46px;
   padding-left: 10px;
 
