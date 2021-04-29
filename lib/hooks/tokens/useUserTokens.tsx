@@ -9,8 +9,8 @@ import { ERC20JsonAbi, GOERLI_MULTICALL, GOERLI_CHAINID } from "../../constants"
 import { TokenInfo } from "../../types";
 
 import { usePool } from "@vocdoni/react-hooks";
-
 import { getTokenInfo } from "../../api";
+import useLocalStorage from "../useLocalStorage";
 
 interface TokenBalance extends Partial<TokenInfo> {
   balance: string;
@@ -42,8 +42,19 @@ export function UseUserTokens({ children }) {
   const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
   const { poolPromise } = usePool();
+  const [tokens] = useLocalStorage("voting:tokens", []);
 
-  const refreshTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
+  const resolveTokenInfo = useCallback(
+    async (address: string) => {
+      // @TODO: Add validation address is correct
+      const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
+      if (tokenCached) return tokenCached;
+      return loadTokenInfo(address);
+    },
+    [tokens]
+  );
+
+  const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
     async (address: string) => {
       const pool = await poolPromise;
       const token = await getTokenInfo(address, pool);
@@ -71,7 +82,7 @@ export function UseUserTokens({ children }) {
       balances[index] == 0 ? [] : [{ address, balance: balances[index].toString() }]
     );
 
-    const fetchPromises = mappedBalances.map((a) => refreshTokenInfo(a.address));
+    const fetchPromises = mappedBalances.map((a) => resolveTokenInfo(a.address));
     const allTokensInfo = await Promise.all(fetchPromises);
 
     return mappedBalances.map((bal, idx) => {
