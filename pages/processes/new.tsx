@@ -126,6 +126,16 @@ const QuestionNumber = styled.h6`
   line-height: 150%;
 `;
 
+const QuestionText = styled.h5`
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 38px;
+  letter-spacing: -0.03em;
+  margin-bottom: 85px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+`;
+
 const RowContinue = styled.div`
   margin-top: 5em;
 
@@ -455,7 +465,7 @@ const NewProcessPage = () => {
             <RowQuestions>
               <RowQuestionLeftSection>
                 <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                <SectionTitle title="Question" smallerTitle />
+                <QuestionText>Question</QuestionText>
                 <RemoveButton marginTop={-57}>
                   {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
                 </RemoveButton>

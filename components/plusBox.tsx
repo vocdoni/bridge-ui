@@ -65,7 +65,8 @@ export const MinusContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 12px 20px;
-  margin-bottom: 16px;
+  margin-top: -129px;
+  margin-bottom: 30px;
   margin-right: 200px;
   width: 46px;
   height: 44px;
