@@ -84,11 +84,12 @@ const ActiveProposals = styled.p`
 
 const Cap = styled.p`
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-left: 250px;
   position: absolute;
+  width: 320px;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   align-items: center;
+  text-align: right;
   letter-spacing: 0.01em;
 `;
 
