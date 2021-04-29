@@ -10,7 +10,7 @@ interface Props {
 const CircleContainer = styled.div`
   float: left;
   height: 24px;
-  margin: 6px 0px 0px 21px;
+  margin: 10px 0px 0px 21px;
   width: 24px;
 `;
 
@@ -19,9 +19,9 @@ const Circle = styled.div`
   border-radius: 50%;
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   color: white;
-  cursor: pointer;
   float: left;
-  width: 100%;
+  width: 16px;
+  height: 16px;
 
   ${CircleContainer}:hover & {
     background: ${({ theme }) => theme.secondary.s6};
@@ -32,8 +32,10 @@ const Circle = styled.div`
 `;
 
 const QuestionMark = styled.div`
-  font-size: 18px;
-  margin-left: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 4.5px;
+  margin-top: -2px;
   user-select: none; 
   -webkit-touch-callout : none
   -webkit-user-select:none

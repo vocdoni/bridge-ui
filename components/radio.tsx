@@ -8,7 +8,8 @@ const Radio = styled.label`
   -ms-user-select: none;
   user-select: none;
   padding: 5px 0;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   color: ${({ theme }) => theme.blackAndWhite.b1};
 
   display: flex;
@@ -24,12 +25,14 @@ const Radio = styled.label`
 
   /* Create a custom radio button */
   .checkmark {
-    height: 22px;
-    width: 22px;
+    height: 24px;
+    width: 24px;
+    box-sizing: border-box;
+    box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
     background-color: ${({ theme }) => theme.blackAndWhite.w1};
-    border-radius: 50%;
+    border-radius: 26px;
     margin-right: 1em;
-    border: 1px solid ${({ theme }) => theme.blackAndWhite.b1};
+    border: 2px solid ${({ theme }) => theme.grayScale.g2};
   }
 
   /* When the radio button is checked, add a blue background */
@@ -52,10 +55,15 @@ const Radio = styled.label`
   /* Style the indicator (dot/circle) */
   .checkmark:after {
     border-radius: 50%;
-    background: ${({ theme }) => theme.blackAndWhite.b1};
+    box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+    background: linear-gradient(
+      ${({ theme }) => theme.gradients.primary.mg1.a}, 
+      ${({ theme }) => theme.gradients.primary.mg1.c1}, 
+      ${({ theme }) => theme.gradients.primary.mg1.c2}
+    );
     z-index: 9;
-    height: 16px;
-    width: 16px;
+    height: 14px;
+    width: 14px;
     margin: 3px;
   }
 `;

@@ -61,12 +61,11 @@ const FieldRow = styled.div`
 `;
 
 const FieldRowLeftSection = styled.div`
-  flex: 40%;
+  max-width: 735px;
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number }>`
-  flex: 35%;
-  margin-left: 2em;
+  width: 480px;
   margin-top: ${({ marginTop }) => marginTop}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
@@ -136,12 +135,6 @@ const RowContinue = styled.div`
   & > * {
     min-width: 250px;
   }
-`;
-
-const Remove = styled.h6`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  margin-top: 10px;
-  cursor: pointer;
 `;
 
 const SubmitButton = ({ submitting, onSubmit }) =>
@@ -391,7 +384,7 @@ const NewProcessPage = () => {
               value={metadata.title.default}
             />
           </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={75}>
+          <FieldRowRightSection marginTop={125}>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -401,7 +394,7 @@ const NewProcessPage = () => {
                   checked={!envelopeType.hasEncryptedVotes}
                   name="vote-encryption"
                 />
-                <div className="checkmark"></div> Real-time results
+                <div className="checkmark"></div> Real time results
               </RadioChoice>
               <RadioChoice onClick={() => setEncryptedVotes(true)}>
                 {" "}
@@ -432,7 +425,7 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={82}>
+          <FieldRowRightSection marginTop={140}>
             <Datetime
               value={startDate}
               inputProps={{
