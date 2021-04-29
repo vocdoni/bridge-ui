@@ -59,86 +59,13 @@ export async function registerToken(
   signer: Signer
 ) {
   try {
-    const tokenBalanceMappingPosition = await findTokenBalanceMappingPosition(
-      tokenAddress,
-      holderAddress,
-      pool
-    );
-    const blockNumber = (await pool.provider.getBlockNumber()) - 1;
-    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(
-      holderAddress,
-      tokenBalanceMappingPosition
-    );
-    const result = await CensusErc20Api.generateProof(
-      tokenAddress,
-      [balanceSlot],
-      blockNumber,
-      pool.provider as providers.JsonRpcProvider
-    );
-    const { blockHeaderRLP, accountProofRLP, storageProofsRLP } = result;
+    const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
 
-    await CensusErc20Api.registerToken(
-      tokenAddress,
-      tokenBalanceMappingPosition,
-      blockNumber,
-      Buffer.from(blockHeaderRLP.replace("0x", ""), "hex"),
-      Buffer.from(accountProofRLP.replace("0x", ""), "hex"),
-      Buffer.from(storageProofsRLP[0].replace("0x", ""), "hex"),
-      signer,
-      pool
-    );
+    await CensusErc20Api.registerToken(tokenAddress, balanceMappingPosition, signer, pool);
   } catch (err) {
+    console.log(err);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
     throw new Error("The token internal details cannot be chacked");
-  }
-}
-
-export async function findTokenBalanceMappingPosition(
-  tokenAddress: string,
-  holderAddress: string,
-  pool: GatewayPool
-) {
-  const verify = true;
-  try {
-    const blockNumber = await pool.provider.getBlockNumber();
-    const balance = await balanceOf(tokenAddress, holderAddress, pool);
-    if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE);
-
-    for (let i = 0; i < 50; i++) {
-      const tokenBalanceMappingPosition = i;
-
-      const balanceSlot = CensusErc20Api.getHolderBalanceSlot(
-        holderAddress,
-        tokenBalanceMappingPosition
-      );
-
-      const result = await CensusErc20Api.generateProof(
-        tokenAddress,
-        [balanceSlot],
-        blockNumber,
-        pool.provider as providers.JsonRpcProvider,
-        { verify }
-      ).catch(() => null); // Failed => ignore
-
-      if (result == null || !result.proof) continue;
-
-      const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
-      if (!onChainBalance.eq(balance)) {
-        console.warn(
-          "The proved balance does not match the on-chain balance:",
-          result.proof.storageProof[0].value,
-          "vs",
-          balance.toHexString()
-        );
-        continue;
-      }
-
-      // FOUND
-      return tokenBalanceMappingPosition;
-    }
-    return null;
-  } catch (err) {
-    throw err;
   }
 }
 
@@ -150,7 +77,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
     tokenInstance.symbol(),
     tokenInstance.totalSupply(),
     tokenInstance.decimals(),
-    CensusErc20Api.getBalanceMappingPosition(address, pool).catch(() => BigNumber.from(-1)),
+    CensusErc20Api.getTokenInfo(address, pool).catch(() => BigNumber.from(-1)),
     getProcessList(address, pool),
   ]).then(
     ([name, symbol, supply, decimals, balMappingPos, pids]: [
@@ -179,7 +106,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         totalSupplyFormatted: totalSupply.format(),
         decimals,
         address,
-        balanceMappingPosition: balMappingPos.toNumber(),
+        balanceMappingPosition: balMappingPos as any,
         icon: tokenIconUrl(address),
         processes: pids,
       };

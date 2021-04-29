@@ -284,7 +284,7 @@ const ProcessPage = () => {
       return setAlertMessage("The token contract is not yet registered");
     } else if (tokenRegistered !== true) setTokenRegistered(true);
 
-    const processEthCreationBlock = proc.parameters.evmBlockHeight;
+    const processEthCreationBlock = proc.parameters.blockCount;
     const balanceSlot = CensusErc20Api.getHolderBalanceSlot(
       wallet.account,
       token.balanceMappingPosition
@@ -344,7 +344,7 @@ const ProcessPage = () => {
 
       // Census Proof
       const holderAddr = wallet.account;
-      const processEthCreationBlock = proc.parameters.evmBlockHeight;
+      const processEthCreationBlock = proc.parameters.blockCount;
       const balanceSlot = CensusErc20Api.getHolderBalanceSlot(
         holderAddr,
         token.balanceMappingPosition
