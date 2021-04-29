@@ -13,10 +13,10 @@ import {
   OptionTitle,
 } from "./styled";
 
-const Option = ({ title }) => {
+const Option = ({ title, choiceId, onChoiceSelect, questionId }) => {
   return (
     <OptionLabel>
-      <Radio type="checkbox" />
+      <Radio type="checkbox" onClick={() => onChoiceSelect(questionId, choiceId)} />
       <OptionTitleContainer>
         <OptionTitle>{title}</OptionTitle>
       </OptionTitleContainer>
@@ -24,25 +24,31 @@ const Option = ({ title }) => {
   );
 };
 
-export const Questions = (questions) => {
+export const Questions = ({ questions, onChoiceSelect }) => {
   return (
     <div>
-      {questions.map(({ title, description, choices }, i) => {
-        return (
-          <QuestionContainer>
-            <QuestionInformation>
-              <QuestionNumber>Question #{i + 1}</QuestionNumber>
-              <QuestionTitle>{title}</QuestionTitle>
-              <QuestionDescription>{description}</QuestionDescription>
-            </QuestionInformation>
-            <QuestionOptions>
-              {choices.map(({ title }) => {
-                return <Option title={title} />;
-              })}
-            </QuestionOptions>
-          </QuestionContainer>
-        );
-      })}
+      {!questions
+        ? null
+        : questions.map(({ title, description, choices }, i) => (
+            <QuestionContainer key={`question_${i}`}>
+              <QuestionInformation>
+                <QuestionNumber>Question #{i + 1}</QuestionNumber>
+                <QuestionTitle>{title}</QuestionTitle>
+                <QuestionDescription>{description}</QuestionDescription>
+              </QuestionInformation>
+              <QuestionOptions>
+                {choices.map((choice, j) => (
+                  <Option
+                    key={`choice_${j}`}
+                    questionId={i}
+                    title={choice.title}
+                    choiceId={j}
+                    onChoiceSelect={onChoiceSelect}
+                  />
+                ))}
+              </QuestionOptions>
+            </QuestionContainer>
+          ))}
     </div>
   );
 };

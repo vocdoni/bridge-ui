@@ -85,7 +85,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
       string,
       BigNumber,
       number,
-      BigNumber,
+      any,
       string[]
     ]) => {
       const totalSupply = new TokenAmount(supply.toString(), decimals, {
@@ -106,7 +106,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         totalSupplyFormatted: totalSupply.format(),
         decimals,
         address,
-        balanceMappingPosition: balMappingPos as any,
+        balanceMappingPosition: balMappingPos.balanceMappingPosition,
         icon: tokenIconUrl(address),
         processes: pids,
       };

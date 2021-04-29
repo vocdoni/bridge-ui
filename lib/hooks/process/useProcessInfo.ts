@@ -2,25 +2,24 @@ import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
 import { VotingApi } from "dvote-js";
 import useSWR from "swr";
 
-import dayjs from "dayjs";
-
 export const useProcessInfo = (info: ProcessInfo, start: Date) => {
   const { poolPromise } = usePool();
 
-  const updateResults = async (info) => {
+  const updateResults = async (info: ProcessInfo) => {
     try {
+      const pool = await poolPromise;
       const resultsSanitized = {
         title: info.metadata.title.default,
         description: info.metadata.description.default,
         questions: [],
       };
 
-      const pool = await poolPromise;
-
       const results = await VotingApi.getResultsDigest(info.id, pool);
 
       // this is supported for single choice multiquestion voting
-      results.questions.forEach(({ title, voteResults }) => {
+      // we will need to add more complex logic to parse results
+      // for different type of voting
+      results.questions.forEach(({ title, voteResults }, i) => {
         const choices = voteResults.map(({ title, votes }) => ({
           title: title.default,
           votes: votes.toNumber(),
@@ -28,6 +27,7 @@ export const useProcessInfo = (info: ProcessInfo, start: Date) => {
 
         resultsSanitized.questions.push({
           title: title.default,
+          description: info.metadata.questions[i].description.default,
           choices,
         });
       });
@@ -39,10 +39,8 @@ export const useProcessInfo = (info: ProcessInfo, start: Date) => {
     }
   };
 
-  const now = dayjs();
-  const hasResults = dayjs(now).isAfter(start);
-  const { data, mutate, error } = useSWR([info, hasResults], updateResults, {
-    isPaused: () => !info || !hasResults,
+  const { data, mutate, error } = useSWR([info], updateResults, {
+    isPaused: () => !info,
     refreshInterval: 20000,
   });
 

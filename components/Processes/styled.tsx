@@ -1,83 +1,4 @@
 import styled from "styled-components";
-import RadioChoice from "../radio";
-
-export const LightText = styled.p`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
-export const Question = styled.div`
-  display: flex;
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-    text-align: center;
-  }
-`;
-
-export const QuestionLeftSection = styled.div`
-  flex: 6;
-  h3 {
-    margin-top: 10px;
-  }
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex: 12;
-  }
-`;
-
-export const QuestionRightSection = styled.div`
-  flex: 4;
-  text-align: left;
-  margin-left: 10%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding-top: 50px;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    padding-top: 20px;
-    width: 100%;
-    flex: 0;
-    margin-left: 0;
-  }
-`;
-
-export const ChoiceResult = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-export const ChoicePercent = styled.div`
-  flex: 1;
-  margin-bottom: 1em;
-`;
-
-export const Box = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  background-color: ${({ theme }) => theme.blackAndWhite.b1};
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-`;
-
-export const ChoiceText = styled.div`
-  flex: 4;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-`;
-
-export const VotesAmount = styled.span`
-  margin-top: 0.4em;
-`;
-
-export const ChoiceDescription = styled.div`
-  width: calc(100% - 2.5em);
-`;
 
 export const ProcessTitle = styled.h5`
   font-size: 32px;
@@ -167,7 +88,7 @@ export const QuestionInformation = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   padding: 52px 65px;
-  max-width: 60%;
+  width: 100%;
 `;
 export const QuestionNumber = styled.p`
   margin: 0;
@@ -194,7 +115,7 @@ export const QuestionDescription = styled.div`
 
 export const QuestionOptions = styled.div`
   display: flex;
-  width: 100%;
+  width: 40%;
   flex-direction: column;
   justify-content: center;
 `;
