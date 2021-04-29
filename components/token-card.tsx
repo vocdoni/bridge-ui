@@ -59,7 +59,7 @@ const Symbol = styled.h4`
   padding-top: 22px;
   position: absolute;
   font-weight: 500;
-  font-size: 29px;
+  font-size: 28px;
   margin-top: 0px;
   align-items: center;
   letter-spacing: 0.01em;
@@ -159,7 +159,7 @@ function abbreviatedTokenAmount(amount: string): string {
   if (magnitude <= 3) {
     abbreviation = magnitude_letter[magnitude - 1];
   } else {
-    abbreviation = "*10^" + magnitude;
+    abbreviation = "*10^" + magnitude * 3;
   }
 
   return lead + abbreviation + " " + symbol;
