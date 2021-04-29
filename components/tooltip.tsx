@@ -1,10 +1,10 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useTooltipNewLine } from "../lib/hooks/useWindowSize";
 
 interface Props {
-  newLine: boolean
-  topText: boolean
+  newLine: boolean;
+  topText: boolean;
 }
 
 const CircleContainer = styled.div`
@@ -42,21 +42,21 @@ const QuestionMark = styled.div`
 `;
 
 const TooltipText = styled.div<Props>`
-  background-color: #F3F4FF;
+  background-color: #f3f4ff;
   border-radius: 10px;
   color: ${({ theme }) => theme.secondary.s3};
   float: left;
   font-size: 16px;
-  margin-bottom: ${props => props.newLine ? '8px' : '0px'};
-  margin-left: ${props => props.newLine ? '-160px' : '40px'};
-  margin-top: ${props => props.newLine ? (props.topText ? '19px' : '8px') : '0px'};
+  margin-bottom: ${(props) => (props.newLine ? "8px" : "0px")};
+  margin-left: ${(props) => (props.newLine ? "-160px" : "40px")};
+  margin-top: ${(props) => (props.newLine ? (props.topText ? "19px" : "8px") : "0px")};
   text-align: left;
   visibility: hidden;
-  width: ${props => props.newLine ? '180px' : '160px'};
+  width: ${(props) => (props.newLine ? "180px" : "160px")};
   padding: 14px 16px;
   position: absolute;
   z-index: 1;
-  
+
   ${CircleContainer}:hover & {
     visibility: visible;
   }
@@ -64,8 +64,8 @@ const TooltipText = styled.div<Props>`
 
 const Tooltip = () => {
   const tooltipNewLine = useTooltipNewLine();
-  const realtimeText = "Results can be viewed in real time"
-  const encryptedText = "Results are hidden until the vote concludes"
+  const realtimeText = "Results can be viewed in real time";
+  const encryptedText = "Results are hidden until the vote concludes";
 
   return tooltipNewLine ? (
     <div>
@@ -79,18 +79,18 @@ const Tooltip = () => {
           {realtimeText}
         </TooltipText>
       </CircleContainer>
-      
+
       <br />
       <br />
 
-      <CircleContainer style={{marginTop: '-10px'}}>
+      <CircleContainer style={{ marginTop: "-10px" }}>
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
         <br />
         <TooltipText newLine topText={false}>
           {encryptedText}
-        </TooltipText >
+        </TooltipText>
       </CircleContainer>
     </div>
   ) : (
@@ -103,11 +103,11 @@ const Tooltip = () => {
           {realtimeText}
         </TooltipText>
       </CircleContainer>
-      
+
       <br />
       <br />
 
-      <CircleContainer style={{marginTop: '-10px'}}>
+      <CircleContainer style={{ marginTop: "-10px" }}>
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
@@ -116,7 +116,7 @@ const Tooltip = () => {
         </TooltipText>
       </CircleContainer>
     </div>
-  )
-}
+  );
+};
 
-export default Tooltip
+export default Tooltip;

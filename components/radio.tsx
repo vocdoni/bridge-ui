@@ -57,8 +57,8 @@ const Radio = styled.label`
     border-radius: 50%;
     box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
     background: linear-gradient(
-      ${({ theme }) => theme.gradients.primary.mg1.a}, 
-      ${({ theme }) => theme.gradients.primary.mg1.c1}, 
+      ${({ theme }) => theme.gradients.primary.mg1.a},
+      ${({ theme }) => theme.gradients.primary.mg1.c1},
       ${({ theme }) => theme.gradients.primary.mg1.c2}
     );
     z-index: 9;
