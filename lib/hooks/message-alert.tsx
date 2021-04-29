@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 
 const UseMessageAlertContext = createContext({
-  error: true,
+  isError: true,
   message: "",
-  setAlertMessage: (msg: string, error?: boolean, seconds?: number) => undefined,
+  setAlertMessage: (msg: string, isErr?: boolean, seconds?: number) => undefined,
   clearAlert: () => undefined,
 });
 
@@ -12,15 +12,15 @@ export function useMessageAlert() {
 }
 
 export function UseMessageAlertProvider({ children }) {
-  const [error, setError] = useState(true);
+  const [isError, setIsError] = useState(true);
   const [message, setMessage] = useState("");
   const [timeout, setTimeoutTracker] = useState(null);
 
-  const setAlertMessage = (msg: string, error=true, seconds = 8) => {
+  const setAlertMessage = (msg: string, isErr = true, seconds = 8) => {
     if (timeout) clearTimeout(timeout);
 
     setMessage(msg);
-    setError(error);
+    setIsError(isErr);
     const newTo = setTimeout(() => {
       clearAlert();
       setTimeoutTracker(null);
@@ -30,7 +30,7 @@ export function UseMessageAlertProvider({ children }) {
   const clearAlert = () => setMessage("");
 
   return (
-    <UseMessageAlertContext.Provider value={{ error, message, setAlertMessage, clearAlert }}>
+    <UseMessageAlertContext.Provider value={{ isError, message, setAlertMessage, clearAlert }}>
       {children}
     </UseMessageAlertContext.Provider>
   );
