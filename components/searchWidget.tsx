@@ -17,7 +17,7 @@ type SearchWidgetProps = {
 const SearchWidget = ({ onChange, onKeyDown, onClick }: SearchWidgetProps) => {
   return (
     <SearchRow>
-      <TextInput placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} />
+      <TextInput placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} widthValue={0}/>
       <PrimaryButton onClick={onClick}>Check Token</PrimaryButton>
     </SearchRow>
   );
