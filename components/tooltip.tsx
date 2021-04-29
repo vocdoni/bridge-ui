@@ -62,8 +62,8 @@ const TooltipText = styled.div<Props>`
 
 const Tooltip = () => {
   const tooltipNewLine = useTooltipNewLine();
-  const realtimeText = "Results for the proposal are available during voting process, meaning anyone can see where the voting is leaning to"
-  const encryptedText = "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed"
+  const realtimeText = "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to."
+  const encryptedText = "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed."
 
   return tooltipNewLine ? (
     <div>
