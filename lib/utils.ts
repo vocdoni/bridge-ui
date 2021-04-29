@@ -1,3 +1,4 @@
+import { ProcessMetadata } from "dvote-js";
 import { utils } from "ethers";
 import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
 
@@ -28,6 +29,19 @@ export function throwIfNotBrowser() {
 export function shortAddress(address: string, slashIndex = 6): string {
   // An ethereum address has 42 characters
   return address.slice(0, slashIndex) + "..." + address.slice(38, 42);
+}
+
+/**
+ * @param tokenName - Token name to modify
+ * @param slashIndex - number of letters of the token name to show 
+ * @returns formatted token name 
+ */
+export function shortTokenName(tokenName: string, slashIndex = 22): string {
+  if(tokenName.length > 25) {
+    return tokenName.slice(0, slashIndex) + "...";
+  } else {
+    return tokenName;
+  }
 }
 
 export function tokenIconUrl(address = "") {
@@ -65,21 +79,11 @@ function toChecksumAddress(address) {
   return checksumAddress;
 }
 
-/**
- * Merge two sorted arrays of objects based on key
- * @param shortArr shorter array
- * @param longArr longer array
- * @param key object key to merge on
- * @returns 
- */
-export function mergeOnKey(shortArr: any[], longArr: any[], key: string) {
-  let longStart = 0, shortStart = 0;
-  const merge = [];
-
-  while (shortStart < shortArr.length) {
-    while (shortArr[shortStart][key] != longArr[longStart][key]) longStart += 1;
-    merge.push({ ...longArr[longStart], ...shortArr[shortStart] });
-    shortStart += 1;
-  }
-  return merge;
+/* find the question with the most choices */
+export function findMaxValue(metadata: ProcessMetadata) {
+  let longest = 0;
+  metadata.questions.forEach((question) => {
+    longest = Math.max(longest, question.choices.length);
+  });
+  return longest;
 }

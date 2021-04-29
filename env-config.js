@@ -6,7 +6,7 @@ const DEVELOPMENT = process.env.NODE_ENV !== "production";
 
 module.exports = {
   LANG: lang,
-  APP_TITLE: "Bridge",
+  APP_TITLE: "Aragon Voice - the ultimate solution for creating and managing proposals and voting in a decentralized, cost-effective, and secure manner",
   DEVELOPMENT,
   VOCDONI_ENVIRONMENT: process.env.VOCDONI_ENVIRONMENT || "dev",
 

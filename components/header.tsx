@@ -9,22 +9,20 @@ import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;
+  height: 71px;
   position: fixed;
   top: 0;
-
-  font-size: 16px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+
   background: ${({ theme }) => theme.blackAndWhite.w1}99;
 `;
 
 const Logo = styled.div`
   background: url(${HEADER_LOGO});
   position: asbsolute;
-  width: 57px;
+  width: 148px;
   height: 57px;
   margin-left: 40px;
   margin-top: 7px;
@@ -55,9 +53,8 @@ const BetaLabel = styled.div`
 `;
 
 const ListContainer = styled.div`
-  padding: ${({ theme }) => "25 " + theme.margins.desktop.horizontal};
   display: flex;
-  width: 100%;
+  width: 1440px;
   justify-content: space-between;
   align-items: center;
 
@@ -74,29 +71,6 @@ const MenuItemsContainer = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 10px;
   }
-`;
-
-const TextOne = styled.span`
-  margin-top: 5px;
-  font-family: Manrope;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
-  align-items: center;
-  text-decoration: none;
-  color: ${({ theme }) => theme.grayScale.g5};
-`;
-
-const TextTwo = styled.span`
-  margin-top: 5px;
-  margin-left: 3px;
-  font-family: Manrope;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
-  align-items: center;
-  text-decoration: none;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const ListItem = styled.div`
@@ -130,15 +104,8 @@ const ListItem = styled.div`
 `;
 
 const VoiceLink = styled.a`
-  position: absolute;
-  height: 24px;
-  left: 111px;
-  top: 22px;
-
-  font-family: Manrope;
-  font-weight: 500;
+  height: 50px;
   font-size: 18px;
-
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -219,26 +186,26 @@ export const LINKS: LinkProps[] = [
     header: true,
   },
   {
-    url: "https://discord.gg/sQCxgYs",
+    url: "https://discordapp.com/invite/eqQJkdp",
     name: "Discord",
     external: true,
     header: false,
     footer: true,
   },
   {
-    url: "https://twitter.com/vocdoni",
+    url: "https://twitter.com/AragonProject",
     name: "Twitter",
     external: true,
     footer: true,
   },
   {
-    url: "https://t.me/vocdoni",
+    url: "https://t.me/AragonProject",
     name: "Telegram",
     external: true,
     footer: true,
   },
   {
-    url: "https://t.me/vocdoni", /* Forum link ? */
+    url: "https://forum.aragon.org/",
     name: "Forum",
     external: true,
     footer: true,
@@ -280,9 +247,7 @@ export const Header = () => {
           <LinkContainer>
             <Link href="/" passHref>
               <VoiceLink target="_self">
-                <Logo></Logo>
-                <TextOne>Aragon</TextOne>
-                <TextTwo>Voice</TextTwo>
+                <Logo />
                 <BetaLabel>Beta</BetaLabel>
               </VoiceLink>
             </Link>
