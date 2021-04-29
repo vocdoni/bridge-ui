@@ -3,33 +3,16 @@ import { VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import useSWR from "swr";
 import TokenAmount from "token-amount";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-dayjs.extend(relativeTime);
+import { TokenInfo } from "../../types";
+import { retrieveStatus } from "../../utils";
 
 export const useWeights = ({ processId, token, start, end }) => {
   const { poolPromise } = usePool();
 
-  const retrieveStatus = (start, end) => {
-    const now = dayjs();
-    const hasFinished = now.isAfter(end);
-    if (hasFinished) {
-      return `Ended ${dayjs(end).fromNow()}`;
-    }
-
-    const hasStarted = now.isAfter(start);
-    if (hasStarted) {
-      return `Ends ${now.to(end)}`;
-    }
-
-    return `Starts ${now.to(start)}`;
-  };
-
   //@TODO: Improve return statements (Apply some DRY)
-  const updateWeight = async (processId, token, start, end) => {
+  const updateWeight = async (processId: string, token: TokenInfo, start: Date, end: Date) => {
     try {
       const statusValue = retrieveStatus(start, end);
-
       const hasNotStarted = statusValue.includes("Starts");
       if (hasNotStarted) {
         return [

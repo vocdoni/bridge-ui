@@ -1,6 +1,12 @@
 import { ProcessMetadata } from "dvote-js";
 import { utils } from "ethers";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
+
+dayjs.extend(relativeTime);
+
+export { dayjs };
 
 export const areAllNumbers = (slice: any[]) => {
   for (let i = 0; i < slice.length; i++) {
@@ -92,3 +98,19 @@ export function findMaxValue(metadata: ProcessMetadata) {
 export async function waitUntilTrue(time: number, condition: boolean) {
   await new Promise((resolve) => setTimeout(resolve, time));
 }
+
+export const retrieveStatus = (start: Date, end: Date): string => {
+  const now = dayjs();
+
+  const hasFinished = now.isAfter(end);
+  if (hasFinished) {
+    return `Ended ${dayjs(end).fromNow()}`;
+  }
+
+  const hasStarted = now.isAfter(start);
+  if (hasStarted) {
+    return `Ends ${now.to(end)}`;
+  }
+
+  return `Starts ${now.to(start)}`;
+};

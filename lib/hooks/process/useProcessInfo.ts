@@ -2,7 +2,7 @@ import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
 import { VotingApi } from "dvote-js";
 import useSWR from "swr";
 
-export const useProcessInfo = (info: ProcessInfo, start: Date) => {
+export const useProcessInfo = (info: ProcessInfo) => {
   const { poolPromise } = usePool();
 
   const updateResults = async (info: ProcessInfo) => {

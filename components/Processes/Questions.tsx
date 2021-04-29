@@ -13,18 +13,16 @@ import {
   OptionTitle,
 } from "./styled";
 
-const Option = ({ title, choiceId, onChoiceSelect, questionId }) => {
-  return (
-    <OptionLabel>
-      <Radio type="checkbox" onClick={() => onChoiceSelect(questionId, choiceId)} />
-      <OptionTitleContainer>
-        <OptionTitle>{title}</OptionTitle>
-      </OptionTitleContainer>
-    </OptionLabel>
-  );
-};
+const Option = ({ title, choiceId, onChoiceSelect, questionId, checked }) => (
+  <OptionLabel>
+    <Radio type="checkbox" checked={checked} onClick={() => onChoiceSelect(questionId, choiceId)} />
+    <OptionTitleContainer>
+      <OptionTitle>{title}</OptionTitle>
+    </OptionTitleContainer>
+  </OptionLabel>
+);
 
-export const Questions = ({ questions, onChoiceSelect }) => {
+export const Questions = ({ questions, onChoiceSelect, choicesSelected }) => {
   return (
     <div>
       {!questions
@@ -44,6 +42,7 @@ export const Questions = ({ questions, onChoiceSelect }) => {
                     title={choice.title}
                     choiceId={j}
                     onChoiceSelect={onChoiceSelect}
+                    checked={choicesSelected && choicesSelected[i] === j}
                   />
                 ))}
               </QuestionOptions>
