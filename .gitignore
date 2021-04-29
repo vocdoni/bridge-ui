@@ -6,4 +6,5 @@ node_modules
 .DS_Store
 
 # Lockfiles
+package-lock.json
 yarn.lock
