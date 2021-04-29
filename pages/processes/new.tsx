@@ -31,7 +31,7 @@ import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 import Tooltip from "../../components/tooltip";
 
-import { findMaxValue } from "../../lib/utils"
+import { findMaxValue } from "../../lib/utils";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -418,21 +418,13 @@ const NewProcessPage = () => {
       ]);
       const blockCount = endBlock - startBlock;
 
-      // Fetch EMV proof
-      const holderAddress = await signer.getAddress();
-      const tokenBalanceMappingPosition = await CensusErc20Api.getBalanceMappingPosition(
-        tokenAddress,
-        pool
-      );
-
       const evmBlockHeight = await pool.provider.getBlockNumber();
-      const balanceSlot = CensusErc20Api.getHolderBalanceSlot(
-        holderAddress,
-        tokenBalanceMappingPosition.toNumber()
-      );
+
+      console.log("this is the evm block heigh ", evmBlockHeight);
+      const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
       const { proof } = await CensusErc20Api.generateProof(
         tokenAddress,
-        [balanceSlot],
+        [balanceMappingPosition.toString()],
         evmBlockHeight,
         pool.provider as providers.JsonRpcProvider
       );
@@ -452,12 +444,14 @@ const NewProcessPage = () => {
         maxTotalCost: 0,
         costExponent: 10000,
         maxVoteOverwrites: 1,
-        evmBlockHeight,
         tokenAddress,
+        sourceBlockHeight: evmBlockHeight,
         paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
       };
+      console.log("before new");
 
       const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
+      console.log("after new");
       Router.push("/processes#/" + processId);
       setSubmitting(false);
 
@@ -490,7 +484,7 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={75}>
-            <div style={{float: 'left'}}>
+            <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
                 <input
