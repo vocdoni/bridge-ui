@@ -1,16 +1,14 @@
-import React, { CSSProperties, useState } from "react";
+import React, { useState } from "react";
 import {
   CensusErc20Api,
   IProcessCreateParams,
-  MultiLanguage,
   ProcessCensusOrigin,
-  ProcessContractParameters,
   ProcessEnvelopeType,
   ProcessMetadata,
   ProcessMode,
   VotingApi,
 } from "dvote-js";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
@@ -21,14 +19,16 @@ import Router from "next/router";
 import Spinner from "react-svg-spinner";
 import { providers } from "ethers";
 
-import Button from "../../components/button";
+import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { TopSection } from "../../components/top-section";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { handleValidation } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
+import { PlusBox, MinusContainer } from "../../components/plusBox";
+import SectionTitle from "../../components/sectionTitle";
+import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
@@ -60,12 +60,21 @@ const FieldRow = styled.div`
 `;
 
 const FieldRowLeftSection = styled.div`
-  flex: 55%;
+  max-width: 735px;
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number }>`
+  width: 480px;
+  margin-top: ${({ marginTop }) => marginTop}px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: 25px;
+    margin-left: 0;
+  }
+`;
+
+const RemoveButton = styled.div<{ marginTop: number }>`
   flex: 35%;
-  margin-left: 2em;
+  margin-left: 6.5em;
   margin-top: ${({ marginTop }) => marginTop}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
@@ -81,6 +90,7 @@ const RowQuestions = styled.div`
 
 const RowQuestionLeftSection = styled.div`
   flex: 6;
+  width: 700px;
   @media ${({ theme }) => theme.screens.tablet} {
     flex: 12;
   }
@@ -96,8 +106,8 @@ const RowQuestionRightSection = styled.div`
 `;
 
 const ChoiceRightSection = styled.div`
-  flex: 4;
-  padding-left: 2em;
+  flex: 6;
+  margin-left: 13px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -107,77 +117,22 @@ const ChoiceRightSection = styled.div`
   }
 `;
 
-const InfoTitle = styled.h2`
-  margin-bottom: 5px;
-`;
-
-const InfoPlaceholder = styled.div`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-`;
-
-const ChoicesTitle = styled.h3`
-  margin-top: 1em;
-  margin-bottom: 0;
-`;
-
-const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  background-color: ${({ theme }) => theme.blackAndWhite.w1};
-  border: 1px solid ${({ theme }) => theme.blackAndWhite.w1};
-  color: ${({ theme }) => theme.blackAndWhite.b1}80;
-  margin-top: 0.5em;
-  -webkit-margin-before: 1em;
-  border-radius: 8px;
-  text-align: center;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: calc(15px + 2em - 2px);
-  height: calc(15px + 2em - 2px);
-
-  ${({ add }) =>
-    add &&
-    css`
-      cursor: pointer;
-      background: ${({ theme }) => theme.blackAndWhite.w1};
-      color: ${({ theme }) => theme.blackAndWhite.b1};
-      &:hover {
-        background: ${({ theme }) => theme.blackAndWhite.w1 + "80"};
-      }
-      &:active {
-        background: ${({ theme }) => theme.blackAndWhite.w1 + "B3"};
-      }
-    `}
-
-  ${({ remove }) =>
-    remove &&
-    css`
-      cursor: pointer;
-      background: ${({ theme }) => theme.blackAndWhite.w1};
-      border: 1px solid ${({ theme }) => theme.blackAndWhite.b1};
-      color: ${({ theme }) => theme.blackAndWhite.b1};
-      &:hover {
-        background: ${({ theme }) => theme.blackAndWhite.b1 + "1A"};
-      }
-      &:active {
-        background: ${({ theme }) => theme.blackAndWhite.b1 + "27"};
-      }
-    `}
-`;
-
 const QuestionNumber = styled.h6`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  margin-bottom: 0;
+  color: ${({ theme }) => theme.primary.p1};
+  font-size: 18px;
+  margin-bottom: -18px;
+  font-weight: 500;
+  line-height: 150%;
 `;
 
-const QuestionText = styled.h3`
-  margin-top: 1em;
-  margin-bottom: 0;
+const QuestionText = styled.h5`
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 38px;
+  letter-spacing: -0.03em;
+  margin-bottom: 85px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const RowContinue = styled.div`
@@ -191,51 +146,6 @@ const RowContinue = styled.div`
   }
 `;
 
-const Remove = styled.h6`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  margin-top: 10px;
-  cursor: pointer;
-`;
-
-const AddQuestionButton = styled(Button)`
-  margin-top: 10px;
-`;
-
-interface PlusBoxProps {
-  currentChoice: number;
-  choices: Array<{
-    title: MultiLanguage<string>;
-    value: number;
-  }>;
-  currentQuestion: number;
-}
-
-const PlusBox = ({
-  currentChoice,
-  choices,
-  currentQuestion,
-  onClick,
-}: PlusBoxProps & { onClick: (params: PlusBoxProps) => void }) => {
-  const lastChoice = choices.length - 1;
-  const isDefault = choices[currentChoice].title.default;
-
-  const modifier = {};
-  if (currentChoice === lastChoice && isDefault) {
-    modifier["add"] = true;
-  } else if (!(choices.length === 2)) {
-    modifier["remove"] = true;
-  }
-
-  return (
-    <PlusBoxContainer
-      {...modifier}
-      onClick={() => onClick({ currentQuestion, choices, currentChoice })}
-    >
-      {currentChoice === lastChoice && isDefault ? "+" : "⨯"}
-    </PlusBoxContainer>
-  );
-};
-
 const SubmitButton = ({ submitting, onSubmit }) =>
   submitting ? (
     <p>
@@ -243,9 +153,7 @@ const SubmitButton = ({ submitting, onSubmit }) =>
       <Spinner />
     </p>
   ) : (
-    <Button   onClick={onSubmit}>
-      Submit process
-    </Button>
+    <PrimaryButton onClick={onSubmit}>Create proposal</PrimaryButton>
   );
 
 const NewProcessPage = () => {
@@ -466,24 +374,27 @@ const NewProcessPage = () => {
 
   return (
     <div>
-      <TopSection
+      <SectionTitle
         title="New governance process"
-        description="Enter the details of a new governance process and submit
+        subtitle="Enter the details of a new governance process and submit
                 them."
       />
       <NewProcessContainer>
         <FieldRow>
           <FieldRowLeftSection>
-            <InfoTitle>Title</InfoTitle>
-            <InfoPlaceholder>Short name to identify the process</InfoPlaceholder>
-            <input
-              type="text"
+            <SectionTitle
+              title="Proposal Title"
+              subtitle="Short name to identify the process"
+              smallerTitle
+            />
+            <TextInput
               placeholder="Title"
               onChange={(e) => setMainTitle(e.target.value)}
               value={metadata.title.default}
+              widthValue={735}
             />
           </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={75}>
+          <FieldRowRightSection marginTop={125}>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -493,7 +404,7 @@ const NewProcessPage = () => {
                   checked={!envelopeType.hasEncryptedVotes}
                   name="vote-encryption"
                 />
-                <div className="checkmark"></div> Real-time results
+                <div className="checkmark"></div> Real time results
               </RadioChoice>
               <RadioChoice onClick={() => setEncryptedVotes(true)}>
                 {" "}
@@ -512,16 +423,19 @@ const NewProcessPage = () => {
 
         <FieldRow>
           <FieldRowLeftSection>
-            <InfoTitle>Description</InfoTitle>
-            <InfoPlaceholder>An introduction of about 2-3 lines</InfoPlaceholder>
-            <textarea
+            <SectionTitle
+              title="Description"
+              subtitle="An introduction of about 2-3 lines"
+              smallerTitle
+            />
+            <DescriptionInput
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={82}>
+          <FieldRowRightSection marginTop={140}>
             <Datetime
               value={startDate}
               inputProps={{
@@ -551,15 +465,18 @@ const NewProcessPage = () => {
               <RowQuestionLeftSection>
                 <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
                 <QuestionText>Question</QuestionText>
-                <input
-                  type="text"
+                <RemoveButton marginTop={-57}>
+                  {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+                </RemoveButton>
+                <TextInput
                   placeholder="Title"
                   value={question.title.default}
                   onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                  widthValue={735}
                 />
 
-                <QuestionText>Description</QuestionText>
-                <textarea
+                <SectionTitle title="Description" smallerTitle />
+                <DescriptionInput
                   placeholder="Description"
                   value={question.description.default}
                   onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
@@ -568,15 +485,15 @@ const NewProcessPage = () => {
               <RowQuestionRightSection />
             </RowQuestions>
             <div>
-              <ChoicesTitle>Choices</ChoicesTitle>
+              <SectionTitle title="Choices" smallerTitle />
               {question.choices.map((choice, cIdx) => (
                 <RowQuestions key={cIdx}>
                   <RowQuestionLeftSection>
-                    <input
-                      type="text"
+                    <TextInput
                       placeholder="Choice"
                       value={choice.title.default}
                       onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                      widthValue={683}
                     />
                   </RowQuestionLeftSection>
                   <ChoiceRightSection>
@@ -589,13 +506,10 @@ const NewProcessPage = () => {
                   </ChoiceRightSection>
                 </RowQuestions>
               ))}
-              {qIdx > 0 ? (
-                <Remove onClick={() => onRemoveQuestion(qIdx)}>Remove question</Remove>
-              ) : null}
             </div>
 
             {qIdx == metadata.questions.length - 1 ? (
-              <AddQuestionButton onClick={onAddQuestion}>Add question</AddQuestionButton>
+              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
             ) : null}
           </div>
         ))}
