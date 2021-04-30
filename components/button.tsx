@@ -9,7 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-const StyledButton = styled.div<{ disabled?: boolean }>`
+const StyledButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: center;

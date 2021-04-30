@@ -19,17 +19,17 @@ export const useProcessInfo = (info: ProcessInfo) => {
       // this is supported for single choice multiquestion voting
       // we will need to add more complex logic to parse results
       // for different type of voting
-      results.questions.forEach(({ title, voteResults }, i) => {
+      resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
         const choices = voteResults.map(({ title, votes }) => ({
           title: title.default,
           votes: votes.toNumber(),
         }));
 
-        resultsSanitized.questions.push({
+        return {
           title: title.default,
           description: info.metadata.questions[i].description.default,
           choices,
-        });
+        };
       });
 
       return resultsSanitized;

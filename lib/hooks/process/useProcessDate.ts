@@ -1,6 +1,9 @@
 import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
 import { VotingApi } from "dvote-js";
+import { useMemo } from "react";
 import useSWR from "swr";
+
+import { dayjs } from "../../utils";
 
 export const useProcessDate = (info: ProcessInfo) => {
   const { poolPromise } = usePool();
@@ -28,8 +31,13 @@ export const useProcessDate = (info: ProcessInfo) => {
     }
   );
 
+  const hasEnded = useMemo(() => {
+    if (datesInfo) return dayjs().isAfter(datesInfo.end);
+  }, [datesInfo]);
+
   return {
     datesInfo,
     datesError,
+    hasEnded,
   };
 };

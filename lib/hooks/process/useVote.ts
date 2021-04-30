@@ -1,19 +1,21 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { CensusErc20Api, VotingApi } from "dvote-js";
-import { providers } from "ethers";
-import { useCallback, useReducer } from "react";
+import { VotingApi } from "dvote-js";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
 import { useSigner } from "../useSigner";
+import { getProof } from "./useCensusProof";
 
 export interface VoteStatus {
   submitting: boolean;
   choices: number[];
+  inCensus: boolean;
 }
 
 const INITIAL_STATE = {
   submitting: false,
   choices: [],
+  inCensus: false,
 };
 
 function updateStatus(status: Partial<VoteStatus>) {
@@ -29,8 +31,8 @@ export const reducer = (state: VoteStatus, action: StatusAction) => {
   switch (action.type) {
     case "UPDATE_STATUS":
       state = {
-        ...action.status,
         ...state,
+        ...action.status,
       };
       return state;
     default:
@@ -38,38 +40,34 @@ export const reducer = (state: VoteStatus, action: StatusAction) => {
   }
 };
 
-export const useVote = (token, process, nullifier) => {
+export const useVote = (token, process) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const wallet = useWallet();
   const signer = useSigner();
   const { poolPromise } = usePool();
 
-  const updateStatus = async (process) => {
+  const nullifier = useMemo(() => {
+    if (process?.id) return VotingApi.getSignedVoteNullifier(wallet?.account || "", process.id);
+  }, [process?.id]);
+
+  const updateStatus = async (processId) => {
     const pool = await poolPromise;
-    const voted = VotingApi.getEnvelopeStatus(process.id, nullifier, pool);
+
+    const voted = VotingApi.getEnvelopeStatus(processId, nullifier, pool);
     return voted;
   };
 
-  const voteInfo = useSWR([process, nullifier, wallet], updateStatus, {
-    isPaused: () => !process,
+  const voteInfo = useSWR([process?.id, nullifier, wallet], updateStatus, {
+    isPaused: () => !process?.id,
   });
 
+  useEffect(() => {
+    dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
+  }, [process, dispatch]);
+
   const onSubmitVote = useCallback(async (): Promise<void> => {
-    const holderAddr = wallet.account;
-    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddr, 0);
-    updateStatus({
-      submitting: true,
-    });
     try {
-      const pool = await poolPromise;
-      // Census Proof
-      const processEthCreationBlock = await pool.provider.getBlockNumber();
-      const { proof } = await CensusErc20Api.generateProof(
-        token.address,
-        [balanceSlot],
-        processEthCreationBlock - 1,
-        pool.provider as providers.JsonRpcProvider
-      );
+      const { proof, pool } = await getProof(wallet, token, poolPromise);
 
       // Detect encryption
       const envelopParams = {
