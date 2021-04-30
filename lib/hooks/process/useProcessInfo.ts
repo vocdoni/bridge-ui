@@ -43,7 +43,7 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
   };
 
   const { data, mutate, error } = useSWR([info, token], updateResults, {
-    isPaused: () => !info | !token,
+    isPaused: () => !info || !token,
     refreshInterval: 20000,
   });
 
