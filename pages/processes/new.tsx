@@ -366,8 +366,8 @@ const NewProcessPage = () => {
     else if (metadata.description.default.trim().length > 300)
       return setAlertMessage("Please enter a shorter description");
 
-    if (!startDate) return setAlertMessage("Please, enter a start date");
-    else if (!endDate) return setAlertMessage("Please, enter an ending date");
+    if (!startDate) return setAlertMessage("Please enter a start date");
+    else if (!endDate) return setAlertMessage("Please enter an ending date");
 
     if (moment(startDate).isBefore(moment().add(5, "minutes"))) {
       return setAlertMessage("The start date must be at least 5 minutes from now");
@@ -380,12 +380,12 @@ const NewProcessPage = () => {
     for (let qIdx = 0; qIdx < metadata.questions.length; qIdx++) {
       const question = metadata.questions[qIdx];
       if (!question.title.default.trim())
-        return setAlertMessage("Please, enter a title for question " + (qIdx + 1));
+        return setAlertMessage("Please enter a title for question " + (qIdx + 1));
 
       for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
         const choice = question.choices[cIdx];
         if (!choice.title.default.trim())
-          return setAlertMessage("Please, fill in all the choices for question " + (qIdx + 1));
+          return setAlertMessage("Please fill in all the choices for question " + (qIdx + 1));
 
         // Ensure values are unique and sequential
         question.choices[cIdx].value = cIdx;
