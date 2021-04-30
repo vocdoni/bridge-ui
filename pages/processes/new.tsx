@@ -328,7 +328,6 @@ const NewProcessPage = () => {
 
       const evmBlockHeight = await pool.provider.getBlockNumber();
 
-      console.log("this is the evm block heigh ", evmBlockHeight);
       const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
       const { proof } = await CensusErc20Api.generateProof(
         tokenAddress,
@@ -356,10 +355,8 @@ const NewProcessPage = () => {
         sourceBlockHeight: evmBlockHeight,
         paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
       };
-      console.log("before new");
 
       const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
-      console.log("after new");
       Router.push("/processes#/" + processId);
       setSubmitting(false);
 

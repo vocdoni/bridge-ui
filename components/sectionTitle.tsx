@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Title = styled.h4`
+  margin-top: 0;
   margin-bottom: 18px;
   font-size: 38px;
   font-style: normal;

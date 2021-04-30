@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import TokenCard from "../../components/token-card";
-import { useTokens, useRegisteredTokens, useUserTokens } from "../../lib/hooks/tokens";
+import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
@@ -60,7 +60,7 @@ const TokensPage = () => {
     haves. VR 23-04-2021 */}
         {/* <SearchWidget /> */}
         <p></p>
-        <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
+        <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
       </ButtonContainer>
       <br />
       <TokenList>
