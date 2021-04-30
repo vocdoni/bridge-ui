@@ -5,7 +5,6 @@ import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { HEADER_LOGO } from "../lib/constants";
 import { ConnectButton } from "./connect-button";
-import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;

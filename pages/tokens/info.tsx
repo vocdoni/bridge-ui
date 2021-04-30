@@ -5,19 +5,38 @@ import { usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
 import TokenCard from "../../components/token-card";
-import { Button } from "@aragon/ui";
+import { PrimaryButton as NewProcessButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList, getTokenProcesses } from "../../lib/api";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import Spinner from "react-svg-spinner";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
-import { TopSection } from "../../components/top-section";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
+import SectionTitle from "../../components/sectionTitle";
+
+const HeaderContainer = styled.div`
+  margin-bottom: 45px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const HeaderLeft = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const WhiteSection = styled.div`
+  padding: 42px 64px;
+  margin-bottom: 60px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  border-radius: 13px;
+`;
 
 const RowSummary = styled.div`
-  margin-top: 2em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -35,9 +54,20 @@ const Info = styled.div`
   }
 `;
 
-const InfoTitle = styled.p`
-  font-weight: 500;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+const TokenAttribute = styled.p`
+  margin-top: 0;
+  margin-bottom: 9;
+  color: ${({ theme }) => theme.primary.p1};
+  line-height: 27px;
+  font-size: 18px;
+  font-weight: 400;
+`;
+
+const EmptySection = styled.div`
+  padding: 60px;
+  background: #eef4fb;
+  border-radius: 13px;
+  text-align: center;
 `;
 
 const Address = styled.h4`
@@ -78,8 +108,19 @@ const VoteSection = ({
 
   return (
     <VoteSectionContainer>
-      <h2>{title}</h2>
-      <LightText>{processes.length ? processesMessage : noProcessesMessage}</LightText>
+      {processes.length ? (
+        <>
+          <SectionTitle title={title} subtitle={processesMessage} />
+          <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
+        </>
+      ) : (
+        <>
+          <SectionTitle title={title} />
+          <EmptySection>
+            <LightText>{processes.length ? processesMessage : noProcessesMessage}</LightText>
+          </EmptySection>
+        </>
+      )}
       <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
     </VoteSectionContainer>
   );
@@ -137,6 +178,7 @@ const TokenPage = () => {
       .then((num) => setBlockNumber(num))
       .catch((err) => console.error(err));
   };
+
   const updateProcessIds = () => {
     if (!tokenAddr) return;
     setLoadingProcessList(true);
@@ -210,35 +252,42 @@ const TokenPage = () => {
   }, [token?.address]);
 
   return (
-    <div>
-      <TopSection
-        title={"Token details"}
-        description={`See the details of ${token?.symbol || "the token"}`}
-        Action={() => (
-          <Button mode="strong" wide onClick={() => onCreateProcess(token.address)}>
-            Create a governance process
-          </Button>
-        )}
-      />
+    <>
+      <HeaderContainer>
+        <HeaderLeft>
+          <img
+            src={FALLBACK_TOKEN_ICON}
+            width={71}
+            height={71}
+            style={{ marginRight: 20, marginTop: 9 }}
+          />
+          <SectionTitle title="Token details" subtitle={`See the details of ${token?.symbol}`} />
+        </HeaderLeft>
+        <NewProcessButton onClick={() => onCreateProcess(token.address)}>
+          Create a governance process
+        </NewProcessButton>
+      </HeaderContainer>
 
-      <RowSummary>
-        <Info>
-          <InfoTitle>Token symbol</InfoTitle>
-          <InfoDescription>{token?.symbol || "-"}</InfoDescription>
-        </Info>
-        <Info>
-          <InfoTitle>Token name</InfoTitle>
-          <InfoDescription>{token?.name || "-"}</InfoDescription>
-        </Info>
-        <Info>
-          <InfoTitle>Total supply</InfoTitle>
-          <InfoDescription>{token?.totalSupplyFormatted || "-"}</InfoDescription>
-        </Info>
-        <Info>
-          <InfoTitle>Token address</InfoTitle>
-          <Address>{address}</Address>
-        </Info>
-      </RowSummary>
+      <WhiteSection>
+        <RowSummary>
+          <Info>
+            <TokenAttribute>Token symbol</TokenAttribute>
+            <InfoDescription>{token?.symbol || "-"}</InfoDescription>
+          </Info>
+          <Info>
+            <TokenAttribute>Token name</TokenAttribute>
+            <InfoDescription>{token?.name || "-"}</InfoDescription>
+          </Info>
+          <Info>
+            <TokenAttribute>Total supply</TokenAttribute>
+            <InfoDescription>{token?.totalSupplyFormatted || "-"}</InfoDescription>
+          </Info>
+          <Info>
+            <TokenAttribute>Token address</TokenAttribute>
+            <Address>{address}</Address>
+          </Info>
+        </RowSummary>
+      </WhiteSection>
 
       {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
@@ -249,7 +298,7 @@ const TokenPage = () => {
           token={token}
         />
       ))}
-    </div>
+    </>
   );
 };
 

@@ -9,11 +9,15 @@ import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { TokenList } from "./dashboard";
 
 import TokenCard from "../components/token-card";
-import Button from "../components/button";
+import { SecondaryButton } from "../components/button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 
 const Head = styled.div`
+  width: 1248px;
+  height: 335px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,18 +90,6 @@ const Row = styled.div`
 
 const TokenSection = styled.div`
   padding-top: 30px;
-`;
-
-const ShowMoreButton = styled(Button)`
-  width: 150px;
-  height: 46px;
-  color: ${({ theme }) => theme.primary.p1};
-  padding: 12px 20px;
-  background: #ffffff;
-  box-sizing: border-box;
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border: 2px solid #eff1f7;
-  border-radius: 8px;
 `;
 
 const SearchInput = styled.input`
@@ -237,7 +229,7 @@ const IndexPage = () => {
           ))}
         </TokenList>
         <Row>
-          <ShowMoreButton href="/tokens">View all tokens</ShowMoreButton>
+          <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
         </Row>
       </TokenSection>
     </>

@@ -1,16 +1,16 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useTooltipNewLine } from "../lib/hooks/useWindowSize";
 
 interface Props {
-  newLine: boolean
-  topText: boolean
+  newLine: boolean;
+  topText: boolean;
 }
 
 const CircleContainer = styled.div`
   float: left;
   height: 24px;
-  margin: 6px 0px 0px 21px;
+  margin: 10px 0px 0px 21px;
   width: 24px;
 `;
 
@@ -19,9 +19,27 @@ const Circle = styled.div`
   border-radius: 50%;
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   color: white;
-  cursor: pointer;
   float: left;
-  width: 100%;
+  width: 16px;
+  height: 16px;
+
+  ${CircleContainer}:hover & {
+    background: ${({ theme }) => theme.secondary.s6};
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    transition: all 0.2s ease-out;
+    transform: translateY(-1px);
+  }
+`;
+
+const CircleEncrypted = styled.div`
+  background: ${({ theme }) => theme.secondary.s3};
+  border-radius: 50%;
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  color: white;
+  float: left;
+  width: 16px;
+  height: 16px;
+  margin-top: -20px;
 
   ${CircleContainer}:hover & {
     background: ${({ theme }) => theme.secondary.s6};
@@ -32,29 +50,30 @@ const Circle = styled.div`
 `;
 
 const QuestionMark = styled.div`
-  font-size: 18px;
-  margin-left: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 4.5px;
+  margin-top: -2px;
   user-select: none; 
   -webkit-touch-callout : none
   -webkit-user-select:none
 `;
 
 const TooltipText = styled.div<Props>`
-  background-color: #F3F4FF;
+  background-color: #f3f4ff;
   border-radius: 10px;
   color: ${({ theme }) => theme.secondary.s3};
   float: left;
   font-size: 16px;
-  margin-bottom: ${props => props.newLine ? '8px' : '0px'};
-  margin-left: ${props => props.newLine ? '-160px' : '40px'};
-  margin-top: ${props => props.newLine ? (props.topText ? '19px' : '8px') : '0px'};
+  margin-bottom: ${(props) => (props.newLine ? "8px" : "0px")};
+  margin-left: ${(props) => (props.newLine ? "-160px" : "40px")};
+  margin-top: ${(props) => (props.newLine ? (props.topText ? "19px" : "8px") : "0px")};
   text-align: left;
   visibility: hidden;
-  width: ${props => props.newLine ? '180px' : '160px'};
-  padding: 14px 16px;
+  width: ${(props) => (props.newLine ? "180px" : "160px")};
   position: absolute;
   z-index: 1;
-  
+
   ${CircleContainer}:hover & {
     visibility: visible;
   }
@@ -77,18 +96,18 @@ const Tooltip = () => {
           {realtimeText}
         </TooltipText>
       </CircleContainer>
-      
+
       <br />
       <br />
 
-      <CircleContainer style={{marginTop: '-10px'}}>
-        <Circle>
+      <CircleContainer>
+        <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
-        </Circle>
+        </CircleEncrypted>
         <br />
         <TooltipText newLine topText={false}>
           {encryptedText}
-        </TooltipText >
+        </TooltipText>
       </CircleContainer>
     </div>
   ) : (
@@ -101,20 +120,20 @@ const Tooltip = () => {
           {realtimeText}
         </TooltipText>
       </CircleContainer>
-      
+
       <br />
       <br />
 
-      <CircleContainer style={{marginTop: '-10px'}}>
-        <Circle>
+      <CircleContainer>
+        <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
-        </Circle>
+        </CircleEncrypted>
         <TooltipText newLine={false} topText={false}>
           {encryptedText}
         </TooltipText>
       </CircleContainer>
     </div>
-  )
-}
+  );
+};
 
 export default Tooltip

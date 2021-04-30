@@ -6,8 +6,9 @@ import { Footer } from "./footer";
 import { MessageAlert } from "./msg-alert";
 import { LoadingAlert } from "./loading-alert";
 
-const LayoutContainer = styled.div`
+const MainContent = styled.div`
   flex: 1;
+  width: 1249px;
   margin-top: 77px;
   margin-bottom: 50px;
   box-sizing: border-box;
@@ -32,7 +33,7 @@ export const Layout = ({ children }) => (
     <MessageAlert />
     <LoadingAlert />
     <Header />
-    <LayoutContainer>{children}</LayoutContainer>
+    <MainContent>{children}</MainContent>
     <Footer />
   </Wrapper>
 );
