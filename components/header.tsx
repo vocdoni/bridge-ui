@@ -65,6 +65,7 @@ const ListContainer = styled.div`
 const MenuItemsContainer = styled.div`
   display: flex;
   justify-content: center;
+  padding-right: 60px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 10px;

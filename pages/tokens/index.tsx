@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import TokenCard from "../../components/token-card";
-import { useTokens, useRegisteredTokens, useUserTokens } from "../../lib/hooks/tokens";
+import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
