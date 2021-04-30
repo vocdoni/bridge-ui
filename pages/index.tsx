@@ -74,6 +74,9 @@ const IndexPage = () => {
         <HeaderSubtitle>
           Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end
           verifiable layer 2.
+          <br />
+          Be aware proposals are only enforceable depending on the governance model of each
+          protocol.
         </HeaderSubtitle>
         {/* NOTE temporarily removed this section, as it is not part of landing page's must 
         haves. VR 23-04-2021 */}

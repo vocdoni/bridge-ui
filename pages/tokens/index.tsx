@@ -60,7 +60,7 @@ const TokensPage = () => {
     haves. VR 23-04-2021 */}
         {/* <SearchWidget /> */}
         <p></p>
-        <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
+        <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
       </ButtonContainer>
       <br />
       <TokenList>
