@@ -19,26 +19,49 @@ const Head = styled.div`
   align-items: center;
   justify-content: center;
   background: url(${LANDING_PAGE_CTA});
-  width: 1248px;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
   height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-family: "Manrope";
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: calc(100% + 30px);
+    border-radius: 0;
+    margin: 0 -15px;
+  }
 `;
 
 const HeaderTitle = styled.h4`
+  font-family: Manrope;
   font-style: normal;
   font-weight: 600;
-  line-height: 60px;
-  margin: 0px;
+  margin: 0;
   text-align: center;
   letter-spacing: -0.03em;
+  box-sizing: border-box;
+  font-size: 44px;
+  line-height: 60px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 38px;
+    line-height: 46px;
+
+    padding: 0 50px;
+  }
 `;
 
 const HeaderSubtitle = styled.p`
-  width: 526px;
-  text-align: center;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
   line-height: 150%;
+  text-align: center;
+  padding: 0 32px;
 `;
 
 const Row = styled.div`
@@ -54,9 +77,7 @@ const Row = styled.div`
 `;
 
 const TokenSection = styled.div`
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-  }
+  padding-top: 30px;
 `;
 
 const ShowMoreButton = styled(Button)`
@@ -92,9 +113,6 @@ const IndexPage = () => {
           <SearchButton disabled={false}>Find Token</SearchButton>
         </SearchRow> */}
       </Head>
-
-      <br />
-      <br />
 
       {/* NOTE temporarily removed this section, as it is not part of landing page's must 
       haves. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}

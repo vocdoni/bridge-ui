@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 
 const Container = styled.div`
-
   background: ${({ theme }) => theme.blackAndWhite.w1};
   cursor: pointer;
   flex: 1 0 500px;
@@ -25,7 +24,7 @@ const Container = styled.div`
   }
 
   max-width: calc(33.3333333% - 1em);
-  min-width: 395px;
+  min-width: 366px;
   max-height: 164px;
   left: 176px;
   top: 633px;
@@ -42,36 +41,47 @@ const Container = styled.div`
 `;
 
 const Card = styled.div`
-  padding: 1.8em;
-  padding-top: 35px;
-  line-height: 0px;
+  display: flex;
+  flex-flow: row no-wrap;
+  padding: 39px;
+  min-height: 164px;
+  box-sizing: border-box;
 `;
 
 const TokenLogo = styled.img`
-  position: absolute;
-  padding-top: 2px;
-  width: 71px;
-  height: 71px;
+  width: 100%;
+  height: 100%;
 `;
 
-const Symbol = styled.h4`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-left: 90px;
-  padding-top: 22px;
-  position: absolute;
+const Symbol = styled.div`
+  display: block;
+  width: 100%;
+  font-family: Manrope;
+  font-style: normal;
   font-weight: 500;
   font-size: 29px;
-  margin-top: 0px;
+  line-height: 40px;
+  display: flex;
   align-items: center;
   letter-spacing: 0.01em;
+  margin: 0px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
-const Name = styled.p`
+const Name = styled.div`
   color: ${({ theme }) => theme.grayScale.g5};
-  padding-left: 90px;
-  padding-top: 18px;
   align-items: center;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  margin: 0;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  color: #7b8ab0;
+
+  & > p {
+    margin: 0;
+  }
 `;
 
 const Proposals = styled.p`
@@ -103,7 +113,7 @@ interface Token {
   icon: string;
   name: string;
   cap?: string;
-  activeProposals?: number
+  activeProposals?: number;
 }
 
 type CardProps = {
@@ -116,18 +126,68 @@ type CardProps = {
   onClick?: () => void;
 };
 
-{/* NOTE temporarily removed information on the cards, as they are not must haves right 
-now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
+const CardBody = styled.div`
+  box-sizing: border-box;
+  padding-left: 20px;
+  flex: 1;
+`;
+
+const TokenLogoContainer = styled.div`
+  padding-top: 2px;
+  width: 71px;
+  height: 71px;
+`;
+
+const TokenBodyHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ActiveProposalsText = styled.p`
+  margin: 0;
+  display: block;
+  padding-top: 8px;
+  font-family: Overpass;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: #00c2ff;
+`;
+
+const Price = styled.div``;
+
+{
+  /* NOTE temporarily removed information on the cards, as they are not must haves right 
+now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */
+}
 // eslint-disable-next-line react/display-name
 const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
-        <TokenLogo src={icon} onError={loadFallback} />
+        <TokenLogoContainer>
+          <TokenLogo src={icon} onError={loadFallback} />
+        </TokenLogoContainer>
+
         {rightText && <RightText>{rightText}</RightText>}
         {/* <Cap>($915M)</Cap> */}
-        <Symbol>{name}</Symbol>
-        <Name>{children}</Name>
+        <CardBody>
+          <TokenBodyHeader>
+            <Symbol>{name}</Symbol>
+            {/**
+             * TODO: GET PRICE
+             */}
+            <Price>$987M</Price>
+          </TokenBodyHeader>
+
+          <Name>{children}</Name>
+          {/**
+           * TODO: GET ACTIVE PROPOSALS
+           */}
+
+          <ActiveProposalsText>7 active proposals</ActiveProposalsText>
+        </CardBody>
         {/* <Proposals>7 active proposals</Proposals> */}
       </Card>
     );
@@ -147,4 +207,3 @@ const TokenCard = ({ children, ...props }: CardProps) => (
 );
 
 export default TokenCard;
-

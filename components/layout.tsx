@@ -10,13 +10,13 @@ const LayoutContainer = styled.div`
   flex: 1;
   margin-top: 77px;
   margin-bottom: 50px;
-  max-width: 1249px;
-  margin-left: auto;
-  margin-right: auto;
-  
+  box-sizing: border-box;
+  padding: 0 11%;
+
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: 110px;
     margin-top: 50px;
+    box-sizing: border-box;
     padding: 0 ${({ theme }) => theme.margins.mobile.horizontal};
   }
 `;
