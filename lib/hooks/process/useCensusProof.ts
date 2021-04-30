@@ -5,11 +5,10 @@ import useSWR from "swr";
 import { useWallet } from "use-wallet";
 import { TokenInfo } from "../../types";
 
-export const getProof = async (wallet, token, poolPromise) => {
+export const getProof = async (account, token, poolPromise) => {
   try {
     const pool = await poolPromise;
-    const holderAddr = wallet.account;
-    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(holderAddr, 0);
+    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, 0);
     const processEthCreationBlock = await pool.provider.getBlockNumber();
     const { proof } = await CensusErc20Api.generateProof(
       token.address,
@@ -28,8 +27,8 @@ export const useCensusProof = (token: Partial<TokenInfo>) => {
   const { poolPromise } = usePool();
   const wallet = useWallet();
 
-  const { data } = useSWR([wallet, token, poolPromise], getProof, {
-    isPaused: () => !token || !wallet,
+  const { data } = useSWR([wallet.account, token, poolPromise], getProof, {
+    isPaused: () => !token || !wallet.account || !poolPromise,
     refreshInterval: 20000,
   });
 

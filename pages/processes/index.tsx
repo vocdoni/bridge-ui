@@ -25,6 +25,8 @@ import { useProcessInfo, useProcessDate, useWeights, useVote } from "../../lib/h
 import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
+import { ActionTypes, useModal } from "../../components/Modal/context";
+import { useMessageAlert } from "../../lib/hooks/message-alert";
 
 const ProcessPage = () => {
   const router = useRouter();
@@ -34,6 +36,9 @@ const ProcessPage = () => {
     console.error("Invalid process ID", processId);
     router.replace("/tokens");
   }
+
+  const { dispatch } = useModal();
+  const { setAlertMessage } = useMessageAlert();
 
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
@@ -49,11 +54,24 @@ const ProcessPage = () => {
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
 
+  const isConnected = !!wallet.account;
+  const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
+  const inCensus = census && !!census.proof;
+  const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
+  const alreadyVoted = voteStatus?.registered;
+
+  const canVote = !alreadyVoted && !hasEnded && inCensus;
   const onVoteSubmit = async () => {
+    if (!isConnected) {
+      return dispatch({
+        type: ActionTypes.OPEN_WALLET_LIST,
+      });
+    }
+
     await vote();
     await updateResults();
     await updateVote();
-    //@TODO: Add success notification here
+    setAlertMessage("Vote succesful :-)", "success");
   };
 
   const onSelect = (questionId: number, choice: number) => {
@@ -62,14 +80,6 @@ const ProcessPage = () => {
       choices: status.choices,
     });
   };
-
-  const isConnected = !!wallet.account;
-  const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
-  const inCensus = census && !!census.proof;
-  const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
-  const alreadyVoted = voteStatus?.registered;
-
-  const canVote = !alreadyVoted && !hasEnded && inCensus;
 
   if (!processId || !process) return renderEmpty();
 
