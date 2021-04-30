@@ -10,7 +10,7 @@ import {
 import { withRouter, useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { usePool, useProcess } from "@vocdoni/react-hooks";
-import { Button } from "@aragon/ui";
+import { PrimaryButton as Button } from "../../components/button";
 import { BigNumber, providers } from "ethers";
 import TokenAmount from "token-amount";
 import { useWallet } from "use-wallet";
