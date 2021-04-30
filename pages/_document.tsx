@@ -18,7 +18,12 @@ class VocdiniBridge extends Document {
         ...initialProps,
         styles: (
           <>
-            <link rel="icon" type="image/svg" href="/media/favicon.svg" />
+            <link rel="icon" type="image/x-icon" href="/media/favicon.ico" />
+            <link rel="apple-touch-icon" href="/media/apple-touch-icon.png" />
+            <link rel='mask-icon' href='/media/safari-pinned-tab.svg' color='black' />
+            <link rel='icon' type='image/png' href='/media/android-chrome-192x192.png' sizes='192x192' />
+            <link rel='icon' type='image/png' href='/media/android-chrome-512x512.png' sizes='512x512' />
+            <meta name='msapplication-config' content='/media/browserconfig.xml' />
 
             {initialProps.styles}
             {sheet.getStyleElement()}

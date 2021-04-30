@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import Link from "next/link";
 
 import { LINKS } from "./header";
@@ -8,7 +8,7 @@ import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { FOOTER_LOGO } from "../lib/constants";
 
 const Container = styled.div`
-  bottom: 0;  
+  bottom: 0;
   width: 100%;
   height: 71px;
   display: flex;
@@ -86,13 +86,13 @@ export const Footer = () => {
           <Logo></Logo>
         </Section>
         <Section>
-          {FOOTER_LINKS.map(({ url, name }, i) => (
-              <div key={name}>
-                <Link href={url} passHref>
-                  <ClickableText target="_blank">{name}</ClickableText>
-                </Link>
-              </div>
-            ))}
+          {FOOTER_LINKS.map(({ url, name }) => (
+            <div key={name}>
+              <Link href={url} passHref>
+                <ClickableText target="_blank">{name}</ClickableText>
+              </Link>
+            </div>
+          ))}
         </Section>
       </ListContainer>
     </Container>
