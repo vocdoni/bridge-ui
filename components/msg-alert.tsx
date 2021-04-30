@@ -69,14 +69,14 @@ const AlertContainer = styled.div<{ visible: boolean; msgType: MsgType; hasMsg: 
   align-items: center;
   max-width: 320px;
 
-  background-color: ${({ msgType }) =>
+  background-color: ${({ theme, msgType }) =>
     msgType === "error"
-      ? "#F6E9EB"
+      ? theme.alerts.a1
       : msgType === "success"
-      ? "#EBFAF9"
+      ? theme.alerts.a2
       : msgType === "warning"
-      ? "#FEF8EC"
-      : "#EBF3FE"};
+      ? theme.alerts.a3
+      : theme.alerts.a4};
   border-radius: 10px;
 
   transform: ${({ hasMsg }) => `translate(${hasMsg ? 0 : 320}px)`};

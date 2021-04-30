@@ -34,6 +34,12 @@ export interface Colors extends Partial<Colors> {
         b1: Color;
         w1: Color;
     };
+    alerts: {
+      a1: Color;
+      a2: Color;
+      a3: Color;
+      a4: Color;
+    };
     gradients: {
         primary: {
             mg1: {

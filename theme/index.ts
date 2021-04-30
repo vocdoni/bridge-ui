@@ -34,6 +34,12 @@ export const colors: Colors = {
     b1: "#20232C",
     w1: "#FFFFFF",
   },
+  alerts: {
+    a1: "#F6E9EB",
+    a2: "#EBFAF9",
+    a3: "#FEF8EC",
+    a4: "#EBF3FE",
+  },
   gradients: {
     primary: {
       mg1: {
