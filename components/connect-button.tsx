@@ -23,8 +23,8 @@ const AddressContainer = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
+  left: calc(50% - 173px / 2 + 673.5px);
+  top: calc(50% - 45px / 2 - 749px);
   margin-top: 15px;
   margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
@@ -49,8 +49,8 @@ const MyButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
+  left: calc(50% - 173px / 2 + 673.5px);
+  top: calc(50% - 45px / 2 - 749px);
   margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
@@ -62,16 +62,13 @@ const MyButton = styled.div`
   border-radius: 8px;
   cursor: pointer;
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
+    width: 100%;
   }
 `;
 
+
 const WalletAddress = ({ reset, account }) => {
-  return (
-    <AddressContainer>
-      {shortAddress(account)}
-    </AddressContainer>
-  );
+  return <AddressContainer>{shortAddress(account)}</AddressContainer>;
 };
 
 export const ConnectButton = () => {
@@ -132,9 +129,7 @@ export const ConnectButton = () => {
 
   return (
     <ButtonContainer>
-      <MyButton
-        onClick={handleButtonClick}
-      >{label}</MyButton>
+      <MyButton onClick={handleButtonClick}>{label}</MyButton>
     </ButtonContainer>
   );
 };

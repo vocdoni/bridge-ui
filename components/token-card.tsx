@@ -25,7 +25,7 @@ const Container = styled.div`
 
   max-width: calc(33.3333333% - 1em);
   min-width: 366px;
-  max-height: 164px;
+  min-height: 164px;
   left: 176px;
   top: 633px;
 
@@ -42,7 +42,7 @@ const Container = styled.div`
 
 const Card = styled.div`
   display: flex;
-  flex-flow: row no-wrap;
+  flex-wrap: no-wrap;
   padding: 39px;
   min-height: 164px;
   box-sizing: border-box;
@@ -81,6 +81,7 @@ const Name = styled.div`
 
   & > p {
     margin: 0;
+    font-size: 18px;
   }
 `;
 
@@ -155,8 +156,6 @@ const ActiveProposalsText = styled.p`
   color: #00c2ff;
 `;
 
-const Price = styled.div``;
-
 {
   /* NOTE temporarily removed information on the cards, as they are not must haves right 
 now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */
@@ -178,7 +177,7 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
             {/**
              * TODO: GET PRICE
              */}
-            <Price>$987M</Price>
+            <span>$987M</span>
           </TokenBodyHeader>
 
           <Name>{children}</Name>

@@ -24,7 +24,7 @@ const Head = styled.div`
   -o-background-size: cover;
   background-size: cover;
   width: 100%;
-  height: 335px;
+  min-height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-family: "Manrope";
@@ -33,6 +33,14 @@ const Head = styled.div`
     border-radius: 0;
     margin: 0 -15px;
   }
+  box-sizing: border-box;
+  padding: 50px 15px;
+`;
+
+const HeadContent = styled.div`
+  width: 100%;
+  max-width: 630px;
+  margin: auto;
 `;
 
 const HeaderTitle = styled.h4`
@@ -92,6 +100,68 @@ const ShowMoreButton = styled(Button)`
   border-radius: 8px;
 `;
 
+const SearchInput = styled.input`
+  background: #ffffff;
+  border: 2px solid #eff1f7;
+  box-sizing: border-box;
+  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.35);
+  border-radius: 8px;
+  height: 46px;
+
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  padding: 10px;
+
+  &::placeholder {
+    color: #97a8dc;
+  }
+`;
+
+const SearchContainer = styled.div`
+  padding-top: 10px;
+  display: flex;
+  width: 100%;
+  flex-flow: row no-wrap;
+  justify-content: center;
+
+  & > input {
+    width: 66%;
+    margin-right: 10px;
+  }
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-flow: row wrap;
+
+    & > input {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    & > div {
+      width: 100%;
+    }
+  }
+`;
+
+const SearchButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-size: 16px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 120px;
+  height: 46px;
+`;
+
 // MAIN COMPONENT
 const IndexPage = () => {
   const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
@@ -101,11 +171,18 @@ const IndexPage = () => {
   return (
     <>
       <Head>
-        <HeaderTitle>Welcome to Aragon Voice</HeaderTitle>
-        <HeaderSubtitle>
-          Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end
-          verifiable layer 2.
-        </HeaderSubtitle>
+        <HeadContent>
+          <HeaderTitle>Welcome to Aragon Voice</HeaderTitle>
+          <HeaderSubtitle>
+            Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end
+            verifiable layer 2.
+          </HeaderSubtitle>
+          <SearchContainer>
+            <SearchInput placeholder="ERC Token address" />
+            <SearchButton>Find Token</SearchButton>
+          </SearchContainer>
+        </HeadContent>
+
         {/* NOTE temporarily removed this section, as it is not part of landing page's must 
         haves. VR 23-04-2021 */}
         {/* <SearchRow>

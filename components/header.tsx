@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
@@ -15,6 +15,7 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 20;
 
   background: ${({ theme }) => theme.blackAndWhite.w1}99;
 `;
@@ -89,16 +90,6 @@ const ListItem = styled.div`
     &:first-child {
       margin-top: 10px;
     }
-
-    & > a {
-      color: ${({ theme }) => theme.blackAndWhite.b1};
-      font-size: 20px;
-      font-weight: 500;
-
-      &:hover {
-        color: ${({ theme }) => theme.blackAndWhite.b1};
-      }
-    }
   }
 `;
 
@@ -113,27 +104,35 @@ const VoiceLink = styled.a`
 
 const ClickableLink = styled.a`
   display: flex;
-  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
+  padding: ${({ theme }) => "10px " + theme.margins.desktop.horizontal};
   text-decoration: none;
-  font-size: 18px;
-  font-weight: 500;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 28px;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
     color: ${({ theme }) => theme.primary.p1};
-    );
+  }
 `;
 
 const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
   position: fixed;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   margin: 0;
-  top: -100%;
+  top: -120%;
   left: 0;
   width: 100%;
   height: 100%;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   z-index: 10;
   margin-top: 70px;
+  max-height: 100%;
+  overflow: auto;
 
   -webkit-transition: top 0.5s ease-in-out;
   -moz-transition: top 0.5s ease-in-out;
@@ -141,21 +140,41 @@ const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
   transition: top 0.5s ease-in-out;
 
   @media ${({ theme }) => theme.screens.tablet} {
-    top: ${({ showMenu }) => (showMenu ? "0" : "-100%")};
+    top: ${({ showMenu }) => (showMenu ? "0" : "-120%")};
   }
 `;
 
-const Section = styled.div`
-  display: flex;
-  margin-top: 30px;
-  justify-content: center;
-  color: ${({ color }) => color};
+const Section = styled.span`
+  flex: 1;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  color: #7483b2;
 `;
 
 const LinkContainer = styled.div`
   display: flex;
   align-items: baseline;
   cursor: pointer;
+`;
+
+const MobileLinksWrapper = styled.div`
+  height: 80%;
+`;
+
+const LinksWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  a {
+    font-family: Manrope;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    text-align: center;
+    color: #20232c;
+  }
 `;
 
 interface LinkProps {
@@ -231,14 +250,28 @@ export const Header = () => {
   const isMobile = useIsMobile();
   const HEADER_LINKS = LINKS.filter((l) => l.header);
 
+  useEffect(() => {
+    if (!showMenu) {
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
+    } else {
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${window.scrollY}px`;
+    }
+  }, [showMenu]);
+
   return (
     <>
       {isMobile && (
         <MobileMenuContainer showMenu={showMenu}>
-          {LINKS.map((link) => (
-            <LinkItem {...link} key={link.name} onClick={() => setShowMenu(false)} />
-          ))}
-          <Section>Vocdoni {new Date().getFullYear()}</Section>
+          <MobileLinksWrapper>
+            {LINKS.map((link) => (
+              <LinkItem {...link} key={link.name} onClick={() => setShowMenu(false)} />
+            ))}
+          </MobileLinksWrapper>
+          <Section>Aragon {new Date().getFullYear()}</Section>
         </MobileMenuContainer>
       )}
       <HeaderContainer>
@@ -252,10 +285,19 @@ export const Header = () => {
             </Link>
           </LinkContainer>
           <MenuItemsContainer>
-            {!isMobile && HEADER_LINKS.map((link) => <LinkItem {...link} key={link.name} />)}
-            <ConnectButton></ConnectButton>
+            {!isMobile && (
+              <LinksWrapper>
+                {HEADER_LINKS.map((link) => (
+                  <LinkItem {...link} key={link.name} />
+                ))}{" "}
+                <ConnectButton></ConnectButton>
+              </LinksWrapper>
+            )}{" "}
           </MenuItemsContainer>
-          {isMobile && <Hamburger toggled={showMenu} toggle={setShowMenu} color="#fff" size={25} />}
+
+          {isMobile && (
+            <Hamburger toggled={showMenu} toggle={setShowMenu} color="#000000" size={25} />
+          )}
         </ListContainer>
       </HeaderContainer>
     </>
