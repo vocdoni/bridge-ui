@@ -6,7 +6,6 @@ import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
 import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
-import Button from "./button";
 
 const ButtonContainer = styled.div`
   margin: 15px auto;
@@ -24,8 +23,8 @@ const AddressContainer = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px / 2 + 673.5px);
-  top: calc(50% - 45px / 2 - 749px);
+  left: calc(50% - 173px/2 + 673.5px);
+  top: calc(50% - 45px/2 - 749px);
   margin-top: 15px;
   margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
@@ -33,11 +32,9 @@ const AddressContainer = styled.div`
   font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
@@ -46,7 +43,6 @@ const AddressContainer = styled.div`
       ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
     );
-
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
     text-align: center;
@@ -67,11 +63,9 @@ const MyButton = styled.div`
   font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
@@ -87,7 +81,11 @@ const MyButton = styled.div`
 `;
 
 const WalletAddress = ({ reset, account }) => {
-  return <AddressContainer>{shortAddress(account)}</AddressContainer>;
+  return (
+    <AddressContainer>
+      {shortAddress(account)}
+    </AddressContainer>
+  );
 };
 
 export const ConnectButton = () => {
@@ -121,6 +119,13 @@ export const ConnectButton = () => {
     return isConnected ? "Show dashboard" : "Connect account";
   }, [poolLoading, status, error]);
 
+  const mode = useMemo(() => {
+    if (error) return "negative";
+    if (inLanding) return "strong";
+
+    return "normal";
+  }, [error, loadingOrConnecting]);
+
   const handleButtonClick = async () => {
     if (loadingOrConnecting) {
       reset();
@@ -141,7 +146,9 @@ export const ConnectButton = () => {
 
   return (
     <ButtonContainer>
-      <Button onClick={handleButtonClick}>{label}</Button>
+      <MyButton
+        onClick={handleButtonClick}
+      >{label}</MyButton>
     </ButtonContainer>
   );
 };
