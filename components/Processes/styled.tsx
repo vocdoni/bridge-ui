@@ -171,3 +171,20 @@ export const Percentage = styled.h5`
   font-size: 14px;
   font-weight: bold;
 `;
+
+export const EndedContainer = styled.div`
+  width: 100%;
+  height: 249px;
+
+  background: #eef4fb;
+  text-align: center;
+  border-radius: 13px;
+`;
+
+export const EndedInfo = styled.p`
+  font-size: 18px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.grayScale.g5};
+  margin: 0;
+  margin-top: -15px;
+`;

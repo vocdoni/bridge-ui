@@ -17,6 +17,8 @@ import {
   ProcessDataDescription,
   ProcessDataValue,
   ButtonContainer,
+  EndedContainer,
+  EndedInfo,
 } from "../../components/Processes/styled";
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
@@ -61,6 +63,7 @@ const ProcessPage = () => {
   const alreadyVoted = voteStatus?.registered;
 
   const canVote = !alreadyVoted && !hasEnded && inCensus;
+
   const onVoteSubmit = async () => {
     if (!isConnected) {
       return dispatch({
@@ -117,17 +120,28 @@ const ProcessPage = () => {
         onChoiceSelect={onSelect}
         canVote={canVote}
       />
-      <ButtonContainer>
-        <Button disabled={!canVote && questionsFilled} onClick={onVoteSubmit}>
-          {!isConnected
-            ? "Connect your wallet"
-            : !inCensus
-            ? "You're not a token holder"
-            : !questionsFilled
-            ? "Fill all the choices"
-            : "Submit your vote"}
-        </Button>
-      </ButtonContainer>
+      {hasEnded ? (
+        <EndedContainer>
+          <img src="/media/ended.svg" />
+          <EndedInfo>The process has ended</EndedInfo>
+        </EndedContainer>
+      ) : (
+        <ButtonContainer>
+          <Button
+            // Improve this conditional
+            disabled={!isConnected ? false : !canVote || !questionsFilled}
+            onClick={onVoteSubmit}
+          >
+            {!isConnected
+              ? "Connect your wallet"
+              : !inCensus
+              ? "You're not a token holder"
+              : !questionsFilled
+              ? "Fill all the choices"
+              : "Submit your vote"}
+          </Button>
+        </ButtonContainer>
+      )}
     </div>
   );
 };
