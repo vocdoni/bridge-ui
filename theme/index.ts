@@ -40,6 +40,7 @@ export const colors: Colors = {
         a: "107.79deg",
         c1: "#00C2FF",
         c2: "#01E8F7",
+        c3: "#00B3EC",
       },
       mg1_soft: {
         a: "107.79deg",

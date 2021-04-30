@@ -40,6 +40,7 @@ export interface Colors extends Partial<Colors> {
               a: Degree;
               c1: Color;
               c2: Color;
+              c3: Color;
             };
             mg1_soft: {
               a: Degree;

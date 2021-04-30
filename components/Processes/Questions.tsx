@@ -11,18 +11,33 @@ import {
   Radio,
   OptionTitleContainer,
   OptionTitle,
+  ChoiceInfo,
+  Percentage,
 } from "./styled";
 
-const Option = ({ title, choiceId, onChoiceSelect, questionId, checked }) => (
+const Option = ({ choice, onChoiceSelect, questionId, checked, canVote }) => (
   <OptionLabel>
-    <Radio type="checkbox" checked={checked} onClick={() => onChoiceSelect(questionId, choiceId)} />
+    {canVote ? (
+      <Radio
+        type="checkbox"
+        checked={checked}
+        onClick={() => onChoiceSelect(questionId, choice.id)}
+      />
+    ) : (
+      <ChoiceInfo>
+        <Percentage>{choice.percentage + "%"}</Percentage>
+      </ChoiceInfo>
+    )}
     <OptionTitleContainer>
-      <OptionTitle>{title}</OptionTitle>
+      <OptionTitle>{choice.title}</OptionTitle>
+      <OptionTitle>
+        {choice.votes} {choice.token}
+      </OptionTitle>
     </OptionTitleContainer>
   </OptionLabel>
 );
 
-export const Questions = ({ questions, onChoiceSelect, choicesSelected }) => {
+export const Questions = ({ questions, onChoiceSelect, choicesSelected, canVote }) => {
   return (
     <div>
       {!questions
@@ -35,16 +50,18 @@ export const Questions = ({ questions, onChoiceSelect, choicesSelected }) => {
                 <QuestionDescription>{description}</QuestionDescription>
               </QuestionInformation>
               <QuestionOptions>
-                {choices.map((choice, j) => (
-                  <Option
-                    key={`choice_${j}`}
-                    questionId={i}
-                    title={choice.title}
-                    choiceId={j}
-                    onChoiceSelect={onChoiceSelect}
-                    checked={choicesSelected && choicesSelected[i] === j}
-                  />
-                ))}
+                {choices.map((choice, j) => {
+                  return (
+                    <Option
+                      key={`choice_${j}`}
+                      questionId={i}
+                      choice={{ ...choice, id: j }}
+                      onChoiceSelect={onChoiceSelect}
+                      checked={choicesSelected && choicesSelected[i] === j}
+                      canVote={canVote}
+                    />
+                  );
+                })}
               </QuestionOptions>
             </QuestionContainer>
           ))}

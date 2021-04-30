@@ -24,6 +24,7 @@ import Button from "../../components/button";
 import { useProcessInfo, useProcessDate, useWeights, useVote } from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
+import { useWallet } from "use-wallet";
 
 const ProcessPage = () => {
   const router = useRouter();
@@ -37,7 +38,7 @@ const ProcessPage = () => {
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
   const { datesInfo, hasEnded } = useProcessDate(process);
-  const { results, updateResults } = useProcessInfo(process);
+  const { results, updateResults } = useProcessInfo(process, token);
   const { weights } = useWeights({
     processId,
     token,
@@ -46,6 +47,7 @@ const ProcessPage = () => {
   const { status, updateStatus, voteInfo, vote } = useVote(token, process);
   const census = useCensusProof(token);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
+  const wallet = useWallet();
 
   const onVoteSubmit = async () => {
     await vote();
@@ -61,15 +63,13 @@ const ProcessPage = () => {
     });
   };
 
+  const isConnected = !!wallet.account;
   const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
-
   const inCensus = census && !!census.proof;
-  const canVote =
-    allQuestionsChosen &&
-    !voteStatus?.registered &&
-    areAllNumbers(status.choices) &&
-    !hasEnded &&
-    inCensus;
+  const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
+  const alreadyVoted = voteStatus?.registered;
+
+  const canVote = !alreadyVoted && !hasEnded && inCensus;
 
   if (!processId || !process) return renderEmpty();
 
@@ -105,10 +105,17 @@ const ProcessPage = () => {
         questions={results && results.questions}
         choicesSelected={status.choices}
         onChoiceSelect={onSelect}
+        canVote={canVote}
       />
       <ButtonContainer>
-        <Button disabled={!canVote} onClick={onVoteSubmit}>
-          Submit your vote
+        <Button disabled={!canVote && questionsFilled} onClick={onVoteSubmit}>
+          {!isConnected
+            ? "Connect your wallet"
+            : !inCensus
+            ? "You're not a token holder"
+            : !questionsFilled
+            ? "Fill all the choices"
+            : "Submit your vote"}
         </Button>
       </ButtonContainer>
     </div>

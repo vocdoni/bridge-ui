@@ -154,3 +154,20 @@ export const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const ChoiceInfo = styled.div`
+  width: 58px;
+  height: 58px;
+  border-radius: 50px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background: ${({ theme }) =>
+    `linear-gradient(142.6deg, ${theme.gradients.primary.mg1_soft.c3}33, ${theme.gradients.primary.mg1.c3}D4)`};
+`;
+
+export const Percentage = styled.h5`
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-size: 14px;
+  font-weight: bold;
+`;
