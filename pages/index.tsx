@@ -8,7 +8,7 @@ import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/co
 import { TokenList } from "./dashboard";
 
 import TokenCard from "../components/token-card";
-import Button from "../components/button";
+import { SecondaryButton } from "../components/button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 
@@ -17,13 +17,15 @@ import { useWallet } from "use-wallet";
 import { ConnectButton } from "../components/connect-button";
 
 const Head = styled.div`
+  width: 1248px;
+  height: 335px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: url(${LANDING_PAGE_CTA});
-  width: 1248px;
-  height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-family: "Manrope";
@@ -204,7 +206,7 @@ const IndexPage = () => {
           ))}
         </TokenList>
         <Row>
-          <ShowMoreButton href="/tokens">View all tokens</ShowMoreButton>
+          <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
         </Row>
       </TokenSection>
     </>

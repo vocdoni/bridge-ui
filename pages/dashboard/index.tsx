@@ -34,10 +34,11 @@ export const TokenList = styled.div`
 `;
 
 export const LightText = styled.p`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+  color: ${({ theme }) => theme.grayScale.g5};
 `;
 
 export const VoteSectionContainer = styled.div`
+  margin-bottom: 60px;
   @media ${({ theme }) => theme.screens.tablet} {
     text-align: center;
   }

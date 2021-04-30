@@ -33,11 +33,11 @@ export function shortAddress(address: string, slashIndex = 6): string {
 
 /**
  * @param tokenName - Token name to modify
- * @param slashIndex - number of letters of the token name to show 
- * @returns formatted token name 
+ * @param slashIndex - number of letters of the token name to show
+ * @returns formatted token name
  */
 export function shortTokenName(tokenName: string, slashIndex = 22): string {
-  if(tokenName.length > 25) {
+  if (tokenName.length > 25) {
     return tokenName.slice(0, slashIndex) + "...";
   } else {
     return tokenName;
