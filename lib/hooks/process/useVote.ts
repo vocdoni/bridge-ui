@@ -67,7 +67,7 @@ export const useVote = (token, process) => {
 
   const onSubmitVote = useCallback(async (): Promise<void> => {
     try {
-      const { proof, pool } = await getProof(wallet, token, poolPromise);
+      const { proof, pool } = await getProof(wallet.account, token, poolPromise);
 
       // Detect encryption
       const envelopParams = {
