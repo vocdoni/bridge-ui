@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useMessageAlert } from "../lib/hooks/message-alert";
+import { MsgType } from "../lib/types";
 
 const Cross = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -9,34 +10,44 @@ const Cross = () => (
 );
 
 export const MessageAlert = () => {
-  const { isError, message, clearAlert } = useMessageAlert();
+  const { msgType, message, clearAlert } = useMessageAlert();
 
   return (
-    <AlertContainer visible={!!message?.length} isError={isError}>
-      <AlertText isError={isError}>{message || ""}</AlertText>
-      <CloseAlert isError={isError} onClick={clearAlert}>
+    <AlertContainer visible={!!message?.length} msgType={msgType}>
+      <AlertText msgType={msgType}>{message || ""}</AlertText>
+      <CloseAlert msgType={msgType} onClick={clearAlert}>
         <Cross />
       </CloseAlert>
     </AlertContainer>
   );
 };
 
-const CloseAlert = styled.div<{ isError: boolean }>`
-  stroke: ${({ theme, isError }) => (isError ? theme.functionality.f3 : theme.functionality.f4)};
+const CloseAlert = styled.div<{ msgType: MsgType }>`
+  stroke: ${({ theme, msgType }) =>
+    msgType === "error"
+      ? theme.functionality.f3
+      : msgType === "success"
+      ? theme.functionality.f4
+      : theme.primary.p1};
   pointer: cursor;
   position: absolute;
   top: 16px;
   right: 16px;
 `;
 
-const AlertText = styled.div<{ isError: boolean }>`
-  color: ${({ theme, isError }) => (isError ? theme.functionality.f3 : theme.functionality.f4)};
+const AlertText = styled.div<{ msgType: MsgType }>`
+  color: ${({ theme, msgType }) =>
+    msgType === "error"
+      ? theme.functionality.f3
+      : msgType === "success"
+      ? theme.functionality.f4
+      : theme.primary.p1};
   margin-right: 49px;
   font-size: 16px;
   text-align: left;
 `;
 
-const AlertContainer = styled.div<{ visible: boolean; isError: boolean }>`
+const AlertContainer = styled.div<{ visible: boolean; msgType: MsgType }>`
   position: fixed;
   z-index: 320;
   bottom: 90px;
@@ -54,7 +65,8 @@ const AlertContainer = styled.div<{ visible: boolean; isError: boolean }>`
   align-items: center;
   max-width: 320px;
 
-  background-color: ${({ isError }) => (isError ? "#F8E8EB" : "#DEF4E8")};
+  background-color: ${({ msgType }) =>
+    msgType === "error" ? "#F8E8EB" : msgType === "success" ? "#DEF4E8" : "#D7EEFB"};
   border-radius: 10px;
 
   transform: ${({ visible }) => `translate(0px, ${visible ? 0 : 90} px)`};

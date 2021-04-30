@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from "react";
+import { MsgType } from "../types";
 
 const UseMessageAlertContext = createContext({
-  isError: true,
+  msgType: "error" as MsgType,
   message: "",
-  setAlertMessage: (msg: string, isErr?: boolean, seconds?: number) => undefined,
+  setAlertMessage: (msg: string, msgType?: MsgType, seconds?: number) => undefined,
   clearAlert: () => undefined,
 });
 
@@ -12,15 +13,15 @@ export function useMessageAlert() {
 }
 
 export function UseMessageAlertProvider({ children }) {
-  const [isError, setIsError] = useState(true);
+  const [msgType, setMsgType] = useState("error" as MsgType);
   const [message, setMessage] = useState("");
   const [timeout, setTimeoutTracker] = useState(null);
 
-  const setAlertMessage = (msg: string, isErr = true, seconds = 8) => {
+  const setAlertMessage = (msg: string, messageType: MsgType = "error", seconds = 8) => {
     if (timeout) clearTimeout(timeout);
 
     setMessage(msg);
-    setIsError(isErr);
+    setMsgType(messageType);
     const newTo = setTimeout(() => {
       clearAlert();
       setTimeoutTracker(null);
@@ -30,7 +31,7 @@ export function UseMessageAlertProvider({ children }) {
   const clearAlert = () => setMessage("");
 
   return (
-    <UseMessageAlertContext.Provider value={{ isError, message, setAlertMessage, clearAlert }}>
+    <UseMessageAlertContext.Provider value={{ msgType, message, setAlertMessage, clearAlert }}>
       {children}
     </UseMessageAlertContext.Provider>
   );
