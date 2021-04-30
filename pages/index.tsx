@@ -64,18 +64,6 @@ const TokenSection = styled.div`
   }
 `;
 
-const ShowMoreButton = styled(Button)`
-  width: 150px;
-  height: 46px;
-  color: ${({ theme }) => theme.primary.p1};
-  padding: 12px 20px;
-  background: #ffffff;
-  box-sizing: border-box;
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border: 2px solid #eff1f7;
-  border-radius: 8px;
-`;
-
 const GrayRectangle = styled.div`
   display: flex;
   flex-direction: column;
