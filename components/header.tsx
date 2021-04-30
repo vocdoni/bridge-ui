@@ -5,7 +5,6 @@ import Hamburger from "hamburger-react";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
 import { HEADER_LOGO } from "../lib/constants";
 import { ConnectButton } from "./connect-button";
-import { ConnectionRejectedError } from "use-wallet";
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -22,7 +21,7 @@ const HeaderContainer = styled.div`
 const Logo = styled.div`
   background: url(${HEADER_LOGO});
   position: asbsolute;
-  width: 57px;
+  width: 148px;
   height: 57px;
   margin-left: 40px;
   margin-top: 7px;
@@ -66,33 +65,11 @@ const ListContainer = styled.div`
 const MenuItemsContainer = styled.div`
   display: flex;
   justify-content: center;
+  padding-right: 60px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 10px;
   }
-`;
-
-const TextOne = styled.span`
-  margin-top: 5px;
-  font-family: Manrope;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
-  align-items: center;
-  text-decoration: none;
-  color: ${({ theme }) => theme.grayScale.g5};
-`;
-
-const TextTwo = styled.span`
-  margin-top: 5px;
-  margin-left: 3px;
-  font-family: Manrope;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 25px;
-  align-items: center;
-  text-decoration: none;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
 const ListItem = styled.div`
@@ -269,9 +246,7 @@ export const Header = () => {
           <LinkContainer>
             <Link href="/" passHref>
               <VoiceLink target="_self">
-                <Logo></Logo>
-                <TextOne>Aragon</TextOne>
-                <TextTwo>Voice</TextTwo>
+                <Logo />
                 <BetaLabel>Beta</BetaLabel>
               </VoiceLink>
             </Link>

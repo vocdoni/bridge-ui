@@ -2,11 +2,11 @@ import React from "react";
 import styled from "styled-components";
 
 import TokenCard from "../../components/token-card";
-import { useTokens, useRegisteredTokens, useUserTokens } from "../../lib/hooks/tokens";
+import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
-import Button from "../../components/button";
+import Button, { SecondaryButton } from "../../components/button";
 import SearchWidget from "../../components/searchWidget";
 import { shortTokenName } from "../../lib/utils";
 
@@ -26,7 +26,7 @@ const TokenSection = styled.div`
   }
 `;
 
-const RegisterButton = styled(Button)`
+const FindTokenButton = styled(Button)`
   width: 200px;
   height: 46px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
@@ -52,33 +52,31 @@ const TokensPage = () => {
   const tokenInfos = useTokens(tokenAddrs);
 
   return (
-    <div>
-      <TokenSection>
-        <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
-        <br />
-        <ButtonContainer>
-          {/* NOTE temporarily removed search bar, as it is not part of the page's must 
-      haves. VR 23-04-2021 */}
-          {/* <SearchWidget /> */}
-          <p></p>
-          <RegisterButton href="/tokens/add">My Token is not listed</RegisterButton>
-        </ButtonContainer>
-        <br />
-        <TokenList>
-          {tokenInfos.map(({ symbol, address, name }) => (
-            <TokenCard
-              key={address}
-              name={symbol}
-              icon={FALLBACK_TOKEN_ICON}
-              rightText=""
-              href={address ? "/tokens/info#/" + address : ""}
-            >
-              <p>{shortTokenName(name) || "Loading..."}</p>
-            </TokenCard>
-          ))}
-        </TokenList>
-      </TokenSection>
-    </div>
+    <TokenSection>
+      <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
+      <br />
+      <ButtonContainer>
+        {/* NOTE temporarily removed search bar, as it is not part of the page's must 
+    haves. VR 23-04-2021 */}
+        {/* <SearchWidget /> */}
+        <p></p>
+        <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
+      </ButtonContainer>
+      <br />
+      <TokenList>
+        {tokenInfos.map(({ symbol, address, name }) => (
+          <TokenCard
+            key={address}
+            name={symbol}
+            icon={FALLBACK_TOKEN_ICON}
+            rightText=""
+            href={address ? "/tokens/info#/" + address : ""}
+          >
+            <p>{shortTokenName(name) || "Loading..."}</p>
+          </TokenCard>
+        ))}
+      </TokenList>
+    </TokenSection>
   );
 };
 

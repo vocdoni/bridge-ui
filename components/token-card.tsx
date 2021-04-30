@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 
 const Container = styled.div`
-
   background: ${({ theme }) => theme.blackAndWhite.w1};
   cursor: pointer;
   flex: 1 0 500px;
@@ -74,7 +73,7 @@ const Name = styled.p`
   letter-spacing: 0.01em;
 `;
 
-const Proposals = styled.p`
+const ActiveProposals = styled.p`
   color: ${({ theme }) => theme.primary.p1};
   padding-left: 90px;
   padding-top: 10px;
@@ -103,11 +102,12 @@ interface Token {
   icon: string;
   name: string;
   cap?: string;
-  activeProposals?: number
+  activeProposals?: number;
 }
 
 type CardProps = {
   key?: string | number;
+  symbol?: string;
   children: React.ReactNode;
   name: string;
   icon: string;
@@ -116,10 +116,12 @@ type CardProps = {
   onClick?: () => void;
 };
 
-{/* NOTE temporarily removed information on the cards, as they are not must haves right 
-now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
+{
+  /* NOTE temporarily removed information on the cards, as they are not must haves right 
+now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */
+}
 // eslint-disable-next-line react/display-name
-const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
+const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
@@ -128,7 +130,75 @@ const ClickableCard = React.forwardRef<HTMLDivElement, CardProps>(
         {/* <Cap>($915M)</Cap> */}
         <Symbol>{name}</Symbol>
         <Name>{children}</Name>
-        {/* <Proposals>7 active proposals</Proposals> */}
+        {/* <ActiveProposals>7 active proposals</Proposals> */}
+      </Card>
+    );
+  }
+);
+
+const CardHeader = styled.div`
+  display: flex;
+  margin-bottom: 0px;
+`;
+
+const VoteTokenLogo = styled.img`
+  padding-top: 2px;
+  width: 71px;
+  height: 71px;
+`;
+
+const TokenDescription = styled.div`
+  display: inline;
+  padding-left: 16px;
+`;
+
+const VoteSymbol = styled.h4`
+  height: 30px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 20px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  font-weight: 500;
+  font-size: 29px;
+  letter-spacing: 0.01em;
+`;
+
+const VoteName = styled.p`
+  height: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 2px;
+  color: ${({ theme }) => theme.grayScale.g5};
+  letter-spacing: 0.01em;
+  font-size: 18;
+`;
+
+const ProposalTitle = styled.p`
+  margin-top: 8px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 25px;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
+const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ onClick, icon, name, symbol, children }, ref) => {
+    return (
+      <Card onClick={onClick} ref={ref}>
+        <CardHeader>
+          <div>
+            <VoteTokenLogo src={icon} onError={loadFallback} />
+          </div>
+          <TokenDescription>
+            <VoteSymbol>{symbol}</VoteSymbol>
+            <VoteName>{name}</VoteName>
+          </TokenDescription>
+        </CardHeader>
+        <ProposalTitle>{children}</ProposalTitle>
       </Card>
     );
   }
@@ -141,10 +211,17 @@ function loadFallback(event) {
 const TokenCard = ({ children, ...props }: CardProps) => (
   <Container>
     <Link href={props.href}>
-      <ClickableCard {...props}>{children}</ClickableCard>
+      <ClickableTokenCard {...props}>{children}</ClickableTokenCard>
+    </Link>
+  </Container>
+);
+
+export const VoteCard = ({ children, ...props }: CardProps) => (
+  <Container>
+    <Link href={props.href}>
+      <ClickableVoteCard {...props}>{children}</ClickableVoteCard>
     </Link>
   </Container>
 );
 
 export default TokenCard;
-
