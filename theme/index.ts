@@ -29,6 +29,7 @@ export const colors: Colors = {
     f3: "#FF6A60",
     f4: "#4BDD7C",
     f5: "#FFB53A",
+    f6: "#F3F4FF",
   },
   blackAndWhite: {
     b1: "#20232C",

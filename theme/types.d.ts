@@ -29,6 +29,7 @@ export interface Colors extends Partial<Colors> {
         f3: Color;
         f4: Color;
         f5: Color;
+        f6: Color;
     };
     blackAndWhite: {
         b1: Color;
