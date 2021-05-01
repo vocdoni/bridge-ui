@@ -19,3 +19,5 @@ export type ProcessInfo = {
   parameters: ProcessContractParameters;
   tokenAddress: string;
 };
+
+export type MsgType = "error" | "success" | "info";
