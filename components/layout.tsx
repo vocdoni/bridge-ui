@@ -8,7 +8,6 @@ import { LoadingAlert } from "./loading-alert";
 
 const MainContent = styled.div`
   flex: 1;
-  width: 1249px;
   margin-top: 77px;
   margin-bottom: 50px;
   box-sizing: border-box;

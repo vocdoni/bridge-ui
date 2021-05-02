@@ -14,10 +14,6 @@ import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 
 const Head = styled.div`
-  width: 1248px;
-  height: 335px;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

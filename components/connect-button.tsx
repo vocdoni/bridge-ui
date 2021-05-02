@@ -9,9 +9,9 @@ import { useModal, ActionTypes } from "./Modal/context";
 
 const ButtonContainer = styled.div`
   margin: 15px auto;
-  max-width: 300px;
+  width: 300px;
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
+    width: 100%;
     text-align: center;
   }
 `;
@@ -23,10 +23,7 @@ const AddressContainer = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px / 2 + 673.5px);
-  top: calc(50% - 45px / 2 - 749px);
   margin-top: 15px;
-  margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
   font-size: 16px;
@@ -37,6 +34,11 @@ const AddressContainer = styled.div`
   border-radius: 8px;
   cursor: pointer;
 
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    text-align: center;
+  }
+
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
@@ -45,10 +47,6 @@ const AddressContainer = styled.div`
       ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
     );
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
-    text-align: center;
   }
 `;
 
@@ -59,8 +57,6 @@ const MyButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px / 2 + 673.5px);
-  top: calc(50% - 45px / 2 - 749px);
   margin-right: 60px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
@@ -80,7 +76,8 @@ const MyButton = styled.div`
       ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
     );
-    
+  }
+
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
   }
