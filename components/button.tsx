@@ -56,6 +56,7 @@ export const SecondaryButton = styled(Button)`
   box-sizing: border-box;
   border-radius: 8px;
   color: ${({ theme }) => theme.primary.p1};
+  font-family: Manrope;
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;
