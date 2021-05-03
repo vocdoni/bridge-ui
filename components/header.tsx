@@ -15,7 +15,7 @@ const HeaderContainer = styled.div`
   justify-content: center;
   align-items: center;
 
-  background: ${({ theme }) => theme.blackAndWhite.w1}99;
+  background: ${({ theme }) => theme.blackAndWhite.w1}cc;
 `;
 
 const Logo = styled.div`
