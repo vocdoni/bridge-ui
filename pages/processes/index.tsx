@@ -138,6 +138,8 @@ const ProcessPage = () => {
               ? "You're not a token holder"
               : !hasStarted
               ? "Process has not started"
+              : alreadyVoted
+              ? "You already voted"
               : !questionsFilled
               ? "Fill all the choices"
               : "Submit your vote"}
