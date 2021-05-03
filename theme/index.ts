@@ -131,6 +131,11 @@ export const colors: Colors = {
         c2: "#F9FFF1",
       },
     },
+    cardGradient: {
+      a: "107.79deg",
+      c1: "#FFFFFF",
+      c2: "#DEE4FF",
+    },
   },
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
@@ -16,10 +17,9 @@ const Container = styled.div`
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
-      101.6deg,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c1}33,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2}33,
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}33
+      ${({ theme }) => theme.gradients.cardGradient.a},
+      ${({ theme }) => theme.gradients.cardGradient.c1}66 1.46%,
+      ${({ theme }) => theme.gradients.cardGradient.c2}66 100%
     );
   }
 

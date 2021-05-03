@@ -6,6 +6,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
 import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
+import { CONNECTED_WALLET_ICON } from "../lib/constants";
 
 const ButtonContainer = styled.div`
   margin: 15px auto;
@@ -16,40 +17,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const AddressContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 173px;
-  height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
-  margin-top: 15px;
-  margin-right: 60px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-weight: 600;
-  font-size: 16px;
-  background: ${({ theme }) =>
-    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border-radius: 8px;
-  cursor: pointer;
-  &:hover {
-    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    background: linear-gradient(
-      ${({ theme }) => theme.gradients.primary.mg1_soft.a},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c1},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
-    );
-  @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
-    text-align: center;
-  }
-`;
-
-const MyButton = styled.div`
+const ConnectWalletButton = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -77,14 +45,52 @@ const MyButton = styled.div`
     
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
+    text-align: center;
   }
+`;
+
+const ConnectedWalletButton = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 173px;
+  height: 45px;
+  left: calc(50% - 173px/2 + 673.5px);
+  top: calc(50% - 45px/2 - 749px);
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  font-weight: 500;
+  font-size: 16px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    
+  @media ${({ theme }) => theme.screens.tablet} {
+    max-width: 100%;
+    text-align: center;
+  }
+`;
+
+const ConnectedWalletIcon = styled.div`
+  background: url(${CONNECTED_WALLET_ICON});
+  position: asbsolute;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 `;
 
 const WalletAddress = ({ reset, account }) => {
   return (
-    <AddressContainer>
-      {shortAddress(account)}
-    </AddressContainer>
+    <ButtonContainer>
+      <ConnectedWalletButton>
+        <ConnectedWalletIcon />
+        {shortAddress(account)}
+      </ConnectedWalletButton>
+    </ButtonContainer>
   );
 };
 
@@ -116,7 +122,7 @@ export const ConnectButton = () => {
       return "Wallet connection rejected";
     }
 
-    return isConnected ? "Show dashboard" : "Connect account";
+    return isConnected ? "Connected" : "Connect account";
   }, [poolLoading, status, error]);
 
   const mode = useMemo(() => {
@@ -133,22 +139,20 @@ export const ConnectButton = () => {
     }
 
     if (inLanding && isConnected) {
-      push("/dashboard");
+      reset();
       return;
     }
 
     openWallets();
   };
 
-  if (isConnected && !inLanding) {
+  if (isConnected) {
     return <WalletAddress account={account} reset={reset} />;
   }
 
   return (
     <ButtonContainer>
-      <MyButton
-        onClick={handleButtonClick}
-      >{label}</MyButton>
+      <ConnectWalletButton onClick={handleButtonClick}>{label}</ConnectWalletButton>
     </ButtonContainer>
   );
 };
