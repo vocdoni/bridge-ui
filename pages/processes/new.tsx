@@ -519,14 +519,15 @@ const NewProcessPage = () => {
             ) : null}
           </div>
         ))}
-
-        <RowContinue>
-          {wallet.status === "connected" ? (
-            <SubmitButton submitting={submitting} onSubmit={onSubmit} />
-          ) : !isMobile ? (
-            <ConnectButton />
-          ) : null}
-        </RowContinue>
+        <FieldRowLeftSection>
+          <RowContinue>
+            {wallet.status === "connected" ? (
+              <SubmitButton submitting={submitting} onSubmit={onSubmit} />
+            ) : !isMobile ? (
+              <ConnectButton />
+            ) : null}
+          </RowContinue>
+        </FieldRowLeftSection>
       </NewProcessContainer>
     </div>
   );
