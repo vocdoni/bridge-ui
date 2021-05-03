@@ -22,6 +22,7 @@ const Container = styled.div`
       ${({ theme }) => theme.gradients.cardGradient.c1}66 1.46%,
       ${({ theme }) => theme.gradients.cardGradient.c2}66 100%
     );
+    transition: 300s;
   }
 
   max-width: calc(33.3333333% - 1em);

@@ -9,12 +9,12 @@ import { TokenList } from "./dashboard";
 
 import TokenCard from "../components/token-card";
 import { SecondaryButton } from "../components/button";
+import { ConnectTextButton } from "../components/connect-button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 
 import Link from "next/link";
 import { useWallet } from "use-wallet";
-import { ConnectButton } from "../components/connect-button";
 
 const Head = styled.div`
   width: 1248px;
@@ -69,7 +69,7 @@ const GrayRectangle = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme.grayScale.g2};
+  background: ${({ theme }) => theme.homepageRectangle.c1};
   width: 1248px;
   height: 161px;
   border-radius: 16px;
@@ -78,7 +78,7 @@ const GrayRectangle = styled.div`
 `;
 
 const GrayRectangleTall = styled(GrayRectangle)`
-  height: 227px;
+  height: 227px; 
 `;
 
 const LightningBolt = styled.div`
@@ -97,10 +97,13 @@ const GreyInfo = styled.p`
 
 const NotListedLink = styled.p`
   color: ${({ theme }) => theme.primary.p1};
-  width: 526px;
   text-align: center;
-  line-height: 0%;
   cursor: pointer;
+  margin-top: 0px;
+
+  &:hover {
+    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
+  }
 `;
 
 // MAIN COMPONENT
@@ -144,7 +147,9 @@ const IndexPage = () => {
             <GreyInfo>
               Connect your account and discover the proposals related to your tokens
             </GreyInfo>
-            <ConnectButton />
+            <Link href="/tokens/add">
+              <ConnectTextButton />
+            </Link>
           </GrayRectangleTall>
         ) : !userTokens.userTokens ? (
           <GrayRectangle>
