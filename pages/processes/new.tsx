@@ -391,7 +391,7 @@ const NewProcessPage = () => {
               widthValue={735}
             />
           </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={125}>
+          <FieldRowRightSection marginTop={90}>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -432,7 +432,7 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={140}>
+          <FieldRowRightSection marginTop={120}>
             <Datetime
               value={startDate}
               inputProps={{
