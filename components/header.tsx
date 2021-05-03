@@ -46,7 +46,6 @@ const BetaLabel = styled.div`
   border-radius: 40px;
   color: white;
   margin-top: 5px;
-  margin-left: 0px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 `;

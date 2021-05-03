@@ -45,7 +45,7 @@ const Section = styled.div`
 `;
 
 const ClickableText = styled.a`
-  margin-right: 80px;
+  margin-right: 38px;
   display: flex;
   justify-content: space-between;
   align-items: center;
