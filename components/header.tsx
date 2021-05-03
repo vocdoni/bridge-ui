@@ -112,10 +112,10 @@ const VoiceLink = styled.a`
 
 const ClickableLink = styled.a`
   display: flex;
-  margin-top: 25px;
+  margin-top: 28px;
   margin-right: 38px;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {

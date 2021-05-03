@@ -58,7 +58,7 @@ const ClickableText = styled.a`
   justify-content: space-between;
   align-items: center;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
