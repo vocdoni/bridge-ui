@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
+import { shortTokenName } from "../lib/utils";
 
 const Container = styled.div`
   background: ${({ theme }) => theme.blackAndWhite.w1};
@@ -156,7 +157,7 @@ const VoteSymbol = styled.h4`
   height: 30px;
   margin-top: 0px;
   margin-bottom: 0px;
-  padding-top: 20px;
+  padding-top: 18px;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   font-weight: 500;
   font-size: 29px;
@@ -167,7 +168,7 @@ const VoteName = styled.p`
   height: 20px;
   margin-top: 0px;
   margin-bottom: 0px;
-  padding-top: 2px;
+  padding-top: 4px;
   color: ${({ theme }) => theme.grayScale.g5};
   letter-spacing: 0.01em;
   font-size: 18;
@@ -195,7 +196,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
           </div>
           <TokenDescription>
             <VoteSymbol>{symbol}</VoteSymbol>
-            <VoteName>{name}</VoteName>
+            <VoteName>{shortTokenName(name)}</VoteName>
           </TokenDescription>
         </CardHeader>
         <ProposalTitle>{children}</ProposalTitle>
