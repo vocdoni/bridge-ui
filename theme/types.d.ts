@@ -29,10 +29,17 @@ export interface Colors extends Partial<Colors> {
     f3: Color;
     f4: Color;
     f5: Color;
+    f6: Color;
   };
   blackAndWhite: {
     b1: Color;
     w1: Color;
+  };
+  alerts: {
+    a1: Color;
+    a2: Color;
+    a3: Color;
+    a4: Color;
   };
   gradients: {
     primary: {
@@ -132,7 +139,7 @@ export interface Colors extends Partial<Colors> {
       };
     };
     cardGradient: {
-      a: Degree;
+      a: Color;
       c1: Color;
       c2: Color;
     };
