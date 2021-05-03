@@ -44,7 +44,7 @@ const ProcessPage = () => {
 
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
-  const { datesInfo, hasEnded } = useProcessDate(process);
+  const { datesInfo, hasEnded, hasStarted } = useProcessDate(process);
   const { results, updateResults } = useProcessInfo(process, token);
   const { weights } = useWeights({
     processId,
@@ -62,7 +62,7 @@ const ProcessPage = () => {
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
   const alreadyVoted = voteStatus?.registered;
 
-  const canVote = !alreadyVoted && !hasEnded && inCensus;
+  const canVote = !alreadyVoted && !hasEnded && inCensus && hasStarted;
 
   const onVoteSubmit = async () => {
     if (!isConnected) {

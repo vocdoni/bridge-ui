@@ -35,9 +35,14 @@ export const useProcessDate = (info: ProcessInfo) => {
     if (datesInfo) return dayjs().isAfter(datesInfo.end);
   }, [datesInfo]);
 
+  const hasStarted = useMemo(() => {
+    if (datesInfo) return dayjs().isAfter(datesInfo.start);
+  }, [datesInfo]);
+
   return {
     datesInfo,
     datesError,
     hasEnded,
+    hasStarted,
   };
 };
