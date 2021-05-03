@@ -13,7 +13,6 @@ export const useCensusProof = (token: Partial<TokenInfo>) => {
     try {
       const pool = await poolPromise;
       const data = await getProofByBruteForce({ account, token, pool });
-      console.log(data);
       if ("proof" in data) return data.proof;
     } catch (e) {
       console.log("Error in useCensusProof: ", e.message);
