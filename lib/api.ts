@@ -61,7 +61,7 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
-export const getProof = async ({
+const getProof = async ({
   account,
   token,
   pool,
@@ -70,7 +70,6 @@ export const getProof = async ({
   balance,
 }: ProofParameters) => {
   try {
-    console.log({ tokenBalancePosition });
     const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
     const result = await CensusErc20Api.generateProof(
       token,
@@ -79,42 +78,26 @@ export const getProof = async ({
       pool.provider as providers.JsonRpcProvider
     );
 
-    if (result == null || !result.proof) return false;
+    if (result == null || !result.proof) return undefined;
 
     const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
 
-    if (!onChainBalance.eq(balance)) {
-      console.warn(
-        "The proved balance does not match the on-chain balance:",
-        result.proof.storageProof[0].value,
-        "vs",
-        balance.toHexString()
-      );
-      return false;
-    }
+    if (!onChainBalance.eq(balance)) return undefined;
 
     return result.proof;
   } catch (error) {
-    console.log("Error on getProof in useCensusProof: ", error.message);
+    console.log("Error on getProof: ", error.message);
     throw new Error(error.message);
   }
 };
 
-export const getProofParameters = async ({
-  account,
-  token,
-  pool,
-}: Pick<ProofParameters, "account" | "token" | "pool">) => {
-  const block = (await pool.provider.getBlockNumber()) - 1;
-  const balance = await balanceOf(token, account, pool);
-  return { block, balance };
-};
-
-export const getBalanceSlotByBruteForce = async (
+//@TODO: Only trigger the loop if the proof has not been fetched yet
+export const getProofByBruteForce = async (
   params: Pick<ProofParameters, "account" | "token" | "pool">
 ) => {
   try {
-    const { block, balance } = await getProofParameters(params);
+    const block = (await params.pool.provider.getBlockNumber()) - 1;
+    const balance = await balanceOf(params.token, params.account, params.pool);
 
     const getSlot = async (_, index) => {
       const proofParams = {
@@ -126,26 +109,16 @@ export const getBalanceSlotByBruteForce = async (
 
       const proof = await getProof(proofParams);
       if (!proof) return undefined;
-      const onChainBalance = BigNumber.from(proof.storageProof[0].value);
 
-      if (!onChainBalance.eq(balance)) {
-        console.warn(
-          "The proved balance does not match the on-chain balance:",
-          proof.storageProof[0].value,
-          "vs",
-          balance.toHexString()
-        );
-        return undefined;
-      }
-
-      return proof;
+      return { proof, index };
     };
 
     const upperLimit = Array.from(Array(50).keys());
-    const balanceSlot = upperLimit.find(getSlot);
-    return balanceSlot;
+    const balanceSlots = upperLimit.map(getSlot);
+    const proofData = (await Promise.all(balanceSlots)).find((t) => t);
+    return proofData;
   } catch (e) {
-    console.log("Error: ", e.message);
+    console.log("Error on getProofByBruteForce: ", e.message);
   }
 };
 
@@ -156,7 +129,7 @@ export async function registerToken(
   signer: Signer
 ) {
   try {
-    const balanceMappingPosition = await getBalanceSlotByBruteForce({ account, token, pool });
+    const { index: balanceMappingPosition } = await getProofByBruteForce({ account, token, pool });
     await CensusErc20Api.registerToken(token, balanceMappingPosition, signer, pool);
   } catch (err) {
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
