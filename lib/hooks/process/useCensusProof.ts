@@ -2,7 +2,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { GatewayPool } from "dvote-js";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
-import { getBalanceSlotByBruteForce, getProof, getProofParameters } from "../../api";
+import { getProofByBruteForce } from "../../api";
 import { TokenInfo } from "../../types";
 
 export const useCensusProof = (token: Partial<TokenInfo>) => {
@@ -12,22 +12,11 @@ export const useCensusProof = (token: Partial<TokenInfo>) => {
   const fetchProof = async (account: string, token: string, poolPromise: GatewayPool) => {
     try {
       const pool = await poolPromise;
-      const params = { account, token, pool };
-      const { block, balance } = await getProofParameters(params);
-      const tokenBalancePosition = await getBalanceSlotByBruteForce(params);
+      const data = await getProofByBruteForce({ account, token, pool });
 
-      const proofParams = {
-        tokenBalancePosition,
-        block,
-        balance,
-        ...params,
-      };
-
-      const proof = await getProof(proofParams);
-
-      return proof;
+      if ("proof" in data) return data.proof;
     } catch (e) {
-      console.log("Error: ", e.message);
+      console.log("Error in useCensusProof: ", e.message);
     }
   };
 

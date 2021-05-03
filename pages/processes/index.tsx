@@ -51,7 +51,7 @@ const ProcessPage = () => {
     token,
     ...datesInfo,
   });
-  const { status, updateStatus, voteInfo, vote } = useVote(token, process);
+  const { status, updateStatus, voteInfo, vote } = useVote(process);
   const census = useCensusProof(token);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
@@ -61,9 +61,8 @@ const ProcessPage = () => {
   const inCensus = !!census;
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
   const alreadyVoted = voteStatus?.registered;
-  console.log(voteStatus);
+
   const canVote = !alreadyVoted && !hasEnded && inCensus;
-  console.log({ canVote });
 
   const onVoteSubmit = async () => {
     if (!isConnected) {

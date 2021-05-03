@@ -1,9 +1,10 @@
 import { usePool } from "@vocdoni/react-hooks";
 import { VotingApi } from "dvote-js";
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
-import { getBalanceSlotByBruteForce, getProof, getProofParameters } from "../../api";
+import { getProofByBruteForce } from "../../api";
+import { ProcessInfo } from "../../types";
 import { useSigner } from "../useSigner";
 
 export interface VoteStatus {
@@ -40,7 +41,7 @@ export const reducer = (state: VoteStatus, action: StatusAction) => {
   }
 };
 
-export const useVote = (token, process) => {
+export const useVote = (process: ProcessInfo) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const wallet = useWallet();
   const signer = useSigner();
@@ -73,19 +74,11 @@ export const useVote = (token, process) => {
         account: wallet.account,
         pool,
       };
-      const { block, balance } = await getProofParameters(params);
-      const tokenBalancePosition = await getBalanceSlotByBruteForce(params);
 
-      const proofParams = {
-        block,
-        tokenBalancePosition,
-        balance,
-        ...params,
-      };
+      const data = await getProofByBruteForce(params);
 
-      const proof = await getProof(proofParams);
-      console.log(proof);
-      if (!proof) {
+      console.log(data);
+      if (!data.proof) {
         return;
       }
 
@@ -93,7 +86,7 @@ export const useVote = (token, process) => {
       const envelopParams = {
         votes: state.choices,
         censusOrigin: process.parameters.censusOrigin,
-        censusProof: proof.storageProof[0],
+        censusProof: data.proof.storageProof[0],
         processId: process.id,
         walletOrSigner: signer,
       };
@@ -103,17 +96,13 @@ export const useVote = (token, process) => {
         envelopParams["processKey"] = keys;
       }
 
-      console.log("here");
+      console.log("before packagin");
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
-      console.log("here");
+      console.log("This is the envelop: ", envelope);
       await VotingApi.submitEnvelope(envelope, signer, pool);
     } catch (err) {
       console.log("Error in hook useVotes function onSubmitVote: ", err.message);
       throw new Error(err.message);
-    } finally {
-      updateStatus({
-        submitting: false,
-      });
     }
   };
 

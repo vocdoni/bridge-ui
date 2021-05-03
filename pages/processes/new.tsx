@@ -17,7 +17,6 @@ import Datetime from "react-datetime";
 import moment, { Moment } from "moment";
 import Router from "next/router";
 import Spinner from "react-svg-spinner";
-import { providers } from "ethers";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
@@ -32,7 +31,7 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
-import { getProofParameters, getBalanceSlotByBruteForce, getProof } from "../../lib/api";
+import { getProofByBruteForce } from "../../lib/api";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -334,19 +333,9 @@ const NewProcessPage = () => {
         account: wallet.account,
         pool,
       };
-      const { block, balance } = await getProofParameters(params);
-      const tokenBalancePosition = await getBalanceSlotByBruteForce(params);
+      const data = await getProofByBruteForce(params);
 
-      const proofParams = {
-        block,
-        tokenBalancePosition,
-        balance,
-        ...params,
-      };
-
-      const proof = await getProof(proofParams);
-
-      if (!proof) {
+      if (!data.proof) {
         return;
       }
 
@@ -357,7 +346,7 @@ const NewProcessPage = () => {
         envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
         censusOrigin: ProcessCensusOrigin.ERC20,
         metadata: metadata,
-        censusRoot: proof.storageHash,
+        censusRoot: data.proof.storageHash,
         startBlock,
         blockCount,
         maxCount: metadata.questions.length,
