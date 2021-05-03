@@ -33,7 +33,6 @@ export function throwIfNotBrowser() {
  * @returns formatted address
  */
 export function shortAddress(address: string, slashIndex = 6): string {
-  console.log(address);
   // An ethereum address has 42 characters
   return address.slice(0, slashIndex) + "..." + address.slice(38, 42);
 }

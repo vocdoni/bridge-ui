@@ -61,8 +61,9 @@ const ProcessPage = () => {
   const inCensus = !!census;
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
   const alreadyVoted = voteStatus?.registered;
-
+  console.log(voteStatus);
   const canVote = !alreadyVoted && !hasEnded && inCensus;
+  console.log({ canVote });
 
   const onVoteSubmit = async () => {
     if (!isConnected) {
@@ -71,9 +72,10 @@ const ProcessPage = () => {
       });
     }
 
-    await vote();
-    await updateResults();
-    await updateVote();
+    console.log({ token, process, wallet });
+    await vote(token, process, wallet);
+    // await updateResults();
+    // await updateVote();
     setAlertMessage("Vote succesful :-)", "success");
   };
 

@@ -13,12 +13,8 @@ export const useCensusProof = (token: Partial<TokenInfo>) => {
     try {
       const pool = await poolPromise;
       const params = { account, token, pool };
-      console.log("These are the params: ", params);
       const { block, balance } = await getProofParameters(params);
-      console.log("this is the block: ", block);
-      console.log("this is the balance: ", balance);
       const tokenBalancePosition = await getBalanceSlotByBruteForce(params);
-      console.log("token balance position: ", tokenBalancePosition);
 
       const proofParams = {
         tokenBalancePosition,
@@ -27,9 +23,8 @@ export const useCensusProof = (token: Partial<TokenInfo>) => {
         ...params,
       };
 
-      console.log("before getting proof: ");
       const proof = await getProof(proofParams);
-      console.log(proof);
+
       return proof;
     } catch (e) {
       console.log("Error: ", e.message);

@@ -3,7 +3,7 @@ import { VotingApi } from "dvote-js";
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
-import { balanceOf, getBalanceSlotByBruteForce, getProof } from "../../api";
+import { getBalanceSlotByBruteForce, getProof, getProofParameters } from "../../api";
 import { useSigner } from "../useSigner";
 
 export interface VoteStatus {
@@ -65,29 +65,26 @@ export const useVote = (token, process) => {
     dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
   }, [process, dispatch]);
 
-  const onSubmitVote = useCallback(async (): Promise<void> => {
+  const onSubmitVote = async (token, process, wallet): Promise<void> => {
     try {
       const pool = await poolPromise;
-      const block = (await pool.provider.getBlockNumber()) - 1;
-      const balance = await balanceOf(token.address, wallet.account, pool);
-
-      const balanceSlot = await getBalanceSlotByBruteForce({
+      const params = {
         token: token.address,
         account: wallet.account,
         pool,
-      });
+      };
+      const { block, balance } = await getProofParameters(params);
+      const tokenBalancePosition = await getBalanceSlotByBruteForce(params);
 
       const proofParams = {
-        account: wallet.account,
-        token: token.address,
-        pool,
         block,
-        tokenBalancePosition: balanceSlot,
+        tokenBalancePosition,
         balance,
+        ...params,
       };
 
       const proof = await getProof(proofParams);
-
+      console.log(proof);
       if (!proof) {
         return;
       }
@@ -106,7 +103,9 @@ export const useVote = (token, process) => {
         envelopParams["processKey"] = keys;
       }
 
+      console.log("here");
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
+      console.log("here");
       await VotingApi.submitEnvelope(envelope, signer, pool);
     } catch (err) {
       console.log("Error in hook useVotes function onSubmitVote: ", err.message);
@@ -116,7 +115,7 @@ export const useVote = (token, process) => {
         submitting: false,
       });
     }
-  }, [token, process, wallet]);
+  };
 
   return {
     status: state,

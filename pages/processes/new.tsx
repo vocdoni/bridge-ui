@@ -32,6 +32,7 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
+import { getProofParameters, getBalanceSlotByBruteForce, getProof } from "../../lib/api";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -328,13 +329,26 @@ const NewProcessPage = () => {
 
       const evmBlockHeight = await pool.provider.getBlockNumber();
 
-      const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
-      const { proof } = await CensusErc20Api.generateProof(
-        tokenAddress,
-        [balanceMappingPosition.toString()],
-        evmBlockHeight,
-        pool.provider as providers.JsonRpcProvider
-      );
+      const params = {
+        token: tokenAddress,
+        account: wallet.account,
+        pool,
+      };
+      const { block, balance } = await getProofParameters(params);
+      const tokenBalancePosition = await getBalanceSlotByBruteForce(params);
+
+      const proofParams = {
+        block,
+        tokenBalancePosition,
+        balance,
+        ...params,
+      };
+
+      const proof = await getProof(proofParams);
+
+      if (!proof) {
+        return;
+      }
 
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;

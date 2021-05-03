@@ -70,6 +70,7 @@ export const getProof = async ({
   balance,
 }: ProofParameters) => {
   try {
+    console.log({ tokenBalancePosition });
     const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
     const result = await CensusErc20Api.generateProof(
       token,
@@ -105,9 +106,7 @@ export const getProofParameters = async ({
   pool,
 }: Pick<ProofParameters, "account" | "token" | "pool">) => {
   const block = (await pool.provider.getBlockNumber()) - 1;
-  console.log({ token, account, block });
   const balance = await balanceOf(token, account, pool);
-  console.log({ balance });
   return { block, balance };
 };
 
@@ -118,7 +117,6 @@ export const getBalanceSlotByBruteForce = async (
     const { block, balance } = await getProofParameters(params);
 
     const getSlot = async (_, index) => {
-      console.log("this is index: ", index);
       const proofParams = {
         block,
         tokenBalancePosition: index,
@@ -126,9 +124,7 @@ export const getBalanceSlotByBruteForce = async (
         ...params,
       };
 
-      console.log(proofParams);
       const proof = await getProof(proofParams);
-      console.log("this is the proof: ", proof);
       if (!proof) return undefined;
       const onChainBalance = BigNumber.from(proof.storageProof[0].value);
 
@@ -142,17 +138,11 @@ export const getBalanceSlotByBruteForce = async (
         return undefined;
       }
 
-      console.log("balance on storage proof: ", proof.storageProof[0].value);
-      console.log("balance: ", balance.toHexString());
-
       return proof;
     };
 
     const upperLimit = Array.from(Array(50).keys());
-    console.log("this is the upper limit: ", upperLimit);
     const balanceSlot = upperLimit.find(getSlot);
-
-    console.log("this is the balance slot ", balanceSlot);
     return balanceSlot;
   } catch (e) {
     console.log("Error: ", e.message);
@@ -169,7 +159,6 @@ export async function registerToken(
     const balanceMappingPosition = await getBalanceSlotByBruteForce({ account, token, pool });
     await CensusErc20Api.registerToken(token, balanceMappingPosition, signer, pool);
   } catch (err) {
-    console.log(err);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
     throw new Error("The token internal details cannot be chacked");
   }
@@ -205,8 +194,6 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         })
       );
 
-      console.log("this is the token ", name);
-      console.log("this is the balance mapping position ", balMappingPos);
       return {
         name,
         symbol,
