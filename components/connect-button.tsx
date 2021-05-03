@@ -31,11 +31,9 @@ const ConnectWalletButton = styled.div`
   font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
@@ -68,7 +66,6 @@ const ConnectedWalletButton = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     

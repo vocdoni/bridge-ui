@@ -40,6 +40,7 @@ export const colors: Colors = {
         a: "107.79deg",
         c1: "#00C2FF",
         c2: "#01E8F7",
+        c3: "#00B3EC",
       },
       mg1_soft: {
         a: "107.79deg",
@@ -197,6 +198,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
     margin: 0:
     letter-spacing: 0.01em;
+    font-family: Manrope;
 }
 h1 { 
     font-size: 74px; 

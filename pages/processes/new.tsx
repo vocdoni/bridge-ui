@@ -3,7 +3,6 @@ import {
   CensusErc20Api,
   IProcessCreateParams,
   ProcessCensusOrigin,
-  ProcessContractParameters,
   ProcessEnvelopeType,
   ProcessMetadata,
   ProcessMode,
