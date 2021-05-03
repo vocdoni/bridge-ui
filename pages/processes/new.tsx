@@ -135,6 +135,11 @@ const QuestionText = styled.h5`
   color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
+const InputBox = styled.div`
+  display: flex;
+  margin-bottom: 30px;
+`;
+
 const RowContinue = styled.div`
   margin-top: 5em;
 
@@ -432,7 +437,7 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={120}>
+          <FieldRowRightSection marginTop={100}>
             <Datetime
               value={startDate}
               inputProps={{
@@ -465,19 +470,23 @@ const NewProcessPage = () => {
                 <RemoveButton marginTop={-57}>
                   {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
                 </RemoveButton>
-                <TextInput
-                  placeholder="Title"
-                  value={question.title.default}
-                  onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                  widthValue={735}
-                />
+                <InputBox>
+                  <TextInput
+                    placeholder="Title"
+                    value={question.title.default}
+                    onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                    widthValue={735}
+                  />
+                </InputBox>
 
                 <SectionTitle title="Description" smallerTitle />
-                <DescriptionInput
-                  placeholder="Description"
-                  value={question.description.default}
-                  onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                />
+                <InputBox>
+                  <DescriptionInput
+                    placeholder="Description"
+                    value={question.description.default}
+                    onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                  />
+                </InputBox>
               </RowQuestionLeftSection>
               <RowQuestionRightSection />
             </RowQuestions>
