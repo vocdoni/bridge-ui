@@ -193,7 +193,6 @@ export const theme: DefaultTheme = {
 
 // New Theme Style | TODO: Modify screens sizes
 export const FixedGlobalStyle = createGlobalStyle`
-
 body {
     padding: 0;
     margin: 0;
@@ -205,7 +204,6 @@ body {
 h1, h2, h3, h4, h5, h6 {
     margin: 0:
     letter-spacing: 0.01em;
-    font-family: Manrope;
 }
 h1 { 
     font-size: 74px; 
