@@ -22,11 +22,13 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
       // for different type of voting
       resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
         const choices = voteResults.map(({ title, votes }) => {
-          const percentage = votes.mul(100).div(token.totalSupply).toNumber();
+          // const percentage = votes.mul(100).div(token.totalSupply).toNumber();
+          console.log(token.totalSupply);
+          // console.log({ percentage: percentage });
           return {
             title: title.default,
             votes: `${votes.toNumber()} ${token.symbol}`,
-            percentage: percentage.toFixed(1),
+            percentage: "0",
           };
         });
         return {

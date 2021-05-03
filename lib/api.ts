@@ -7,6 +7,15 @@ import { ProcessInfo, TokenInfo } from "./types";
 import { ERC20_ABI } from "./constants";
 import { tokenIconUrl } from "./utils";
 
+export interface ProofParameters {
+  account: string;
+  token: string;
+  pool: GatewayPool;
+  block: number;
+  tokenBalancePosition: number;
+  balance: BigNumber;
+}
+
 export async function getTokenProcesses(
   tokenAddr: string,
   pool: GatewayPool
@@ -52,16 +61,113 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
+export const getProof = async ({
+  account,
+  token,
+  pool,
+  block,
+  tokenBalancePosition,
+  balance,
+}: ProofParameters) => {
+  try {
+    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
+    const result = await CensusErc20Api.generateProof(
+      token,
+      [balanceSlot],
+      block,
+      pool.provider as providers.JsonRpcProvider
+    );
+
+    if (result == null || !result.proof) return false;
+
+    const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
+
+    if (!onChainBalance.eq(balance)) {
+      console.warn(
+        "The proved balance does not match the on-chain balance:",
+        result.proof.storageProof[0].value,
+        "vs",
+        balance.toHexString()
+      );
+      return false;
+    }
+
+    return result.proof;
+  } catch (error) {
+    console.log("Error on getProof in useCensusProof: ", error.message);
+    throw new Error(error.message);
+  }
+};
+
+export const getProofParameters = async ({
+  account,
+  token,
+  pool,
+}: Pick<ProofParameters, "account" | "token" | "pool">) => {
+  const block = (await pool.provider.getBlockNumber()) - 1;
+  console.log({ token, account, block });
+  const balance = await balanceOf(token, account, pool);
+  console.log({ balance });
+  return { block, balance };
+};
+
+export const getBalanceSlotByBruteForce = async (
+  params: Pick<ProofParameters, "account" | "token" | "pool">
+) => {
+  try {
+    const { block, balance } = await getProofParameters(params);
+
+    const getSlot = async (_, index) => {
+      console.log("this is index: ", index);
+      const proofParams = {
+        block,
+        tokenBalancePosition: index,
+        balance,
+        ...params,
+      };
+
+      console.log(proofParams);
+      const proof = await getProof(proofParams);
+      console.log("this is the proof: ", proof);
+      if (!proof) return undefined;
+      const onChainBalance = BigNumber.from(proof.storageProof[0].value);
+
+      if (!onChainBalance.eq(balance)) {
+        console.warn(
+          "The proved balance does not match the on-chain balance:",
+          proof.storageProof[0].value,
+          "vs",
+          balance.toHexString()
+        );
+        return undefined;
+      }
+
+      console.log("balance on storage proof: ", proof.storageProof[0].value);
+      console.log("balance: ", balance.toHexString());
+
+      return proof;
+    };
+
+    const upperLimit = Array.from(Array(50).keys());
+    console.log("this is the upper limit: ", upperLimit);
+    const balanceSlot = upperLimit.find(getSlot);
+
+    console.log("this is the balance slot ", balanceSlot);
+    return balanceSlot;
+  } catch (e) {
+    console.log("Error: ", e.message);
+  }
+};
+
 export async function registerToken(
-  tokenAddress: string,
-  holderAddress: string,
+  token: string,
+  account: string,
   pool: GatewayPool,
   signer: Signer
 ) {
   try {
-    const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
-
-    await CensusErc20Api.registerToken(tokenAddress, balanceMappingPosition, signer, pool);
+    const balanceMappingPosition = await getBalanceSlotByBruteForce({ account, token, pool });
+    await CensusErc20Api.registerToken(token, balanceMappingPosition, signer, pool);
   } catch (err) {
     console.log(err);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
@@ -99,6 +205,8 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         })
       );
 
+      console.log("this is the token ", name);
+      console.log("this is the balance mapping position ", balMappingPos);
       return {
         name,
         symbol,

@@ -58,7 +58,7 @@ const ProcessPage = () => {
 
   const isConnected = !!wallet.account;
   const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
-  const inCensus = census && !!census.proof;
+  const inCensus = !!census;
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
   const alreadyVoted = voteStatus?.registered;
 

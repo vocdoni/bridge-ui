@@ -3,8 +3,8 @@ import { VotingApi } from "dvote-js";
 import { useCallback, useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
+import { balanceOf, getBalanceSlotByBruteForce, getProof } from "../../api";
 import { useSigner } from "../useSigner";
-import { getProof } from "./useCensusProof";
 
 export interface VoteStatus {
   submitting: boolean;
@@ -67,7 +67,30 @@ export const useVote = (token, process) => {
 
   const onSubmitVote = useCallback(async (): Promise<void> => {
     try {
-      const { proof, pool } = await getProof(wallet.account, token, poolPromise);
+      const pool = await poolPromise;
+      const block = (await pool.provider.getBlockNumber()) - 1;
+      const balance = await balanceOf(token.address, wallet.account, pool);
+
+      const balanceSlot = await getBalanceSlotByBruteForce({
+        token: token.address,
+        account: wallet.account,
+        pool,
+      });
+
+      const proofParams = {
+        account: wallet.account,
+        token: token.address,
+        pool,
+        block,
+        tokenBalancePosition: balanceSlot,
+        balance,
+      };
+
+      const proof = await getProof(proofParams);
+
+      if (!proof) {
+        return;
+      }
 
       // Detect encryption
       const envelopParams = {

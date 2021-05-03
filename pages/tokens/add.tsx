@@ -151,6 +151,7 @@ const TokenAddPage = () => {
         throw new Error(TOKEN_ALREADY_REGISTERED);
       }
 
+      console.log("before register token");
       // Register
       await registerToken(tokenInfo.address, holderAddress, pool, signer);
 
