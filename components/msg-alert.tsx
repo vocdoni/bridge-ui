@@ -48,8 +48,8 @@ const AlertText = styled.div<{ msgType: MsgType }>`
       ? theme.secondary.s5
       : theme.primary.p1};
   margin-right: 49px;
-  font-size: 90%;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 500;
   text-align: left;
 `;
 
@@ -62,7 +62,7 @@ const AlertContainer = styled.div<{ visible: boolean; msgType: MsgType; hasMsg: 
 
   box-sizing: border-box;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-  padding: 16px;
+  padding: 18px;
 
   display: flex;
   justify-content: center;
