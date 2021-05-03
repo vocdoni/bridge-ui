@@ -160,7 +160,7 @@ const IndexPage = () => {
                 rightText=""
                 href={address ? "/tokens/info#/" + address : ""}
               >
-                <p>{name || "Loading..."}</p>
+                <p>{shortTokenName(name) || "Loading..."}</p>
               </TokenCard>
             ))}
           </TokenList>
