@@ -46,7 +46,7 @@ const BetaLabel = styled.div`
   border-radius: 40px;
   color: white;
   margin-top: 5px;
-  margin-left: 10px;
+  margin-left: 0px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 `;
@@ -113,7 +113,8 @@ const VoiceLink = styled.a`
 
 const ClickableLink = styled.a`
   display: flex;
-  padding: ${({ theme }) => "25px " + theme.margins.desktop.horizontal};
+  margin-top: 25px;
+  margin-right: 38px;
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
