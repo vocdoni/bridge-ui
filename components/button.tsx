@@ -12,6 +12,7 @@ type AragonButtonProps = {
 };
 
 interface ButtonProps {
+  disabled?: boolean;
   children?: React.ReactNode;
   href?: string;
   onClick?: () => void;
