@@ -12,6 +12,7 @@ const Title = styled.h4`
   margin-top: 45px;
 
   @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 32px;
     margin-top: 30px;
   }
 `;

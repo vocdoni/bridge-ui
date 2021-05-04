@@ -43,7 +43,7 @@ const Container = styled.div`
 const Card = styled.div`
   display: flex;
   flex-wrap: no-wrap;
-  padding: 39px;
+  padding: 24px 18px;
   min-height: 164px;
   box-sizing: border-box;
 `;

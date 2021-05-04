@@ -45,6 +45,7 @@ export const PrimaryButton = styled(Button)`
 
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
+    margin-left: 0;
   }
 `;
 

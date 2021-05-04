@@ -40,8 +40,8 @@ const Info = styled.div`
 `;
 
 const TokenAttributeTitle = styled.p`
-  margin-top: 0;
-  margin-bottom: 9;
+  margin-top: 9px;
+  margin-bottom: 0;
   line-height: 27px;
   color: ${({ theme }) => theme.primary.p1};
   font-size: 18px;
@@ -53,6 +53,7 @@ const Description = styled.h4`
   font-size: 18px;
   overflow-wrap: break-word;
   letter-spacing: 0;
+  margin: 0;
 `;
 
 const Address = styled.h4`
