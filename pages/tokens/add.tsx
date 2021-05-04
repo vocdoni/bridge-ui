@@ -16,6 +16,7 @@ import { useRegisteredTokens } from "../../lib/hooks/tokens";
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
 
 const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -35,6 +36,7 @@ const RowSummary = styled.div`
 const Info = styled.div`
   max-width: 25%;
   @media ${({ theme }) => theme.screens.tablet} {
+    max-width: 100%;
     flex-direction: row;
   }
 `;
@@ -79,6 +81,10 @@ const WhiteSection = styled.div`
   padding: 80px 230px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    box-sizing: border-box;
+    padding: 10px 27px;
+  }
 `;
 
 const RegisterButton = styled(Button)`
@@ -99,6 +105,8 @@ const RegisterButton = styled(Button)`
 const TokenAddPage = () => {
   const wallet = useWallet();
   const signer = useSigner();
+
+  const isMobile = useIsMobile();
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<string>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
@@ -198,7 +206,7 @@ const TokenAddPage = () => {
         <br />
         <br />
 
-        {tokenInfo && (
+        {tokenInfo && !isMobile && (
           <>
             <SectionTitle
               smallerTitle={true}
@@ -236,6 +244,36 @@ const TokenAddPage = () => {
           </>
         )}
       </WhiteSection>
+      <br />
+      {tokenInfo && isMobile ? (
+        <WhiteSection>
+          <>
+            <SectionTitle
+              smallerTitle={true}
+              title="Token contract details"
+              subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+            />
+            <RowSummary>
+              <Info>
+                <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
+                <Description>{tokenInfo?.symbol}</Description>
+              </Info>
+              <Info>
+                <TokenAttributeTitle>Token name</TokenAttributeTitle>
+                <Description>{tokenInfo?.name}</Description>
+              </Info>
+              <Info>
+                <TokenAttributeTitle>Total supply</TokenAttributeTitle>
+                <Description>{tokenInfo?.totalSupplyFormatted}</Description>
+              </Info>
+              <Info>
+                <TokenAttributeTitle>Token address</TokenAttributeTitle>
+                <Address>{tokenInfo?.address}</Address>
+              </Info>
+            </RowSummary>
+          </>
+        </WhiteSection>
+      ) : null}
     </>
   );
 };

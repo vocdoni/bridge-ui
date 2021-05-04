@@ -10,9 +10,20 @@ const TextInput = styled.input<{ widthValue: number }>`
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    display: flex;
+    width: 100%;
+  }
 `;
 
 export const DescriptionInput = styled.textarea`
+  @media ${({ theme }) => theme.screens.tablet} {
+    display: flex;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
   type: text;
   width: 735px;
   min-width: 735px;

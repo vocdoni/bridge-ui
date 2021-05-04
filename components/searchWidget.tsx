@@ -6,6 +6,16 @@ import TextInput from "./input";
 
 const SearchRow = styled.div`
   display: flex;
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+  }
+  `;
+  
+  const Button = styled(PrimaryButton)`
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+  }
 `;
 
 type SearchWidgetProps = {
@@ -23,7 +33,7 @@ const SearchWidget = ({ onChange, onKeyDown, onClick }: SearchWidgetProps) => {
         onChange={onChange}
         widthValue={664}
       />
-      <PrimaryButton onClick={onClick}>Check Token</PrimaryButton>
+      <Button onClick={onClick}>Check Token</Button>
     </SearchRow>
   );
 };
