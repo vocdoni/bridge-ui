@@ -5,7 +5,7 @@ import { usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
 import { VoteCard } from "../../components/token-card";
-import { Button } from "@aragon/ui";
+import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList } from "../../lib/api";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
@@ -89,20 +89,6 @@ const InfoDescription = styled.h4`
   letter-spacing: 0;
 `;
 
-const NewProcessButton = styled(Button)`
-  height: 46px;
-  padding: 12px 20px;
-  background: linear-gradient(
-    ${({ theme }) => theme.gradients.primary.mg1.a},
-    ${({ theme }) => theme.gradients.primary.mg1.c1},
-    ${({ theme }) => theme.gradients.primary.mg1.c2}
-  );
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border-radius: 8px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-size: 16px;
-`;
-
 const VoteSection = ({
   allProcesses,
   processes,
@@ -165,6 +151,9 @@ const TokenPage = () => {
   const { setAlertMessage } = useMessageAlert();
 
   // Effects
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => updateBlockHeight, 1000 * 13);
@@ -275,9 +264,9 @@ const TokenPage = () => {
           />
           <SectionTitle title="Token details" subtitle={`See the details of ${token?.symbol}`} />
         </HeaderLeft>
-        <NewProcessButton onClick={() => onCreateProcess(token.address)}>
+        <PrimaryButton onClick={() => onCreateProcess(token.address)}>
           Create a governance process
-        </NewProcessButton>
+        </PrimaryButton>
       </HeaderContainer>
 
       <WhiteSection>

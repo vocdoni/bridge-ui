@@ -136,6 +136,11 @@ const QuestionText = styled.h5`
   color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
+const InputBox = styled.div`
+  display: flex;
+  margin-bottom: 30px;
+`;
+
 const RowContinue = styled.div`
   margin-top: 5em;
 
@@ -171,7 +176,7 @@ const NewProcessPage = () => {
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
-  const token = useToken(tokenAddress)
+  const token = useToken(tokenAddress);
   const census = useCensusProof(token);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
@@ -427,7 +432,7 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={120}>
+          <FieldRowRightSection marginTop={100}>
             <Datetime
               value={startDate}
               inputProps={{
@@ -460,19 +465,23 @@ const NewProcessPage = () => {
                 <RemoveButton marginTop={-57}>
                   {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
                 </RemoveButton>
-                <TextInput
-                  placeholder="Title"
-                  value={question.title.default}
-                  onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                  widthValue={735}
-                />
+                <InputBox>
+                  <TextInput
+                    placeholder="Title"
+                    value={question.title.default}
+                    onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                    widthValue={735}
+                  />
+                </InputBox>
 
                 <SectionTitle title="Description" smallerTitle />
-                <DescriptionInput
-                  placeholder="Description"
-                  value={question.description.default}
-                  onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                />
+                <InputBox>
+                  <DescriptionInput
+                    placeholder="Description"
+                    value={question.description.default}
+                    onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                  />
+                </InputBox>
               </RowQuestionLeftSection>
               <RowQuestionRightSection />
             </RowQuestions>
@@ -505,14 +514,15 @@ const NewProcessPage = () => {
             ) : null}
           </div>
         ))}
-
-        <RowContinue>
-          {wallet.status === "connected" ? (
-            <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
-          ) : !isMobile ? (
-            <ConnectButton />
-          ) : null}
-        </RowContinue>
+        <FieldRowLeftSection>
+          <RowContinue>
+            {wallet.status === "connected" ? (
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
+            ) : !isMobile ? (
+              <ConnectButton />
+            ) : null}
+          </RowContinue>
+        </FieldRowLeftSection>
       </NewProcessContainer>
     </div>
   );

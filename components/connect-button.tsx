@@ -83,6 +83,17 @@ const ConnectedWalletIcon = styled.div`
   margin-right: 10px;
 `;
 
+const TextLink = styled.p`
+  color: ${({ theme }) => theme.primary.p1};
+  text-align: center;
+  cursor: pointer;
+  margin-top: 0px;
+  font-weight: 400;
+  &:hover {
+    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
+  }
+`;
+
 const WalletAddress = ({ account }) => {
   return (
     <ButtonContainer>
@@ -155,4 +166,20 @@ export const ConnectButton = () => {
       <ConnectWalletButton onClick={handleButtonClick}>{label}</ConnectWalletButton>
     </ButtonContainer>
   );
+};
+
+export const ConnectTextButton = () => {
+  const { dispatch } = useModal();
+
+  const openWallets = () => {
+    dispatch({
+      type: ActionTypes.OPEN_WALLET_LIST,
+    });
+  };
+
+  const handleButtonClick = async () => {
+    openWallets();
+  };
+
+  return <TextLink onClick={handleButtonClick}>Connect account</TextLink>;
 };

@@ -41,6 +41,9 @@ export const colors: Colors = {
     a3: "#FEF8EC",
     a4: "#EBF3FE",
   },
+  homepageRectangle: {
+    c1: "#EEF4FB",
+  },
   gradients: {
     primary: {
       mg1: {
