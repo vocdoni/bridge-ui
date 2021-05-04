@@ -27,7 +27,7 @@ jobs:
   docker-release:
     runs-on: self-hosted
     if:
-      github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || github.ref == 'refs/heads/release-*'
+      github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release')
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -98,7 +98,7 @@ jobs:
 
       - name: Push to Docker Hub and ghcr.io (release)
         uses: docker/build-push-action@v2
-        if: github.ref == startsWith(github.ref, 'refs/heads/release')
+        if: startsWith(github.ref, 'refs/heads/release')
         with:
           context: .
           file: ./Dockerfile.static
@@ -106,8 +106,8 @@ jobs:
           environment:
             NODE_ENV=production
             VOCDONI_ENVIRONMENT=prod
-            ETH_NETWORK_ID=xdai
-            ETH_CHAIN_ID=100
+            ETH_NETWORK_ID=mainnet
+            ETH_CHAIN_ID=1
             BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.json
           push: true
           tags: |
