@@ -211,6 +211,7 @@ const IndexPage = () => {
           title="Top Tokens"
           subtitle="Some of the most relevant tokens on the platform"
         />
+
         <TokenList>
           {tokenInfos.map(({ symbol, address, name }) => (
             <TokenCard

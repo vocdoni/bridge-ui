@@ -2,27 +2,19 @@ import React from "react";
 import styled from "styled-components";
 
 import TokenCard from "../../components/token-card";
-import { useTokens, useRegisteredTokens, useUserTokens } from "../../lib/hooks/tokens";
+import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
 import Button, { SecondaryButton } from "../../components/button";
-import SearchWidget from "../../components/searchWidget";
 import { shortTokenName } from "../../lib/utils";
 
 const TokenList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -1em;
 
   @media ${({ theme }) => theme.screens.tablet} {
     justify-content: center;
-  }
-`;
-
-const TokenSection = styled.div`
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
   }
 `;
 
@@ -52,17 +44,14 @@ const TokensPage = () => {
   const tokenInfos = useTokens(tokenAddrs);
 
   return (
-    <TokenSection>
+    <div>
       <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
-      <br />
       <ButtonContainer>
         {/* NOTE temporarily removed search bar, as it is not part of the page's must 
     haves. VR 23-04-2021 */}
         {/* <SearchWidget /> */}
-        <p></p>
         <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
       </ButtonContainer>
-      <br />
       <TokenList>
         {tokenInfos.map(({ symbol, address, name }) => (
           <TokenCard
@@ -76,7 +65,7 @@ const TokensPage = () => {
           </TokenCard>
         ))}
       </TokenList>
-    </TokenSection>
+    </div>
   );
 };
 

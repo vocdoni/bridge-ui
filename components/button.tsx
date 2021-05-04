@@ -41,9 +41,10 @@ export const PrimaryButton = styled(Button)`
       ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
     );
-  
+  }
+
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
+    width: 100%;
   }
 `;
 
@@ -63,9 +64,10 @@ export const SecondaryButton = styled(Button)`
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-  
+  }
+
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
+    width: 100%;
   }
 `;
 

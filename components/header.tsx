@@ -27,6 +27,10 @@ const Logo = styled.div`
   margin-left: 40px;
   margin-top: 7px;
   margin-right: 19px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+  }
 `;
 
 const BetaLabel = styled.div`
