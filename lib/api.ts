@@ -13,7 +13,6 @@ export interface ProofParameters {
   pool: GatewayPool;
   block: number;
   tokenBalancePosition: number;
-  balance: BigNumber;
 }
 
 export async function getTokenProcesses(
@@ -61,15 +60,15 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
-const getProof = async ({
+export const getProof = async ({
   account,
   token,
   pool,
   block,
   tokenBalancePosition,
-  balance,
 }: ProofParameters) => {
   try {
+    const balance = await balanceOf(token, account, pool);
     const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
     const result = await CensusErc20Api.generateProof(
       token,
@@ -92,7 +91,7 @@ const getProof = async ({
 };
 
 //@TODO: Only trigger the loop if the proof has not been fetched yet
-export const getProofByBruteForce = async (
+export const getBalanceMappingByBruteForce = async (
   params: Pick<ProofParameters, "account" | "token" | "pool">
 ) => {
   try {
@@ -110,10 +109,11 @@ export const getProofByBruteForce = async (
       const proof = await getProof(proofParams);
       if (!proof) return undefined;
 
-      return { proof, index };
+      return index;
     };
 
     const upperLimit = Array.from(Array(50).keys());
+    // const balanceSlotstest = upperLimit.some(getSlot);
     const balanceSlots = upperLimit.map(getSlot);
     const slots = await Promise.all(balanceSlots);
     return slots.find((t) => t);
@@ -130,7 +130,7 @@ export async function registerToken(
   signer: Signer
 ) {
   try {
-    const { index: balanceMappingPosition } = await getProofByBruteForce({ account, token, pool });
+    const balanceMappingPosition = await getBalanceMappingByBruteForce({ account, token, pool });
     await CensusErc20Api.registerToken(token, balanceMappingPosition, signer, pool);
   } catch (err) {
     if (err && err.message == NO_TOKEN_BALANCE) throw err;

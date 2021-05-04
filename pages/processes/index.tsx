@@ -28,8 +28,6 @@ import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { BigNumber } from "ethers";
 
 const ProcessPage = () => {
   const router = useRouter();
@@ -51,8 +49,8 @@ const ProcessPage = () => {
     token,
     ...datesInfo,
   });
+  const census = useCensusProof(token, process?.parameters.sourceBlockHeight);
   const { status, updateStatus, voteInfo, vote } = useVote(process);
-  const census = useCensusProof(token);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
 
@@ -70,7 +68,7 @@ const ProcessPage = () => {
       });
     }
 
-    await vote(token, process, wallet);
+    await vote(process, census);
     await updateResults();
     await updateVote();
     await updateWeights();

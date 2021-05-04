@@ -83,12 +83,12 @@ const ConnectedWalletIcon = styled.div`
   margin-right: 10px;
 `;
 
-const WalletAddress = ({ reset, account }) => {
+const WalletAddress = ({ account }) => {
   return (
     <ButtonContainer>
       <ConnectedWalletButton>
         <ConnectedWalletIcon />
-        {shortAddress(account)}
+        {account && shortAddress(account)}
       </ConnectedWalletButton>
     </ButtonContainer>
   );
@@ -147,7 +147,7 @@ export const ConnectButton = () => {
   };
 
   if (isConnected) {
-    return <WalletAddress account={account} reset={reset} />;
+    return <WalletAddress account={account} />;
   }
 
   return (

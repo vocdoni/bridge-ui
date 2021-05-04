@@ -31,7 +31,8 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
-import { getProofByBruteForce } from "../../lib/api";
+import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
+import { useToken } from "../../lib/hooks/tokens";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -170,6 +171,8 @@ const NewProcessPage = () => {
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
+  const token = useToken(tokenAddress)
+  const census = useCensusProof(token);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
@@ -257,7 +260,7 @@ const NewProcessPage = () => {
     }
     setMetadata(Object.assign({}, metadata));
   };
-  const onSubmit = async () => {
+  const onSubmit = async (proof) => {
     try {
       metadata.questions.map(handleValidation);
     } catch (error) {
@@ -328,17 +331,6 @@ const NewProcessPage = () => {
 
       const evmBlockHeight = await pool.provider.getBlockNumber();
 
-      const params = {
-        token: tokenAddress,
-        account: wallet.account,
-        pool,
-      };
-      const data = await getProofByBruteForce(params);
-
-      if (!data.proof) {
-        return;
-      }
-
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
       } = {
@@ -346,7 +338,7 @@ const NewProcessPage = () => {
         envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
         censusOrigin: ProcessCensusOrigin.ERC20,
         metadata: metadata,
-        censusRoot: data.proof.storageHash,
+        censusRoot: proof.storageHash,
         startBlock,
         blockCount,
         maxCount: metadata.questions.length,
@@ -516,7 +508,7 @@ const NewProcessPage = () => {
 
         <RowContinue>
           {wallet.status === "connected" ? (
-            <SubmitButton submitting={submitting} onSubmit={onSubmit} />
+            <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
           ) : !isMobile ? (
             <ConnectButton />
           ) : null}

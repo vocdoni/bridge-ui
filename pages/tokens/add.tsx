@@ -156,7 +156,7 @@ const TokenAddPage = () => {
 
       await refreshRegisteredTokens();
 
-      setAlertMessage("The token has been successfully registered");
+      setAlertMessage("The token has been successfully registered", "success");
       setRegisteringToken(false);
 
       Router.push("/tokens/info#/" + tokenInfo.address);

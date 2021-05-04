@@ -3,7 +3,6 @@ import { VotingApi } from "dvote-js";
 import { useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
-import { getProofByBruteForce } from "../../api";
 import { useMessageAlert } from "../message-alert";
 import { useSigner } from "../useSigner";
 
@@ -67,27 +66,16 @@ export const useVote = (process: ProcessInfo) => {
     dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
   }, [process, dispatch]);
 
-  const onSubmitVote = async (token, process, wallet): Promise<void> => {
+  const onSubmitVote = async (process, proof): Promise<void> => {
     try {
       dispatch({ type: "UPDATE_STATUS", status: { submitting: true } });
       const pool = await poolPromise;
-      const params = {
-        token: token.address,
-        account: wallet.account,
-        pool,
-      };
-
-      const data = await getProofByBruteForce(params);
-
-      if (!data.proof) {
-        return;
-      }
 
       // Detect encryption
       const envelopParams = {
         votes: state.choices,
-        censusOrigin: process.parameters.censusOrigin,
-        censusProof: data.proof.storageProof[0],
+        censusOrigin: process?.parameters.censusOrigin,
+        censusProof: proof.storageProof[0],
         processId: process.id,
         walletOrSigner: signer,
       };
