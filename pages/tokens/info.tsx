@@ -151,6 +151,9 @@ const TokenPage = () => {
   const { setAlertMessage } = useMessageAlert();
 
   // Effects
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => updateBlockHeight, 1000 * 13);
