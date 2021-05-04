@@ -74,7 +74,7 @@ const ProcessPage = () => {
     await vote();
     await updateResults();
     await updateVote();
-    setAlertMessage("Vote succesful :-)", "success");
+    setAlertMessage("Vote successful :-)", "success");
   };
 
   const onSelect = (questionId: number, choice: number) => {
