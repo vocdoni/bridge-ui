@@ -21,7 +21,6 @@ interface ButtonProps {
 export const PrimaryButton = styled(Button)`
   height: 45px;
   padding: 11px 20px 12px;
-  margin-left: 10px;
   background: linear-gradient(
     ${({ theme }) => theme.gradients.primary.mg1.a},
     ${({ theme }) => theme.gradients.primary.mg1.c1},
@@ -56,8 +55,8 @@ export const SecondaryButton = styled(Button)`
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   border-radius: 8px;
-  margin-top: 10px;
   color: ${({ theme }) => theme.primary.p1};
+  font-family: Manrope;
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;

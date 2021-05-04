@@ -41,6 +41,9 @@ export interface Colors extends Partial<Colors> {
     a3: Color;
     a4: Color;
   };
+  homepageRectangle: {
+    c1: Color;
+  };
   gradients: {
     primary: {
       mg1: {

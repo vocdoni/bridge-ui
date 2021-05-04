@@ -27,20 +27,6 @@ const TokenSection = styled.div`
   }
 `;
 
-const FindTokenButton = styled(Button)`
-  width: 200px;
-  height: 46px;
-  background: ${({ theme }) => theme.blackAndWhite.w1};
-  color: ${({ theme }) => theme.primary.p1};
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border: 2px solid #eff1f7;
-  border-radius: 8px;
-  padding: 12px 20px;
-  margin-left: 10px;
-  font-size: 16px;
-  line-height: 22px;
-`;
-
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -61,7 +47,7 @@ const TokensPage = () => {
     haves. VR 23-04-2021 */}
         {/* <SearchWidget /> */}
         <p></p>
-        <FindTokenButton href="/tokens/add">My Token is not listed</FindTokenButton>
+        <SecondaryButton href="/tokens/add">My token is not listed</SecondaryButton>
       </ButtonContainer>
       <br />
       <TokenList>
