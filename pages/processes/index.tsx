@@ -56,7 +56,6 @@ const ProcessPage = () => {
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
 
-  console.log({ census });
   const isConnected = !!wallet.account;
   const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
   const inCensus = !!census;
@@ -72,11 +71,10 @@ const ProcessPage = () => {
       });
     }
 
-    console.log({ token, process, wallet });
     await vote(token, process, wallet);
     // await updateResults();
     // await updateVote();
-    setAlertMessage("Vote succesful :-)", "success");
+    setAlertMessage("Vote successful :-)", "success");
   };
 
   const onSelect = (questionId: number, choice: number) => {

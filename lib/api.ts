@@ -115,10 +115,11 @@ export const getProofByBruteForce = async (
 
     const upperLimit = Array.from(Array(50).keys());
     const balanceSlots = upperLimit.map(getSlot);
-    const proofData = (await Promise.all(balanceSlots)).find((t) => t);
-    return proofData;
-  } catch (e) {
-    console.log("Error on getProofByBruteForce: ", e.message);
+    const slots = await Promise.all(balanceSlots);
+    return slots.find((t) => t);
+  } catch (error) {
+    console.log("Error on getProofByBruteForce: ", error.message);
+    throw new Error(error.message);
   }
 };
 
