@@ -28,7 +28,6 @@ import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { useMessageAlert } from "../../lib/hooks/message-alert";
 
 const ProcessPage = () => {
   const router = useRouter();
@@ -40,28 +39,26 @@ const ProcessPage = () => {
   }
 
   const { dispatch } = useModal();
-  const { setAlertMessage } = useMessageAlert();
 
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
   const { datesInfo, hasEnded, hasStarted } = useProcessDate(process);
   const { results, updateResults } = useProcessInfo(process, token);
-  const { weights } = useWeights({
+  const { weights, updateWeights } = useWeights({
     processId,
     token,
     ...datesInfo,
   });
-  const { status, updateStatus, voteInfo, vote } = useVote(token, process);
-  const census = useCensusProof(token);
+  const census = useCensusProof(token, process?.parameters.sourceBlockHeight);
+  const { status, updateStatus, voteInfo, vote } = useVote(process);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
 
   const isConnected = !!wallet.account;
   const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
-  const inCensus = census && !!census.proof;
+  const inCensus = !!census;
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
-  const alreadyVoted = voteStatus?.registered;
-
+  const alreadyVoted = voteStatus?.registered || status.registered;
   const canVote = !alreadyVoted && !hasEnded && inCensus && hasStarted;
 
   const onVoteSubmit = async () => {
@@ -71,10 +68,10 @@ const ProcessPage = () => {
       });
     }
 
-    await vote();
+    await vote(process, census);
     await updateResults();
     await updateVote();
-    setAlertMessage("Vote successful :-)", "success");
+    await updateWeights();
   };
 
   const onSelect = (questionId: number, choice: number) => {
@@ -132,17 +129,21 @@ const ProcessPage = () => {
             disabled={!isConnected ? false : !canVote || !questionsFilled}
             onClick={onVoteSubmit}
           >
-            {!isConnected
-              ? "Connect your wallet"
-              : !inCensus
-              ? "You're not a token holder"
-              : !hasStarted
-              ? "Process has not started"
-              : alreadyVoted
-              ? "You already voted"
-              : !questionsFilled
-              ? "Fill all the choices"
-              : "Submit your vote"}
+            {status.submitting ? (
+              <Spinner />
+            ) : !isConnected ? (
+              "Connect your wallet"
+            ) : !inCensus ? (
+              "You're not a token holder"
+            ) : !hasStarted ? (
+              "Process has not started"
+            ) : alreadyVoted ? (
+              "You already voted"
+            ) : !questionsFilled ? (
+              "Fill all the choices"
+            ) : (
+              "Submit your vote"
+            )}
           </Button>
         </ButtonContainer>
       )}
