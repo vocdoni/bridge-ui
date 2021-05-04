@@ -140,7 +140,7 @@ const TokenAddPage = () => {
       }
 
       // Register
-      await registerToken(tokenInfo.address, holderAddress, pool, signer);
+      await registerToken(tokenInfo.address, pool, signer);
 
       await refreshRegisteredTokens();
 

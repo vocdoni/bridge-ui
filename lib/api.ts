@@ -7,6 +7,14 @@ import { ProcessInfo, TokenInfo } from "./types";
 import { ERC20_ABI } from "./constants";
 import { tokenIconUrl } from "./utils";
 
+export interface ProofParameters {
+  account: string;
+  token: string;
+  pool: GatewayPool;
+  block: number;
+  tokenBalancePosition: number;
+}
+
 export async function getTokenProcesses(
   tokenAddr: string,
   pool: GatewayPool
@@ -52,18 +60,41 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
-export async function registerToken(
-  tokenAddress: string,
-  holderAddress: string,
-  pool: GatewayPool,
-  signer: Signer
-) {
+export const getProof = async ({
+  account,
+  token,
+  pool,
+  block,
+  tokenBalancePosition,
+}: ProofParameters) => {
   try {
-    const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
+    const balance = await balanceOf(token, account, pool);
+    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
+    const result = await CensusErc20Api.generateProof(
+      token,
+      [balanceSlot],
+      block,
+      pool.provider as providers.JsonRpcProvider
+    );
 
-    await CensusErc20Api.registerToken(tokenAddress, balanceMappingPosition, signer, pool);
+    if (result == null || !result.proof) return undefined;
+
+    const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
+
+    if (!onChainBalance.eq(balance) || onChainBalance.eq(0)) return undefined;
+
+    return result.proof;
+  } catch (error) {
+    console.log("Error on getProof: ", error.message);
+    throw new Error(error.message);
+  }
+};
+
+export async function registerToken(token: string, pool: GatewayPool, signer: Signer) {
+  try {
+    await CensusErc20Api.registerTokenAuto(token, signer, pool);
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
     throw new Error("The token internal details cannot be chacked");
   }
@@ -92,17 +123,10 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         symbol,
       });
 
-      const totalSupplyNumber = Number(
-        totalSupply.toString({
-          commify: false,
-          symbol: "",
-        })
-      );
-
       return {
         name,
         symbol,
-        totalSupply: totalSupplyNumber.toFixed(0),
+        totalSupply: supply,
         totalSupplyFormatted: totalSupply.format(),
         decimals,
         address,
