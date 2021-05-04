@@ -161,17 +161,10 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
         symbol,
       });
 
-      const totalSupplyNumber = Number(
-        totalSupply.toString({
-          commify: false,
-          symbol: "",
-        })
-      );
-
       return {
         name,
         symbol,
-        totalSupply: totalSupplyNumber.toFixed(0),
+        totalSupply: supply,
         totalSupplyFormatted: totalSupply.format(),
         decimals,
         address,

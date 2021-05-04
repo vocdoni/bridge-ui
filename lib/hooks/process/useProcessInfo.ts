@@ -1,6 +1,7 @@
 import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
 import { VotingApi } from "dvote-js";
 import useSWR from "swr";
+import TokenAmount from "token-amount";
 import { TokenInfo } from "../../types";
 
 export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => {
@@ -22,11 +23,17 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
         // for different type of voting
         resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
           const choices = voteResults.map(({ title, votes }) => {
-            // const percentage = votes.mul(100).div(token.totalSupply).toNumber();
+            const percentage = new TokenAmount(
+              votes.div(token.totalSupply),
+              token.decimals
+            ).toString();
+
+            const vote = new TokenAmount(votes, token.decimals);
+
             return {
               title: title.default,
-              votes: `${1} ${token.symbol}`,
-              percentage: "0",
+              votes: `${vote.toString()} ${token.symbol}`,
+              percentage: (Number(percentage) * 100).toFixed(2),
             };
           });
           return {
@@ -40,7 +47,7 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
           ({ description, title, choices }) => {
             const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
               title: choiceTitle.default,
-              percentage: "0.0",
+              percentage: "0.00",
             }));
             return {
               title: title.default,
