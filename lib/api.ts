@@ -123,16 +123,11 @@ export const getBalanceMappingByBruteForce = async (
   }
 };
 
-export async function registerToken(
-  token: string,
-  account: string,
-  pool: GatewayPool,
-  signer: Signer
-) {
+export async function registerToken(token: string, pool: GatewayPool, signer: Signer) {
   try {
-    const balanceMappingPosition = await getBalanceMappingByBruteForce({ account, token, pool });
-    await CensusErc20Api.registerToken(token, balanceMappingPosition, signer, pool);
+    await CensusErc20Api.registerTokenAuto(token, signer, pool);
   } catch (err) {
+    console.log(err.message);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
     throw new Error("The token internal details cannot be chacked");
   }
