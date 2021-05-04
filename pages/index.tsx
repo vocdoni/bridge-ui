@@ -160,15 +160,16 @@ const GrayRectangle = styled.div`
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.homepageRectangle.c1};
-  width: 1248px;
-  height: 161px;
+  max-width: 1248px;
+  width: 100%;
+  min-height: 161px;
   border-radius: 16px;
   color: ${({ theme }) => theme.grayScale.g5};
   font-family: "Manrope";
 `;
 
 const GrayRectangleTall = styled(GrayRectangle)`
-  height: 227px;
+  min-height: 227px;
 `;
 
 const LightningBolt = styled.div`
@@ -182,7 +183,10 @@ const LightningBolt = styled.div`
 const GreyInfo = styled.p`
   width: 600px;
   text-align: center;
-  line-height: 0%;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+  }
 `;
 
 const NotListedLink = styled.p`
@@ -270,9 +274,6 @@ const IndexPage = () => {
           </GrayRectangle>
         )}
       </TokenSection>
-
-      <br />
-      <br />
 
       {/* TOP TOKENS */}
       <TokenSection>
