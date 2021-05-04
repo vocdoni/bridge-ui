@@ -4,18 +4,19 @@ import { useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
 import { getProofByBruteForce } from "../../api";
+import { useMessageAlert } from "../message-alert";
 import { useSigner } from "../useSigner";
 
 export interface VoteStatus {
   submitting: boolean;
   choices: number[];
-  inCensus: boolean;
+  registered: boolean;
 }
 
 const INITIAL_STATE = {
   submitting: false,
   choices: [],
-  inCensus: false,
+  registered: false,
 };
 
 function updateStatus(status: Partial<VoteStatus>) {
@@ -45,6 +46,7 @@ export const useVote = (process: ProcessInfo) => {
   const wallet = useWallet();
   const signer = useSigner();
   const { poolPromise } = usePool();
+  const { setAlertMessage } = useMessageAlert();
 
   const nullifier = useMemo(() => {
     if (process?.id) return VotingApi.getSignedVoteNullifier(wallet?.account || "", process.id);
@@ -67,6 +69,7 @@ export const useVote = (process: ProcessInfo) => {
 
   const onSubmitVote = async (token, process, wallet): Promise<void> => {
     try {
+      dispatch({ type: "UPDATE_STATUS", status: { submitting: true } });
       const pool = await poolPromise;
       const params = {
         token: token.address,
@@ -96,9 +99,13 @@ export const useVote = (process: ProcessInfo) => {
 
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
       await VotingApi.submitEnvelope(envelope, signer, pool);
+      dispatch({ type: "UPDATE_STATUS", status: { registered: true } });
+      setAlertMessage("Vote successful :-)", "success");
     } catch (err) {
       console.log("Error in hook useVotes function onSubmitVote: ", err.message);
       throw new Error(err.message);
+    } finally {
+      dispatch({ type: "UPDATE_STATUS", status: { submitting: false } });
     }
   };
 

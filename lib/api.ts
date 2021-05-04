@@ -82,7 +82,7 @@ const getProof = async ({
 
     const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
 
-    if (!onChainBalance.eq(balance)) return undefined;
+    if (!onChainBalance.eq(balance) || onChainBalance.eq(0)) return undefined;
 
     return result.proof;
   } catch (error) {

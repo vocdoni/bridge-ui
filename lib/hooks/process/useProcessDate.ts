@@ -28,7 +28,6 @@ export const useProcessDate = (info: ProcessInfo) => {
     fetchDates,
     {
       isPaused: () => !info?.parameters?.startBlock || !info?.parameters?.blockCount,
-      refreshInterval: 5000,
     }
   );
 

@@ -41,13 +41,12 @@ const ProcessPage = () => {
   }
 
   const { dispatch } = useModal();
-  const { setAlertMessage } = useMessageAlert();
 
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
   const { datesInfo, hasEnded, hasStarted } = useProcessDate(process);
   const { results, updateResults } = useProcessInfo(process, token);
-  const { weights } = useWeights({
+  const { weights, updateWeights } = useWeights({
     processId,
     token,
     ...datesInfo,
@@ -59,9 +58,9 @@ const ProcessPage = () => {
 
   const isConnected = !!wallet.account;
   const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
-  const inCensus = !!census && !BigNumber.from(census.proof.storageProof[0].value).eq(0);
+  const inCensus = !!census;
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
-  const alreadyVoted = voteStatus?.registered;
+  const alreadyVoted = voteStatus?.registered || status.registered;
   const canVote = !alreadyVoted && !hasEnded && inCensus && hasStarted;
 
   const onVoteSubmit = async () => {
@@ -72,9 +71,9 @@ const ProcessPage = () => {
     }
 
     await vote(token, process, wallet);
-    // await updateResults();
-    // await updateVote();
-    setAlertMessage("Vote successful :-)", "success");
+    await updateResults();
+    await updateVote();
+    await updateWeights();
   };
 
   const onSelect = (questionId: number, choice: number) => {
@@ -132,17 +131,21 @@ const ProcessPage = () => {
             disabled={!isConnected ? false : !canVote || !questionsFilled}
             onClick={onVoteSubmit}
           >
-            {!isConnected
-              ? "Connect your wallet"
-              : !inCensus
-              ? "You're not a token holder"
-              : !hasStarted
-              ? "Process has not started"
-              : alreadyVoted
-              ? "You already voted"
-              : !questionsFilled
-              ? "Fill all the choices"
-              : "Submit your vote"}
+            {status.submitting ? (
+              <Spinner />
+            ) : !isConnected ? (
+              "Connect your wallet"
+            ) : !inCensus ? (
+              "You're not a token holder"
+            ) : !hasStarted ? (
+              "Process has not started"
+            ) : alreadyVoted ? (
+              "You already voted"
+            ) : !questionsFilled ? (
+              "Fill all the choices"
+            ) : (
+              "Submit your vote"
+            )}
           </Button>
         </ButtonContainer>
       )}
