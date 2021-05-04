@@ -14,6 +14,7 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 
   background: ${({ theme }) => theme.blackAndWhite.w1}cc;
 `;
