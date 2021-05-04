@@ -8,6 +8,7 @@ import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import SectionTitle from "../../components/sectionTitle";
 import Button, { SecondaryButton } from "../../components/button";
 import { shortTokenName } from "../../lib/utils";
+import { TokenInfo } from "../../lib/types";
 
 const TokenList = styled.div`
   display: flex;
@@ -53,13 +54,14 @@ const TokensPage = () => {
         <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
       </ButtonContainer>
       <TokenList>
-        {tokenInfos.map(({ symbol, address, name }) => (
+        {tokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
           <TokenCard
             key={address}
             name={symbol}
             icon={FALLBACK_TOKEN_ICON}
             rightText=""
             href={address ? "/tokens/info#/" + address : ""}
+            tokenCap={totalSupplyFormatted}
           >
             <p>{shortTokenName(name) || "Loading..."}</p>
           </TokenCard>

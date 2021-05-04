@@ -4,8 +4,8 @@ import { VotingApi } from "dvote-js";
 import { usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
-import TokenCard from "../../components/token-card";
-import { PrimaryButton as NewProcessButton } from "../../components/button";
+import { VoteCard } from "../../components/token-card";
+import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList } from "../../lib/api";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
@@ -138,23 +138,21 @@ const VoteSection = ({
           </EmptySection>
         </>
       )}
-      <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
     </VoteSectionContainer>
   );
 };
 
 const ProcessCard = ({ id, token, title }) => {
-  const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : token.icon;
   return (
-    <TokenCard
-      name={token?.symbol}
-      icon={icon}
-      rightText=""
+    <VoteCard
+      name={token?.name}
+      symbol={token?.symbol}
+      icon={token?.icon}
       href={id ? "/processes#/" + id : ""}
       key={id}
     >
-      <p>{title}</p>
-    </TokenCard>
+      {title}
+    </VoteCard>
   );
 };
 
@@ -170,6 +168,9 @@ const TokenPage = () => {
   const { setAlertMessage } = useMessageAlert();
 
   // Effects
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => updateBlockHeight, 1000 * 13);
@@ -280,9 +281,9 @@ const TokenPage = () => {
           />
           <SectionTitle title="Token details" subtitle={`See the details of ${token?.symbol}`} />
         </HeaderLeft>
-        <NewProcessButton onClick={() => onCreateProcess(token.address)}>
+        <PrimaryButton onClick={() => onCreateProcess(token.address)}>
           Create a governance process
-        </NewProcessButton>
+        </PrimaryButton>
       </HeaderContainer>
 
       <WhiteSection>

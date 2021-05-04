@@ -20,4 +20,4 @@ export type ProcessInfo = {
   tokenAddress: string;
 };
 
-export type MsgType = "error" | "success" | "info";
+export type MsgType = "error" | "success" | "warning" | "info";

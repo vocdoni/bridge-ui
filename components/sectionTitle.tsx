@@ -24,7 +24,7 @@ const SmallerTitle = styled(Title)`
 
 const Subtitle = styled.p`
   line-height: 27px;
-  color: #7483ab;
+  color: ${({ theme }) => theme.grayScale.g5};
   font-size: 18px;
   font-style: normal;
   font-weight: 400;

@@ -6,6 +6,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
 import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
+import { CONNECTED_WALLET_ICON } from "../lib/constants";
 
 const ButtonContainer = styled.div`
   margin: 15px auto;
@@ -16,7 +17,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const AddressContainer = styled.div`
+const ConnectWalletButton = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -29,7 +30,6 @@ const AddressContainer = styled.div`
   font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
@@ -50,7 +50,7 @@ const AddressContainer = styled.div`
   }
 `;
 
-const MyButton = styled.div`
+const ConnectedWalletButton = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -61,31 +61,48 @@ const MyButton = styled.div`
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
   font-size: 16px;
-  background: ${({ theme }) =>
-    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+  background: ${({ theme }) => theme.blackAndWhite.w1};
 
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    background: linear-gradient(
-      ${({ theme }) => theme.gradients.primary.mg1_soft.a},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c1},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
-    );
+    
   }
-
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
   }
 `;
 
+const ConnectedWalletIcon = styled.div`
+  background: url(${CONNECTED_WALLET_ICON});
+  position: asbsolute;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+`;
 
-const WalletAddress = ({ reset, account }) => {
-  return <AddressContainer>{shortAddress(account)}</AddressContainer>;
+const TextLink = styled.p`
+  color: ${({ theme }) => theme.primary.p1};
+  text-align: center;
+  cursor: pointer;
+  margin-top: 0px;
+  font-weight: 400;
+  &:hover {
+    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
+  }
+`;
+
+const WalletAddress = ({ account }) => {
+  return (
+    <ButtonContainer>
+      <ConnectedWalletButton>
+        <ConnectedWalletIcon />
+        {account && shortAddress(account)}
+      </ConnectedWalletButton>
+    </ButtonContainer>
+  );
 };
 
 export const ConnectButton = () => {
@@ -116,7 +133,7 @@ export const ConnectButton = () => {
       return "Wallet connection rejected";
     }
 
-    return isConnected ? "Show dashboard" : "Connect account";
+    return isConnected ? "Connected" : "Connect account";
   }, [poolLoading, status, error]);
 
   const mode = useMemo(() => {
@@ -133,20 +150,36 @@ export const ConnectButton = () => {
     }
 
     if (inLanding && isConnected) {
-      push("/dashboard");
+      reset();
       return;
     }
 
     openWallets();
   };
 
-  if (isConnected && !inLanding) {
-    return <WalletAddress account={account} reset={reset} />;
+  if (isConnected) {
+    return <WalletAddress account={account} />;
   }
 
   return (
     <ButtonContainer>
-      <MyButton onClick={handleButtonClick}>{label}</MyButton>
+      <ConnectWalletButton onClick={handleButtonClick}>{label}</ConnectWalletButton>
     </ButtonContainer>
   );
+};
+
+export const ConnectTextButton = () => {
+  const { dispatch } = useModal();
+
+  const openWallets = () => {
+    dispatch({
+      type: ActionTypes.OPEN_WALLET_LIST,
+    });
+  };
+
+  const handleButtonClick = async () => {
+    openWallets();
+  };
+
+  return <TextLink onClick={handleButtonClick}>Connect account</TextLink>;
 };

@@ -5,17 +5,16 @@ import styled from "styled-components";
 import { useWallet } from "use-wallet";
 import Spinner from "react-svg-spinner";
 import { usePool } from "@vocdoni/react-hooks";
-
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { useRegisteredTokens } from "../../lib/hooks/tokens";
-
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
+import { PrimaryButton, SecondaryButton } from "../../components/button";
 
 const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -82,20 +81,6 @@ const WhiteSection = styled.div`
   border-radius: 13px;
 `;
 
-const RegisterButton = styled(Button)`
-  height: 46px;
-  padding: 12px 20px;
-  background: linear-gradient(
-    ${({ theme }) => theme.gradients.primary.mg1.a},
-    ${({ theme }) => theme.gradients.primary.mg1.c1},
-    ${({ theme }) => theme.gradients.primary.mg1.c2}
-  );
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border-radius: 8px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-size: 16px;
-`;
-
 // MAIN COMPONENT
 const TokenAddPage = () => {
   const wallet = useWallet();
@@ -106,7 +91,8 @@ const TokenAddPage = () => {
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const { refreshRegisteredTokens } = useRegisteredTokens();
+  const { refreshRegisteredTokens, registeredTokens } = useRegisteredTokens();
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   // Callbacks
 
@@ -114,7 +100,9 @@ const TokenAddPage = () => {
     if (loadingToken || !formTokenAddress) return;
     else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
       return setAlertMessage("The token address is not valid");
-    }
+    } else if (registeredTokens.includes(formTokenAddress)) {
+      setAlreadyRegistered(true);
+    } else setAlreadyRegistered(false);
 
     setLoadingToken(true);
 
@@ -153,11 +141,11 @@ const TokenAddPage = () => {
       }
 
       // Register
-      await registerToken(tokenInfo.address, holderAddress, pool, signer);
+      await registerToken(tokenInfo.address, pool, signer);
 
       await refreshRegisteredTokens();
 
-      setAlertMessage("The token has been successfully registered");
+      setAlertMessage("The token has been successfully registered", "success");
       setRegisteringToken(false);
 
       Router.push("/tokens/info#/" + tokenInfo.address);
@@ -230,8 +218,14 @@ const TokenAddPage = () => {
                 <Button>
                   <StyledSpinner />
                 </Button>
+              ) : alreadyRegistered ? (
+                <SecondaryButton
+                  href={tokenInfo?.address ? "/tokens/info#/" + tokenInfo?.address : ""}
+                >
+                  Token is already registered
+                </SecondaryButton>
               ) : (
-                <RegisterButton onClick={onSubmit}>Register token</RegisterButton>
+                <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
               )}
             </ButtonRow>
           </>

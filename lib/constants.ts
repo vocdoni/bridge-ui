@@ -49,3 +49,4 @@ export const HEADER_LOGO = "/media/logo_voice.svg";
 export const FOOTER_LOGO = "/media/footer_logo.svg";
 export const PLUS_ICON = "/media/plus_icon.svg";
 export const MINUS_ICON = "/media/minus_icon.svg";
+export const CONNECTED_WALLET_ICON = "/media/connected_wallet_icon.svg";
