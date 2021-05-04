@@ -79,7 +79,7 @@ const GrayRectangle = styled.div`
 `;
 
 const GrayRectangleTall = styled(GrayRectangle)`
-  height: 227px; 
+  height: 227px;
 `;
 
 const LightningBolt = styled.div`
@@ -158,17 +158,20 @@ const IndexPage = () => {
           </GrayRectangle>
         ) : userTokens.userTokens.length ? (
           <TokenList>
-            {userTokens.userTokens.map(({ symbol, address, name }) => (
-              <TokenCard
-                key={address}
-                name={symbol}
-                icon={FALLBACK_TOKEN_ICON}
-                rightText=""
-                href={address ? "/tokens/info#/" + address : ""}
-              >
-                <p>{shortTokenName(name) || "Loading..."}</p>
-              </TokenCard>
-            ))}
+            {userTokens.userTokens.map(
+              ({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+                <TokenCard
+                  key={address}
+                  name={symbol}
+                  icon={FALLBACK_TOKEN_ICON}
+                  rightText=""
+                  href={address ? "/tokens/info#/" + address : ""}
+                  tokenCap={totalSupplyFormatted}
+                >
+                  <p>{shortTokenName(name) || "Loading..."}</p>
+                </TokenCard>
+              )
+            )}
           </TokenList>
         ) : (
           <GrayRectangle>

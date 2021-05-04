@@ -131,7 +131,7 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
         {rightText && <RightText>{rightText}</RightText>}
-        <Cap>{tokenCap?.length ? `(${abbreviatedTokenAmount(tokenCap)})` : "(N/A)"}</Cap>
+        <Cap>{tokenCap?.length ? `${abbreviatedTokenAmount(tokenCap)}` : "N/A"}</Cap>
         <Symbol>{name}</Symbol>
         <Name>{children}</Name>
         {/* <ActiveProposals>7 active proposals</Proposals> */}
