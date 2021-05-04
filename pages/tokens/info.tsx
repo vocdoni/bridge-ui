@@ -130,7 +130,7 @@ const ProcessCard = ({ id, token, title }) => {
     <VoteCard
       name={token?.name}
       symbol={token?.symbol}
-      icon={token.icon}
+      icon={token?.icon}
       href={id ? "/processes#/" + id : ""}
       key={id}
     >

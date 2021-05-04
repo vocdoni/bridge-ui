@@ -44,11 +44,10 @@ export const useWeights = ({ processId, token, start, end }) => {
 
       const absoluteAmount = absolute.format({
         symbol: "",
-        commify: false,
       });
 
-      const weight = Number(absoluteAmount) * 100;
-      const relative = BigNumber.from(weight).div(token.totalSupply);
+      const weight = BigNumber.from(resultsWeight).mul(100);
+      const relative = weight.div(token.totalSupply).toString();
       const votesEmitted = votes.toString();
 
       return [
@@ -62,7 +61,7 @@ export const useWeights = ({ processId, token, start, end }) => {
         },
         {
           description: "Turnout",
-          value: `${relative.toString()}%`,
+          value: `${relative}%`,
         },
         {
           description: "Votes",

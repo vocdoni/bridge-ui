@@ -17,7 +17,6 @@ import Datetime from "react-datetime";
 import moment, { Moment } from "moment";
 import Router from "next/router";
 import Spinner from "react-svg-spinner";
-import { providers } from "ethers";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
@@ -32,6 +31,8 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
+import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
+import { useToken } from "../../lib/hooks/tokens";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -175,6 +176,8 @@ const NewProcessPage = () => {
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
+  const token = useToken(tokenAddress);
+  const census = useCensusProof(token);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
@@ -262,7 +265,7 @@ const NewProcessPage = () => {
     }
     setMetadata(Object.assign({}, metadata));
   };
-  const onSubmit = async () => {
+  const onSubmit = async (proof) => {
     try {
       metadata.questions.map(handleValidation);
     } catch (error) {
@@ -333,14 +336,6 @@ const NewProcessPage = () => {
 
       const evmBlockHeight = await pool.provider.getBlockNumber();
 
-      const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
-      const { proof } = await CensusErc20Api.generateProof(
-        tokenAddress,
-        [balanceMappingPosition.toString()],
-        evmBlockHeight,
-        pool.provider as providers.JsonRpcProvider
-      );
-
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
       } = {
@@ -365,7 +360,7 @@ const NewProcessPage = () => {
       Router.push("/processes#/" + processId);
       setSubmitting(false);
 
-      setAlertMessage("The governance process has been successfully created");
+      setAlertMessage("The governance process has been successfully created", "success");
     } catch (err) {
       setSubmitting(false);
 
@@ -522,7 +517,7 @@ const NewProcessPage = () => {
         <FieldRowLeftSection>
           <RowContinue>
             {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={onSubmit} />
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
             ) : !isMobile ? (
               <ConnectButton />
             ) : null}
