@@ -76,7 +76,6 @@ export const useVote = (process: ProcessInfo) => {
 
       const data = await getProofByBruteForce(params);
 
-      console.log(data);
       if (!data.proof) {
         return;
       }
@@ -95,9 +94,7 @@ export const useVote = (process: ProcessInfo) => {
         envelopParams["processKey"] = keys;
       }
 
-      console.log("before packagin");
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
-      console.log("This is the envelop: ", envelope);
       await VotingApi.submitEnvelope(envelope, signer, pool);
     } catch (err) {
       console.log("Error in hook useVotes function onSubmitVote: ", err.message);
