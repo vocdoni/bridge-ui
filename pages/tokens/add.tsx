@@ -14,7 +14,7 @@ import { useRegisteredTokens } from "../../lib/hooks/tokens";
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
-import { PrimaryButton } from "../../components/button";
+import { PrimaryButton, SecondaryButton } from "../../components/button";
 
 const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -90,7 +90,8 @@ const TokenAddPage = () => {
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const { refreshRegisteredTokens } = useRegisteredTokens();
+  const { refreshRegisteredTokens, registeredTokens } = useRegisteredTokens();
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   // Callbacks
 
@@ -98,7 +99,9 @@ const TokenAddPage = () => {
     if (loadingToken || !formTokenAddress) return;
     else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
       return setAlertMessage("The token address is not valid");
-    }
+    } else if (registeredTokens.includes(formTokenAddress)) {
+      setAlreadyRegistered(true);
+    } else setAlreadyRegistered(false);
 
     setLoadingToken(true);
 
@@ -214,6 +217,12 @@ const TokenAddPage = () => {
                 <Button>
                   <StyledSpinner />
                 </Button>
+              ) : alreadyRegistered ? (
+                <SecondaryButton
+                  href={tokenInfo?.address ? "/tokens/info#/" + tokenInfo?.address : ""}
+                >
+                  Token is already registered
+                </SecondaryButton>
               ) : (
                 <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
               )}
