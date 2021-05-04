@@ -90,49 +90,11 @@ export const getProof = async ({
   }
 };
 
-//@TODO: Only trigger the loop if the proof has not been fetched yet
-export const getBalanceMappingByBruteForce = async (
-  params: Pick<ProofParameters, "account" | "token" | "pool">
-) => {
+export async function registerToken(token: string, pool: GatewayPool, signer: Signer) {
   try {
-    const block = (await params.pool.provider.getBlockNumber()) - 1;
-    const balance = await balanceOf(params.token, params.account, params.pool);
-
-    const getSlot = async (_, index) => {
-      const proofParams = {
-        block,
-        tokenBalancePosition: index,
-        balance,
-        ...params,
-      };
-
-      const proof = await getProof(proofParams);
-      if (!proof) return undefined;
-
-      return index;
-    };
-
-    const upperLimit = Array.from(Array(50).keys());
-    // const balanceSlotstest = upperLimit.some(getSlot);
-    const balanceSlots = upperLimit.map(getSlot);
-    const slots = await Promise.all(balanceSlots);
-    return slots.find((t) => t);
-  } catch (error) {
-    console.log("Error on getProofByBruteForce: ", error.message);
-    throw new Error(error.message);
-  }
-};
-
-export async function registerToken(
-  token: string,
-  account: string,
-  pool: GatewayPool,
-  signer: Signer
-) {
-  try {
-    const balanceMappingPosition = await getBalanceMappingByBruteForce({ account, token, pool });
-    await CensusErc20Api.registerToken(token, balanceMappingPosition, signer, pool);
+    await CensusErc20Api.registerTokenAuto(token, signer, pool);
   } catch (err) {
+    console.log(err.message);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
     throw new Error("The token internal details cannot be chacked");
   }

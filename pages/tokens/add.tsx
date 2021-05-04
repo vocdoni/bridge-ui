@@ -14,7 +14,7 @@ import { useRegisteredTokens } from "../../lib/hooks/tokens";
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
-import { PrimaryButton } from "../../components/button"
+import { PrimaryButton } from "../../components/button";
 
 const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -137,7 +137,7 @@ const TokenAddPage = () => {
       }
 
       // Register
-      await registerToken(tokenInfo.address, holderAddress, pool, signer);
+      await registerToken(tokenInfo.address, pool, signer);
 
       await refreshRegisteredTokens();
 
