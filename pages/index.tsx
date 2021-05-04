@@ -158,7 +158,7 @@ const IndexPage = () => {
           </GrayRectangle>
         ) : userTokens.userTokens.length ? (
           <TokenList>
-            {tokenInfos.map(
+            {userTokens.userTokens.map(
               ({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
                 <TokenCard
                   key={address}
