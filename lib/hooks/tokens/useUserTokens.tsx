@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { providers } from "ethers";
 import { useMessageAlert } from "../message-alert";
 import { useRegisteredTokens } from "./useRegisteredTokens";
-import { ERC20JsonAbi, GOERLI_MULTICALL, GOERLI_CHAINID } from "../../constants";
+import { ERC20_ABI } from "../../constants";
 import { TokenInfo } from "../../types";
 
 import { usePool } from "@vocdoni/react-hooks";
@@ -67,14 +67,11 @@ export function UseUserTokens({ children }) {
     if (!wallet?.ethereum || !wallet?.account || !registeredTokens) {
       return [];
     }
-    if (wallet.chainId === GOERLI_CHAINID) {
-      setMulticallAddress(wallet.chainId, GOERLI_MULTICALL);
-    }
 
     const provider = new providers.Web3Provider(wallet.ethereum);
     const ethcallProvider = new Provider(provider, wallet.chainId);
     const contractCalls = registeredTokens.map((address) =>
-      new Contract(address, ERC20JsonAbi).balanceOf(wallet.account)
+      new Contract(address, ERC20_ABI).balanceOf(wallet.account)
     );
 
     const balances = await ethcallProvider.all(contractCalls);

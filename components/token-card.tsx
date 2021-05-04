@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
+import { shortTokenName } from "../lib/utils";
 
 const Container = styled.div`
   background: ${({ theme }) => theme.blackAndWhite.w1};
@@ -59,7 +60,7 @@ const Symbol = styled.h4`
   padding-top: 22px;
   position: absolute;
   font-weight: 500;
-  font-size: 29px;
+  font-size: 28px;
   margin-top: 0px;
   align-items: center;
   letter-spacing: 0.01em;
@@ -84,11 +85,12 @@ const ActiveProposals = styled.p`
 
 const Cap = styled.p`
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-left: 250px;
   position: absolute;
+  width: 320px;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 16px;
   align-items: center;
+  text-align: right;
   letter-spacing: 0.01em;
 `;
 
@@ -113,6 +115,7 @@ type CardProps = {
   icon: string;
   rightText?: string;
   href: string;
+  tokenCap?: string;
   onClick?: () => void;
 };
 
@@ -122,12 +125,12 @@ now. Should be implemented later, along with the fallback screens. VR 23-04-2021
 }
 // eslint-disable-next-line react/display-name
 const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ onClick, icon, rightText, name, children }, ref) => {
+  ({ onClick, icon, rightText, name, children, tokenCap }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
         <TokenLogo src={icon} onError={loadFallback} />
         {rightText && <RightText>{rightText}</RightText>}
-        {/* <Cap>($915M)</Cap> */}
+        <Cap>{tokenCap?.length ? `(${abbreviatedTokenAmount(tokenCap)})` : "(N/A)"}</Cap>
         <Symbol>{name}</Symbol>
         <Name>{children}</Name>
         {/* <ActiveProposals>7 active proposals</Proposals> */}
@@ -135,6 +138,33 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
     );
   }
 );
+
+// This helper-method converts a string of tokens into a abbreviated version.
+// ONLY ACCEPTS NON-EMTPY STRINGS
+function abbreviatedTokenAmount(amount: string): string {
+  const regexp = /(?<lead>\d+)(?<body>[,\d*]*)[.]*[\d]*\s(?<symbol>[A-Za-z]+)/;
+  const regexp_res = amount.match(regexp);
+  // discard failed matches
+  if (!regexp_res?.length || regexp_res[0].length !== amount.length || regexp_res.length !== 4)
+    return "N/A";
+
+  const lead = regexp_res[1];
+  const body = regexp_res[2];
+  const symbol = regexp_res[3];
+
+  if (regexp_res[2].length === 0) return lead + " " + symbol;
+  const magnitude = regexp_res[2].length / 4;
+  const magnitude_letter = ["K", "M", "B"];
+
+  let abbreviation: string;
+  if (magnitude <= 3) {
+    abbreviation = magnitude_letter[magnitude - 1];
+  } else {
+    abbreviation = "*10^" + magnitude * 3;
+  }
+
+  return lead + abbreviation + " " + symbol;
+}
 
 const CardHeader = styled.div`
   display: flex;
@@ -156,7 +186,7 @@ const VoteSymbol = styled.h4`
   height: 30px;
   margin-top: 0px;
   margin-bottom: 0px;
-  padding-top: 20px;
+  padding-top: 18px;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   font-weight: 500;
   font-size: 29px;
@@ -167,7 +197,7 @@ const VoteName = styled.p`
   height: 20px;
   margin-top: 0px;
   margin-bottom: 0px;
-  padding-top: 2px;
+  padding-top: 4px;
   color: ${({ theme }) => theme.grayScale.g5};
   letter-spacing: 0.01em;
   font-size: 18;
@@ -195,7 +225,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
           </div>
           <TokenDescription>
             <VoteSymbol>{symbol}</VoteSymbol>
-            <VoteName>{name}</VoteName>
+            <VoteName>{shortTokenName(name)}</VoteName>
           </TokenDescription>
         </CardHeader>
         <ProposalTitle>{children}</ProposalTitle>

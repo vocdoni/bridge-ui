@@ -11,6 +11,7 @@ import TokenCard from "../components/token-card";
 import { SecondaryButton } from "../components/button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
+import { TokenInfo } from "../lib/types";
 
 import Link from "next/link";
 import { useWallet } from "use-wallet";
@@ -184,13 +185,14 @@ const IndexPage = () => {
           subtitle="Some of the most relevant tokens on the platform"
         />
         <TokenList>
-          {tokenInfos.map(({ symbol, address, name }) => (
+          {tokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
             <TokenCard
               key={address}
               name={symbol}
               icon={FALLBACK_TOKEN_ICON}
               rightText=""
               href={address ? "/tokens/info#/" + address : ""}
+              tokenCap={totalSupplyFormatted}
             >
               <p>{shortTokenName(name) || "Loading..."}</p>
             </TokenCard>

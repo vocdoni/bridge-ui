@@ -11,12 +11,12 @@ export const useProcessDate = (info: ProcessInfo) => {
   const fetchDates = async (startBlock: number, blockCount: number) => {
     try {
       const pool = await poolPromise;
-      const start = VotingApi.estimateDateAtBlock(startBlock, pool);
-      const end = VotingApi.estimateDateAtBlock(startBlock + blockCount, pool);
+      const getStart = VotingApi.estimateDateAtBlock(startBlock, pool);
+      const getEnd = VotingApi.estimateDateAtBlock(startBlock + blockCount, pool);
 
-      const [a, b] = await Promise.all([start, end]);
+      const [start, end] = await Promise.all([getStart, getEnd]);
 
-      return { start: a, end: b };
+      return { start, end };
     } catch (error) {
       console.log(error.message);
       console.log("Error in useProcessInfo hook: ", error.message);
@@ -35,9 +35,14 @@ export const useProcessDate = (info: ProcessInfo) => {
     if (datesInfo) return dayjs().isAfter(datesInfo.end);
   }, [datesInfo]);
 
+  const hasStarted = useMemo(() => {
+    if (datesInfo) return dayjs().isAfter(datesInfo.start);
+  }, [datesInfo]);
+
   return {
     datesInfo,
     datesError,
     hasEnded,
+    hasStarted,
   };
 };
