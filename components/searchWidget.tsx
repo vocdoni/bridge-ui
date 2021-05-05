@@ -18,6 +18,11 @@ const SearchRow = styled.div`
   }
 `;
 
+const Box = styled.div`
+  display: flex;
+  margin-right: 10px;
+`;
+
 type SearchWidgetProps = {
   onChange: (ev: any) => void;
   onKeyDown: (ev: any) => void;

@@ -146,7 +146,7 @@ export const WalletList = () => {
     if (wallet === "ledger" || wallet === "trezor") return;
     try {
       await connect(wallet);
-      if (!error && inLanding) push("/dashboard");
+      if (!error && inLanding) reset();
       closeModal();
     } catch (e) {
       reset();

@@ -3,7 +3,6 @@ import {
   CensusErc20Api,
   IProcessCreateParams,
   ProcessCensusOrigin,
-  ProcessContractParameters,
   ProcessEnvelopeType,
   ProcessMetadata,
   ProcessMode,
@@ -18,7 +17,6 @@ import Datetime from "react-datetime";
 import moment, { Moment } from "moment";
 import Router from "next/router";
 import Spinner from "react-svg-spinner";
-import { providers } from "ethers";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
@@ -33,6 +31,8 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
+import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
+import { useToken } from "../../lib/hooks/tokens";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -70,6 +70,7 @@ const FieldRowRightSection = styled.div<{ marginTop: number }>`
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
     margin-left: 0;
+    width: 100%;
   }
 `;
 
@@ -134,6 +135,14 @@ const QuestionText = styled.h5`
   letter-spacing: -0.03em;
   margin-bottom: 85px;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: 30px;
+  }
+`;
+
+const InputBox = styled.div`
+  display: flex;
+  margin-bottom: 30px;
 `;
 
 const RowContinue = styled.div`
@@ -171,6 +180,8 @@ const NewProcessPage = () => {
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
+  const token = useToken(tokenAddress);
+  const census = useCensusProof(token);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
@@ -258,7 +269,7 @@ const NewProcessPage = () => {
     }
     setMetadata(Object.assign({}, metadata));
   };
-  const onSubmit = async () => {
+  const onSubmit = async (proof) => {
     try {
       metadata.questions.map(handleValidation);
     } catch (error) {
@@ -275,8 +286,8 @@ const NewProcessPage = () => {
     else if (metadata.description.default.trim().length > 300)
       return setAlertMessage("Please enter a shorter description");
 
-    if (!startDate) return setAlertMessage("Please, enter a start date");
-    else if (!endDate) return setAlertMessage("Please, enter an ending date");
+    if (!startDate) return setAlertMessage("Please enter a start date");
+    else if (!endDate) return setAlertMessage("Please enter an ending date");
 
     if (moment(startDate).isBefore(moment().add(5, "minutes"))) {
       return setAlertMessage("The start date must be at least 5 minutes from now");
@@ -289,12 +300,12 @@ const NewProcessPage = () => {
     for (let qIdx = 0; qIdx < metadata.questions.length; qIdx++) {
       const question = metadata.questions[qIdx];
       if (!question.title.default.trim())
-        return setAlertMessage("Please, enter a title for question " + (qIdx + 1));
+        return setAlertMessage("Please enter a title for question " + (qIdx + 1));
 
       for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
         const choice = question.choices[cIdx];
         if (!choice.title.default.trim())
-          return setAlertMessage("Please, fill in all the choices for question " + (qIdx + 1));
+          return setAlertMessage("Please fill in all the choices for question " + (qIdx + 1));
 
         // Ensure values are unique and sequential
         question.choices[cIdx].value = cIdx;
@@ -329,15 +340,6 @@ const NewProcessPage = () => {
 
       const evmBlockHeight = await pool.provider.getBlockNumber();
 
-      console.log("this is the evm block heigh ", evmBlockHeight);
-      const { balanceMappingPosition } = await CensusErc20Api.getTokenInfo(tokenAddress, pool);
-      const { proof } = await CensusErc20Api.generateProof(
-        tokenAddress,
-        [balanceMappingPosition.toString()],
-        evmBlockHeight,
-        pool.provider as providers.JsonRpcProvider
-      );
-
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
       } = {
@@ -357,14 +359,12 @@ const NewProcessPage = () => {
         sourceBlockHeight: evmBlockHeight,
         paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
       };
-      console.log("before new");
 
       const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
-      console.log("after new");
       Router.push("/processes#/" + processId);
       setSubmitting(false);
 
-      setAlertMessage("The governance process has been successfully created");
+      setAlertMessage("The governance process has been successfully created", "success");
     } catch (err) {
       setSubmitting(false);
 
@@ -395,7 +395,7 @@ const NewProcessPage = () => {
               widthValue={735}
             />
           </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={125}>
+          <FieldRowRightSection marginTop={90}>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -436,7 +436,7 @@ const NewProcessPage = () => {
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={140}>
+          <FieldRowRightSection marginTop={100}>
             <Datetime
               value={startDate}
               inputProps={{
@@ -469,19 +469,23 @@ const NewProcessPage = () => {
                 <RemoveButton marginTop={-57}>
                   {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
                 </RemoveButton>
-                <TextInput
-                  placeholder="Title"
-                  value={question.title.default}
-                  onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                  widthValue={735}
-                />
+                <InputBox>
+                  <TextInput
+                    placeholder="Title"
+                    value={question.title.default}
+                    onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                    widthValue={735}
+                  />
+                </InputBox>
 
                 <SectionTitle title="Description" smallerTitle />
-                <DescriptionInput
-                  placeholder="Description"
-                  value={question.description.default}
-                  onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                />
+                <InputBox>
+                  <DescriptionInput
+                    placeholder="Description"
+                    value={question.description.default}
+                    onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                  />
+                </InputBox>
               </RowQuestionLeftSection>
               <RowQuestionRightSection />
             </RowQuestions>
@@ -514,14 +518,15 @@ const NewProcessPage = () => {
             ) : null}
           </div>
         ))}
-
-        <RowContinue>
-          {wallet.status === "connected" ? (
-            <SubmitButton submitting={submitting} onSubmit={onSubmit} />
-          ) : !isMobile ? (
-            <ConnectButton />
-          ) : null}
-        </RowContinue>
+        <FieldRowLeftSection>
+          <RowContinue>
+            {wallet.status === "connected" ? (
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
+            ) : !isMobile ? (
+              <ConnectButton />
+            ) : null}
+          </RowContinue>
+        </FieldRowLeftSection>
       </NewProcessContainer>
     </div>
   );

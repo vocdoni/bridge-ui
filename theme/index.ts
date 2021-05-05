@@ -29,10 +29,20 @@ export const colors: Colors = {
     f3: "#FF6A60",
     f4: "#4BDD7C",
     f5: "#FFB53A",
+    f6: "#F3F4FF",
   },
   blackAndWhite: {
     b1: "#20232C",
     w1: "#FFFFFF",
+  },
+  alerts: {
+    a1: "#F6E9EB",
+    a2: "#EBFAF9",
+    a3: "#FEF8EC",
+    a4: "#EBF3FE",
+  },
+  homepageRectangle: {
+    c1: "#EEF4FB",
   },
   gradients: {
     primary: {
@@ -40,6 +50,7 @@ export const colors: Colors = {
         a: "107.79deg",
         c1: "#00C2FF",
         c2: "#01E8F7",
+        c3: "#00B3EC",
       },
       mg1_soft: {
         a: "107.79deg",
@@ -130,6 +141,11 @@ export const colors: Colors = {
         c2: "#F9FFF1",
       },
     },
+    cardGradient: {
+      a: "107.79deg",
+      c1: "#FFFFFF",
+      c2: "#DEE4FF",
+    },
   },
 };
 
@@ -180,7 +196,6 @@ export const theme: DefaultTheme = {
 
 // New Theme Style | TODO: Modify screens sizes
 export const FixedGlobalStyle = createGlobalStyle`
-
 body {
     padding: 0;
     margin: 0;

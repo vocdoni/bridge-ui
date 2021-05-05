@@ -44,13 +44,21 @@ const Section = styled.div`
   color: ${({ color }) => color};
 `;
 
+const SectionLinks = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0px 40px 0;
+  margin-right: 35px;
+  color: ${({ color }) => color};
+`;
+
 const ClickableText = styled.a`
-  margin-right: 80px;
+  margin-right: 38px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
@@ -85,7 +93,7 @@ export const Footer = () => {
         <Section>
           <Logo></Logo>
         </Section>
-        <Section>
+        <SectionLinks>
           {FOOTER_LINKS.map(({ url, name }) => (
             <div key={name}>
               <Link href={url} passHref>
@@ -93,7 +101,7 @@ export const Footer = () => {
               </Link>
             </div>
           ))}
-        </Section>
+        </SectionLinks>
       </ListContainer>
     </Container>
   );

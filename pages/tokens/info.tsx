@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ProcessMetadata, VotingApi } from "dvote-js";
+import { VotingApi } from "dvote-js";
 
 import { usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
-import TokenCard from "../../components/token-card";
-import { PrimaryButton as NewProcessButton } from "../../components/button";
+import { VoteCard } from "../../components/token-card";
+import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
-import { getProcessList, getTokenProcesses } from "../../lib/api";
+import { getProcessList } from "../../lib/api";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import Spinner from "react-svg-spinner";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
@@ -22,11 +22,19 @@ const HeaderContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+  }
 `;
 
 const HeaderLeft = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+  }
 `;
 
 const WhiteSection = styled.div`
@@ -34,6 +42,10 @@ const WhiteSection = styled.div`
   margin-bottom: 60px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: 0px;
+    padding: 20px 64px;
+  }
 `;
 
 const RowSummary = styled.div`
@@ -42,21 +54,24 @@ const RowSummary = styled.div`
   justify-content: space-between;
 
   @media ${({ theme }) => theme.screens.tablet} {
+    justify-content: center;
     flex-direction: column;
-    text-align: center;
   }
 `;
 
 const Info = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: row;
-    height: 80px;
+    min-height: 80px;
+    width: 180px;
+    margin: 0 auto;
+    word-break: break-word;
   }
 `;
 
 const TokenAttribute = styled.p`
-  margin-top: 0;
-  margin-bottom: 9;
+  margin-top: 9px;
+  margin-bottom: 0;
   color: ${({ theme }) => theme.primary.p1};
   line-height: 27px;
   font-size: 18px;
@@ -75,18 +90,20 @@ const Address = styled.h4`
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
+  margin: 0;
   font-size: 18px;
   letter-spacing: 0;
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-    max-width: 100%;
-    overflow: none;
-  }
 `;
 
 const InfoDescription = styled.h4`
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: 0;
+  margin-top: 0;
+  margin-bottom: 30px;
+`;
+
+const InfoWrapper = styled.div`
+  min-width: 200px;
 `;
 
 const VoteSection = ({
@@ -121,23 +138,21 @@ const VoteSection = ({
           </EmptySection>
         </>
       )}
-      <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
     </VoteSectionContainer>
   );
 };
 
 const ProcessCard = ({ id, token, title }) => {
-  const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : token.icon;
   return (
-    <TokenCard
-      name={token?.symbol}
-      icon={icon}
-      rightText=""
+    <VoteCard
+      name={token?.name}
+      symbol={token?.symbol}
+      icon={token?.icon}
       href={id ? "/processes#/" + id : ""}
       key={id}
     >
-      <p>{title}</p>
-    </TokenCard>
+      {title}
+    </VoteCard>
   );
 };
 
@@ -153,6 +168,9 @@ const TokenPage = () => {
   const { setAlertMessage } = useMessageAlert();
 
   // Effects
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => updateBlockHeight, 1000 * 13);
@@ -263,9 +281,9 @@ const TokenPage = () => {
           />
           <SectionTitle title="Token details" subtitle={`See the details of ${token?.symbol}`} />
         </HeaderLeft>
-        <NewProcessButton onClick={() => onCreateProcess(token.address)}>
+        <PrimaryButton onClick={() => onCreateProcess(token.address)}>
           Create a governance process
-        </NewProcessButton>
+        </PrimaryButton>
       </HeaderContainer>
 
       <WhiteSection>

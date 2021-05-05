@@ -5,17 +5,16 @@ import styled from "styled-components";
 import { useWallet } from "use-wallet";
 import Spinner from "react-svg-spinner";
 import { usePool } from "@vocdoni/react-hooks";
-
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { useRegisteredTokens } from "../../lib/hooks/tokens";
-
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
+import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 
 const StyledSpinner = styled(Spinner)`
@@ -29,7 +28,6 @@ const RowSummary = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
     align-items: center;
-    text-align: center;
   }
 `;
 
@@ -38,12 +36,16 @@ const Info = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
     flex-direction: row;
+    min-height: 80px;
+    width: 180px;
+    margin: 0 auto;
+    word-break: break-word;
   }
 `;
 
 const TokenAttributeTitle = styled.p`
-  margin-top: 0;
-  margin-bottom: 9;
+  margin-top: 9px;
+  margin-bottom: 0;
   line-height: 27px;
   color: ${({ theme }) => theme.primary.p1};
   font-size: 18px;
@@ -55,6 +57,7 @@ const Description = styled.h4`
   font-size: 18px;
   overflow-wrap: break-word;
   letter-spacing: 0;
+  margin: 0;
 `;
 
 const Address = styled.h4`
@@ -87,19 +90,49 @@ const WhiteSection = styled.div`
   }
 `;
 
-const RegisterButton = styled(Button)`
-  height: 46px;
-  padding: 12px 20px;
-  background: linear-gradient(
-    ${({ theme }) => theme.gradients.primary.mg1.a},
-    ${({ theme }) => theme.gradients.primary.mg1.c1},
-    ${({ theme }) => theme.gradients.primary.mg1.c2}
-  );
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border-radius: 8px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-size: 16px;
-`;
+const RegisterButton = ({ registeringToken, alreadyRegistered, address, onSubmit }) => (
+  <ButtonRow>
+    {registeringToken ? (
+      <Button>
+        <StyledSpinner />
+      </Button>
+    ) : alreadyRegistered ? (
+      <SecondaryButton href={address ? "/tokens/info#/" + address : ""}>
+        Token is already registered
+      </SecondaryButton>
+    ) : (
+      <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
+    )}
+  </ButtonRow>
+);
+
+const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
+  <>
+    <SectionTitle
+      smallerTitle={true}
+      title="Token contract details"
+      subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+    />
+    <RowSummary>
+      <Info>
+        <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
+        <Description>{symbol}</Description>
+      </Info>
+      <Info>
+        <TokenAttributeTitle>Token name</TokenAttributeTitle>
+        <Description>{name}</Description>
+      </Info>
+      <Info>
+        <TokenAttributeTitle>Total supply</TokenAttributeTitle>
+        <Description>{totalSupplyFormatted}</Description>
+      </Info>
+      <Info>
+        <TokenAttributeTitle>Token address</TokenAttributeTitle>
+        <Address>{address}</Address>
+      </Info>
+    </RowSummary>
+  </>
+);
 
 // MAIN COMPONENT
 const TokenAddPage = () => {
@@ -113,7 +146,8 @@ const TokenAddPage = () => {
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const { refreshRegisteredTokens } = useRegisteredTokens();
+  const { refreshRegisteredTokens, registeredTokens } = useRegisteredTokens();
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   // Callbacks
 
@@ -121,7 +155,9 @@ const TokenAddPage = () => {
     if (loadingToken || !formTokenAddress) return;
     else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
       return setAlertMessage("The token address is not valid");
-    }
+    } else if (registeredTokens.includes(formTokenAddress)) {
+      setAlreadyRegistered(true);
+    } else setAlreadyRegistered(false);
 
     setLoadingToken(true);
 
@@ -160,11 +196,11 @@ const TokenAddPage = () => {
       }
 
       // Register
-      await registerToken(tokenInfo.address, holderAddress, pool, signer);
+      await registerToken(tokenInfo.address, pool, signer);
 
       await refreshRegisteredTokens();
 
-      setAlertMessage("The token has been successfully registered");
+      setAlertMessage("The token has been successfully registered", "success");
       setRegisteringToken(false);
 
       Router.push("/tokens/info#/" + tokenInfo.address);
@@ -206,72 +242,28 @@ const TokenAddPage = () => {
         <br />
         <br />
 
-        {tokenInfo && !isMobile && (
+        {!isMobile ? (
           <>
-            <SectionTitle
-              smallerTitle={true}
-              title="Token contract details"
-              subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+            <TokenContainer {...tokenInfo} />
+            <RegisterButton
+              registeringToken={registeringToken}
+              alreadyRegistered={alreadyRegistered}
+              onSubmit={onSubmit}
+              address={tokenInfo?.address || ""}
             />
-            <RowSummary>
-              <Info>
-                <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
-                <Description>{tokenInfo?.symbol}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Token name</TokenAttributeTitle>
-                <Description>{tokenInfo?.name}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Total supply</TokenAttributeTitle>
-                <Description>{tokenInfo?.totalSupplyFormatted}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Token address</TokenAttributeTitle>
-                <Address>{tokenInfo?.address}</Address>
-              </Info>
-            </RowSummary>
-
-            <ButtonRow>
-              {registeringToken ? (
-                <Button>
-                  <StyledSpinner />
-                </Button>
-              ) : (
-                <RegisterButton onClick={onSubmit}>Register token</RegisterButton>
-              )}
-            </ButtonRow>
           </>
-        )}
+        ) : null}
       </WhiteSection>
       <br />
       {tokenInfo && isMobile ? (
         <WhiteSection>
-          <>
-            <SectionTitle
-              smallerTitle={true}
-              title="Token contract details"
-              subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
-            />
-            <RowSummary>
-              <Info>
-                <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
-                <Description>{tokenInfo?.symbol}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Token name</TokenAttributeTitle>
-                <Description>{tokenInfo?.name}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Total supply</TokenAttributeTitle>
-                <Description>{tokenInfo?.totalSupplyFormatted}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Token address</TokenAttributeTitle>
-                <Address>{tokenInfo?.address}</Address>
-              </Info>
-            </RowSummary>
-          </>
+          <TokenContainer {...tokenInfo} />
+          <RegisterButton
+            registeringToken={registeringToken}
+            alreadyRegistered={alreadyRegistered}
+            onSubmit={onSubmit}
+            address={tokenInfo?.address || ""}
+          />
         </WhiteSection>
       ) : null}
     </>

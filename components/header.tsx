@@ -16,7 +16,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   z-index: 20;
 
-  background: ${({ theme }) => theme.blackAndWhite.w1}99;
+  background: ${({ theme }) => theme.blackAndWhite.w1}cc;
 `;
 
 const Logo = styled.div`
@@ -51,7 +51,6 @@ const BetaLabel = styled.div`
   border-radius: 40px;
   color: white;
   margin-top: 5px;
-  margin-left: 10px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
 `;
@@ -70,6 +69,7 @@ const ListContainer = styled.div`
 const MenuItemsContainer = styled.div`
   display: flex;
   justify-content: center;
+  padding-right: 60px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 10px;

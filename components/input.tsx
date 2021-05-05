@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const TextInput = styled.input<{ widthValue: number }>`
+const TextInput = styled.input<{ widthValue?: number }>`
   type: text;
-  width: ${({ widthValue }) => widthValue}px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "unset")};
   height: 46px;
   padding-left: 10px;
 
@@ -35,6 +35,11 @@ export const DescriptionInput = styled.textarea`
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   resize: none;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    min-width: unset;
+  }
 `;
 
 export default TextInput;

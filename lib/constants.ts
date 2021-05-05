@@ -9,6 +9,8 @@ export const ERC20_ABI = [
   "function totalSupply() public view returns (uint256)",
 ];
 
+export const LIGHTNING_BOLT = "media/lightning_bolt.svg";
+
 // from aragon/use-wallet
 export const TRUST_WALLET_BASE_URL =
   "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";
@@ -49,3 +51,4 @@ export const HEADER_LOGO = "/media/logo_voice.svg";
 export const FOOTER_LOGO = "/media/footer_logo.svg";
 export const PLUS_ICON = "/media/plus_icon.svg";
 export const MINUS_ICON = "/media/minus_icon.svg";
+export const CONNECTED_WALLET_ICON = "/media/connected_wallet_icon.svg";

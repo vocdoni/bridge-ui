@@ -52,7 +52,7 @@ const CircleEncrypted = styled.div`
 const QuestionMark = styled.div`
   font-size: 14px;
   font-weight: 500;
-  margin-left: 4.5px;
+  margin-left: 4.25px;
   margin-top: -2px;
   user-select: none; 
   -webkit-touch-callout : none
@@ -60,7 +60,7 @@ const QuestionMark = styled.div`
 `;
 
 const TooltipText = styled.div<Props>`
-  background-color: #f3f4ff;
+  background-color: ${({ theme }) => theme.functionality.f6};
   border-radius: 10px;
   color: ${({ theme }) => theme.secondary.s3};
   float: left;
@@ -68,6 +68,7 @@ const TooltipText = styled.div<Props>`
   margin-bottom: ${(props) => (props.newLine ? "8px" : "0px")};
   margin-left: ${(props) => (props.newLine ? "-160px" : "40px")};
   margin-top: ${(props) => (props.newLine ? (props.topText ? "19px" : "8px") : "0px")};
+  padding: 14px 16px;
   text-align: left;
   visibility: hidden;
   width: ${(props) => (props.newLine ? "180px" : "160px")};

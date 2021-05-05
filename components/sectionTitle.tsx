@@ -12,6 +12,7 @@ const Title = styled.h4`
   margin-top: 45px;
 
   @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 32px;
     margin-top: 30px;
   }
 `;
@@ -23,7 +24,7 @@ const SmallerTitle = styled(Title)`
 
 const Subtitle = styled.p`
   line-height: 27px;
-  color: #7483ab;
+  color: ${({ theme }) => theme.grayScale.g5};
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
