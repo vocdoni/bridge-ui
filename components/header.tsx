@@ -57,7 +57,7 @@ const BetaLabel = styled.div`
 
 const ListContainer = styled.div`
   display: flex;
-  width: 1440px;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 
@@ -107,7 +107,7 @@ const VoiceLink = styled.a`
 
 const ClickableLink = styled.a`
   display: flex;
-  padding: ${({ theme }) => "10px " + theme.margins.desktop.horizontal};
+  padding: 10px 38px 10px 0;
   text-decoration: none;
   font-family: Manrope;
   font-style: normal;

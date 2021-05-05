@@ -160,7 +160,6 @@ const GrayRectangle = styled.div`
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.homepageRectangle.c1};
-  max-width: 1248px;
   width: 100%;
   min-height: 161px;
   border-radius: 16px;
