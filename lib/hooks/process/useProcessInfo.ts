@@ -22,23 +22,39 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
         // this is supported for single choice multiquestion voting
         // we will need to add more complex logic to parse results
         // for different type of voting
-        resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
-          const choices = voteResults.map(({ title, votes }) => {
-            const totalSupply = BigNumber.from(token.totalSupply.hex || token.totalSupply);
-            const percentage = votes.mul(100).div(totalSupply);
-            const vote = new TokenAmount(votes, token.decimals);
+        if (info.parameters.envelopeType.hasEncryptedVotes) {
+          resultsSanitized.questions = info.metadata.questions.map(
+            ({ description, title, choices }) => {
+              const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
+                title: choiceTitle.default,
+                percentage: "0.00",
+              }));
+              return {
+                title: title.default,
+                description: description.default,
+                choices: choicesFormatted,
+              };
+            }
+          );
+        } else {
+          resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
+            const choices = voteResults.map(({ title, votes }) => {
+              const totalSupply = BigNumber.from(token.totalSupply.hex || token.totalSupply);
+              const percentage = votes.mul(100).div(totalSupply);
+              const vote = new TokenAmount(votes, token.decimals);
+              return {
+                title: title.default,
+                votes: `${vote.toString()} ${token.symbol}`,
+                percentage: Number(percentage).toFixed(2),
+              };
+            });
             return {
               title: title.default,
-              votes: `${vote.toString()} ${token.symbol}`,
-              percentage: Number(percentage).toFixed(2),
+              description: info.metadata.questions[i].description.default,
+              choices,
             };
           });
-          return {
-            title: title.default,
-            description: info.metadata.questions[i].description.default,
-            choices,
-          };
-        });
+        }
       } catch (e) {
         resultsSanitized.questions = info.metadata.questions.map(
           ({ description, title, choices }) => {

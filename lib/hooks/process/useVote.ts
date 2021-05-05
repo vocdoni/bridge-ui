@@ -82,7 +82,7 @@ export const useVote = (process: ProcessInfo) => {
 
       if (process.parameters.envelopeType.hasEncryptedVotes) {
         const keys = await VotingApi.getProcessKeys(process.id, pool);
-        envelopParams["processKey"] = keys;
+        envelopParams["processKeys"] = keys;
       }
 
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
