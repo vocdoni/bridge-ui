@@ -1,5 +1,18 @@
 export const featuredTokens = {
-  mainnet: [],
+  mainnet: [
+    "0xa117000000f279d81a1d3cc75430faa017fa5a2e", // ANT
+    "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", // UNI
+    "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9", // AAVE
+    "0x2aec18c5500f21359ce1bea5dc1777344df4c0dc", // FTT
+    "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0", // MATIC
+    "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
+    "0xc00e94cb662c3520282e6f5717214004a7f26888", // COMP
+    "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f", // SNX
+    "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2", // SUSHI
+    "0x0d8775f648430679a709e98d2b0cb6250d2887ef", // BAT
+    "0x35a9b440da4410dd63df8c54672b728970560328", // MANA
+    "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
+  ],
   goerli: [
     "0x2b7222146a805bba0dbb61869c4b3a03209dffba", // VOCB
     "0xf7a702d8f197e6d510eaf740998c2029744078b5", // AVT
