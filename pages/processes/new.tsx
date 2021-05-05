@@ -380,7 +380,7 @@ const NewProcessPage = () => {
         <FieldRow>
           <FieldRowLeftSection>
             <SectionTitle
-              title="Proposal Title"
+              title="Title"
               subtitle="Short name to identify the process"
               smallerTitle
             />
