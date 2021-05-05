@@ -35,13 +35,11 @@ export const TokenList = styled.div`
 
 export const LightText = styled.p`
   color: ${({ theme }) => theme.grayScale.g5};
+  font-size: 18px;
 `;
 
 export const VoteSectionContainer = styled.div`
   margin-bottom: 60px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-  }
 `;
 
 // MAIN COMPONENT
