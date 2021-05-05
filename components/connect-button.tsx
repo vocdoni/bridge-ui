@@ -8,15 +8,6 @@ import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
 import { CONNECTED_WALLET_ICON } from "../lib/constants";
 
-const ButtonContainer = styled.div`
-  margin: 15px auto;
-  width: 300px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    width: 100%;
-    text-align: center;
-  }
-`;
-
 const ConnectWalletButton = styled.div`
   display: flex;
   flex-direction: row;
@@ -24,7 +15,6 @@ const ConnectWalletButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  margin-top: 15px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 600;
   font-size: 16px;
@@ -57,8 +47,7 @@ const ConnectedWalletButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  margin-right: 60px;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
+  color: ${({ theme }) => theme.blackAndWhite.b1};
   font-weight: 600;
   font-size: 16px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
@@ -68,7 +57,6 @@ const ConnectedWalletButton = styled.div`
   cursor: pointer;
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    
   }
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
@@ -80,7 +68,6 @@ const ConnectedWalletIcon = styled.div`
   position: asbsolute;
   width: 24px;
   height: 24px;
-  margin-right: 10px;
 `;
 
 const TextLink = styled.p`
@@ -94,14 +81,16 @@ const TextLink = styled.p`
   }
 `;
 
+const AddressText = styled.span`
+  margin-left: 10px;
+`;
+
 const WalletAddress = ({ account }) => {
   return (
-    <ButtonContainer>
-      <ConnectedWalletButton>
-        <ConnectedWalletIcon />
-        {account && shortAddress(account)}
-      </ConnectedWalletButton>
-    </ButtonContainer>
+    <ConnectedWalletButton>
+      <ConnectedWalletIcon />
+      <AddressText>{account && shortAddress(account)}</AddressText>
+    </ConnectedWalletButton>
   );
 };
 
@@ -161,11 +150,7 @@ export const ConnectButton = () => {
     return <WalletAddress account={account} />;
   }
 
-  return (
-    <ButtonContainer>
-      <ConnectWalletButton onClick={handleButtonClick}>{label}</ConnectWalletButton>
-    </ButtonContainer>
-  );
+  return <ConnectWalletButton onClick={handleButtonClick}>{label}</ConnectWalletButton>;
 };
 
 export const ConnectTextButton = () => {

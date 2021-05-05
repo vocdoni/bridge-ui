@@ -39,6 +39,7 @@ const Container = styled.div`
   }
   @media ${({ theme }) => theme.screens.mobileL} {
     max-width: calc(100% - 2em);
+    min-width: unset;
   }
 `;
 
@@ -49,6 +50,12 @@ const Card = styled.div`
   min-height: 164px;
   box-sizing: border-box;
 `;
+
+const StyledVoteCard = styled(Card)`
+  @media ${({ theme }) => theme.screens.mobileL} {
+    flex-direction: column;
+  }
+`
 
 const TokenLogo = styled.img`
   width: 100%;
@@ -239,6 +246,7 @@ const VoteTokenLogo = styled.img`
 const TokenDescription = styled.div`
   display: inline;
   padding-left: 16px;
+  font-size: 18px;
 `;
 
 const VoteSymbol = styled.h4`
@@ -250,16 +258,20 @@ const VoteSymbol = styled.h4`
   font-weight: 500;
   font-size: 29px;
   letter-spacing: 0.01em;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    padding-top: 0;
+  }
 `;
 
 const VoteName = styled.p`
-  height: 20px;
+  min-height: 20px;
   margin-top: 0px;
   margin-bottom: 0px;
   padding-top: 4px;
   color: ${({ theme }) => theme.grayScale.g5};
   letter-spacing: 0.01em;
-  font-size: 18;
+  font-size: 18px;
 `;
 
 const ProposalTitle = styled.p`
@@ -277,7 +289,7 @@ const ProposalTitle = styled.p`
 const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, name, symbol, children }, ref) => {
     return (
-      <Card onClick={onClick} ref={ref}>
+      <StyledVoteCard onClick={onClick} ref={ref}>
         <CardHeader>
           <div>
             <VoteTokenLogo src={icon} onError={loadFallback} />
@@ -288,7 +300,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
           </TokenDescription>
         </CardHeader>
         <ProposalTitle>{children}</ProposalTitle>
-      </Card>
+      </StyledVoteCard>
     );
   }
 );

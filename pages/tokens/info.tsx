@@ -83,6 +83,12 @@ const EmptySection = styled.div`
   background: #eef4fb;
   border-radius: 13px;
   text-align: center;
+  font-size: 18px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    padding: 0;
+    text-align: unset;
+  }
 `;
 
 const Address = styled.h4`
