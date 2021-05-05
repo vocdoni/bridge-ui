@@ -12,6 +12,12 @@ export interface VoteStatus {
   registered: boolean;
 }
 
+export interface VoteInfo {
+  registered: boolean;
+  date?: Date;
+  block?: number;
+}
+
 const INITIAL_STATE = {
   submitting: false,
   choices: [],
@@ -30,11 +36,13 @@ export type StatusAction = ReturnType<typeof updateStatus>;
 export const reducer = (state: VoteStatus, action: StatusAction) => {
   switch (action.type) {
     case "UPDATE_STATUS":
-      state = {
+      console.log(JSON.stringify(state, null, 2));
+      const new_state = {
         ...state,
         ...action.status,
       };
-      return state;
+      console.log(JSON.stringify(new_state, null, 2));
+      return new_state;
     default:
       return state;
   }
@@ -49,22 +57,20 @@ export const useVote = (process: ProcessInfo) => {
 
   const nullifier = useMemo(() => {
     if (process?.id) return VotingApi.getSignedVoteNullifier(wallet?.account || "", process.id);
-  }, [process?.id]);
+  }, [process?.id, wallet?.account]);
 
-  const updateStatus = async (processId) => {
+  const updateVoteInfo = async (processId): Promise<VoteInfo> => {
     const pool = await poolPromise;
 
-    const voted = VotingApi.getEnvelopeStatus(processId, nullifier, pool);
+    const voted = await VotingApi.getEnvelopeStatus(processId, nullifier, pool);
     return voted;
   };
 
-  const voteInfo = useSWR([process?.id, nullifier, wallet], updateStatus, {
-    isPaused: () => !process?.id,
-  });
+  const voteInfo = useSWR([process?.id, nullifier, wallet], updateVoteInfo);
 
   useEffect(() => {
     dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
-  }, [process, dispatch]);
+  }, [process, dispatch, wallet?.account]);
 
   const onSubmitVote = async (process, proof): Promise<void> => {
     try {

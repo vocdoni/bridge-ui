@@ -129,6 +129,10 @@ const ProcessPage = () => {
             disabled={!isConnected ? false : !canVote || !questionsFilled}
             onClick={onVoteSubmit}
           >
+            {console.log("--------------------------------")}
+            {console.log("Already voted? " + alreadyVoted)}
+            {console.log("Vote status registered? " + voteStatus?.registered)}
+            {console.log("status registered? " + status.registered)}
             {status.submitting ? (
               <Spinner />
             ) : !isConnected ? (
