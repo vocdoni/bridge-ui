@@ -51,6 +51,7 @@ const WhiteSection = styled.div`
 const RowSummary = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
 
   @media ${({ theme }) => theme.screens.tablet} {
@@ -60,6 +61,8 @@ const RowSummary = styled.div`
 `;
 
 const Info = styled.div`
+  padding: 0 20px;
+
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: row;
     min-height: 80px;

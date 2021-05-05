@@ -52,7 +52,7 @@ const Card = styled.div`
 `;
 
 const StyledVoteCard = styled(Card)`
-  @media ${({ theme }) => theme.screens.mobileL} {
+  @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
   }
 `
