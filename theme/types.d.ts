@@ -47,6 +47,9 @@ export interface Colors extends Partial<Colors> {
   placeholderInputText: {
     c1: Color;
   };
+  headerAdviceText: {
+    c1: Color;
+  };
   gradients: {
     primary: {
       mg1: {

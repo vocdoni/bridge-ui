@@ -47,6 +47,9 @@ export const colors: Colors = {
   placeholderInputText: {
     c1: "#97A8DC",
   },
+  headerAdviceText: {
+    c1: "#5B72CC",
+  },
   gradients: {
     primary: {
       mg1: {

@@ -63,7 +63,7 @@ const HeaderAdviceText = styled.p`
   text-align: center;
   font-weight: 500;
   font-size: 16px;
-  color: #5B72CC;
+  color: ${({ theme }) => theme.headerAdviceText.c1};
 `;
 
 const Row = styled.div`
