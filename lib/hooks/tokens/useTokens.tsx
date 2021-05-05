@@ -1,11 +1,10 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
 import useSWR from "swr";
 
 import { getTokenInfo } from "../../api";
 import { TokenInfo } from "../../types";
 import { useMessageAlert } from "./../message-alert";
-import useLocalStorage from "../useLocalStorage";
 
 const UseTokenContext = React.createContext<{
   currentTokens: Partial<TokenInfo>[];
@@ -13,7 +12,7 @@ const UseTokenContext = React.createContext<{
   resolveTokenInfo: (address: string) => Promise<Partial<TokenInfo>>;
   refreshTokenInfo: (address: string) => Promise<TokenInfo>;
 }>({
-  currentTokens: new Array(),
+  currentTokens: [],
   updateTokens: () => undefined,
   resolveTokenInfo: () => Promise.reject(new Error("Not initialized")),
   refreshTokenInfo: () => Promise.reject(new Error("Not initialized")),
@@ -77,7 +76,7 @@ export function useTokens(addresses: string[]) {
 }
 
 export function UseTokenProvider({ children }) {
-  const [tokens, setTokens] = useLocalStorage("voting:tokens", []);
+  const [tokens, setTokens] = useState([]);
 
   const { poolPromise } = usePool();
 
