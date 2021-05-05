@@ -23,7 +23,7 @@ module.exports = {
   BOOTNODES_URL: process.env.BOOTNODES_URL || "https://bootnodes.vocdoni.net/gateways.dev.json",
 
   // ANALYTICS
-  ANALYTICS_KEY: "4ohZSOqAi2Wy0pDuzFPB7fDN5XirRjsq",
+  ANALYTICS_KEY: "gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa",
 };
 
 console.log("Building the frontend with ENV:", module.exports);
