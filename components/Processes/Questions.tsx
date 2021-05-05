@@ -7,6 +7,7 @@ import {
   QuestionNumber,
   QuestionOptions,
   QuestionTitle,
+  OptionSubtitle,
   OptionLabel,
   Radio,
   OptionTitleContainer,
@@ -30,9 +31,9 @@ const Option = ({ choice, onChoiceSelect, questionId, checked, canVote }) => (
     )}
     <OptionTitleContainer>
       <OptionTitle>{choice.title}</OptionTitle>
-      <OptionTitle>
+      <OptionSubtitle>
         {choice.votes} {choice.token}
-      </OptionTitle>
+      </OptionSubtitle>
     </OptionTitleContainer>
   </OptionLabel>
 );

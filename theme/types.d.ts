@@ -44,6 +44,9 @@ export interface Colors extends Partial<Colors> {
   homepageRectangle: {
     c1: Color;
   };
+  placeholderInputText: {
+    c1: Color;
+  };
   gradients: {
     primary: {
       mg1: {
@@ -142,6 +145,11 @@ export interface Colors extends Partial<Colors> {
       };
     };
     cardGradient: {
+      a: Color;
+      c1: Color;
+      c2: Color;
+    };
+    optionResults: {
       a: Color;
       c1: Color;
       c2: Color;

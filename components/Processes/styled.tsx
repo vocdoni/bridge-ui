@@ -122,7 +122,7 @@ export const QuestionOptions = styled.div`
 
 export const OptionLabel = styled.label`
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
   align-items: center;
 `;
 
@@ -148,6 +148,14 @@ export const OptionTitle = styled.p`
   margin: 0;
   font-size: 20px;
   font-weight: 500;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+`;
+
+export const OptionSubtitle = styled.p`
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.grayScale.g5};
 `;
 
 export const ButtonContainer = styled.div`
@@ -163,7 +171,7 @@ export const ChoiceInfo = styled.div`
   display: flex;
   justify-content: center;
   background: ${({ theme }) =>
-    `linear-gradient(142.6deg, ${theme.gradients.primary.mg1_soft.c3}33, ${theme.gradients.primary.mg1.c3}D4)`};
+    `linear-gradient(${theme.gradients.optionResults.a}, ${theme.gradients.optionResults.c1} 10.91%, ${theme.gradients.optionResults.c2} 87.74%)`};
 `;
 
 export const Percentage = styled.h5`

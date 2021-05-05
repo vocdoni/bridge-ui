@@ -9,7 +9,7 @@ import { LoadingAlert } from "./loading-alert";
 const MainContent = styled.div`
   flex: 1;
   width: 1249px;
-  margin-top: 77px;
+  margin-top: 100px;
   margin-bottom: 50px;
   margin-left: auto;
   margin-right: auto;

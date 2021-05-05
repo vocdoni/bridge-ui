@@ -23,24 +23,27 @@ export const PrimaryButton = styled(Button)`
   padding: 11px 20px 12px;
   background: linear-gradient(
     ${({ theme }) => theme.gradients.primary.mg1.a},
-    ${({ theme }) => theme.gradients.primary.mg1.c1},
-    ${({ theme }) => theme.gradients.primary.mg1.c2}
+    ${({ theme }) => theme.gradients.primary.mg1.c1} 1.46%,
+    ${({ theme }) => theme.gradients.primary.mg1.c2} 100%
   );
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-size: 16px;
   font-weight: 500;
+  font-family: Manrope;
   line-height: 22px;
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       ${({ theme }) => theme.gradients.primary.mg1_soft.a},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c1},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c1} 1.46%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 99.99%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
     );
+    transition: 300ms;
+    transition-timing-function: ease-in-out;
   
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
@@ -63,6 +66,8 @@ export const SecondaryButton = styled(Button)`
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    transition: 300ms;
+    transition-timing-function: ease-in-out;
   
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
