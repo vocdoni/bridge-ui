@@ -36,12 +36,10 @@ export type StatusAction = ReturnType<typeof updateStatus>;
 export const reducer = (state: VoteStatus, action: StatusAction) => {
   switch (action.type) {
     case "UPDATE_STATUS":
-      console.log(JSON.stringify(state, null, 2));
       const new_state = {
         ...state,
         ...action.status,
       };
-      console.log(JSON.stringify(new_state, null, 2));
       return new_state;
     default:
       return state;
