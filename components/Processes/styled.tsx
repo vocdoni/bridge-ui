@@ -72,7 +72,7 @@ export const ProcessDataValue = styled.p`
 
 export const QuestionContainer = styled.div`
   width: 1266px;
-  height: 328px;
+  min-height: 328px;
 
   background: #ffffff;
   border: 1px solid #eff1f7;
@@ -81,6 +81,7 @@ export const QuestionContainer = styled.div`
   border-radius: 13px;
   display: flex;
   margin-bottom: 50px;
+  padding: 16px 0px 16px 0px;
 `;
 
 export const QuestionInformation = styled.div`
@@ -103,7 +104,6 @@ export const QuestionTitle = styled.p`
   font-weight: 500;
   display: flex;
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-bottom: 10px;
   padding-top: 5px;
 `;
 export const QuestionDescription = styled.div`
