@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect } from "react";
-import { Contract, Provider, setMulticallAddress } from "ethers-multicall";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Contract, Provider } from "ethers-multicall";
 import { useWallet } from "use-wallet";
 import useSWR from "swr";
 import { providers } from "ethers";
@@ -10,7 +10,6 @@ import { TokenInfo } from "../../types";
 
 import { usePool } from "@vocdoni/react-hooks";
 import { getTokenInfo } from "../../api";
-import useLocalStorage from "../useLocalStorage";
 
 interface TokenBalance extends Partial<TokenInfo> {
   balance: string;
@@ -42,7 +41,7 @@ export function UseUserTokens({ children }) {
   const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
   const { poolPromise } = usePool();
-  const [tokens] = useLocalStorage("voting:tokens", []);
+  const [tokens] = useState([]);
 
   const resolveTokenInfo = useCallback(
     async (address: string) => {
