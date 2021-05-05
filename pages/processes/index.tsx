@@ -52,7 +52,6 @@ const ProcessPage = () => {
   const census = useCensusProof(token, process?.parameters.sourceBlockHeight);
   const { status, updateStatus, voteInfo, vote } = useVote(process);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
-  results
   const wallet = useWallet();
 
   const isConnected = !!wallet.account;
