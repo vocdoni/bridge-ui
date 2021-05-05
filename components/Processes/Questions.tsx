@@ -25,7 +25,7 @@ const Option = ({ choice, onChoiceSelect, questionId, checked, canVote }) => (
       />
     ) : (
       <ChoiceInfo>
-        <Percentage>{choice.percentage + "%"}</Percentage>
+        <Percentage>{choice.percentage === "N/A" ? "Locked" : `${choice.percentage}%`}</Percentage>
       </ChoiceInfo>
     )}
     <OptionTitleContainer>
