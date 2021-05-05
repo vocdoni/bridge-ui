@@ -44,6 +44,9 @@ export const colors: Colors = {
   homepageRectangle: {
     c1: "#EEF4FB",
   },
+  placeholderInputText: {
+    c1: "#97A8DC",
+  },
   gradients: {
     primary: {
       mg1: {
@@ -145,6 +148,11 @@ export const colors: Colors = {
       a: "107.79deg",
       c1: "#FFFFFF",
       c2: "#DEE4FF",
+    },
+    optionResults: {
+      a: "105.48deg",
+      c1: "#8FC5EF",
+      c2: "#9D9BFF",
     },
   },
 };

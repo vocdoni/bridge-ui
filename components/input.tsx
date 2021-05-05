@@ -10,6 +10,9 @@ const TextInput = styled.input<{ widthValue: number }>`
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
+  ::placeholder {
+    color: ${({ theme }) => theme.placeholderInputText.c1};
+  }
 `;
 
 export const DescriptionInput = styled.textarea`
@@ -24,6 +27,9 @@ export const DescriptionInput = styled.textarea`
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   resize: none;
+  ::placeholder {
+    color: ${({ theme }) => theme.placeholderInputText.c1};
+  }
 `;
 
 export default TextInput;
