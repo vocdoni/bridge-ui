@@ -36,11 +36,11 @@ export type StatusAction = ReturnType<typeof updateStatus>;
 export const reducer = (state: VoteStatus, action: StatusAction) => {
   switch (action.type) {
     case "UPDATE_STATUS":
-      const new_state = {
+      state = {
         ...state,
         ...action.status,
       };
-      return new_state;
+      state;
     default:
       return state;
   }
@@ -64,7 +64,9 @@ export const useVote = (process: ProcessInfo) => {
     return voted;
   };
 
-  const voteInfo = useSWR([process?.id, nullifier, wallet], updateVoteInfo);
+  const voteInfo = useSWR([process?.id, nullifier], updateVoteInfo, {
+    isPaused: () => !process?.id || !wallet.account,
+  });
 
   useEffect(() => {
     dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
