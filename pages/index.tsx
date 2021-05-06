@@ -71,17 +71,9 @@ const HeaderSubtitle = styled.p`
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
-  width: 526px;
-  margin-bottom: 14px;
-  text-align: center;
   line-height: 150%;
   text-align: center;
   padding: 0 32px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    font-size: 14px;
-    width: 100%;
-    padding: 0 50px;
-  }
 `;
 
 const HeaderAdvice = styled.p`
