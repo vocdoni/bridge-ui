@@ -14,23 +14,33 @@ const Container = styled.div`
   border-radius: 13px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border: 1px solid ${({ theme }) => theme.grayScale.g2};
-
-  &:hover {
-    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    background: linear-gradient(
-      ${({ theme }) => theme.gradients.cardGradient.a},
-      ${({ theme }) => theme.gradients.cardGradient.c1}66 1.46%,
-      ${({ theme }) => theme.gradients.cardGradient.c2}66 100%
-    );
-    transition: 300ms;
-    transition-timing-function: ease-in-out;
-  }
-
   max-width: calc(33.3333333% - 1em);
   min-width: 395px;
   max-height: 164px;
-  left: 176px;
-  top: 633px;
+  position: relative;
+  z-index: 1;
+
+  &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    background: linear-gradient(
+      ${({ theme }) => theme.gradients.cardGradient.a},
+      ${({ theme }) => theme.gradients.cardGradient.c1},
+      ${({ theme }) => theme.gradients.cardGradient.c2}66
+    );
+    transition: opacity 300ms linear;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin: 10px;
