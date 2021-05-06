@@ -6,7 +6,7 @@ import { getProof } from "../../api";
 import { TokenInfo } from "../../types";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../constants";
 
-export const useCensusProof = (token: Partial<TokenInfo>, targetBlock?: number) => {
+export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) => {
   const { poolPromise } = usePool();
   const wallet = useWallet();
 

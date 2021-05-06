@@ -31,9 +31,9 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
-import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
+import { getProof } from "../../lib/api";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -178,7 +178,6 @@ const NewProcessPage = () => {
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
   const token = useToken(tokenAddress);
-  const census = useCensusProof(token);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
@@ -266,7 +265,7 @@ const NewProcessPage = () => {
     }
     setMetadata(Object.assign({}, metadata));
   };
-  const onSubmit = async (proof) => {
+  const onSubmit = async () => {
     try {
       metadata.questions.map(handleValidation);
     } catch (error) {
@@ -336,6 +335,13 @@ const NewProcessPage = () => {
       const blockCount = endBlock - startBlock;
 
       const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+      const proof = await getProof({
+        account: wallet.account,
+        token: token.address,
+        pool,
+        block: sourceBlockHeight,
+        tokenBalancePosition: token.balanceMappingPosition,
+      })
 
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
@@ -518,7 +524,7 @@ const NewProcessPage = () => {
         <FieldRowLeftSection>
           <RowContinue>
             {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
             ) : !isMobile ? (
               <ConnectButton />
             ) : null}
