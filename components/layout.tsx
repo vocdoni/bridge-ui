@@ -8,12 +8,10 @@ import { LoadingAlert } from "./loading-alert";
 
 const MainContent = styled.div`
   flex: 1;
-  margin: auto;
   margin-top: 100px;
   margin-bottom: 50px;
   box-sizing: border-box;
   padding: 0 11%;
-  max-width: 1266px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: 110px;
