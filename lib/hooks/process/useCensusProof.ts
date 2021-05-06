@@ -4,41 +4,35 @@ import useSWR from "swr";
 import { useWallet } from "use-wallet";
 import { getProof } from "../../api";
 import { TokenInfo } from "../../types";
-import { ETH_BLOCK_HEIGHT_PADDING } from "../../constants";
 
 export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) => {
   const { poolPromise } = usePool();
   const wallet = useWallet();
 
-  const fetchProof = async (
-    account: string,
-    token: Partial<TokenInfo>,
-    poolPromise: Promise<GatewayPool>,
-    targetBlock?: number
-  ) => {
-    try {
-      const pool = await poolPromise;
-
-      if (!targetBlock) {
-        targetBlock = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
-      }
-
-      const data = await getProof({
-        account,
-        token: token.address,
-        pool,
-        block: targetBlock,
-        tokenBalancePosition: token.balanceMappingPosition,
-      });
-      if (data && "storageProof" in data) return data;
-    } catch (e) {
-      console.log("Error in useCensusProof: ", e.message);
-    }
-  };
-
-  const { data } = useSWR([wallet.account, token, poolPromise, targetBlock], fetchProof, {
-    isPaused: () => !wallet.account || !token || !poolPromise,
+  const { data, error } = useSWR([wallet?.account, token?.address, token?.balanceMappingPosition, poolPromise, targetBlock], fetchProof, {
+    isPaused: () => !(wallet?.account) || !(token?.address),
   });
 
-  return data;
+  return { proof: data, error };
+};
+
+const fetchProof = async (
+  account: string,
+  tokenAddress: string,
+  balanceMappingPosition: number,
+  poolPromise: Promise<GatewayPool>,
+  targetBlock: number
+) => {
+  return poolPromise
+    .then(pool => getProof({
+      account,
+      token: tokenAddress,
+      block: targetBlock,
+      balanceMappingPosition,
+      pool,
+    }))
+    .then(data => {
+      if (data && "storageProof" in data) return data;
+      return null;
+    });
 };

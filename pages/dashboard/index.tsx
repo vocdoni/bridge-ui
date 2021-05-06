@@ -64,7 +64,7 @@ const DashboardPage = () => {
         .catch((err) => console.error(err));
     };
 
-    const interval = setInterval(() => updateBlockHeight, 1000 * 15);
+    const interval = setInterval(() => updateBlockHeight(), 1000 * 15);
     updateBlockHeight();
 
     // Done

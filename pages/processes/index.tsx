@@ -49,7 +49,7 @@ const ProcessPage = () => {
     token,
     ...datesInfo,
   });
-  const proof = useCensusProof(token, process?.parameters?.sourceBlockHeight);
+  const { proof, error: proofError } = useCensusProof(token, process?.parameters?.sourceBlockHeight);
   const { status, updateStatus, voteInfo, vote } = useVote(process);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();

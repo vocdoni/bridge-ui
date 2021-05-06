@@ -334,13 +334,15 @@ const NewProcessPage = () => {
       ]);
       const blockCount = endBlock - startBlock;
 
+      // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
+      // Otherwise, proofs will not match
       const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
       const proof = await getProof({
         account: wallet.account,
         token: token.address,
-        pool,
         block: sourceBlockHeight,
-        tokenBalancePosition: token.balanceMappingPosition,
+        balanceMappingPosition: token.balanceMappingPosition,
+        pool,
       })
 
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {

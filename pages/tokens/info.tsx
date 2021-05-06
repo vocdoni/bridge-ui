@@ -156,7 +156,7 @@ const TokenPage = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => updateBlockHeight, 1000 * 13);
+    const interval = setInterval(() => updateBlockHeight(), 1000 * 13);
     updateBlockHeight();
 
     // Done

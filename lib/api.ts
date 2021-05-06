@@ -12,7 +12,7 @@ export interface ProofParameters {
   token: string;
   pool: GatewayPool;
   block: number;
-  tokenBalancePosition: number;
+  balanceMappingPosition: number;
 }
 
 export async function getTokenProcesses(
@@ -65,11 +65,11 @@ export const getProof = async ({
   token,
   pool,
   block,
-  tokenBalancePosition,
+  balanceMappingPosition,
 }: ProofParameters) => {
   try {
     const balance = await balanceOf(token, account, pool);
-    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
+    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, balanceMappingPosition);
     const result = await CensusErc20Api.generateProof(
       token,
       [balanceSlot],
