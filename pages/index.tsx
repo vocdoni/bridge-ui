@@ -43,8 +43,27 @@ const HeaderTitle = styled.h4`
 
 const HeaderSubtitle = styled.p`
   width: 526px;
+  margin-bottom: 14px;
   text-align: center;
   line-height: 150%;
+`;
+
+const HeaderAdvice = styled.p`
+  width: 755px;
+  height: 32px;
+  margin-top: 0px;
+  text-align: center;
+  background: ${({ theme }) => theme.blackAndWhite.w1}33;
+  backdrop-filter: blur(24px);
+  border-radius: 30px;
+`;
+
+const HeaderAdviceText = styled.p`
+  margin-top: 5px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  color: ${({ theme }) => theme.headerAdviceText.c1};
 `;
 
 const Row = styled.div`
@@ -122,9 +141,13 @@ const IndexPage = () => {
           Submit proposals for any ERC20 token and vote on them using a decentralized end-to-end
           verifiable layer 2.
           <br />
-          Be aware proposals are only enforceable depending on the governance model of each
-          protocol.
         </HeaderSubtitle>
+        <HeaderAdvice>
+          <HeaderAdviceText>
+            Be aware proposals are only enforceable depending on the governance model of each
+            protocol.
+          </HeaderAdviceText>
+        </HeaderAdvice>
         {/* NOTE temporarily removed this section, as it is not part of landing page's must 
         haves. VR 23-04-2021 */}
         {/* <SearchRow>

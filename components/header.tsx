@@ -117,7 +117,7 @@ const ClickableLink = styled.a`
   margin-right: 38px;
   text-decoration: none;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
     color: ${({ theme }) => theme.primary.p1};

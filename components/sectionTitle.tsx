@@ -23,6 +23,7 @@ const Subtitle = styled.p`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
+  margin-top: -9px;
 `;
 
 type TitleProps = {
