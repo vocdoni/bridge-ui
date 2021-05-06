@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useWallet } from "use-wallet";
 import { getProof } from "../../api";
 import { TokenInfo } from "../../types";
+import { ETH_BLOCK_HEIGHT_PADDING } from "../../constants";
 
 export const useCensusProof = (token: Partial<TokenInfo>, block?: number) => {
   const { poolPromise } = usePool();
@@ -18,7 +19,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, block?: number) => {
       const pool = await poolPromise;
 
       if (!block) {
-        block = await pool.provider.getBlockNumber();
+        block = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
       }
 
       const data = await getProof({
