@@ -55,7 +55,7 @@ const StyledVoteCard = styled(Card)`
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
   }
-`
+`;
 
 const TokenLogo = styled.img`
   width: 100%;
@@ -186,16 +186,10 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
         <CardBody>
           <TokenBodyHeader>
             <Symbol>{name}</Symbol>
-            {/**
-             * TODO: GET PRICE
-             */}
-            <span>$987M</span>
+            <Cap>{tokenCap?.length ? `${abbreviatedTokenAmount(tokenCap)}` : "N/A"}</Cap>
           </TokenBodyHeader>
 
           <Name>{children}</Name>
-          {/**
-           * TODO: GET ACTIVE PROPOSALS
-           */}
 
           <ActiveProposalsText>7 active proposals</ActiveProposalsText>
         </CardBody>

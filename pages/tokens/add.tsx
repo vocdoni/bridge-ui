@@ -15,6 +15,7 @@ import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
 
 const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -27,14 +28,18 @@ const RowSummary = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
     align-items: center;
-    text-align: center;
   }
 `;
 
 const Info = styled.div`
   max-width: 25%;
   @media ${({ theme }) => theme.screens.tablet} {
+    max-width: 100%;
     flex-direction: row;
+    min-height: 80px;
+    width: 180px;
+    margin: 0 auto;
+    word-break: break-word;
   }
 `;
 
@@ -79,12 +84,62 @@ const WhiteSection = styled.div`
   padding: 80px 230px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    box-sizing: border-box;
+    padding: 10px 27px;
+  }
 `;
+
+const RegisterButton = ({ registeringToken, alreadyRegistered, address, onSubmit }) => (
+  <ButtonRow>
+    {registeringToken ? (
+      <Button>
+        <StyledSpinner />
+      </Button>
+    ) : alreadyRegistered ? (
+      <SecondaryButton href={address ? "/tokens/info#/" + address : ""}>
+        Token is already registered
+      </SecondaryButton>
+    ) : (
+      <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
+    )}
+  </ButtonRow>
+);
+
+const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
+  <>
+    <SectionTitle
+      smallerTitle={true}
+      title="Token contract details"
+      subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+    />
+    <RowSummary>
+      <Info>
+        <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
+        <Description>{symbol}</Description>
+      </Info>
+      <Info>
+        <TokenAttributeTitle>Token name</TokenAttributeTitle>
+        <Description>{name}</Description>
+      </Info>
+      <Info>
+        <TokenAttributeTitle>Total supply</TokenAttributeTitle>
+        <Description>{totalSupplyFormatted}</Description>
+      </Info>
+      <Info>
+        <TokenAttributeTitle>Token address</TokenAttributeTitle>
+        <Address>{address}</Address>
+      </Info>
+    </RowSummary>
+  </>
+);
 
 // MAIN COMPONENT
 const TokenAddPage = () => {
   const wallet = useWallet();
   const signer = useSigner();
+
+  const isMobile = useIsMobile();
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<string>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
@@ -187,50 +242,30 @@ const TokenAddPage = () => {
         <br />
         <br />
 
-        {tokenInfo && (
+        {!isMobile ? (
           <>
-            <SectionTitle
-              smallerTitle={true}
-              title="Token contract details"
-              subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+            <TokenContainer {...tokenInfo} />
+            <RegisterButton
+              registeringToken={registeringToken}
+              alreadyRegistered={alreadyRegistered}
+              onSubmit={onSubmit}
+              address={tokenInfo?.address || ""}
             />
-            <RowSummary>
-              <Info>
-                <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
-                <Description>{tokenInfo?.symbol}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Token name</TokenAttributeTitle>
-                <Description>{tokenInfo?.name}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Total supply</TokenAttributeTitle>
-                <Description>{tokenInfo?.totalSupplyFormatted}</Description>
-              </Info>
-              <Info>
-                <TokenAttributeTitle>Token address</TokenAttributeTitle>
-                <Address>{tokenInfo?.address}</Address>
-              </Info>
-            </RowSummary>
-
-            <ButtonRow>
-              {registeringToken ? (
-                <Button>
-                  <StyledSpinner />
-                </Button>
-              ) : alreadyRegistered ? (
-                <SecondaryButton
-                  href={tokenInfo?.address ? "/tokens/info#/" + tokenInfo?.address : ""}
-                >
-                  Token is already registered
-                </SecondaryButton>
-              ) : (
-                <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
-              )}
-            </ButtonRow>
           </>
-        )}
+        ) : null}
       </WhiteSection>
+      <br />
+      {tokenInfo && isMobile ? (
+        <WhiteSection>
+          <TokenContainer {...tokenInfo} />
+          <RegisterButton
+            registeringToken={registeringToken}
+            alreadyRegistered={alreadyRegistered}
+            onSubmit={onSubmit}
+            address={tokenInfo?.address || ""}
+          />
+        </WhiteSection>
+      ) : null}
     </>
   );
 };

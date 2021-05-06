@@ -6,6 +6,16 @@ import TextInput from "./input";
 
 const SearchRow = styled.div`
   display: flex;
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+  }
+  `;
+  
+  const Button = styled(PrimaryButton)`
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+  }
 `;
 
 const Box = styled.div`
@@ -22,15 +32,13 @@ type SearchWidgetProps = {
 const SearchWidget = ({ onChange, onKeyDown, onClick }: SearchWidgetProps) => {
   return (
     <SearchRow>
-      <Box>
-        <TextInput
-          placeholder="ERC Token address..."
-          onKeyDown={onKeyDown}
-          onChange={onChange}
-          widthValue={664}
-        />
-      </Box>
-        <PrimaryButton onClick={onClick}>Check token</PrimaryButton>
+      <TextInput
+        placeholder="ERC Token address..."
+        onKeyDown={onKeyDown}
+        onChange={onChange}
+        widthValue={664}
+      />
+      <Button onClick={onClick}>Check Token</Button>
     </SearchRow>
   );
 };
