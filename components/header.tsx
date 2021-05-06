@@ -98,7 +98,7 @@ const ListItem = styled.div`
 
 const VoiceLink = styled.a`
   height: 50px;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -109,10 +109,8 @@ const ClickableLink = styled.a`
   display: flex;
   padding: 10px 38px 10px 0;
   text-decoration: none;
-  font-family: Manrope;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 28px;
+  font-size: 16px;
+  font-weight: 400;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
     color: ${({ theme }) => theme.primary.p1};
@@ -152,7 +150,7 @@ const Section = styled.span`
   font-family: Manrope;
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
+  font-size: 16px;
   color: #7483b2;
 `;
 
