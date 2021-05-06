@@ -33,7 +33,7 @@ const Container = styled.div`
       ${({ theme }) => theme.gradients.cardGradient.c1},
       ${({ theme }) => theme.gradients.cardGradient.c2}66
     );
-    transition: opacity 300ms linear;
+    transition: opacity 300ms ease-in-out;
     opacity: 0;
     z-index: -1;
   }

@@ -33,8 +33,17 @@ export const PrimaryButton = styled(Button)`
   font-weight: 500;
   font-family: Manrope;
   line-height: 22px;
+  position: relative;
+  z-index: 1;
 
-  &:hover {
+  &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px;
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       ${({ theme }) => theme.gradients.primary.mg1_soft.a},
@@ -42,9 +51,15 @@ export const PrimaryButton = styled(Button)`
       ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 99.99%,
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
     );
-    transition: 300ms;
-    transition-timing-function: ease-in-out;
-  
+    transition: opacity 300ms ease-in-out;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
+
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
   }
@@ -66,8 +81,7 @@ export const SecondaryButton = styled(Button)`
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    transition: 300ms;
-    transition-timing-function: ease-in-out;
+    transition: 300ms ease-in-out;
   
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;

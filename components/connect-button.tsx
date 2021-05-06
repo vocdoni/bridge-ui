@@ -24,8 +24,6 @@ const ConnectWalletButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 500;
   font-size: 16px;
@@ -34,7 +32,17 @@ const ConnectWalletButton = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-  &:hover {
+  position: relative;
+  z-index: 1;
+
+  &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px;
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       ${({ theme }) => theme.gradients.primary.mg1_soft.a},
@@ -42,9 +50,15 @@ const ConnectWalletButton = styled.div`
       ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 99.99%,
       ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
     );
-    transition: 300ms;
-    transition-timing-function: ease-in-out;
-    
+    transition: opacity 300ms ease-in-out;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
+
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
     text-align: center;
@@ -68,10 +82,10 @@ const ConnectedWalletButton = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
+  
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    transition: 300ms;
-    transition-timing-function: ease-in-out;
+    transition: 300ms ease-in-out;
     
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
