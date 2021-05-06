@@ -80,7 +80,6 @@ const RemoveButton = styled.div<{ marginTop: number }>`
   margin-top: ${({ marginTop }) => marginTop}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
-    margin-left: 0;
   }
 `;
 

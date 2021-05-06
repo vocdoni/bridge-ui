@@ -95,7 +95,7 @@ export const MinusContainer = styled.div`
   }
 
   @media ${({ theme }) => theme.screens.tablet} {
-    margin-right: 0;
+    margin-top: -70px;
   }
 `;
 
