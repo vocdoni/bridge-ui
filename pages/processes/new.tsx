@@ -33,6 +33,7 @@ import Tooltip from "../../components/tooltip";
 import { findMaxValue } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useToken } from "../../lib/hooks/tokens";
+import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -334,7 +335,7 @@ const NewProcessPage = () => {
       ]);
       const blockCount = endBlock - startBlock;
 
-      const evmBlockHeight = await pool.provider.getBlockNumber();
+      const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
 
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
@@ -352,7 +353,7 @@ const NewProcessPage = () => {
         costExponent: 10000,
         maxVoteOverwrites: 1,
         tokenAddress,
-        sourceBlockHeight: evmBlockHeight,
+        sourceBlockHeight,
         paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
       };
 
