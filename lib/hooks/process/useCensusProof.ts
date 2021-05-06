@@ -6,27 +6,28 @@ import { getProof } from "../../api";
 import { TokenInfo } from "../../types";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../constants";
 
-export const useCensusProof = (token: Partial<TokenInfo>, block?: number) => {
+export const useCensusProof = (token: Partial<TokenInfo>, targetBlock?: number) => {
   const { poolPromise } = usePool();
   const wallet = useWallet();
 
   const fetchProof = async (
     account: string,
     token: Partial<TokenInfo>,
-    poolPromise: GatewayPool
+    poolPromise: Promise<GatewayPool>,
+    targetBlock?: number
   ) => {
     try {
       const pool = await poolPromise;
 
-      if (!block) {
-        block = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+      if (!targetBlock) {
+        targetBlock = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
       }
 
       const data = await getProof({
         account,
         token: token.address,
         pool,
-        block,
+        block: targetBlock,
         tokenBalancePosition: token.balanceMappingPosition,
       });
       if (data && "storageProof" in data) return data;
@@ -35,8 +36,8 @@ export const useCensusProof = (token: Partial<TokenInfo>, block?: number) => {
     }
   };
 
-  const { data } = useSWR([wallet.account, token, poolPromise, process], fetchProof, {
-    isPaused: () => !wallet.account || !token || !poolPromise || !process,
+  const { data } = useSWR([wallet.account, token, poolPromise, targetBlock], fetchProof, {
+    isPaused: () => !wallet.account || !token || !poolPromise,
   });
 
   return data;

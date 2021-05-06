@@ -85,7 +85,6 @@ export const getProof = async ({
 
     return result.proof;
   } catch (error) {
-    console.log("Error on getProof: ", error.message);
     throw new Error(error.message);
   }
 };
@@ -94,9 +93,8 @@ export async function registerToken(token: string, pool: GatewayPool, signer: Si
   try {
     await CensusErc20Api.registerTokenAuto(token, signer, pool);
   } catch (err) {
-    console.log(err.message);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
-    throw new Error("The token internal details cannot be chacked");
+    throw new Error("The token internal details cannot be checked");
   }
 }
 
