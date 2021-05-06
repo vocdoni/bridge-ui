@@ -34,6 +34,7 @@ import { findMaxValue } from "../../lib/utils";
 import { useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof } from "../../lib/api";
+import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -372,6 +373,10 @@ const NewProcessPage = () => {
       setAlertMessage("The governance process has been successfully created", "success");
     } catch (err) {
       setSubmitting(false);
+
+      if (err?.message == NO_TOKEN_BALANCE) {
+        return setAlertMessage(NO_TOKEN_BALANCE)
+      }
 
       console.error(err);
       setAlertMessage("The governance process could not be created");

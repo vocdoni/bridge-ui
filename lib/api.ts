@@ -69,6 +69,8 @@ export const getProof = async ({
 }: ProofParameters) => {
   try {
     const balance = await balanceOf(token, account, pool);
+    if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE);
+
     const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, balanceMappingPosition);
     const result = await CensusErc20Api.generateProof(
       token,
@@ -80,6 +82,7 @@ export const getProof = async ({
     if (result == null || !result.proof) return undefined;
 
     const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
+    if (onChainBalance.isZero()) throw new Error(NO_TOKEN_BALANCE);
 
     if (!onChainBalance.eq(balance) || onChainBalance.eq(0)) return undefined;
 
