@@ -53,7 +53,7 @@ const HeaderAdvice = styled.p`
   height: 32px;
   margin-top: 0px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.24);
+  background: ${({ theme }) => theme.blackAndWhite.w1}33;
   backdrop-filter: blur(24px);
   border-radius: 30px;
 `;
