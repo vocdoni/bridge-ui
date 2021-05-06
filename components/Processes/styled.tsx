@@ -106,6 +106,8 @@ export const QuestionInformation = styled.div`
   width: 100%;
   @media ${({ theme }) => theme.screens.tablet} {
     padding: 0;
+    margin-top: 23px;
+    margin-left: 26px;
   }
 `;
 export const QuestionNumber = styled.p`
@@ -142,6 +144,7 @@ export const QuestionOptions = styled.div`
 
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
+    margin-left: 26px;
   }
 `;
 
