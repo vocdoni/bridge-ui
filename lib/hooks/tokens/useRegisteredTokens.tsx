@@ -9,6 +9,7 @@ interface RegisteredTokens {
   registeredTokens: string[];
   refreshRegisteredTokens: any;
   error?: string;
+  loading: boolean;
 }
 
 const UseRegisteredTokensContext = React.createContext<RegisteredTokens>(null);
@@ -44,7 +45,7 @@ export function UseRegisteredTokens({ children }) {
     return addresses;
   };
 
-  const { data, error, mutate } = useSWR("fetchTokens", fetchTokens);
+  const { data, error, mutate, isValidating: loading } = useSWR("fetchTokens", fetchTokens);
 
   useEffect(() => {
     if (error) setAlertMessage(error);
@@ -56,6 +57,7 @@ export function UseRegisteredTokens({ children }) {
         registeredTokens: data,
         refreshRegisteredTokens: mutate,
         error,
+        loading
       }}
     >
       {children}
