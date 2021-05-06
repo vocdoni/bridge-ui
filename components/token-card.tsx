@@ -25,7 +25,7 @@ const Container = styled.div`
     transition: 300ms;
   }
 
-  max-width: calc(33.3333333% - 1em);
+  max-width: 414px;
   min-width: 366px;
   min-height: 164px;
   left: 176px;
