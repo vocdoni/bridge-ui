@@ -15,6 +15,7 @@ import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
+import { ActionTypes, useModal } from "../../components/Modal/context";
 
 export const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -84,6 +85,8 @@ const WhiteSection = styled.div`
 const TokenAddPage = () => {
   const wallet = useWallet();
   const signer = useSigner();
+  const { dispatch } = useModal();
+
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<string>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
@@ -117,15 +120,14 @@ const TokenAddPage = () => {
       });
   };
 
+  const isConnected = wallet.connector || wallet.account;
+
   const onSubmit = useCallback(async () => {
     if (!tokenInfo) return;
-    if (!wallet.connector || !wallet.account) {
-      try {
-        //@TODO: When wallet modal PR is merged, open that modal here
-        await wallet.connect("injected");
-      } catch (e) {
-        return setAlertMessage("Web3 support is not available");
-      }
+    if (!isConnected) {
+      return dispatch({
+        type: ActionTypes.OPEN_WALLET_LIST,
+      });
     }
 
     try {
@@ -227,7 +229,9 @@ const TokenAddPage = () => {
                   Token is already registered
                 </SecondaryButton>
               ) : (
-                <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
+                <PrimaryButton onClick={onSubmit}>
+                  {!isConnected ? "Connect wallet" : "Register token"}
+                </PrimaryButton>
               )}
             </ButtonRow>
           </>
