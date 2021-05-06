@@ -25,7 +25,7 @@ const Container = styled.div`
     transition: 300ms;
   }
 
-  max-width: calc(33.3333333% - 1em);
+  max-width: 414px;
   min-width: 366px;
   min-height: 164px;
   left: 176px;
@@ -64,7 +64,6 @@ const TokenLogo = styled.img`
 
 const Symbol = styled.div`
   display: block;
-  width: 100%;
   font-family: Manrope;
   font-style: normal;
   font-weight: 500;
@@ -105,8 +104,6 @@ const ActiveProposals = styled.p`
 
 const Cap = styled.p`
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  position: absolute;
-  width: 320px;
   font-weight: 400;
   font-size: 16px;
   align-items: center;
