@@ -121,7 +121,6 @@ export const QuestionTitle = styled.p`
   font-weight: 500;
   display: flex;
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-bottom: 10px;
   padding-top: 5px;
   word-break: break-word;
 `;

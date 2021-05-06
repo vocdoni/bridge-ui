@@ -6,7 +6,7 @@ const Title = styled.h4`
   font-size: 38px;
   font-style: normal;
   font-weight: 500;
-  line-height: 52px;
+  line-height: 51.91px;
   letter-spacing: -0.03em;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   margin-top: 45px;
@@ -18,8 +18,8 @@ const Title = styled.h4`
 `;
 
 const SmallerTitle = styled(Title)`
-  font-size: 28px;
-  line-height: 38px;
+  font-size: 26px;
+  line-height: 35.52px;
 `;
 
 const Subtitle = styled.p`
