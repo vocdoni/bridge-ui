@@ -48,7 +48,7 @@ const HeaderSubtitle = styled.p`
   line-height: 150%;
 `;
 
-const HeaderAdvice = styled.p`
+const HeaderAdvice = styled.div`
   width: 755px;
   height: 32px;
   margin-top: 0px;

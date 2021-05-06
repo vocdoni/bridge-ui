@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/display-name */
+import React, { forwardRef } from "react";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
@@ -186,7 +187,7 @@ export const ConnectButton = () => {
   );
 };
 
-export const ConnectTextButton = () => {
+export const ConnectTextButton = forwardRef(() => {
   const { dispatch } = useModal();
 
   const openWallets = () => {
@@ -200,4 +201,4 @@ export const ConnectTextButton = () => {
   };
 
   return <TextLink onClick={handleButtonClick}>Connect account</TextLink>;
-};
+});

@@ -98,8 +98,8 @@ const ProcessPage = () => {
         </ProcessInformation>
         <ProcessData>
           {weights &&
-            weights.map(({ description, value }) => (
-              <ProcessDataContainer>
+            weights.map(({ description, value }, i) => (
+              <ProcessDataContainer key={i}>
                 <ProcessDataInfo>
                   <ProcessDataDescription>{description}</ProcessDataDescription>
                 </ProcessDataInfo>

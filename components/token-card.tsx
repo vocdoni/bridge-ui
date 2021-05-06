@@ -78,10 +78,11 @@ const Symbol = styled.h4`
   letter-spacing: 0.01em;
 `;
 
-const Name = styled.p`
+const Name = styled.div`
   color: ${({ theme }) => theme.grayScale.g5};
   padding-left: 90px;
   padding-top: 18px;
+  margin-top: 18px;
   align-items: center;
   letter-spacing: 0.01em;
 `;
