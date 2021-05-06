@@ -22,7 +22,7 @@ const Option = ({ choice, onChoiceSelect, questionId, checked, canVote }) => (
       <Radio
         type="checkbox"
         checked={checked}
-        onClick={() => onChoiceSelect(questionId, choice.id)}
+        onChange={() => onChoiceSelect(questionId, choice.id)}
       />
     ) : (
       <ChoiceInfo>
