@@ -89,7 +89,7 @@ const EmptySection = styled.div`
   font-size: 18px;
 
   @media ${({ theme }) => theme.screens.tablet} {
-    padding: 0;
+    padding: 10px;
     text-align: unset;
   }
 `;
