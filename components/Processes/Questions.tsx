@@ -9,21 +9,18 @@ import {
   QuestionTitle,
   OptionSubtitle,
   OptionLabel,
-  Radio,
   OptionTitleContainer,
   OptionTitle,
   ChoiceInfo,
   Percentage,
 } from "./styled";
 
+import Checkbox from "./checkbox";
+
 const Option = ({ choice, onChoiceSelect, questionId, checked, canVote }) => (
   <OptionLabel>
     {canVote ? (
-      <Radio
-        type="checkbox"
-        checked={checked}
-        onClick={() => onChoiceSelect(questionId, choice.id)}
-      />
+      <Checkbox checked={checked} onChange={() => onChoiceSelect(questionId, choice.id)} />
     ) : (
       <ChoiceInfo>
         <Percentage>{choice.percentage === "N/A" ? "Locked" : `${choice.percentage}%`}</Percentage>
