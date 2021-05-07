@@ -91,7 +91,13 @@ const WhiteSection = styled.div`
   }
 `;
 
-const RegisterButton = ({ registeringToken, alreadyRegistered, address, onSubmit }) => (
+const RegisterButton = ({
+  registeringToken,
+  alreadyRegistered,
+  address,
+  onSubmit,
+  isConnected,
+}) => (
   <ButtonRow>
     {registeringToken ? (
       <Button>
@@ -102,7 +108,9 @@ const RegisterButton = ({ registeringToken, alreadyRegistered, address, onSubmit
         Token is already registered
       </SecondaryButton>
     ) : (
-      <PrimaryButton onClick={onSubmit}>Register token</PrimaryButton>
+      <PrimaryButton onClick={onSubmit}>
+        {!isConnected ? "Connect wallet" : "Register token"}
+      </PrimaryButton>
     )}
   </ButtonRow>
 );
@@ -168,6 +176,7 @@ const TokenAddPage = () => {
       .then((pool) => getTokenInfo(formTokenAddress, pool))
       .then((tokenInfo) => {
         setLoadingToken(false);
+        console.log("token info: ", tokenInfo);
         setTokenInfo(tokenInfo);
       })
       .catch((err) => {
@@ -247,7 +256,7 @@ const TokenAddPage = () => {
         <br />
         <br />
 
-        {!isMobile ? (
+        {!isMobile && tokenInfo ? (
           <>
             <TokenContainer {...tokenInfo} />
             <RegisterButton
@@ -255,6 +264,7 @@ const TokenAddPage = () => {
               alreadyRegistered={alreadyRegistered}
               onSubmit={onSubmit}
               address={tokenInfo?.address || ""}
+              isConnected={isConnected}
             />
           </>
         ) : null}
@@ -268,6 +278,7 @@ const TokenAddPage = () => {
             alreadyRegistered={alreadyRegistered}
             onSubmit={onSubmit}
             address={tokenInfo?.address || ""}
+            isConnected={isConnected}
           />
         </WhiteSection>
       ) : null}
