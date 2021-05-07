@@ -5,7 +5,7 @@ export const featuredTokens = {
     "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9", // AAVE
     "0x2aec18c5500f21359ce1bea5dc1777344df4c0dc", // FTT
     "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0", // MATIC
-    // "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
+    "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
     "0xc00e94cb662c3520282e6f5717214004a7f26888", // COMP
     "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f", // SNX
     "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2", // SUSHI

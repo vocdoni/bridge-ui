@@ -10,6 +10,14 @@ export const ERC20_ABI = [
   "function totalSupply() public view returns (uint256)",
 ];
 
+export const ERC20_ABI_MAKER = [
+  "function name() public view returns (bytes32)",
+  "function symbol() public view returns (bytes32)",
+  "function decimals() public view returns (uint8)",
+  "function balanceOf(address _owner) public view returns (uint256 balance)",
+  "function totalSupply() public view returns (uint256)",
+];
+
 // from aragon/use-wallet
 export const TRUST_WALLET_BASE_URL =
   "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";
