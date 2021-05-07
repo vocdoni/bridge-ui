@@ -39,13 +39,28 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
         } else {
           resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
             const choices = voteResults.map(({ title, votes }) => {
-              const totalSupply = BigNumber.from(token.totalSupply.hex || token.totalSupply);
-              const percentage = votes.mul(100).div(totalSupply);
+              let percentage = "0";
+              if (!votes.isZero) {
+                const totalSupply = BigNumber.from(token.totalSupply.hex || token.totalSupply);
+                //To get a percentage with 2 decimal places it's necessary to have the votes
+                //multiplied by an additional 100 (on top of the 100 for the percentage)
+
+                const factorBn = votes.mul(10000).div(totalSupply);
+                // factor is now within [0,10'000]
+
+                if (factorBn.isZero()) {
+                  percentage = "small"; //vote is too small for percentage with 2 decimals
+                } else {
+                  percentage = (factorBn.toNumber() / 100).toFixed(2);
+                  //percentage is now within [0,100], rounded to 2 decimal places.
+                }
+              }
+
               const vote = new TokenAmount(votes, token.decimals);
               return {
                 title: title.default,
                 votes: `${vote.toString()} ${token.symbol}`,
-                percentage: Number(percentage).toFixed(2),
+                percentage: percentage,
               };
             });
             return {
@@ -56,6 +71,7 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
           });
         }
       } catch (e) {
+        console.log("ERROR on getting results");
         resultsSanitized.questions = info.metadata.questions.map(
           ({ description, title, choices }) => {
             const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
