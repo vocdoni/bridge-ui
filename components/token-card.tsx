@@ -27,6 +27,7 @@ const Container = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
+    border-radius: 13px;
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       ${({ theme }) => theme.gradients.cardGradient.a},
