@@ -156,7 +156,7 @@ export const WalletList = () => {
     }
   };
   return (
-    <Modal open={state.walletList.open} height={565} width={452}>
+    <Modal open={state.walletList.open} height={225} width={452}>
       <ModalContainer>
         <Header>
           <ModalTitle>USE ACCOUNT FROM</ModalTitle>
