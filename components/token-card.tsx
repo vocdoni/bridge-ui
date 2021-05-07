@@ -194,7 +194,7 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
 
           <Name>{children}</Name>
 
-          <ActiveProposalsText>7 active proposals</ActiveProposalsText>
+          {/* <ActiveProposalsText>7 active proposals</ActiveProposalsText> */}
         </CardBody>
       </Card>
     );
