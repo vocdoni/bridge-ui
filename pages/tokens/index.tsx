@@ -47,6 +47,12 @@ const TokensPage = () => {
   // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
   const tokenInfos = useTokens(tokenAddrs);
 
+  tokenInfos?.sort?.((a, b) => {
+    if (a?.symbol > b?.symbol) return 1;
+    else if (a?.symbol < b?.symbol) return -1;
+    return 0;
+  });
+
   return (
     <div>
       <Top>

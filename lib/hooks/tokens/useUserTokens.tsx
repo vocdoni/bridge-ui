@@ -15,13 +15,13 @@ interface TokenBalance extends Partial<TokenInfo> {
   balance: string;
 }
 
-interface TokenBalances {
+interface UserTokenInfo {
   userTokens: TokenBalance[];
   refreshUserTokens: any;
   error?: string;
 }
 
-const UseUserTokensContext = React.createContext<TokenBalances>(null);
+const UseUserTokensContext = React.createContext<UserTokenInfo>({} as any);
 
 /** Returns an array containing the list of registered ERC20 tokens */
 export function useUserTokens() {
@@ -30,7 +30,7 @@ export function useUserTokens() {
   if (userTokenContext === null) {
     throw new Error(
       "useUserTokens() can only be used inside of <UseUserTokens />, " +
-        "please declare it at a higher level."
+      "please declare it at a higher level."
     );
   }
   return userTokenContext;
@@ -41,17 +41,6 @@ export function UseUserTokens({ children }) {
   const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
   const { poolPromise } = usePool();
-  const [tokens] = useState([]);
-
-  const resolveTokenInfo = useCallback(
-    async (address: string) => {
-      // @TODO: Add validation address is correct
-      const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
-      if (tokenCached) return tokenCached;
-      return loadTokenInfo(address);
-    },
-    [tokens]
-  );
 
   const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
     async (address: string) => {
@@ -78,7 +67,7 @@ export function UseUserTokens({ children }) {
       balances[index] == 0 ? [] : [{ address, balance: balances[index].toString() }]
     );
 
-    const fetchPromises = mappedBalances.map((a) => resolveTokenInfo(a.address));
+    const fetchPromises = mappedBalances.map((a) => loadTokenInfo(a.address));
     const allTokensInfo = await Promise.all(fetchPromises);
 
     return mappedBalances.map((bal, idx) => {
@@ -89,6 +78,7 @@ export function UseUserTokens({ children }) {
     });
   };
 
+  // TODO: Caching does not work with [params]. Use useEffect()
   const { data, error, mutate } = useSWR([wallet, registeredTokens], fetchUserTokens, {
     isPaused: () => !wallet.account,
   });

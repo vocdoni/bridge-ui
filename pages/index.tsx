@@ -230,9 +230,21 @@ const NotListedLink = styled.p`
 // MAIN COMPONENT
 const IndexPage = () => {
   const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
-  const tokenInfos = useTokens(featuredTokenIds);
+  const featuredTokenInfos = useTokens(featuredTokenIds);
   const wallet = useWallet();
-  const userTokens = useUserTokens();
+  const { userTokens } = useUserTokens();
+
+  userTokens?.sort?.((a, b) => {
+    if (a?.symbol > b?.symbol) return 1;
+    else if (a?.symbol < b?.symbol) return -1;
+    return 0;
+  });
+
+  featuredTokenInfos.sort((a, b) => {
+    if (a?.symbol > b?.symbol) return 1;
+    else if (a?.symbol < b?.symbol) return -1;
+    return 0;
+  });
 
   return (
     <>
@@ -275,13 +287,13 @@ const IndexPage = () => {
               <ConnectTextButton />
             </Link>
           </GrayRectangleTall>
-        ) : !userTokens.userTokens ? (
+        ) : !userTokens ? (
           <GrayRectangle>
             <GreyInfo>Loading...</GreyInfo>
           </GrayRectangle>
-        ) : userTokens.userTokens.length ? (
+        ) : userTokens.length ? (
           <TokenList>
-            {userTokens.userTokens.map(
+            {userTokens.map(
               ({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
                 <TokenCard
                   key={address}
@@ -314,7 +326,7 @@ const IndexPage = () => {
         />
 
         <TokenList>
-          {tokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+          {featuredTokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
             <TokenCard
               key={address}
               name={symbol}
