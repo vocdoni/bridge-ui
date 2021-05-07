@@ -176,7 +176,6 @@ const TokenAddPage = () => {
       .then((pool) => getTokenInfo(formTokenAddress, pool))
       .then((tokenInfo) => {
         setLoadingToken(false);
-        console.log("token info: ", tokenInfo);
         setTokenInfo(tokenInfo);
       })
       .catch((err) => {
