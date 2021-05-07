@@ -38,14 +38,22 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
           );
         } else {
           resultsSanitized.questions = results.questions.map(({ title, voteResults }, i) => {
+            const totalVoteAmountBn = voteResults.reduce((prev: BigNumber, { title, votes }) => {
+              return prev.add(votes);
+            }, BigNumber.from(0));
+            console.log("Total vote amount " + totalVoteAmountBn);
+            console.log(JSON.stringify(voteResults, null, 2));
+
             const choices = voteResults.map(({ title, votes }) => {
               let percentage = "0";
-              if (!votes.isZero) {
+              console.log("Vote tokens " + votes);
+              if (!votes.isZero()) {
                 const totalSupply = BigNumber.from(token.totalSupply.hex || token.totalSupply);
                 //To get a percentage with 2 decimal places it's necessary to have the votes
                 //multiplied by an additional 100 (on top of the 100 for the percentage)
 
-                const factorBn = votes.mul(10000).div(totalSupply);
+                const factorBn = votes.mul(10000).div(totalVoteAmountBn);
+                console.log("Factor: " + factorBn);
                 // factor is now within [0,10'000]
 
                 if (factorBn.isZero()) {
@@ -57,6 +65,7 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
               }
 
               const vote = new TokenAmount(votes, token.decimals);
+              console.log("percentage: " + percentage);
               return {
                 title: title.default,
                 votes: `${vote.toString()} ${token.symbol}`,
