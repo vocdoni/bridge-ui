@@ -1,10 +1,10 @@
-import { BigNumber, Contract, providers, Signer } from "ethers";
+import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
 import { CensusErc20Api, GatewayPool, ITokenStorageProofContract, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
 import { ProcessInfo, TokenInfo } from "./types";
-import { ERC20_ABI } from "./constants";
+import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants";
 import { tokenIconUrl } from "./utils";
 
 export interface ProofParameters {
@@ -101,8 +101,22 @@ export async function registerToken(token: string, pool: GatewayPool, signer: Si
   }
 }
 
+const parseMKRInfo = ([name, symbol, ...token]) => {
+  return [ethers.utils.parseBytes32String(name), ethers.utils.parseBytes32String(symbol), ...token];
+};
+
+// Map of ERC20 contracts that doesn't support the standard ABI
+const AbiMap = {
+  // MKR - Name and symbol are bytes32 instead of string
+  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2": {
+    abi: ERC20_ABI_MAKER,
+    handler: parseMKRInfo,
+  },
+};
+
 export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenInfo> {
-  const tokenInstance = new Contract(address, ERC20_ABI, pool.provider);
+  const erc20Helpers = AbiMap[address] ?? { abi: ERC20_ABI };
+  const tokenInstance = new Contract(address, erc20Helpers.abi, pool.provider);
 
   return Promise.all([
     tokenInstance.name(),
@@ -111,32 +125,28 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
     tokenInstance.decimals(),
     CensusErc20Api.getTokenInfo(address, pool).catch(() => BigNumber.from(-1)),
     getProcessList(address, pool),
-  ]).then(
-    ([name, symbol, supply, decimals, balMappingPos, pids]: [
-      string,
-      string,
-      BigNumber,
-      number,
-      any,
-      string[]
-    ]) => {
-      const totalSupply = new TokenAmount(supply.toString(), decimals, {
-        symbol,
-      });
-
-      return {
-        name,
-        symbol,
-        totalSupply: supply,
-        totalSupplyFormatted: totalSupply.format(),
-        decimals,
-        address,
-        balanceMappingPosition: balMappingPos.balanceMappingPosition,
-        icon: tokenIconUrl(address),
-        processes: pids,
-      };
+  ]).then((token: [string, string, BigNumber, number, any, string[]]) => {
+    if (erc20Helpers.handler) {
+      token = erc20Helpers.handler(token);
     }
-  );
+    const [name, symbol, supply, decimals, balMappingPos, pids] = token;
+
+    const totalSupply = new TokenAmount(supply.toString(), decimals, {
+      symbol,
+    });
+
+    return {
+      name,
+      symbol,
+      totalSupply: supply,
+      totalSupplyFormatted: totalSupply.format(),
+      decimals,
+      address,
+      balanceMappingPosition: balMappingPos.balanceMappingPosition,
+      icon: tokenIconUrl(address),
+      processes: pids,
+    };
+  });
 }
 
 export function balanceOf(

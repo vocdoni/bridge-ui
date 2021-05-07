@@ -12,7 +12,7 @@ export const featuredTokens = {
     "0x35a9b440da4410dd63df8c54672b728970560328", // MANA
     "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
     "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828", // UMA
-    // "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
+    "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
   ],
   goerli: [
     "0x2b7222146a805bba0dbb61869c4b3a03209dffba", // VOCB
