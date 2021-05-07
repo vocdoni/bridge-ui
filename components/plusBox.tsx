@@ -28,6 +28,10 @@ const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
 
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-right: 0;
+  }
+
   ${({ add }) =>
     add &&
     css`
@@ -84,10 +88,15 @@ export const MinusContainer = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-  
+
   &:hover {
     cursor: pointer;
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+  }
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: -70px;
+  }
 `;
 
 interface PlusBoxProps {

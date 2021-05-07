@@ -27,7 +27,7 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
             ({ description, title, choices }) => {
               const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
                 title: choiceTitle.default,
-                percentage: "0.00",
+                percentage: "N/A",
               }));
               return {
                 title: title.default,

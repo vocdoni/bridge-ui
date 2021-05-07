@@ -49,14 +49,14 @@ const ProcessPage = () => {
     token,
     ...datesInfo,
   });
-  const census = useCensusProof(token, process?.parameters.sourceBlockHeight);
+  const { proof, error: proofError } = useCensusProof(token, process?.parameters?.sourceBlockHeight);
   const { status, updateStatus, voteInfo, vote } = useVote(process);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
 
   const isConnected = !!wallet.account;
   const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
-  const inCensus = !!census;
+  const inCensus = !!proof;
   const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
   const alreadyVoted = voteStatus?.registered || status.registered;
   const canVote = !alreadyVoted && !hasEnded && inCensus && hasStarted;
@@ -68,7 +68,7 @@ const ProcessPage = () => {
       });
     }
 
-    await vote(process, census);
+    await vote(process, proof);
     await updateResults();
     await updateVote();
     await updateWeights();
@@ -98,8 +98,8 @@ const ProcessPage = () => {
         </ProcessInformation>
         <ProcessData>
           {weights &&
-            weights.map(({ description, value }) => (
-              <ProcessDataContainer>
+            weights.map(({ description, value }, i) => (
+              <ProcessDataContainer key={`ProcessDataContainer-${i}`}>
                 <ProcessDataInfo>
                   <ProcessDataDescription>{description}</ProcessDataDescription>
                 </ProcessDataInfo>

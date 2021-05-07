@@ -9,11 +9,10 @@ import { useModal, ActionTypes } from "./Modal/context";
 import { CONNECTED_WALLET_ICON } from "../lib/constants";
 
 const ButtonContainer = styled.div`
-  margin: 15px auto;
-  max-width: 300px;
+  display: flex;
+  flex-direction: row;
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
-    text-align: center;
   }
 `;
 
@@ -24,28 +23,40 @@ const ConnectWalletButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
   color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   background: ${({ theme }) =>
     `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
-  &:hover {
+  position: relative;
+  z-index: 1;
+  <<<<<<< HEAD =======>>>>>>>main &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 8px;
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     background: linear-gradient(
       ${({ theme }) => theme.gradients.primary.mg1_soft.a},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c1},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c2},
-      ${({ theme }) => theme.gradients.primary.mg1_soft.c3}
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c1} 1.46%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c2} 99.99%,
+      ${({ theme }) => theme.gradients.primary.mg1_soft.c3} 100%
     );
-    
+    transition: opacity 300ms ease-in-out;
+    opacity: 0;
+    z-index: -1;
+  }
+  &:hover:before {
+    opacity: 1;
+  }
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
-    text-align: center;
+    width: 100%;
   }
 `;
 
@@ -56,22 +67,22 @@ const ConnectedWalletButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
+  left: calc(50% - 173px / 2 + 673.5px);
+  top: calc(50% - 45px / 2 - 749px);
   color: ${({ theme }) => theme.blackAndWhite.b1};
   font-weight: 500;
   font-size: 16px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
-
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
+
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    
+    transition: 300ms ease-in-out;
+  }
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
-    text-align: center;
+    width: 100%;
   }
 `;
 
@@ -87,7 +98,7 @@ const TextLink = styled.p`
   color: ${({ theme }) => theme.primary.p1};
   text-align: center;
   cursor: pointer;
-  margin-top: 0px;
+  margin-top: -15px;
   font-weight: 400;
   &:hover {
     color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};

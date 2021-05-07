@@ -14,65 +14,95 @@ const Container = styled.div`
   border-radius: 13px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border: 1px solid ${({ theme }) => theme.grayScale.g2};
-
-  &:hover {
-    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    background: linear-gradient(
-      ${({ theme }) => theme.gradients.cardGradient.a},
-      ${({ theme }) => theme.gradients.cardGradient.c1}66 1.46%,
-      ${({ theme }) => theme.gradients.cardGradient.c2}66 100%
-    );
-    transition: 300ms;
-  }
-
   max-width: calc(33.3333333% - 1em);
   min-width: 395px;
   max-height: 164px;
-  left: 176px;
-  top: 633px;
+  position: relative;
+  z-index: 1;
+
+  &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 13px;
+    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+    background: linear-gradient(
+      ${({ theme }) => theme.gradients.cardGradient.a},
+      ${({ theme }) => theme.gradients.cardGradient.c1},
+      ${({ theme }) => theme.gradients.cardGradient.c2}66
+    );
+    transition: opacity 300ms ease-in-out;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin: 10px;
     max-width: calc(50% - 2em);
     text-align: start;
     justify-content: center;
+    z-index: 0;
   }
   @media ${({ theme }) => theme.screens.mobileL} {
     max-width: calc(100% - 2em);
+    min-width: unset;
+    z-index: 0;
   }
 `;
 
 const Card = styled.div`
-  padding: 1.8em;
-  padding-top: 35px;
-  line-height: 0px;
+  display: flex;
+  flex-wrap: no-wrap;
+  padding: 24px 18px;
+  min-height: 164px;
+  box-sizing: border-box;
+`;
+
+const StyledVoteCard = styled(Card)`
+  flex-direction: column;
 `;
 
 const TokenLogo = styled.img`
-  position: absolute;
-  padding-top: 2px;
-  width: 71px;
-  height: 71px;
+  width: 100%;
+  height: 100%;
 `;
 
-const Symbol = styled.h4`
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  padding-left: 90px;
-  padding-top: 22px;
-  position: absolute;
+const Symbol = styled.div`
+  display: block;
+  font-family: Manrope;
+  font-style: normal;
   font-weight: 500;
-  font-size: 28px;
-  margin-top: 0px;
+  font-size: 29px;
+  line-height: 40px;
+  display: flex;
   align-items: center;
   letter-spacing: 0.01em;
+  margin: 0px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
 `;
 
-const Name = styled.p`
+const Name = styled.div`
   color: ${({ theme }) => theme.grayScale.g5};
-  padding-left: 90px;
-  padding-top: 18px;
   align-items: center;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
+  margin: 0;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  color: #7b8ab0;
+
+  & > p {
+    margin: 0;
+    font-size: 18px;
+  }
 `;
 
 const ActiveProposals = styled.p`
@@ -86,8 +116,6 @@ const ActiveProposals = styled.p`
 
 const Cap = styled.p`
   color: ${({ theme }) => theme.blackAndWhite.b1};
-  position: absolute;
-  width: 320px;
   font-weight: 400;
   font-size: 16px;
   align-items: center;
@@ -120,21 +148,54 @@ type CardProps = {
   onClick?: () => void;
 };
 
-{
-  /* NOTE temporarily removed information on the cards, as they are not must haves right 
-now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */
-}
+const CardBody = styled.div`
+  box-sizing: border-box;
+  padding-left: 20px;
+  flex: 1;
+`;
+
+const TokenLogoContainer = styled.div`
+  padding-top: 2px;
+  width: 71px;
+  height: 71px;
+`;
+
+const TokenBodyHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ActiveProposalsText = styled.p`
+  margin: 0;
+  display: block;
+  padding-top: 8px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: #00c2ff;
+`;
+
 // eslint-disable-next-line react/display-name
 const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children, tokenCap }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
-        <TokenLogo src={icon} onError={loadFallback} />
+        <TokenLogoContainer>
+          <TokenLogo src={icon} onError={loadFallback} />
+        </TokenLogoContainer>
+
         {rightText && <RightText>{rightText}</RightText>}
-        <Cap>{tokenCap?.length ? `${abbreviatedTokenAmount(tokenCap)}` : "N/A"}</Cap>
-        <Symbol>{name}</Symbol>
-        <Name>{children}</Name>
-        {/* <ActiveProposals>7 active proposals</Proposals> */}
+        <CardBody>
+          <TokenBodyHeader>
+            <Symbol>{name}</Symbol>
+            <Cap>{tokenCap?.length ? `${abbreviatedTokenAmount(tokenCap)}` : "N/A"}</Cap>
+          </TokenBodyHeader>
+
+          <Name>{children}</Name>
+
+          {/* <ActiveProposalsText>7 active proposals</ActiveProposalsText> */}
+        </CardBody>
       </Card>
     );
   }
@@ -181,6 +242,7 @@ const VoteTokenLogo = styled.img`
 const TokenDescription = styled.div`
   display: inline;
   padding-left: 16px;
+  font-size: 18px;
 `;
 
 const VoteSymbol = styled.h4`
@@ -192,16 +254,20 @@ const VoteSymbol = styled.h4`
   font-weight: 500;
   font-size: 29px;
   letter-spacing: 0.01em;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    padding-top: 0;
+  }
 `;
 
 const VoteName = styled.p`
-  height: 20px;
+  min-height: 20px;
   margin-top: 0px;
   margin-bottom: 0px;
   padding-top: 4px;
   color: ${({ theme }) => theme.grayScale.g5};
   letter-spacing: 0.01em;
-  font-size: 18;
+  font-size: 18px;
 `;
 
 const ProposalTitle = styled.p`
@@ -219,7 +285,7 @@ const ProposalTitle = styled.p`
 const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, name, symbol, children }, ref) => {
     return (
-      <Card onClick={onClick} ref={ref}>
+      <StyledVoteCard onClick={onClick} ref={ref}>
         <CardHeader>
           <div>
             <VoteTokenLogo src={icon} onError={loadFallback} />
@@ -230,7 +296,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
           </TokenDescription>
         </CardHeader>
         <ProposalTitle>{children}</ProposalTitle>
-      </Card>
+      </StyledVoteCard>
     );
   }
 );

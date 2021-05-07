@@ -18,7 +18,7 @@ const Container = styled.div`
 
 const ListContainer = styled.div`
   display: flex;
-  width: 1440px;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 
@@ -59,7 +59,7 @@ const ClickableText = styled.a`
   align-items: center;
   text-decoration: none;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   &:hover {
     color: ${({ theme }) => theme.primary.p1};

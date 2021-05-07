@@ -6,12 +6,14 @@ export const ProcessTitle = styled.h5`
   color: ${({ theme }) => theme.blackAndWhite.b1};
   margin-bottom: -5px;
   margin-top: 0px;
+  word-break: break-word;
 `;
 
 export const ProcessDescription = styled.p`
   font-size: 18px;
   font-weight: 400;
   color: ${({ theme }) => theme.grayScale.g5};
+  word-break: break-word;
 `;
 
 export const ProcessInformation = styled.div`
@@ -24,20 +26,27 @@ export const ProcessInformation = styled.div`
 export const ProcessContainer = styled.div`
   display: flex;
   margin-top: 50px;
-  width: 1266px;
+  max-width: 1266px;
   margin-bottom: 60px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+  }
 `;
 
 export const ProcessData = styled.div`
   width: 363px;
-  height: 183px;
+  min-height: 183px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
   border-radius: 13px;
   box-sizing: border-box;
   padding: 25px 26px;
-  left: 0;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+  }
 `;
 
 export const ProcessDataInfo = styled.div`
@@ -71,7 +80,7 @@ export const ProcessDataValue = styled.p`
 `;
 
 export const QuestionContainer = styled.div`
-  width: 1266px;
+  max-width: 1266px;
   min-height: 328px;
 
   background: #ffffff;
@@ -81,15 +90,25 @@ export const QuestionContainer = styled.div`
   border-radius: 13px;
   display: flex;
   margin-bottom: 50px;
-  padding: 16px 0px 16px 0px;
+  padding: 0 65px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+    padding: 0 26px;
+  }
 `;
 
 export const QuestionInformation = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 52px 65px;
+  padding: 52px 70px 52px 0;
   width: 100%;
+  @media ${({ theme }) => theme.screens.tablet} {
+    padding: 0;
+    margin-top: 23px;
+    margin-left: 26px;
+  }
 `;
 export const QuestionNumber = styled.p`
   margin: 0;
@@ -105,12 +124,16 @@ export const QuestionTitle = styled.p`
   display: flex;
   color: ${({ theme }) => theme.blackAndWhite.b1};
   padding-top: 5px;
+  word-break: break-word;
 `;
 export const QuestionDescription = styled.div`
   display: flex;
   font-size: 18px;
   font-weight: 400;
+  line-height: 150%;
   color: ${({ theme }) => theme.grayScale.g5};
+  margin-bottom: 30px;
+  word-break: break-word;
 `;
 
 export const QuestionOptions = styled.div`
@@ -118,28 +141,21 @@ export const QuestionOptions = styled.div`
   width: 40%;
   flex-direction: column;
   justify-content: center;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    margin-left: 26px;
+  }
 `;
 
 export const OptionLabel = styled.label`
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
   align-items: center;
 `;
 
-export const Radio = styled.input`
-  flex-direction: column;
-  display: flex;
-
-  background: #ffffff;
-
-  border: 2px solid #eff1f7;
-  box-sizing: border-box;
-  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.25);
-  border-radius: 26px;
-`;
-
 export const OptionTitleContainer = styled.div`
-  margin-left: 10px;
+  margin-left: 18px;
   flex-direction: column;
   display: flex;
 `;
@@ -148,6 +164,14 @@ export const OptionTitle = styled.p`
   margin: 0;
   font-size: 20px;
   font-weight: 500;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+`;
+
+export const OptionSubtitle = styled.p`
+  margin: 0;
+  font-size: 18px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.grayScale.g5};
 `;
 
 export const ButtonContainer = styled.div`
@@ -163,7 +187,7 @@ export const ChoiceInfo = styled.div`
   display: flex;
   justify-content: center;
   background: ${({ theme }) =>
-    `linear-gradient(142.6deg, ${theme.gradients.primary.mg1_soft.c3}33, ${theme.gradients.primary.mg1.c3}D4)`};
+    `linear-gradient(${theme.gradients.optionResults.a}, ${theme.gradients.optionResults.c1} 10.91%, ${theme.gradients.optionResults.c2} 87.74%)`};
 `;
 
 export const Percentage = styled.h5`

@@ -8,15 +8,15 @@ import { LoadingAlert } from "./loading-alert";
 
 const MainContent = styled.div`
   flex: 1;
-  width: 1249px;
-  margin-top: 77px;
+  margin-top: 100px;
   margin-bottom: 50px;
-  margin-left: auto;
-  margin-right: auto;
+  box-sizing: border-box;
+  padding: 0 11%;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: 110px;
     margin-top: 50px;
+    box-sizing: border-box;
     padding: 0 ${({ theme }) => theme.margins.mobile.horizontal};
   }
 `;

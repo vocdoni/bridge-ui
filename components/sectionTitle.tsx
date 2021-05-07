@@ -2,19 +2,24 @@ import React from "react";
 import styled from "styled-components";
 
 const Title = styled.h4`
-  margin-top: 0;
-  margin-bottom: 18px;
+  margin-bottom: 5px;
   font-size: 38px;
   font-style: normal;
   font-weight: 500;
-  line-height: 52px;
+  line-height: 51.91px;
   letter-spacing: -0.03em;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+  margin-top: 45px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 32px;
+    margin-top: 30px;
+  }
 `;
 
 const SmallerTitle = styled(Title)`
-  font-size: 28px;
-  line-height: 38px;
+  font-size: 26px;
+  line-height: 35.52px;
 `;
 
 const Subtitle = styled.p`
@@ -23,6 +28,7 @@ const Subtitle = styled.p`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
+  margin-top: 0;
 `;
 
 type TitleProps = {
