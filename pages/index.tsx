@@ -18,34 +18,62 @@ import Link from "next/link";
 import { useWallet } from "use-wallet";
 
 const Head = styled.div`
-  width: 1248px;
-  height: 335px;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: url(${LANDING_PAGE_CTA});
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+  min-height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-family: "Manrope";
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: calc(100% + 30px);
+    border-radius: 0;
+    margin: 0 -15px;
+  }
+  box-sizing: border-box;
+  padding: 50px 15px;
+`;
+
+const HeadContent = styled.div`
+  width: 100%;
+  max-width: 630px;
+  margin: auto;
 `;
 
 const HeaderTitle = styled.h4`
+  font-family: Manrope;
   font-style: normal;
   font-weight: 600;
-  line-height: 60px;
-  margin: 0px;
+  margin: 0;
   text-align: center;
   letter-spacing: -0.03em;
+  box-sizing: border-box;
+  font-size: 44px;
+  line-height: 60px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 38px;
+    line-height: 46px;
+
+    padding: 0 50px;
+  }
 `;
 
 const HeaderSubtitle = styled.p`
-  width: 526px;
-  margin-bottom: 14px;
-  text-align: center;
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
   line-height: 150%;
+  text-align: center;
+  padding: 0 32px;
 `;
 
 const HeaderAdvice = styled.p`
@@ -56,6 +84,10 @@ const HeaderAdvice = styled.p`
   background: ${({ theme }) => theme.blackAndWhite.w1}33;
   backdrop-filter: blur(24px);
   border-radius: 30px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const HeaderAdviceText = styled.p`
@@ -64,6 +96,12 @@ const HeaderAdviceText = styled.p`
   font-weight: 500;
   font-size: 16px;
   color: ${({ theme }) => theme.headerAdviceText.c1};
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 14px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
 `;
 
 const Row = styled.div`
@@ -79,9 +117,69 @@ const Row = styled.div`
 `;
 
 const TokenSection = styled.div`
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
+  padding-top: 30px;
+`;
+
+const SearchInput = styled.input`
+  background: #ffffff;
+  border: 2px solid #eff1f7;
+  box-sizing: border-box;
+  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.35);
+  border-radius: 8px;
+  height: 46px;
+
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  padding: 10px;
+
+  &::placeholder {
+    color: #97a8dc;
   }
+`;
+
+const SearchContainer = styled.div`
+  padding-top: 10px;
+  display: flex;
+  width: 100%;
+  flex-flow: row no-wrap;
+  justify-content: center;
+
+  & > input {
+    width: 66%;
+    margin-right: 10px;
+  }
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-flow: row wrap;
+
+    & > input {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    & > div {
+      width: 100%;
+    }
+  }
+`;
+
+const SearchButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.blackAndWhite.w1};
+  font-size: 16px;
+  background: ${({ theme }) =>
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 120px;
+  height: 46px;
 `;
 
 const GrayRectangle = styled.div`
@@ -90,15 +188,15 @@ const GrayRectangle = styled.div`
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.homepageRectangle.c1};
-  width: 1248px;
-  height: 161px;
+  width: 100%;
+  min-height: 161px;
   border-radius: 16px;
   color: ${({ theme }) => theme.grayScale.g5};
   font-family: "Manrope";
 `;
 
 const GrayRectangleTall = styled(GrayRectangle)`
-  height: 227px;
+  min-height: 227px;
 `;
 
 const LightningBolt = styled.div`
@@ -112,7 +210,10 @@ const LightningBolt = styled.div`
 const GreyInfo = styled.p`
   width: 600px;
   text-align: center;
-  line-height: 0%;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+  }
 `;
 
 const NotListedLink = styled.p`
@@ -156,9 +257,8 @@ const IndexPage = () => {
         </SearchRow> */}
       </Head>
 
-      <br />
-      <br />
-
+      {/* NOTE temporarily removed this section, as it is not part of landing page's must 
+      haves. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
       {/* YOUR TOKENS */}
       <TokenSection>
         <SectionTitle
@@ -206,15 +306,13 @@ const IndexPage = () => {
         )}
       </TokenSection>
 
-      <br />
-      <br />
-
       {/* TOP TOKENS */}
       <TokenSection>
         <SectionTitle
           title="Top Tokens"
           subtitle="Some of the most relevant tokens on the platform"
         />
+
         <TokenList>
           {tokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
             <TokenCard

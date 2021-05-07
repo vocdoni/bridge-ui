@@ -6,30 +6,39 @@ import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
-import Button, { SecondaryButton } from "../../components/button";
-import SearchWidget from "../../components/searchWidget";
+import { SecondaryButton } from "../../components/button";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 
 const TokenList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin: 0 -1em;
 
   @media ${({ theme }) => theme.screens.tablet} {
     justify-content: center;
   }
 `;
 
-const TokenSection = styled.div`
-  @media ${({ theme }) => theme.screens.tablet} {
-    text-align: center;
-  }
-`;
-
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 25px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: unset;
+  }
+`;
+
+const Top = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  box-sizing: border-box;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: unset;
+    display: unset;
+    justify-content: unset;
+  }
 `;
 
 // MAIN COMPONENT
@@ -39,17 +48,16 @@ const TokensPage = () => {
   const tokenInfos = useTokens(tokenAddrs);
 
   return (
-    <TokenSection>
-      <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
-      <br />
-      <ButtonContainer>
-        {/* NOTE temporarily removed search bar, as it is not part of the page's must 
+    <div>
+      <Top>
+        <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
+        <ButtonContainer>
+          {/* NOTE temporarily removed search bar, as it is not part of the page's must 
     haves. VR 23-04-2021 */}
-        {/* <SearchWidget /> */}
-        <p></p>
-        <SecondaryButton href="/tokens/add">My token is not listed</SecondaryButton>
-      </ButtonContainer>
-      <br />
+          {/* <SearchWidget /> */}
+          <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
+        </ButtonContainer>
+      </Top>
       <TokenList>
         {tokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
           <TokenCard
@@ -64,7 +72,7 @@ const TokensPage = () => {
           </TokenCard>
         ))}
       </TokenList>
-    </TokenSection>
+    </div>
   );
 };
 

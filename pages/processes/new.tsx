@@ -72,6 +72,7 @@ const FieldRowRightSection = styled.div<{ marginTop: number }>`
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
     margin-left: 0;
+    width: 100%;
   }
 `;
 
@@ -81,7 +82,6 @@ const RemoveButton = styled.div<{ marginTop: number }>`
   margin-top: ${({ marginTop }) => marginTop}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
-    margin-left: 0;
   }
 `;
 
@@ -136,6 +136,9 @@ const QuestionText = styled.h5`
   letter-spacing: -0.03em;
   margin-bottom: 85px;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: 30px;
+  }
 `;
 
 const InputBox = styled.div`

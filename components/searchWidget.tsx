@@ -7,6 +7,16 @@ import TextInput from "./input";
 
 const SearchRow = styled.div`
   display: flex;
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+  }
+  `;
+  
+  const Button = styled(PrimaryButton)`
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+  }
 `;
 
 const Box = styled.div`
