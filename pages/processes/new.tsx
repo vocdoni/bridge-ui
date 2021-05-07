@@ -31,8 +31,10 @@ import TextInput, { DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
-import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useToken } from "../../lib/hooks/tokens";
+import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
+import { getProof } from "../../lib/api";
+import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -180,7 +182,6 @@ const NewProcessPage = () => {
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
   const token = useToken(tokenAddress);
-  const census = useCensusProof(token);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
@@ -268,7 +269,7 @@ const NewProcessPage = () => {
     }
     setMetadata(Object.assign({}, metadata));
   };
-  const onSubmit = async (proof) => {
+  const onSubmit = async () => {
     try {
       metadata.questions.map(handleValidation);
     } catch (error) {
@@ -337,7 +338,16 @@ const NewProcessPage = () => {
       ]);
       const blockCount = endBlock - startBlock;
 
-      const evmBlockHeight = await pool.provider.getBlockNumber();
+      // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
+      // Otherwise, proofs will not match
+      const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+      const proof = await getProof({
+        account: wallet.account,
+        token: token.address,
+        block: sourceBlockHeight,
+        balanceMappingPosition: token.balanceMappingPosition,
+        pool,
+      })
 
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
@@ -355,7 +365,7 @@ const NewProcessPage = () => {
         costExponent: 10000,
         maxVoteOverwrites: 1,
         tokenAddress,
-        sourceBlockHeight: evmBlockHeight,
+        sourceBlockHeight,
         paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
       };
 
@@ -366,6 +376,10 @@ const NewProcessPage = () => {
       setAlertMessage("The governance process has been successfully created", "success");
     } catch (err) {
       setSubmitting(false);
+
+      if (err?.message == NO_TOKEN_BALANCE) {
+        return setAlertMessage(NO_TOKEN_BALANCE)
+      }
 
       console.error(err);
       setAlertMessage("The governance process could not be created");
@@ -520,7 +534,7 @@ const NewProcessPage = () => {
         <FieldRowLeftSection>
           <RowContinue>
             {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={() => onSubmit(census)} />
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
             ) : !isMobile ? (
               <ConnectButton />
             ) : null}

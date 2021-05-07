@@ -1,4 +1,5 @@
 export const FALLBACK_TOKEN_ICON = "/media/coin.svg";
+export const ETH_BLOCK_HEIGHT_PADDING = 10;
 
 export const ERC20_ABI = [
   // Read-Only Functions

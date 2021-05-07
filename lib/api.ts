@@ -12,7 +12,7 @@ export interface ProofParameters {
   token: string;
   pool: GatewayPool;
   block: number;
-  tokenBalancePosition: number;
+  balanceMappingPosition: number;
 }
 
 export async function getTokenProcesses(
@@ -65,11 +65,13 @@ export const getProof = async ({
   token,
   pool,
   block,
-  tokenBalancePosition,
+  balanceMappingPosition,
 }: ProofParameters) => {
   try {
     const balance = await balanceOf(token, account, pool);
-    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, tokenBalancePosition);
+    if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE);
+
+    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, balanceMappingPosition);
     const result = await CensusErc20Api.generateProof(
       token,
       [balanceSlot],
@@ -80,12 +82,12 @@ export const getProof = async ({
     if (result == null || !result.proof) return undefined;
 
     const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
+    if (onChainBalance.isZero()) throw new Error(NO_TOKEN_BALANCE);
 
     if (!onChainBalance.eq(balance) || onChainBalance.eq(0)) return undefined;
 
     return result.proof;
   } catch (error) {
-    console.log("Error on getProof: ", error.message);
     throw new Error(error.message);
   }
 };
@@ -94,9 +96,8 @@ export async function registerToken(token: string, pool: GatewayPool, signer: Si
   try {
     await CensusErc20Api.registerTokenAuto(token, signer, pool);
   } catch (err) {
-    console.log(err.message);
     if (err && err.message == NO_TOKEN_BALANCE) throw err;
-    throw new Error("The token internal details cannot be chacked");
+    throw new Error("The token internal details cannot be checked");
   }
 }
 

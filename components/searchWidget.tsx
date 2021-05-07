@@ -1,6 +1,7 @@
-import React from "react";
+import React, { ButtonHTMLAttributes, ThHTMLAttributes } from "react";
 import styled from "styled-components";
 
+import { StyledSpinner } from "../pages/tokens/add";
 import { PrimaryButton } from "./button";
 import TextInput from "./input";
 
@@ -27,18 +28,23 @@ type SearchWidgetProps = {
   onChange: (ev: any) => void;
   onKeyDown: (ev: any) => void;
   onClick: () => void;
+  loading: boolean;
 };
 
-const SearchWidget = ({ onChange, onKeyDown, onClick }: SearchWidgetProps) => {
+const SearchWidget = ({ onChange, onKeyDown, onClick, loading }: SearchWidgetProps) => {
   return (
     <SearchRow>
-      <TextInput
-        placeholder="ERC Token address..."
-        onKeyDown={onKeyDown}
-        onChange={onChange}
-        widthValue={664}
-      />
-      <Button onClick={onClick}>Check Token</Button>
+      <Box>
+        <TextInput
+          placeholder="ERC Token address..."
+          onKeyDown={onKeyDown}
+          onChange={onChange}
+          widthValue={664}
+        />
+      </Box>
+      <PrimaryButton onClick={loading ? null : onClick}>
+        {loading ? <StyledSpinner /> : "Check token"}
+      </PrimaryButton>
     </SearchRow>
   );
 };

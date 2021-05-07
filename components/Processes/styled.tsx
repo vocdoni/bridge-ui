@@ -154,18 +154,6 @@ export const OptionLabel = styled.label`
   align-items: center;
 `;
 
-export const Radio = styled.input`
-  flex-direction: column;
-  display: flex;
-
-  background: #ffffff;
-
-  border: 2px solid #eff1f7;
-  box-sizing: border-box;
-  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.25);
-  border-radius: 26px;
-`;
-
 export const OptionTitleContainer = styled.div`
   margin-left: 18px;
   flex-direction: column;

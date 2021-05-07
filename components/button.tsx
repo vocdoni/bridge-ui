@@ -83,8 +83,12 @@ export const SecondaryButton = styled(Button)`
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     transition: 300ms ease-in-out;
+<<<<<<< HEAD
   }
 
+=======
+  
+>>>>>>> main
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
   }

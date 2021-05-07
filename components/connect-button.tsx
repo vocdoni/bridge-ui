@@ -33,7 +33,7 @@ const ConnectWalletButton = styled.div`
   cursor: pointer;
   position: relative;
   z-index: 1;
-  &:before {
+  <<<<<<< HEAD =======>>>>>>>main &:before {
     position: absolute;
     content: "";
     top: 0;
@@ -67,8 +67,8 @@ const ConnectedWalletButton = styled.div`
   align-items: center;
   width: 173px;
   height: 45px;
-  left: calc(50% - 173px/2 + 673.5px);
-  top: calc(50% - 45px/2 - 749px);
+  left: calc(50% - 173px / 2 + 673.5px);
+  top: calc(50% - 45px / 2 - 749px);
   color: ${({ theme }) => theme.blackAndWhite.b1};
   font-weight: 500;
   font-size: 16px;
@@ -76,6 +76,7 @@ const ConnectedWalletButton = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
+
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     transition: 300ms ease-in-out;

@@ -16,8 +16,9 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { ActionTypes, useModal } from "../../components/Modal/context";
 
-const StyledSpinner = styled(Spinner)`
+export const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
 `;
 
@@ -140,19 +141,21 @@ const TokenAddPage = () => {
   const signer = useSigner();
 
   const isMobile = useIsMobile();
+  const { dispatch } = useModal();
+
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<string>(null);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const { refreshRegisteredTokens, registeredTokens } = useRegisteredTokens();
+  const { refreshRegisteredTokens, registeredTokens, loading } = useRegisteredTokens();
   const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   // Callbacks
 
   const checkToken = () => {
-    if (loadingToken || !formTokenAddress) return;
+    if (loadingToken || !formTokenAddress || loading) return;
     else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
       return setAlertMessage("The token address is not valid");
     } else if (registeredTokens.includes(formTokenAddress)) {
@@ -173,15 +176,14 @@ const TokenAddPage = () => {
       });
   };
 
+  const isConnected = wallet.connector || wallet.account;
+
   const onSubmit = useCallback(async () => {
     if (!tokenInfo) return;
-    if (!wallet.connector || !wallet.account) {
-      try {
-        //@TODO: When wallet modal PR is merged, open that modal here
-        await wallet.connect("injected");
-      } catch (e) {
-        return setAlertMessage("Web3 support is not available");
-      }
+    if (!isConnected) {
+      return dispatch({
+        type: ActionTypes.OPEN_WALLET_LIST,
+      });
     }
 
     try {
@@ -235,8 +237,11 @@ const TokenAddPage = () => {
         />
         <SearchWidget
           onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
-          onChange={(ev) => setFormTokenAddress(ev.target.value)}
+          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+            setFormTokenAddress(ev.target.value)
+          }
           onClick={loadingToken ? undefined : checkToken}
+          loading={loading && !registeredTokens?.length}
         />
 
         <br />

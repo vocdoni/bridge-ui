@@ -66,9 +66,7 @@ const Card = styled.div`
 `;
 
 const StyledVoteCard = styled(Card)`
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-  }
+  flex-direction: column;
 `;
 
 const TokenLogo = styled.img`
