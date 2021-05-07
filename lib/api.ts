@@ -5,7 +5,7 @@ import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
 import { ProcessInfo, TokenInfo } from "./types";
 import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants";
-import { tokenIconUrl } from "./utils";
+import { Awaited, tokenIconUrl } from "./utils";
 
 export interface ProofParameters {
   account: string;
@@ -60,6 +60,7 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
+export type StorageProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>
 export const getProof = async ({
   account,
   token,
@@ -115,6 +116,7 @@ const AbiMap = {
 };
 
 export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenInfo> {
+  // TODO: erc20Helpers is untyped
   const erc20Helpers = AbiMap[address] ?? { abi: ERC20_ABI };
   const tokenInstance = new Contract(address, erc20Helpers.abi, pool.provider);
 
@@ -123,9 +125,9 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
     tokenInstance.symbol(),
     tokenInstance.totalSupply(),
     tokenInstance.decimals(),
-    CensusErc20Api.getTokenInfo(address, pool).catch(() => BigNumber.from(-1)),
+    CensusErc20Api.getTokenInfo(address, pool),
     getProcessList(address, pool),
-  ]).then((token: [string, string, BigNumber, number, any, string[]]) => {
+  ]).then((token: [string, string, BigNumber, number, Awaited<ReturnType<typeof CensusErc20Api.getTokenInfo>>, string[]]) => {
     if (erc20Helpers.handler) {
       token = erc20Helpers.handler(token);
     }
@@ -145,7 +147,7 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
       balanceMappingPosition: balMappingPos.balanceMappingPosition,
       icon: tokenIconUrl(address),
       processes: pids,
-    };
+    } as TokenInfo;
   });
 }
 
