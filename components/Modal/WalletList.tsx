@@ -37,7 +37,7 @@ const Body = styled.div`
   padding: 15px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
 
   @media ${({ theme }) => theme.screens.mobileL} {
     overflow-y: auto;
