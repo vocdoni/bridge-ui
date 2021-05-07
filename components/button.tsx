@@ -61,7 +61,8 @@ export const PrimaryButton = styled(Button)`
   }
 
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
+    width: 100%;
+    margin-left: 0;
   }
 `;
 
@@ -82,9 +83,14 @@ export const SecondaryButton = styled(Button)`
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     transition: 300ms ease-in-out;
+<<<<<<< HEAD
+  }
+
+=======
   
+>>>>>>> main
   @media ${({ theme }) => theme.screens.tablet} {
-    max-width: 100%;
+    width: 100%;
   }
 `;
 

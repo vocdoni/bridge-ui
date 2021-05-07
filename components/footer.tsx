@@ -18,7 +18,7 @@ const Container = styled.div`
 
 const ListContainer = styled.div`
   display: flex;
-  width: 1440px;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 
