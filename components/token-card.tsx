@@ -170,7 +170,6 @@ const ActiveProposalsText = styled.p`
   margin: 0;
   display: block;
   padding-top: 8px;
-  font-family: Overpass;
   font-style: normal;
   font-weight: 300;
   font-size: 18px;
@@ -178,10 +177,6 @@ const ActiveProposalsText = styled.p`
   color: #00c2ff;
 `;
 
-{
-  /* NOTE temporarily removed information on the cards, as they are not must haves right 
-now. Should be implemented later, along with the fallback screens. VR 23-04-2021 */
-}
 // eslint-disable-next-line react/display-name
 const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children, tokenCap }, ref) => {
@@ -192,7 +187,6 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
         </TokenLogoContainer>
 
         {rightText && <RightText>{rightText}</RightText>}
-        {/* <Cap>($915M)</Cap> */}
         <CardBody>
           <TokenBodyHeader>
             <Symbol>{name}</Symbol>
@@ -203,7 +197,6 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
 
           <ActiveProposalsText>7 active proposals</ActiveProposalsText>
         </CardBody>
-        {/* <Proposals>7 active proposals</Proposals> */}
       </Card>
     );
   }
