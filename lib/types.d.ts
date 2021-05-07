@@ -1,3 +1,4 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { ProcessContractParameters, ProcessMetadata } from "dvote-js";
 
 export type TokenInfo = {

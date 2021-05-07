@@ -8,6 +8,8 @@ dayjs.extend(relativeTime);
 
 export { dayjs };
 
+export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
+
 export const areAllNumbers = (slice: any[]) => {
   for (let i = 0; i < slice.length; i++) {
     if (typeof slice[i] !== "number") {
