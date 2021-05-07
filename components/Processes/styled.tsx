@@ -152,6 +152,7 @@ export const OptionLabel = styled.label`
   display: flex;
   margin-bottom: 18px;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const OptionTitleContainer = styled.div`
