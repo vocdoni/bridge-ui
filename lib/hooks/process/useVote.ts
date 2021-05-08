@@ -3,6 +3,7 @@ import { VotingApi } from "dvote-js";
 import { useEffect, useMemo, useReducer } from "react";
 import useSWR from "swr";
 import { useWallet } from "use-wallet";
+import { CensusProof } from "../../api";
 import { useMessageAlert } from "../message-alert";
 import { useSigner } from "../useSigner";
 
@@ -72,7 +73,7 @@ export const useVote = (process: ProcessInfo) => {
     dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
   }, [process, dispatch, wallet?.account]);
 
-  const onSubmitVote = async (process, proof): Promise<void> => {
+  const onSubmitVote = async (process: ProcessInfo, proof: CensusProof): Promise<void> => {
     try {
       dispatch({ type: "UPDATE_STATUS", status: { submitting: true } });
       const pool = await poolPromise;

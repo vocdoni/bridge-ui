@@ -1,12 +1,12 @@
 import { usePool } from "@vocdoni/react-hooks";
 import { useEffect, useState } from "react";
 import { useWallet } from "use-wallet";
-import { getProof, StorageProof } from "../../api";
+import { getProof, CensusProof } from "../../api";
 import { TokenInfo } from "../../types";
 
 export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) => {
   const { poolPromise } = usePool();
-  const [proof, setProof] = useState<StorageProof>();
+  const [proof, setProof] = useState<CensusProof>();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const wallet = useWallet();
@@ -14,7 +14,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
   useEffect(() => {
     const account = wallet?.account;
     const tokenAddr = token?.address;
-    const balanceMappingPosition = token?.balanceMappingPosition?.toNumber?.();
+    const balanceMappingPosition = token?.balanceMappingPosition;
 
     if (!account || !tokenAddr || !targetBlock) return;
 
@@ -40,7 +40,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
         setError("Could not fetch the census proof");
       });
 
-  }, [wallet?.account, token?.address, token?.balanceMappingPosition?.toNumber?.(), poolPromise, targetBlock])
+  }, [wallet?.account, token?.address, token?.balanceMappingPosition, poolPromise, targetBlock])
 
   return { proof, error, loading };
 };
