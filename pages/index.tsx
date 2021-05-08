@@ -16,6 +16,7 @@ import { TokenInfo } from "../lib/types";
 
 import Link from "next/link";
 import { useWallet } from "use-wallet";
+import { useScrollTop } from "../lib/hooks/useScrollTop";
 
 const Head = styled.div`
   display: flex;
@@ -229,6 +230,7 @@ const NotListedLink = styled.p`
 
 // MAIN COMPONENT
 const IndexPage = () => {
+  useScrollTop();
   const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
   const featuredTokenInfos = useTokens(featuredTokenIds);
   const wallet = useWallet();

@@ -17,6 +17,7 @@ import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 export const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
@@ -145,6 +146,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
 
 // MAIN COMPONENT
 const TokenAddPage = () => {
+  useScrollTop();
   const wallet = useWallet();
   const signer = useSigner();
 

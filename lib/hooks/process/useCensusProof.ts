@@ -11,11 +11,11 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
   const [loading, setLoading] = useState(true);
   const wallet = useWallet();
 
-  useEffect(() => {
-    const account = wallet?.account;
-    const tokenAddr = token?.address;
-    const balanceMappingPosition = token?.balanceMappingPosition;
+  const account = wallet?.account;
+  const tokenAddr = token?.address;
+  const balanceMappingPosition = token?.balanceMappingPosition;
 
+  useEffect(() => {
     if (!account || !tokenAddr || !targetBlock) return;
 
     setLoading(true);
@@ -40,7 +40,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
         setError("Could not fetch the census proof");
       });
 
-  }, [wallet?.account, token?.address, token?.balanceMappingPosition, poolPromise, targetBlock])
+  }, [account, tokenAddr, balanceMappingPosition, poolPromise, targetBlock])
 
   return { proof, error, loading };
 };
