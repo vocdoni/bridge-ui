@@ -23,7 +23,7 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/button";
-import { useProcessResults, useProcessDate, useWeights, useVote } from "../../lib/hooks/process";
+import { useProcessResults, useProcessDates, useProcessSummary, useVote } from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
@@ -42,36 +42,31 @@ const ProcessPage = () => {
 
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
-  const { datesInfo, hasEnded, hasStarted } = useProcessDate(process);
-  const { results, error: resultsError, loading: resultsLoading, refreshResults } = useProcessResults(process, token);
-  const { weights, updateWeights } = useWeights({
-    processId,
-    token,
-    ...datesInfo,
-  });
-  const { proof, error: proofError } = useCensusProof(token, process?.parameters?.sourceBlockHeight);
+  const { hasEnded, hasStarted } = useProcessDates(process);
+  const { results, error: resultsError, loading: resultsLoading, refresh: refreshResults } = useProcessResults(process, token);
+  const { summary, error: summaryError, loading: summaryLoading, refresh: refreshSummary } = useProcessSummary({ processInfo: process, tokenInfo: token });
+  const { proof, loading: proofLoading, error: proofError } = useCensusProof(token, process?.parameters?.sourceBlockHeight);
   const { status, updateStatus, voteInfo, vote } = useVote(process);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
 
   const isConnected = !!wallet.account;
-  const allQuestionsChosen = status.choices.length === process?.metadata?.questions?.length;
+  const allQuestionsSelected = status.choices.length === process?.metadata?.questions?.length;
+  const questionsFilled = allQuestionsSelected && areAllNumbers(status.choices);
   const inCensus = !!proof;
-  const questionsFilled = allQuestionsChosen && areAllNumbers(status.choices);
   const alreadyVoted = voteStatus?.registered || status.registered;
-  const canVote = !alreadyVoted && !hasEnded && inCensus && hasStarted;
+  const canSelect = !alreadyVoted && hasStarted && !hasEnded && inCensus;
+  const canVote = canSelect && questionsFilled;
 
   const onVoteSubmit = async () => {
     if (!isConnected) {
-      return dispatch({
-        type: ActionTypes.OPEN_WALLET_LIST,
-      });
+      return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
     }
 
     await vote(process, proof);
     await refreshResults();
     await updateVote();
-    await updateWeights();
+    await refreshSummary();
   };
 
   const onSelect = (questionId: number, choice: number) => {
@@ -82,6 +77,19 @@ const ProcessPage = () => {
   };
 
   if (!processId || !process) return renderEmpty();
+
+  let mainButtonText: string
+  if (!isConnected) mainButtonText = "Connect your wallet"
+  else if (!inCensus) {
+    if (proofLoading) mainButtonText = "Please wait"
+    else mainButtonText = "You are not a token holder"
+  }
+  else if (alreadyVoted) mainButtonText = "You already voted"
+  else if (!hasStarted) mainButtonText = "Voting has not started yet"
+  else if (hasEnded) mainButtonText = "Voting has ended"
+  else if (!questionsFilled) mainButtonText = "Fill all the choices"
+  else if (!canVote) mainButtonText = "You cannot vote" // catch-all
+  else mainButtonText = "Submit your vote"
 
   return (
     <div>
@@ -97,8 +105,8 @@ const ProcessPage = () => {
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
-          {weights &&
-            weights.map(({ description, value }, i) => (
+          {summary &&
+            summary.map(({ description, value }, i) => (
               <ProcessDataContainer key={`ProcessDataContainer-${i}`}>
                 <ProcessDataInfo>
                   <ProcessDataDescription>{description}</ProcessDataDescription>
@@ -116,7 +124,7 @@ const ProcessPage = () => {
         results={results}
         choicesSelected={status.choices}
         onChoiceSelect={onSelect}
-        canVote={canVote}
+        canSelect={canSelect}
       />
       {hasEnded ? (
         <EndedContainer>
@@ -127,24 +135,10 @@ const ProcessPage = () => {
         <ButtonContainer>
           <Button
             // @TODO: Improve this conditional
-            disabled={!isConnected ? false : !canVote || !questionsFilled}
+            disabled={isConnected && !canVote}
             onClick={onVoteSubmit}
           >
-            {status.submitting ? (
-              <Spinner />
-            ) : !isConnected ? (
-              "Connect your wallet"
-            ) : !inCensus ? (
-              "You're not a token holder"
-            ) : !hasStarted ? (
-              "Voting has not started yet"
-            ) : alreadyVoted ? (
-              "You already voted"
-            ) : !questionsFilled ? (
-              "Fill all the choices"
-            ) : (
-              "Submit your vote"
-            )}
+            {status.submitting ? <Spinner /> : mainButtonText}
           </Button>
         </ButtonContainer>
       )}
@@ -152,7 +146,7 @@ const ProcessPage = () => {
   );
 };
 
-// TODO:
+// TODO: Render a better UI
 function renderEmpty() {
   return (
     <div>

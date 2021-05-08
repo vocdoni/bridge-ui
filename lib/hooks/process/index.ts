@@ -1,4 +1,4 @@
-export { useProcessDate } from "./useProcessDate";
+export { useProcessDates } from "./useProcessDates";
 export { useProcessResults } from "./useProcessResults";
 export { useVote } from "./useVote";
-export { useWeights } from "./useWeights";
+export { useProcessSummary } from "./useProcessSummary";

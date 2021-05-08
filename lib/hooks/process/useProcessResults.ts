@@ -19,17 +19,20 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
+  const processId = processInfo?.id
+  const tokenAddress = tokenInfo?.address
+
   useEffect(() => {
     const interval = setInterval(() => fetchCurrentResults(), 1000 * 30)
     fetchCurrentResults()
 
     return () => clearInterval(interval)
-  }, [processInfo?.id, tokenInfo?.address])
+  }, [processId, tokenAddress])
 
   // Loader
 
   const fetchCurrentResults = async () => {
-    if (!(processInfo?.id) || !(tokenInfo?.address)) return;
+    if (!tokenInfo || !processId || !tokenAddress) return;
 
     setLoading(true);
     const pool = await poolPromise;
@@ -85,5 +88,5 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
     }
   };
 
-  return { results, loading, error, refreshResults: fetchCurrentResults };
+  return { results, loading, error, refresh: fetchCurrentResults };
 };

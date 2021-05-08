@@ -23,10 +23,10 @@ type PQuestion = ProcessMetadata["questions"][0]
 type PChoice = ProcessMetadata["questions"][0]["choices"][0]
 type PResult = ProcessResults[0]["choices"][0]
 
-const Option = ({ choice, choiceResult, onChoiceSelect, questionIdx, checked, canVote }:
-  { choice: PChoice, choiceResult: PResult, onChoiceSelect: (qIdx: number, value: number) => void, questionIdx: number, checked: boolean, canVote: boolean }) => (
+const Option = ({ choice, choiceResult, onChoiceSelect, questionIdx, checked, canSelect }:
+  { choice: PChoice, choiceResult: PResult, onChoiceSelect: (qIdx: number, value: number) => void, questionIdx: number, checked: boolean, canSelect: boolean }) => (
   <OptionLabel>
-    {canVote ? (
+    {canSelect ? (
       <Checkbox checked={checked} onChange={() => onChoiceSelect(questionIdx, choice.value)} />
     ) : (
       <ChoiceInfo>
@@ -42,8 +42,8 @@ const Option = ({ choice, choiceResult, onChoiceSelect, questionIdx, checked, ca
   </OptionLabel>
 );
 
-export const Questions = ({ questions, results, onChoiceSelect, choicesSelected, canVote }:
-  { questions: PQuestion[], results: ProcessResults, onChoiceSelect: (qIdx: number, value: number) => void, choicesSelected: number[], canVote: boolean }) => {
+export const Questions = ({ questions, results, onChoiceSelect, choicesSelected, canSelect }:
+  { questions: PQuestion[], results: ProcessResults, onChoiceSelect: (qIdx: number, value: number) => void, choicesSelected: number[], canSelect: boolean }) => {
   if (!questions) return <div />
 
   return (
@@ -66,7 +66,7 @@ export const Questions = ({ questions, results, onChoiceSelect, choicesSelected,
                   choiceResult={choiceResult}
                   onChoiceSelect={onChoiceSelect}
                   checked={choicesSelected && choicesSelected[qIdx] === choice.value}
-                  canVote={canVote}
+                  canSelect={canSelect}
                 />
               );
             })}
