@@ -4,7 +4,7 @@ import { AppInitialProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
 import { UseWalletProvider } from "use-wallet";
-import { UsePoolProvider, UseProcessProvider } from "@vocdoni/react-hooks";
+import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
 import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
@@ -47,37 +47,39 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
               networkId={networkId}
               environment={environment}
             >
-              <UseTokenProvider>
-                <UseRegisteredTokens>
-                  <UseProcessProvider>
-                    <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
-                      <UseUserTokens>
-                        <ModalsProvider>
-                          <FixedGlobalStyle />
+              <UseBlockStatusProvider>
+                <UseTokenProvider>
+                  <UseRegisteredTokens>
+                    <UseProcessProvider>
+                      <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                        <UseUserTokens>
+                          <ModalsProvider>
+                            <FixedGlobalStyle />
 
-                          <Head>
-                            <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-                            <link
-                              href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
-                              rel="stylesheet"
-                            ></link>
-                            <link rel="preconnect" href="https://fonts.gstatic.com"></link>
-                            <link
-                              href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
-                              rel="stylesheet"
-                            />
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                            <title>{appTitle}</title>
-                          </Head>
-                          <Layout>
-                            <Component {...pageProps} />
-                          </Layout>
-                        </ModalsProvider>
-                      </UseUserTokens>
-                    </UseWalletProvider>
-                  </UseProcessProvider>
-                </UseRegisteredTokens>
-              </UseTokenProvider>
+                            <Head>
+                              <link rel="preconnect" href="https://fonts.gstatic.com"></link>
+                              <link
+                                href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+                                rel="stylesheet"
+                              ></link>
+                              <link rel="preconnect" href="https://fonts.gstatic.com"></link>
+                              <link
+                                href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+                                rel="stylesheet"
+                              />
+                              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                              <title>{appTitle}</title>
+                            </Head>
+                            <Layout>
+                              <Component {...pageProps} />
+                            </Layout>
+                          </ModalsProvider>
+                        </UseUserTokens>
+                      </UseWalletProvider>
+                    </UseProcessProvider>
+                  </UseRegisteredTokens>
+                </UseTokenProvider>
+              </UseBlockStatusProvider>
             </UsePoolProvider>
           </UseLoadingAlertProvider>
         </ThemeProvider>
