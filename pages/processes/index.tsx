@@ -43,11 +43,11 @@ const ProcessPage = () => {
   const { dispatch } = useModal();
 
   const { process } = useProcess(processId);
-  const token = useToken(process?.entity);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(process?.entity);
   const { hasEnded, hasStarted } = useProcessDates(process);
-  const { results, error: resultsError, loading: resultsLoading, refresh: refreshResults } = useProcessResults(process, token);
-  const { summary, error: summaryError, loading: summaryLoading, refresh: refreshSummary } = useProcessSummary({ processInfo: process, tokenInfo: token });
-  const { proof, loading: proofLoading, error: proofError } = useCensusProof(token, process?.parameters?.sourceBlockHeight);
+  const { results, error: resultsError, loading: resultsLoading, refresh: refreshResults } = useProcessResults(process, tokenInfo);
+  const { summary, error: summaryError, loading: summaryLoading, refresh: refreshSummary } = useProcessSummary({ processInfo: process, tokenInfo });
+  const { proof, loading: proofLoading, error: proofError } = useCensusProof(tokenInfo, process?.parameters?.sourceBlockHeight);
   const { status, updateStatus, voteInfo, vote } = useVote(process);
   const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
   const wallet = useWallet();
@@ -93,10 +93,12 @@ const ProcessPage = () => {
   else if (!canVote) mainButtonText = "You cannot vote" // catch-all
   else mainButtonText = "Submit your vote"
 
+  // TODO: Use tokenLoading, tokenError, resultsError, resultsLoading, summaryError, summaryLoading
+
   return (
     <div>
       <SectionTitle
-        title={`${token?.symbol || "Token"} governance process`}
+        title={`${tokenInfo?.symbol || "Token"} governance process`}
         subtitle={"Cast your vote and see the ongoing results as they are received."}
       />
       <ProcessContainer>

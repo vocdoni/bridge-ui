@@ -181,7 +181,7 @@ const NewProcessPage = () => {
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const tokenAddress = useUrlHash().substr(1);
-  const token = useToken(tokenAddress);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
@@ -343,9 +343,9 @@ const NewProcessPage = () => {
       const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
       const proof = await getProof({
         account: wallet.account,
-        token: token.address,
+        token: tokenInfo.address,
         block: sourceBlockHeight,
-        balanceMappingPosition: token.balanceMappingPosition,
+        balanceMappingPosition: tokenInfo.balanceMappingPosition,
         pool,
       })
 

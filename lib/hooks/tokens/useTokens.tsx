@@ -4,47 +4,44 @@ import useSWR from "swr";
 
 import { getTokenInfo } from "../../api";
 import { TokenInfo } from "../../types";
-import { useMessageAlert } from "./../message-alert";
+// import { useMessageAlert } from "./../message-alert";
+import { useStoredTokens } from "./useStoredTokens";
 
 const UseTokenContext = React.createContext<{
   currentTokens: Partial<TokenInfo>[];
-  updateTokens: (value: TokenInfo[]) => void;
+  updateTokens: (value: Partial<TokenInfo>[]) => void;
   resolveTokenInfo: (address: string) => Promise<Partial<TokenInfo>>;
-  refreshTokenInfo: (address: string) => Promise<TokenInfo>;
+  loading: boolean;
+  error?: string;
 }>({
   currentTokens: [],
   updateTokens: () => undefined,
   resolveTokenInfo: () => Promise.reject(new Error("Not initialized")),
-  refreshTokenInfo: () => Promise.reject(new Error("Not initialized")),
+  loading: false,
+  error: ""
 });
 
-export function useToken(address: string): Partial<TokenInfo> | null {
+export function useToken(address: string) {
   const tokenContext = useContext(UseTokenContext);
-  const { setAlertMessage } = useMessageAlert();
+  const [tokenInfo, setTokenInfo] = useState<Partial<TokenInfo>>()
   // const { setLoadingMessage, hideLoading } = useLoadingAlert()
-
-  const fetchToken = async () => {
-    try {
-      const newInfo = await tokenContext.resolveTokenInfo(address);
-      return newInfo;
-    } catch (error) {
-      setAlertMessage("The token details could not be loaded");
-      console.error(error);
-    }
-  };
-
-  const { data } = useSWR([address], fetchToken, {
-    isPaused: () => !address,
-  });
 
   if (tokenContext === null) {
     throw new Error(
       "useToken() can only be used inside of <UseTokenProvider />, " +
-        "please declare it at a higher level."
+      "please declare it at a higher level."
     );
   }
+  const { resolveTokenInfo, loading, error } = tokenContext
 
-  return data;
+  useEffect(() => {
+    if (!address) return;
+
+    resolveTokenInfo(address)
+      .then(tokenInfo => setTokenInfo(tokenInfo))
+  }, [address])
+
+  return { tokenInfo, error, loading };
 }
 
 /** Returns an array containing the available information about the given addresses */
@@ -54,7 +51,7 @@ export function useTokens(addresses: string[]) {
 
   const fetchTokensInfo = async (addresses: string[]) => {
     // @TODO: Add multicall + fetch of token information
-    const fetchPromises = addresses.map((a) => tokenContext.refreshTokenInfo(a));
+    const fetchPromises = addresses.map((addr) => tokenContext.resolveTokenInfo(addr));
     const allTokensInfo = await Promise.all(fetchPromises);
     tokenContext.updateTokens(allTokensInfo);
     return allTokensInfo;
@@ -69,36 +66,26 @@ export function useTokens(addresses: string[]) {
   if (tokenContext === null) {
     throw new Error(
       "useTokens() can only be used inside of <UseTokenProvider />, " +
-        "please declare it at a higher level."
+      "please declare it at a higher level."
     );
   }
   return tokenContext.currentTokens;
 }
 
 export function UseTokenProvider({ children }) {
-  const [tokens, setTokens] = useState([]);
-
+  const { storedTokens, error, loading } = useStoredTokens()
+  const [tokens, setTokens] = useState<Partial<TokenInfo>[]>([]);
   const { poolPromise } = usePool();
 
-  const resolveTokenInfo = useCallback(
-    async (address: string) => {
-      // @TODO: Add validation address is correct
-      const tokenCached = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
+  const resolveTokenInfo = (address: string) => {
+    let token = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
+    if (token) return Promise.resolve(token);
 
-      if (tokenCached) return tokenCached;
-      return loadTokenInfo(address);
-    },
-    [tokens]
-  );
+    token = storedTokens.find(({ address: tokenAddress }) => address === tokenAddress);
+    if (token) return Promise.resolve(token);
 
-  const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
-    async (address: string) => {
-      const pool = await poolPromise;
-      const token = await getTokenInfo(address, pool);
-      return token;
-    },
-    [poolPromise]
-  );
+    return poolPromise.then(pool => getTokenInfo(address, pool));
+  };
 
   return (
     <UseTokenContext.Provider
@@ -106,7 +93,8 @@ export function UseTokenProvider({ children }) {
         currentTokens: tokens,
         updateTokens: setTokens,
         resolveTokenInfo,
-        refreshTokenInfo: loadTokenInfo,
+        error,
+        loading
       }}
     >
       {children}

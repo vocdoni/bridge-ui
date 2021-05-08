@@ -11,7 +11,7 @@ import { ThemeProvider } from "styled-components";
 import { Layout } from "../components/layout";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
-import { UseRegisteredTokens, UseTokenProvider, UseUserTokens } from "../lib/hooks/tokens";
+import { UseStoredTokensProvider, UseTokenProvider, UseUserTokens } from "../lib/hooks/tokens";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
@@ -48,8 +48,8 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
               environment={environment}
             >
               <UseBlockStatusProvider>
-                <UseTokenProvider>
-                  <UseRegisteredTokens>
+                <UseStoredTokensProvider>
+                  <UseTokenProvider>
                     <UseProcessProvider>
                       <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
                         <UseUserTokens>
@@ -77,8 +77,8 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                         </UseUserTokens>
                       </UseWalletProvider>
                     </UseProcessProvider>
-                  </UseRegisteredTokens>
-                </UseTokenProvider>
+                  </UseTokenProvider>
+                </UseStoredTokensProvider>
               </UseBlockStatusProvider>
             </UsePoolProvider>
           </UseLoadingAlertProvider>
