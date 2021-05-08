@@ -46,8 +46,8 @@ export const useWeights = ({ processId, token, start, end }) => {
         symbol: "",
       });
 
-      const weight = BigNumber.from(resultsWeight).mul(100);
-      const relative = weight.div(token.totalSupply).toString();
+      const weight = BigNumber.from(resultsWeight).mul(100 * 10);
+      const relative = weight.div(token.totalSupply).toNumber() / 10; // 1 decimal
       const votesEmitted = votes.toString();
 
       return [

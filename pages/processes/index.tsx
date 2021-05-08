@@ -23,7 +23,7 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/button";
-import { useProcessInfo, useProcessDate, useWeights, useVote } from "../../lib/hooks/process";
+import { useProcessResults, useProcessDate, useWeights, useVote } from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
@@ -43,7 +43,7 @@ const ProcessPage = () => {
   const { process } = useProcess(processId);
   const token = useToken(process?.entity);
   const { datesInfo, hasEnded, hasStarted } = useProcessDate(process);
-  const { results, updateResults } = useProcessInfo(process, token);
+  const { results, error: resultsError, loading: resultsLoading, refreshResults } = useProcessResults(process, token);
   const { weights, updateWeights } = useWeights({
     processId,
     token,
@@ -69,7 +69,7 @@ const ProcessPage = () => {
     }
 
     await vote(process, proof);
-    await updateResults();
+    await refreshResults();
     await updateVote();
     await updateWeights();
   };
@@ -112,7 +112,8 @@ const ProcessPage = () => {
       </ProcessContainer>
 
       <Questions
-        questions={results && results.questions}
+        questions={process.metadata.questions}
+        results={results}
         choicesSelected={status.choices}
         onChoiceSelect={onSelect}
         canVote={canVote}
@@ -136,7 +137,7 @@ const ProcessPage = () => {
             ) : !inCensus ? (
               "You're not a token holder"
             ) : !hasStarted ? (
-              "Process has not started"
+              "Voting has not started yet"
             ) : alreadyVoted ? (
               "You already voted"
             ) : !questionsFilled ? (

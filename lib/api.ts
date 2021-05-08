@@ -60,14 +60,14 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
-export type StorageProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>
+export type CensusProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>["proof"]
 export const getProof = async ({
   account,
   token,
   pool,
   block,
   balanceMappingPosition,
-}: ProofParameters) => {
+}: ProofParameters): Promise<CensusProof> => {
   try {
     const balance = await balanceOf(token, account, pool);
     if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE);

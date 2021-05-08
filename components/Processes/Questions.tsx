@@ -16,53 +16,63 @@ import {
 } from "./styled";
 
 import Checkbox from "./checkbox";
+import { ProcessMetadata } from "dvote-js";
+import { ProcessResults } from "../../lib/hooks/process/useProcessResults";
 
-const Option = ({ choice, onChoiceSelect, questionId, checked, canVote }) => (
+type PQuestion = ProcessMetadata["questions"][0]
+type PChoice = ProcessMetadata["questions"][0]["choices"][0]
+type PResult = ProcessResults[0]["choices"][0]
+
+const Option = ({ choice, choiceResult, onChoiceSelect, questionIdx, checked, canVote }:
+  { choice: PChoice, choiceResult: PResult, onChoiceSelect: (qIdx: number, value: number) => void, questionIdx: number, checked: boolean, canVote: boolean }) => (
   <OptionLabel>
     {canVote ? (
-      <Checkbox checked={checked} onChange={() => onChoiceSelect(questionId, choice.id)} />
+      <Checkbox checked={checked} onChange={() => onChoiceSelect(questionIdx, choice.value)} />
     ) : (
       <ChoiceInfo>
-        <Percentage>{choice.percentage === "N/A" ? "Locked" : `${choice.percentage}%`}</Percentage>
+        <Percentage>{choiceResult?.percentage === "N/A" ? "" : `${choiceResult?.percentage && choiceResult?.percentage || "0.0"}%`}</Percentage>
       </ChoiceInfo>
     )}
     <OptionTitleContainer>
-      <OptionTitle>{choice.title}</OptionTitle>
+      <OptionTitle>{choice.title.default}</OptionTitle>
       <OptionSubtitle>
-        {choice.votes} {choice.token}
+        {choiceResult?.votes || ""}
       </OptionSubtitle>
     </OptionTitleContainer>
   </OptionLabel>
 );
 
-export const Questions = ({ questions, onChoiceSelect, choicesSelected, canVote }) => {
+export const Questions = ({ questions, results, onChoiceSelect, choicesSelected, canVote }:
+  { questions: PQuestion[], results: ProcessResults, onChoiceSelect: (qIdx: number, value: number) => void, choicesSelected: number[], canVote: boolean }) => {
+  if (!questions) return <div />
+
   return (
     <div>
-      {!questions
-        ? null
-        : questions.map(({ title, description, choices }, i) => (
-            <QuestionContainer key={`question_${i}`}>
-              <QuestionInformation>
-                <QuestionNumber>Question #{i + 1}</QuestionNumber>
-                <QuestionTitle>{title}</QuestionTitle>
-                <QuestionDescription>{description}</QuestionDescription>
-              </QuestionInformation>
-              <QuestionOptions>
-                {choices.map((choice, j) => {
-                  return (
-                    <Option
-                      key={`choice_${j}`}
-                      questionId={i}
-                      choice={{ ...choice, id: j }}
-                      onChoiceSelect={onChoiceSelect}
-                      checked={choicesSelected && choicesSelected[i] === j}
-                      canVote={canVote}
-                    />
-                  );
-                })}
-              </QuestionOptions>
-            </QuestionContainer>
-          ))}
+      {questions.map(({ title, description, choices }, qIdx) => (
+        <QuestionContainer key={qIdx}>
+          <QuestionInformation>
+            <QuestionNumber>Question #{qIdx + 1}</QuestionNumber>
+            <QuestionTitle>{title.default}</QuestionTitle>
+            <QuestionDescription>{description.default}</QuestionDescription>
+          </QuestionInformation>
+          <QuestionOptions>
+            {choices.map((choice, cIdx) => {
+              const choiceResult = results && results[qIdx] && results[qIdx].choices[cIdx]
+              return (
+                <Option
+                  key={cIdx}
+                  questionIdx={qIdx}
+                  choice={choice}
+                  choiceResult={choiceResult}
+                  onChoiceSelect={onChoiceSelect}
+                  checked={choicesSelected && choicesSelected[qIdx] === choice.value}
+                  canVote={canVote}
+                />
+              );
+            })}
+          </QuestionOptions>
+        </QuestionContainer>
+      ))}
     </div>
   );
 };

@@ -18,8 +18,7 @@ export const useProcessDate = (info: ProcessInfo) => {
 
       return { start, end };
     } catch (error) {
-      console.log(error.message);
-      console.log("Error in useProcessInfo hook: ", error.message);
+      console.log("Error in useProcessDate hook: ", error.message);
     }
   };
 
