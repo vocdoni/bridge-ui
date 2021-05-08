@@ -16,6 +16,7 @@ export const WALLETS: ConnectorData[] = [
     name: "Metamask",
     connector: "injected",
   },
+  // Temporary disabling the following wallet providers until they are properly tested.
   // {
   //   name: "Authereum",
   //   connector: "authereum",

@@ -37,6 +37,7 @@ const Body = styled.div`
   padding: 15px;
   display: flex;
   flex-wrap: wrap;
+  /* Modified content justification from space-between to center until wallet providers are properly tested. */
   justify-content: center;
 
   @media ${({ theme }) => theme.screens.mobileL} {
@@ -156,6 +157,7 @@ export const WalletList = () => {
     }
   };
   return (
+    /* Reducing the modal container height from 565px to 225px until wallet providers are properly tested. */
     <Modal open={state.walletList.open} height={225} width={452}>
       <ModalContainer>
         <Header>
