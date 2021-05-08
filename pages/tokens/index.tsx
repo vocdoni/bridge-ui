@@ -9,6 +9,7 @@ import SectionTitle from "../../components/sectionTitle";
 import { SecondaryButton } from "../../components/button";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 const TokenList = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ const Top = styled.div`
 
 // MAIN COMPONENT
 const TokensPage = () => {
+  useScrollTop();
   const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
   // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
   const tokenInfos = useTokens(tokenAddrs);

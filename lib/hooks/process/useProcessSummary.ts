@@ -21,7 +21,7 @@ export const useProcessSummary = ({ processInfo, tokenInfo }:
     updateProcessSummary()
 
     return () => clearInterval(interval)
-  }, [processInfo?.id])
+  }, [processInfo?.id, hasStarted])
 
   // Loader
 

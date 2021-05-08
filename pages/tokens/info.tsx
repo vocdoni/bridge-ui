@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -167,6 +168,7 @@ const ProcessCard = ({ id, token, title }) => {
 
 // MAIN COMPONENT
 const TokenPage = () => {
+  useScrollTop();
   const { poolPromise } = usePool();
   const tokenAddr = useUrlHash().substr(1);
   const [loadingProcessList, setLoadingProcessList] = useState(true);

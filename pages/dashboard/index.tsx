@@ -14,6 +14,7 @@ import { ProcessInfo, TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/utils";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 export const TokenList = styled.div`
   display: flex;
@@ -44,6 +45,7 @@ export const VoteSectionContainer = styled.div`
 
 // MAIN COMPONENT
 const DashboardPage = () => {
+  useScrollTop();
   const { account } = useWallet();
   const router = useRouter();
   const { poolPromise } = usePool();
@@ -142,7 +144,7 @@ const DashboardPage = () => {
       {VOTING_SECTIONS.map((section) => (
         <VoteSection
           {...section}
-          key={`key_${section.title}`}
+          key={section.title}
           loadingProcesses={loadingProcesses}
           tokenInfos={tokenInfos}
         />

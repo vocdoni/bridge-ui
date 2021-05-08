@@ -28,8 +28,10 @@ import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 const ProcessPage = () => {
+  useScrollTop();
   const router = useRouter();
   const processId = useUrlHash().substr(1);
 
@@ -105,9 +107,9 @@ const ProcessPage = () => {
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
-          {summary &&
+          {summary?.length ?
             summary.map(({ description, value }, i) => (
-              <ProcessDataContainer key={`ProcessDataContainer-${i}`}>
+              <ProcessDataContainer key={i}>
                 <ProcessDataInfo>
                   <ProcessDataDescription>{description}</ProcessDataDescription>
                 </ProcessDataInfo>
@@ -115,7 +117,7 @@ const ProcessPage = () => {
                   <ProcessDataValue>{value}</ProcessDataValue>
                 </ProcessDataInfo>
               </ProcessDataContainer>
-            ))}
+            )) : <p>Loading... <Spinner /></p>}
         </ProcessData>
       </ProcessContainer>
 
