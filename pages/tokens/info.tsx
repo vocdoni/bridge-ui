@@ -170,13 +170,15 @@ const ProcessCard = ({ id, token, title }) => {
 const TokenPage = () => {
   useScrollTop();
   const { poolPromise } = usePool();
-  const tokenAddr = useUrlHash().substr(1);
+  const tokenAddress = useUrlHash().substr(1);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [loadingProcessList, setLoadingProcessList] = useState(true);
   const [blockNumber, setBlockNumber] = useState(-1);
   const [processIds, setProcessIds] = useState([] as string[]);
-  const { processes, error, loading: loadingProcessesDetails } = useProcesses(processIds || []);
-  const token = useToken(tokenAddr);
+  const { processes, error: proposalsError, loading: proposalsLoading } = useProcesses(processIds || []);
   const { setAlertMessage } = useMessageAlert();
+
+  // TODO: Use proposalsError, proposalsLoading
 
   // Effects
   useEffect(() => {
@@ -197,7 +199,7 @@ const TokenPage = () => {
 
     // Done
     return () => clearInterval(interval);
-  }, [tokenAddr]);
+  }, [tokenAddress]);
 
   // Loaders
 
@@ -209,11 +211,11 @@ const TokenPage = () => {
   };
 
   const updateProcessIds = () => {
-    if (!tokenAddr) return;
+    if (!tokenAddress) return;
     setLoadingProcessList(true);
 
     poolPromise
-      .then((pool) => getProcessList(tokenAddr, pool))
+      .then((pool) => getProcessList(tokenAddress, pool))
       .then((ids) => {
         setLoadingProcessList(false);
         setProcessIds(ids);
@@ -228,7 +230,7 @@ const TokenPage = () => {
 
   // Callbacks
 
-  const onCreateProcess = (tokenAddress: string) => {
+  const onCreateProcess = () => {
     if (!tokenAddress) return;
     Router.push("/processes/new#/" + tokenAddress);
   };
@@ -241,13 +243,13 @@ const TokenPage = () => {
       processes.has(id) &&
       blockNumber >= processes.get(id).parameters.startBlock &&
       blockNumber <
-        processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
+      processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
   );
   const endedProcesses = processIds.filter(
     (id) =>
       processes.has(id) &&
       blockNumber >=
-        processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
+      processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
   );
 
   // This exact logic is being done in dashboard/index.tsx
@@ -274,11 +276,11 @@ const TokenPage = () => {
   ];
 
   const address = useMemo(() => {
-    if (token?.address) {
-      return shortAddress(token.address);
+    if (tokenInfo?.address) {
+      return shortAddress(tokenInfo.address);
     }
     return "-";
-  }, [token?.address]);
+  }, [tokenInfo?.address]);
 
   return (
     <>
@@ -290,9 +292,9 @@ const TokenPage = () => {
             height={71}
             style={{ marginRight: 20, marginTop: 9 }}
           />
-          <SectionTitle title="Token details" subtitle={`See the details of ${token?.symbol}`} />
+          <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>
-        <PrimaryButton onClick={() => onCreateProcess(token.address)}>
+        <PrimaryButton onClick={() => onCreateProcess()}>
           Create a governance process
         </PrimaryButton>
       </HeaderContainer>
@@ -301,15 +303,15 @@ const TokenPage = () => {
         <RowSummary>
           <Info>
             <TokenAttribute>Token symbol</TokenAttribute>
-            <InfoDescription>{token?.symbol || "-"}</InfoDescription>
+            <InfoDescription>{tokenInfo?.symbol || "-"}</InfoDescription>
           </Info>
           <Info>
             <TokenAttribute>Token name</TokenAttribute>
-            <InfoDescription>{token?.name || "-"}</InfoDescription>
+            <InfoDescription>{tokenInfo?.name || "-"}</InfoDescription>
           </Info>
           <Info>
             <TokenAttribute>Total supply</TokenAttribute>
-            <InfoDescription>{token?.totalSupplyFormatted || "-"}</InfoDescription>
+            <InfoDescription>{tokenInfo?.totalSupplyFormatted || "-"}</InfoDescription>
           </Info>
           <Info>
             <TokenAttribute>Token address</TokenAttribute>
@@ -324,7 +326,7 @@ const TokenPage = () => {
           key={`${i}_vote`}
           allProcesses={processes}
           loadingProcesses={loadingProcessList}
-          token={token}
+          token={tokenInfo}
         />
       ))}
     </>

@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import { If, Then, When } from "react-if";
+import Spinner from "react-svg-spinner";
 
 import TokenCard from "../../components/token-card";
-import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
+import { useStoredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
@@ -45,11 +47,10 @@ const Top = styled.div`
 // MAIN COMPONENT
 const TokensPage = () => {
   useScrollTop();
-  const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
-  // const [tokenAddrs, setTokenAddrs] = useState(registeredTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
-  const tokenInfos = useTokens(tokenAddrs);
+  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
+  // const [tokenAddrs, setTokenAddrs] = useState(storedTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
 
-  tokenInfos?.sort?.((a, b) => {
+  storedTokens?.sort?.((a, b) => {
     if (a?.symbol > b?.symbol) return 1;
     else if (a?.symbol < b?.symbol) return -1;
     return 0;
@@ -67,7 +68,11 @@ const TokensPage = () => {
         </ButtonContainer>
       </Top>
       <TokenList>
-        {tokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+        <When condition={!(storedTokens?.length) && tokenListLoading}>
+          <div>{renderEmpty()}</div>
+        </When>
+
+        {storedTokens.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
           <TokenCard
             key={address}
             name={symbol}
@@ -83,5 +88,17 @@ const TokensPage = () => {
     </div>
   );
 };
+
+// TODO: Render a better UI
+function renderEmpty() {
+  return (
+    <div>
+      <br />
+      <p>
+        Loading tokens... <Spinner />
+      </p>
+    </div>
+  );
+}
 
 export default TokensPage;

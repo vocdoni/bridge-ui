@@ -1,24 +1,17 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Contract, Provider } from "ethers-multicall";
+import React, { useContext, useEffect, useState } from "react";
+import { Contract, ContractCall, Provider } from "ethers-multicall";
 import { useWallet } from "use-wallet";
-import useSWR from "swr";
-import { providers } from "ethers";
+import { BigNumber, providers } from "ethers";
 import { useMessageAlert } from "../message-alert";
-import { useRegisteredTokens } from "./useRegisteredTokens";
+import { useStoredTokens } from "./useStoredTokens";
 import { ERC20_ABI } from "../../constants";
 import { TokenInfo } from "../../types";
 
-import { usePool } from "@vocdoni/react-hooks";
-import { getTokenInfo } from "../../api";
-
-interface TokenBalance extends Partial<TokenInfo> {
-  balance: string;
-}
-
 interface UserTokenInfo {
-  userTokens: TokenBalance[];
-  refreshUserTokens: any;
+  userTokens: TokenInfo[];
+  refresh: any;
   error?: string;
+  loading: boolean;
 }
 
 const UseUserTokensContext = React.createContext<UserTokenInfo>({} as any);
@@ -37,62 +30,54 @@ export function useUserTokens() {
 }
 
 export function UseUserTokens({ children }) {
-  const { registeredTokens } = useRegisteredTokens();
+  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
   const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
-  const { poolPromise } = usePool();
+  const [userTokens, setUserTokens] = useState<TokenInfo[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState("");
 
-  const loadTokenInfo: (address: string) => Promise<TokenInfo> = useCallback(
-    async (address: string) => {
-      const pool = await poolPromise;
-      const token = await getTokenInfo(address, pool);
-      return token;
-    },
-    [poolPromise]
-  );
+  useEffect(() => {
+    fetchUserTokens()
+  }, [wallet?.account, storedTokens])
 
-  const fetchUserTokens = async (): Promise<TokenBalance[]> => {
-    if (!wallet?.ethereum || !wallet?.account || !registeredTokens) {
-      return [];
+  const fetchUserTokens = async (): Promise<TokenInfo[]> => {
+    if (!wallet?.ethereum || !wallet?.account || !storedTokens) return;
+
+    try {
+      setLoading(true);
+
+      const provider = new providers.Web3Provider(wallet.ethereum);
+      const ethcallProvider = new Provider(provider, wallet.chainId);
+      const tokenBalanceCalls: ContractCall[] = storedTokens.map((tokenInfo) =>
+        new Contract(tokenInfo?.address, ERC20_ABI).balanceOf(wallet.account)
+      );
+
+      const balances = await ethcallProvider.all(tokenBalanceCalls);
+      const tokensWithBalance = storedTokens
+        .filter((_, idx) => !BigNumber.from(balances[idx]).isZero());
+
+      setLoading(false);
+      setUserTokens(tokensWithBalance);
+      setError("");
     }
-
-    const provider = new providers.Web3Provider(wallet.ethereum);
-    const ethcallProvider = new Provider(provider, wallet.chainId);
-    const contractCalls = registeredTokens.map((address) =>
-      new Contract(address, ERC20_ABI).balanceOf(wallet.account)
-    );
-
-    const balances = await ethcallProvider.all(contractCalls);
-    const mappedBalances = registeredTokens.flatMap((address, index) =>
-      balances[index] == 0 ? [] : [{ address, balance: balances[index].toString() }]
-    );
-
-    const fetchPromises = mappedBalances.map((a) => loadTokenInfo(a.address));
-    const allTokensInfo = await Promise.all(fetchPromises);
-
-    return mappedBalances.map((bal, idx) => {
-      return {
-        ...bal,
-        ...allTokensInfo[idx],
-      };
-    });
+    catch (err) {
+      setLoading(false);
+      setError(err?.message);
+    }
   };
-
-  // TODO: Caching does not work with [params]. Use useEffect()
-  const { data, error, mutate } = useSWR([wallet, registeredTokens], fetchUserTokens, {
-    isPaused: () => !wallet.account,
-  });
 
   useEffect(() => {
     if (error) setAlertMessage(error);
-  }, [error, setAlertMessage]);
+  }, [error]);
 
   return (
     <UseUserTokensContext.Provider
       value={{
-        userTokens: data as any,
-        refreshUserTokens: mutate,
-        error,
+        userTokens,
+        refresh: fetchUserTokens,
+        error: error || tokenListError,
+        loading: loading || tokenListLoading
       }}
     >
       {children}

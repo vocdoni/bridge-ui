@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 import TokenCard from "../../components/token-card";
 // import Select from 'react-select'
-import { useTokens, useRegisteredTokens } from "../../lib/hooks/tokens";
+import { useStoredTokens } from "../../lib/hooks/tokens";
 import { getTokenProcesses } from "../../lib/api";
 import { ProcessInfo, TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/utils";
@@ -49,11 +49,10 @@ const DashboardPage = () => {
   const { account } = useWallet();
   const router = useRouter();
   const { poolPromise } = usePool();
-  const { registeredTokens: tokenAddrs, error: tokenListError } = useRegisteredTokens();
+  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
   const [blockNumber, setBlockNumber] = useState(0);
   const [loadingProcesses, setLoadingProcesses] = useState(false);
   const [processes, setProcesses] = useState<ProcessInfo[]>([]);
-  const tokenInfos = useTokens(tokenAddrs);
 
   // Block update
   useEffect(() => {
@@ -78,9 +77,9 @@ const DashboardPage = () => {
     setLoadingProcesses(true);
 
     poolPromise
-      .then((pool) => {
-        return Promise.all(tokenAddrs.map((addr) => getTokenProcesses(addr, pool)));
-      })
+      .then((pool) => Promise.all(
+        storedTokens.map((tokenInfo) => getTokenProcesses(tokenInfo?.address, pool))
+      ))
       .then((processArrays) => {
         if (skip) return;
 
@@ -95,7 +94,7 @@ const DashboardPage = () => {
     return () => {
       skip = true;
     };
-  }, [tokenAddrs]);
+  }, [storedTokens]);
 
   useEffect(() => {
     if (!account) {
@@ -146,7 +145,7 @@ const DashboardPage = () => {
           {...section}
           key={section.title}
           loadingProcesses={loadingProcesses}
-          tokenInfos={tokenInfos}
+          tokenInfos={storedTokens}
         />
       ))}
     </div>

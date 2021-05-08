@@ -10,7 +10,7 @@ import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
-import { useRegisteredTokens } from "../../lib/hooks/tokens";
+import { useStoredTokens } from "../../lib/hooks/tokens";
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
@@ -154,13 +154,14 @@ const TokenAddPage = () => {
   const { dispatch } = useModal();
 
   const { poolPromise } = usePool();
-  const [formTokenAddress, setFormTokenAddress] = useState<string>(null);
+  const [formTokenAddress, setFormTokenAddress] = useState<string>("");
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const { refreshRegisteredTokens, registeredTokens, loading } = useRegisteredTokens();
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const { storedTokens, refresh: refreshStoredTokens, loading } = useStoredTokens();
+
+  const alreadyRegistered = storedTokens.some(t => t?.address.toLowerCase() == formTokenAddress.toLowerCase());
 
   // Callbacks
 
@@ -168,9 +169,7 @@ const TokenAddPage = () => {
     if (loadingToken || !formTokenAddress || loading) return;
     else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
       return setAlertMessage("The token address is not valid");
-    } else if (registeredTokens.includes(formTokenAddress)) {
-      setAlreadyRegistered(true);
-    } else setAlreadyRegistered(false);
+    }
 
     setLoadingToken(true);
 
@@ -210,7 +209,7 @@ const TokenAddPage = () => {
       // Register
       await registerToken(tokenInfo.address, pool, signer);
 
-      await refreshRegisteredTokens();
+      await refreshStoredTokens();
 
       setAlertMessage("The token has been successfully registered", "success");
       setRegisteringToken(false);
@@ -251,7 +250,7 @@ const TokenAddPage = () => {
             setFormTokenAddress(ev.target.value)
           }
           onClick={loadingToken ? undefined : checkToken}
-          loading={loading && !registeredTokens?.length}
+          loading={loading && !storedTokens?.length}
         />
 
         <br />

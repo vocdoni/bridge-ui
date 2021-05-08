@@ -3,7 +3,7 @@ import { withRouter } from "next/router";
 import styled from "styled-components";
 
 import { featuredTokens } from "../lib/tokens";
-import { useTokens, useUserTokens } from "../lib/hooks/tokens";
+import { useStoredTokens, useUserTokens } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
 import { TokenList } from "./dashboard";
 
@@ -231,10 +231,13 @@ const NotListedLink = styled.p`
 // MAIN COMPONENT
 const IndexPage = () => {
   useScrollTop();
-  const featuredTokenIds: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
-  const featuredTokenInfos = useTokens(featuredTokenIds);
-  const wallet = useWallet();
+  const { storedTokens, loading: tokenListLoading, error: tokenListError } = useStoredTokens()
+  const featuredTokenList: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
+  const featuredTokenInfos = featuredTokenList
+    .map(addr => storedTokens.find(t => t?.address == addr))
+    .filter(tok => !!tok);
   const { userTokens } = useUserTokens();
+  const wallet = useWallet();
 
   userTokens?.sort?.((a, b) => {
     if (a?.symbol > b?.symbol) return 1;

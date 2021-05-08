@@ -116,6 +116,8 @@ const AbiMap = {
 };
 
 export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenInfo> {
+  if (!address) return;
+
   // TODO: erc20Helpers is untyped
   const erc20Helpers = AbiMap[address] ?? { abi: ERC20_ABI };
   const tokenInstance = new Contract(address, erc20Helpers.abi, pool.provider);
