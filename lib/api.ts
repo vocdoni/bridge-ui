@@ -180,7 +180,7 @@ export function getRegisteredTokenList(
   return CensusErc20Api.getTokenCount(pool)
     .then((count) => {
       // Nothing changed?
-      if (count == currentTokenCount) return Promise.resolve(null);
+      if (count == currentTokenCount) return Promise.resolve([]);
 
       return Bluebird.map(
         Array.from(Array(count).keys()),

@@ -12,7 +12,7 @@ export class VoiceStorage extends Dexie {
     throwIfNotBrowser()
 
     this.version(1).stores({
-      tokens: '++id,address',
+      tokens: '&address',
       // favorites
       // etc
     })
@@ -22,11 +22,9 @@ export class VoiceStorage extends Dexie {
     this.tokens = this.table("tokens")
   }
 
+  /** Persists any of the given tokens into IndexedDB. If they already exist, it overwrites their values. */
   writeTokens(tokens: TokenInfo[]): Promise<any> {
-    return this.tokens.clear()
-      .then(() => {
-        this.tokens.bulkAdd(tokens)
-      })
+    return Promise.all(tokens.map(tokenInfo => this.tokens.put(tokenInfo)))
   }
 
   readTokens(): Promise<TokenInfo[]> {
