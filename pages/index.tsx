@@ -3,7 +3,7 @@ import { withRouter } from "next/router";
 import styled from "styled-components";
 
 import { featuredTokens } from "../lib/tokens";
-import { useStoredTokens, useUserTokens } from "../lib/hooks/tokens";
+import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
 import { TokenList } from "./dashboard";
 
@@ -236,10 +236,10 @@ const IndexPage = () => {
   const featuredTokenInfos = featuredTokenList
     .map(addr => storedTokens.find(t => t?.address == addr))
     .filter(tok => !!tok);
-  const { userTokens } = useUserTokens();
+  const { tokenInfoList } = useTokensWithBalance();
   const wallet = useWallet();
 
-  userTokens?.sort?.((a, b) => {
+  tokenInfoList?.sort?.((a, b) => {
     if (a?.symbol > b?.symbol) return 1;
     else if (a?.symbol < b?.symbol) return -1;
     return 0;
@@ -292,13 +292,13 @@ const IndexPage = () => {
               <ConnectTextButton />
             </Link>
           </GrayRectangleTall>
-        ) : !userTokens ? (
+        ) : !tokenInfoList ? (
           <GrayRectangle>
             <GreyInfo>Loading...</GreyInfo>
           </GrayRectangle>
-        ) : userTokens.length ? (
+        ) : tokenInfoList.length ? (
           <TokenList>
-            {userTokens.map(
+            {tokenInfoList.map(
               ({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
                 <TokenCard
                   key={address}

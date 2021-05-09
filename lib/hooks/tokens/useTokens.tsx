@@ -1,103 +1,87 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
-import useSWR from "swr";
 
 import { getTokenInfo } from "../../api";
 import { TokenInfo } from "../../types";
 // import { useMessageAlert } from "./../message-alert";
 import { useStoredTokens } from "./useStoredTokens";
+import { GatewayPool } from "dvote-js";
 
-const UseTokenContext = React.createContext<{
-  currentTokens: Partial<TokenInfo>[];
-  updateTokens: (value: Partial<TokenInfo>[]) => void;
-  resolveTokenInfo: (address: string) => Promise<Partial<TokenInfo>>;
-  loading: boolean;
-  error?: string;
-}>({
-  currentTokens: [],
-  updateTokens: () => undefined,
-  resolveTokenInfo: () => Promise.reject(new Error("Not initialized")),
-  loading: false,
-  error: ""
-});
-
+/** Frontend of the cached token list */
 export function useToken(address: string) {
-  const tokenContext = useContext(UseTokenContext);
-  const [tokenInfo, setTokenInfo] = useState<Partial<TokenInfo>>()
-  // const { setLoadingMessage, hideLoading } = useLoadingAlert()
-
-  if (tokenContext === null) {
-    throw new Error(
-      "useToken() can only be used inside of <UseTokenProvider />, " +
-      "please declare it at a higher level."
-    );
-  }
-  const { resolveTokenInfo, loading, error } = tokenContext
-
-  useEffect(() => {
-    if (!address) return;
-
-    resolveTokenInfo(address)
-      .then(tokenInfo => setTokenInfo(tokenInfo))
-  }, [address])
-
-  return { tokenInfo, error, loading };
-}
-
-/** Returns an array containing the available information about the given addresses */
-export function useTokens(addresses: string[]) {
-  const tokenContext = useContext(UseTokenContext);
-  // const { setAlertMessage } = useMessageAlert()
-
-  const fetchTokensInfo = async (addresses: string[]) => {
-    // @TODO: Add multicall + fetch of token information
-    const fetchPromises = addresses.map((addr) => tokenContext.resolveTokenInfo(addr));
-    const allTokensInfo = await Promise.all(fetchPromises);
-    tokenContext.updateTokens(allTokensInfo);
-    return allTokensInfo;
-  };
-
-  useEffect(() => {
-    if (addresses) {
-      fetchTokensInfo(addresses);
-    }
-  }, [addresses]);
-
-  if (tokenContext === null) {
-    throw new Error(
-      "useTokens() can only be used inside of <UseTokenProvider />, " +
-      "please declare it at a higher level."
-    );
-  }
-  return tokenContext.currentTokens;
-}
-
-export function UseTokenProvider({ children }) {
-  const { storedTokens, error, loading } = useStoredTokens()
-  const [tokens, setTokens] = useState<Partial<TokenInfo>[]>([]);
   const { poolPromise } = usePool();
+  const { storedTokens, storeTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo>(() => storedTokens.find(t => t.address?.toLowerCase?.() == address?.toLowerCase?.()));
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
-  const resolveTokenInfo = (address: string) => {
-    let token = tokens.find(({ address: tokenAddress }) => address === tokenAddress);
-    if (token) return Promise.resolve(token);
+  // Load from IndexDB or resolve it (if new)
+  useEffect(() => {
+    if (tokenInfo?.address?.toLowerCase?.() == address?.toLowerCase?.()) return; // done
 
-    token = storedTokens.find(({ address: tokenAddress }) => address === tokenAddress);
-    if (token) return Promise.resolve(token);
+    setLoading(true);
 
-    return poolPromise.then(pool => getTokenInfo(address, pool));
-  };
+    poolPromise
+      .then(pool => getTokenInfo(address, pool))
+      .then(tokenInfo => {
+        setLoading(false);
+        setError("");
 
-  return (
-    <UseTokenContext.Provider
-      value={{
-        currentTokens: tokens,
-        updateTokens: setTokens,
-        resolveTokenInfo,
-        error,
-        loading
-      }}
-    >
-      {children}
-    </UseTokenContext.Provider>
-  );
+        setTokenInfo(tokenInfo);
+        return storeTokens([tokenInfo]); // DB sync
+      })
+      .catch(err => {
+        setLoading(false);
+        setError(err?.message);
+      })
+  }, [address]);
+
+  return { tokenInfo, error: error || tokenListError, loading: loading || tokenListLoading };
+}
+
+/** Frontend of the cached token list */
+export function useTokens(tokenAddresses: string[]) {
+  const { poolPromise } = usePool();
+  const { storedTokens, storeTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
+  const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>(() => tokenAddresses.map(addr => storedTokens.find(item => item.address == addr)));
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
+
+  // Load from IndexDB or resolve it (if new)
+  useEffect(() => {
+    const uncachedTokens: string[] = [];
+
+    for (let addr of tokenAddresses) {
+      const included = storedTokens.some(t => t.address.toLowerCase() == addr?.toLowerCase?.());
+      if (included) continue;
+
+      uncachedTokens.push(addr);
+    }
+
+    let pool: GatewayPool
+    poolPromise
+      .then(gwPool => {
+        pool = gwPool;
+
+        return Promise.all(uncachedTokens.map(tokenAddr => getTokenInfo(tokenAddr, pool)))
+      })
+      .then(newTokenInfos => {
+        setLoading(false);
+        setError("");
+
+        // Set the full list following the original token address order
+        const combinedTokenList = [].concat(storedTokens).concat(newTokenInfos) as TokenInfo[];
+        const result = tokenAddresses.map(addr => combinedTokenList.find(item => item.address == addr));
+
+        setTokenInfoList(result);
+        // Store the uncached ones
+        return storeTokens(newTokenInfos);
+      })
+      .catch(err => {
+        setLoading(false);
+        setError(err?.message);
+      })
+  }, [tokenAddresses]);
+
+  return { tokenInfoList, error: error || tokenListError, loading: loading || tokenListLoading };
 }

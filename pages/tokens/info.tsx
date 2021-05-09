@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { VotingApi } from "dvote-js";
 
-import { usePool, useProcesses } from "@vocdoni/react-hooks";
+import { ProcessInfo, useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
 import { VoteCard } from "../../components/token-card";
@@ -16,6 +15,7 @@ import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { TokenInfo } from "../../lib/types";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -116,29 +116,32 @@ const InfoWrapper = styled.div`
   min-width: 200px;
 `;
 
-const VoteSection = ({
-  allProcesses,
-  processes,
-  token,
-  loadingProcesses,
-  title,
-  noProcessesMessage,
-  processesMessage,
-}) => {
-  const Processes = () =>
-    useMemo(() => {
-      return processes.map((processId) => {
-        const title = allProcesses.get(processId).metadata.title.default || "No title";
-        return <ProcessCard key={processId} id={processId} title={title} token={token} />;
-      });
-    }, [processes]);
+type VotingSectionProps = {
+  allProcesses: Map<string, ProcessInfo>,
+  processes: string[],
+  token: TokenInfo,
+  loadingProcesses: boolean,
+  title: string,
+  noProcessesMessage: string,
+  processesMessage: string,
+};
+
+const VoteSection = (params: VotingSectionProps) => {
+  const { allProcesses, processes, token, loadingProcesses, title, noProcessesMessage, processesMessage } = params;
+
+  const processList = <>
+    {processes.map((processId) => {
+      const title = allProcesses.get(processId)?.metadata?.title?.default || "No title";
+      return <ProcessCard key={processId} id={processId} title={title} token={token} />;
+    })}
+  </>
 
   return (
     <VoteSectionContainer>
       {processes.length ? (
         <>
           <SectionTitle title={title} subtitle={processesMessage} />
-          <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
+          <TokenList>{loadingProcesses ? <Spinner /> : processList}</TokenList>
         </>
       ) : (
         <>
@@ -173,24 +176,19 @@ const TokenPage = () => {
   const tokenAddress = useUrlHash().substr(1);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [loadingProcessList, setLoadingProcessList] = useState(true);
-  const [blockNumber, setBlockNumber] = useState(-1);
-  const [processIds, setProcessIds] = useState([] as string[]);
+  const [processIds, setProcessIds] = useState<string[]>([]);
   const { processes, error: proposalsError, loading: proposalsLoading } = useProcesses(processIds || []);
+  const { blockStatus } = useBlockStatus();
   const { setAlertMessage } = useMessageAlert();
+
+  const blockNumber = blockStatus?.blockNumber || 0;
+  const loading = tokenLoading || proposalsLoading || loadingProcessList
 
   // TODO: Use proposalsError, proposalsLoading
 
   // Effects
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => updateBlockHeight(), 1000 * 13);
-    updateBlockHeight();
-
-    // Done
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -202,13 +200,6 @@ const TokenPage = () => {
   }, [tokenAddress]);
 
   // Loaders
-
-  const updateBlockHeight = () => {
-    poolPromise
-      .then((pool) => VotingApi.getBlockHeight(pool))
-      .then((num) => setBlockNumber(num))
-      .catch((err) => console.error(err));
-  };
 
   const updateProcessIds = () => {
     if (!tokenAddress) return;
@@ -323,9 +314,9 @@ const TokenPage = () => {
       {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
           {...section}
-          key={`${i}_vote`}
+          key={i}
           allProcesses={processes}
-          loadingProcesses={loadingProcessList}
+          loadingProcesses={loading}
           token={tokenInfo}
         />
       ))}

@@ -8,32 +8,32 @@ import { ERC20_ABI } from "../../constants";
 import { TokenInfo } from "../../types";
 
 interface UserTokenInfo {
-  userTokens: TokenInfo[];
+  tokenInfoList: TokenInfo[];
   refresh: any;
   error?: string;
   loading: boolean;
 }
 
-const UseUserTokensContext = React.createContext<UserTokenInfo>({} as any);
+const UseTokensWithBalanceContext = React.createContext<UserTokenInfo>({} as any);
 
 /** Returns an array containing the list of registered ERC20 tokens */
-export function useUserTokens() {
-  const userTokenContext = useContext(UseUserTokensContext);
+export function useTokensWithBalance() {
+  const userTokenContext = useContext(UseTokensWithBalanceContext);
 
   if (userTokenContext === null) {
     throw new Error(
-      "useUserTokens() can only be used inside of <UseUserTokens />, " +
+      "useTokensWithBalance() can only be used inside of <UseTokensWithBalance />, " +
       "please declare it at a higher level."
     );
   }
   return userTokenContext;
 }
 
-export function UseUserTokens({ children }) {
+export function UseTokensWithBalance({ children }) {
   const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
   const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
-  const [userTokens, setUserTokens] = useState<TokenInfo[]>([]);
+  const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
 
@@ -58,7 +58,7 @@ export function UseUserTokens({ children }) {
         .filter((_, idx) => !BigNumber.from(balances[idx]).isZero());
 
       setLoading(false);
-      setUserTokens(tokensWithBalance);
+      setTokenInfoList(tokensWithBalance);
       setError("");
     }
     catch (err) {
@@ -72,15 +72,15 @@ export function UseUserTokens({ children }) {
   }, [error]);
 
   return (
-    <UseUserTokensContext.Provider
+    <UseTokensWithBalanceContext.Provider
       value={{
-        userTokens,
+        tokenInfoList,
         refresh: fetchUserTokens,
         error: error || tokenListError,
         loading: loading || tokenListLoading
       }}
     >
       {children}
-    </UseUserTokensContext.Provider>
+    </UseTokensWithBalanceContext.Provider>
   );
 }

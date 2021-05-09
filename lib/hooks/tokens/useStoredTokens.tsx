@@ -6,10 +6,15 @@ import { useMessageAlert } from "../message-alert";
 import { VoiceStorage } from "../../storage";
 import { TokenInfo } from "../../types";
 import { GatewayPool } from "dvote-js";
+import { BigNumber } from "@ethersproject/bignumber";
 
 interface StoredTokens {
+  /** The currently cached tokens */
   storedTokens: TokenInfo[];
-  refresh: any;
+  /** Cache the given tokens into IndexDB */
+  storeTokens: (newTokenList: TokenInfo[]) => Promise<any>;
+  /** Refresh the list of registered tokens and cache any new ones */
+  refresh: () => Promise<any>;
   error?: string;
   loading: boolean;
 }
@@ -39,29 +44,37 @@ export function UseStoredTokensProvider({ children }) {
   const { setAlertMessage } = useMessageAlert();
   const [storedTokens, setStoredTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<string>(null)
+  const [error, setError] = useState<string>("")
 
   useEffect(() => {
-    readFromStorage()
-      .then(() => fetchStoredTokens())
+    readFromStorage()  // IndexDB
+      .then(() => fetchNewStoredTokens()) // Web3
   }, []);
 
+  /** Reads the current token info array fron IndexDB */
   const readFromStorage = () => {
     const storage = new VoiceStorage();
 
     return storage.readTokens()
-      .then(StoredTokens => {
-        setStoredTokens(StoredTokens || []);
+      .then(storedTokens => {
+        const result: TokenInfo[] = (storedTokens || []).map(item => {
+          return {
+            totalSupply: BigNumber.from(item.totalSupply?._hex || item.totalSupply),
+            ...item
+          }
+        })
+        setStoredTokens(result);
       });
   };
 
+  /** Persists any of the given tokens into IndexedDB. If they already exist, it overwrites their values. */
   const writeToStorage = (tokens: TokenInfo[]) => {
     const storage = new VoiceStorage();
 
     return storage.writeTokens(tokens);
   };
 
-  const fetchStoredTokens = () => {
+  const fetchNewStoredTokens = () => {
     let pool: GatewayPool
     setLoading(true);
 
@@ -70,17 +83,27 @@ export function UseStoredTokensProvider({ children }) {
         pool = gwPool;
         return getRegisteredTokenList(storedTokens?.length || 0, pool);
       })
-      .then(tokenList => Promise.all(tokenList.map(addr => getTokenInfo(addr, pool))))
-      .then(tokenInfoList => {
+      .then(tokenList => {
+        // Fetches the details of the non-stored tokens
+        const newTokens: string[] = [];
+        for (let i = 0; i < tokenList.length; i++) {
+          const included = storedTokens.some(t => t.address.toLowerCase() == tokenList[i].toLowerCase());
+          if (included) continue;
+
+          newTokens.push(tokenList[i]);
+        }
+        return Promise.all(newTokens.map(addr => getTokenInfo(addr, pool)));
+      })
+      .then(newTokenListInfo => {
         setLoading(false);
         setError(null);
 
-        setStoredTokens(tokenInfoList);
-        writeToStorage(tokenInfoList);
+        setStoredTokens(storedTokens.concat(newTokenListInfo));
+        writeToStorage(newTokenListInfo);
       })
       .catch(err => {
         setLoading(false);
-        setError("Could not fetch the list of tokens");
+        setError("Could not update the list of tokens");
       });
   };
 
@@ -92,7 +115,8 @@ export function UseStoredTokensProvider({ children }) {
     <UseStoredTokensContext.Provider
       value={{
         storedTokens,
-        refresh: fetchStoredTokens,
+        storeTokens: writeToStorage,
+        refresh: fetchNewStoredTokens,
         error,
         loading
       }}
