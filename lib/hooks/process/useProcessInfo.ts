@@ -44,10 +44,11 @@ export const useProcessInfo = (info: ProcessInfo, token: Partial<TokenInfo>) => 
             const choices = voteResults.map(({ title, votes }) => {
               let percentage = "0";
               if (!votes.isZero()) {
-                const totalSupply = BigNumber.from(token.totalSupply.hex || token.totalSupply);
-                //To get a percentage with 2 decimal places it's necessary to have the votes
-                //multiplied by an additional 100 (on top of the 100 for the percentage)
-
+                // Since BigNumber only do rounded division, it is necessary necessary to
+                // multiply the votes by 100 before the division. However, this will yield
+                // integer percentages. In order to get percentages with 2 decimal places,
+                // it is necessary to multiply the votes by an additional 100 before the
+                // division
                 const factorBn = votes.mul(10000).div(totalVoteAmountBn);
                 // factor is now within [0,10'000]
 
