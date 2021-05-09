@@ -48,15 +48,14 @@ const ProcessPage = () => {
   const { results, error: resultsError, loading: resultsLoading, refresh: refreshResults } = useProcessResults(process, tokenInfo);
   const { summary, error: summaryError, loading: summaryLoading, refresh: refreshSummary } = useProcessSummary({ processInfo: process, tokenInfo });
   const { proof, loading: proofLoading, error: proofError } = useCensusProof(tokenInfo, process?.parameters?.sourceBlockHeight);
-  const { status, updateStatus, voteInfo, vote } = useVote(process);
-  const { data: voteStatus, mutate: updateVote, isValidating: fetchingVote } = voteInfo;
+  const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(process);
   const wallet = useWallet();
 
   const isConnected = !!wallet.account;
-  const allQuestionsSelected = status.choices.length === process?.metadata?.questions?.length;
-  const questionsFilled = allQuestionsSelected && areAllNumbers(status.choices);
+  const allQuestionsSelected = voteState.choices.length === process?.metadata?.questions?.length;
+  const questionsFilled = allQuestionsSelected && areAllNumbers(voteState.choices);
   const inCensus = !!proof;
-  const alreadyVoted = voteStatus?.registered || status.registered;
+  const alreadyVoted = votingStatus?.registered || voteState.submitted;
   const canSelect = !alreadyVoted && hasStarted && !hasEnded && inCensus;
   const canVote = canSelect && questionsFilled;
 
@@ -65,16 +64,16 @@ const ProcessPage = () => {
       return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
     }
 
-    await vote(process, proof);
+    await submitVote(process, proof);
     await refreshResults();
-    await updateVote();
+    await refreshVotingStatus();
     await refreshSummary();
   };
 
   const onSelect = (questionId: number, choice: number) => {
-    status.choices[questionId] = choice;
-    updateStatus({
-      choices: status.choices,
+    voteState.choices[questionId] = choice;
+    setState({
+      choices: voteState.choices,
     });
   };
 
@@ -126,7 +125,7 @@ const ProcessPage = () => {
       <Questions
         questions={process.metadata.questions}
         results={results}
-        choicesSelected={status.choices}
+        choicesSelected={voteState.choices}
         onChoiceSelect={onSelect}
         canSelect={canSelect}
       />
@@ -142,7 +141,7 @@ const ProcessPage = () => {
             disabled={isConnected && !canVote}
             onClick={onVoteSubmit}
           >
-            {status.submitting ? <Spinner /> : mainButtonText}
+            {voteState.submitting ? <Spinner /> : mainButtonText}
           </Button>
         </ButtonContainer>
       )}

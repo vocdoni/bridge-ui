@@ -1,19 +1,18 @@
 import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
-import { VotingApi } from "dvote-js";
-import { useEffect, useMemo, useReducer } from "react";
-import useSWR from "swr";
+import { SignedEnvelopeParams, VotingApi } from "dvote-js";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useWallet } from "use-wallet";
 import { CensusProof } from "../../api";
 import { useMessageAlert } from "../message-alert";
 import { useSigner } from "../useSigner";
 
-export interface VoteStatus {
+export interface VoteState {
   submitting: boolean;
   choices: number[];
-  registered: boolean;
+  submitted: boolean;
 }
 
-export interface VoteInfo {
+export interface VotingStatus {
   registered: boolean;
   date?: Date;
   block?: number;
@@ -22,92 +21,112 @@ export interface VoteInfo {
 const INITIAL_STATE = {
   submitting: false,
   choices: [],
-  registered: false,
+  submitted: false,
 };
 
-function updateStatus(status: Partial<VoteStatus>) {
+function setState(state: Partial<VoteState>) {
   return <const>{
-    type: "UPDATE_STATUS",
-    status,
+    type: "SET_STATE",
+    state,
   };
 }
 
-export type StatusAction = ReturnType<typeof updateStatus>;
+export type StatusAction = ReturnType<typeof setState>;
 
-export const reducer = (state: VoteStatus, action: StatusAction) => {
+// Q: Is a reducer needed, just for this?
+export const voteStateReducer = (state: VoteState, action: StatusAction) => {
   switch (action.type) {
-    case "UPDATE_STATUS":
-      state = {
+    case "SET_STATE":
+      return {
         ...state,
-        ...action.status,
+        ...action.state,
       };
-      state;
     default:
       return state;
   }
 };
 
-export const useVote = (process: ProcessInfo) => {
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+export const useVote = (processInfo: ProcessInfo) => {
+  const [voteState, dispatch] = useReducer(voteStateReducer, INITIAL_STATE);
   const wallet = useWallet();
   const signer = useSigner();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
+  const [votingStatus, setVotingStatus] = useState<VotingStatus>();
+
+  const processId = processInfo?.id || "";
+  const voterAddress = wallet?.account || "";
 
   const nullifier = useMemo(() => {
-    if (process?.id) return VotingApi.getSignedVoteNullifier(wallet?.account || "", process.id);
-  }, [process?.id, wallet?.account]);
+    if (processId) return VotingApi.getSignedVoteNullifier(voterAddress, processId);
+  }, [processId, voterAddress]);
 
-  const updateVoteInfo = async (processId): Promise<VoteInfo> => {
-    const pool = await poolPromise;
+  // Auto refresh vote status
+  useEffect(() => {
+    const interval = setInterval(() => refreshVotingStatus(), 1000 * 20);
+    refreshVotingStatus()
+      .then(votingStatus => {
+        // No need to keep updating if already voted
+        if (votingStatus?.registered) clearInterval(interval);
+      })
 
-    const voted = await VotingApi.getEnvelopeStatus(processId, nullifier, pool);
-    return voted;
+    return clearInterval(interval);
+  }, [processId, voterAddress])
+
+  // Clear choices on dependency change
+  useEffect(() => {
+    dispatch({ type: "SET_STATE", state: { choices: [] } });
+  }, [processId, dispatch, voterAddress]);
+
+  // Callbacks
+
+  const refreshVotingStatus = () => {
+    if (!nullifier) return Promise.resolve(null);
+
+    return poolPromise
+      .then(pool => VotingApi.getEnvelopeStatus(processId, nullifier, pool))
+      .then(votingStatus => {
+        setVotingStatus(votingStatus);
+        return votingStatus;
+      })
   };
 
-  const voteInfo = useSWR([process?.id, nullifier], updateVoteInfo, {
-    isPaused: () => !process?.id || !wallet.account,
-  });
-
-  useEffect(() => {
-    dispatch({ type: "UPDATE_STATUS", status: { choices: [] } });
-  }, [process, dispatch, wallet?.account]);
-
-  const onSubmitVote = async (process: ProcessInfo, proof: CensusProof): Promise<void> => {
+  const submitVote = async (processInfo: ProcessInfo, proof: CensusProof): Promise<void> => {
     try {
-      dispatch({ type: "UPDATE_STATUS", status: { submitting: true } });
+      dispatch({ type: "SET_STATE", state: { submitting: true } });
       const pool = await poolPromise;
 
       // Detect encryption
-      const envelopParams = {
-        votes: state.choices,
-        censusOrigin: process?.parameters.censusOrigin,
+      const envelopParams: SignedEnvelopeParams = {
+        votes: voteState.choices,
+        censusOrigin: processInfo?.parameters.censusOrigin,
         censusProof: proof.storageProof[0],
-        processId: process.id,
+        processId: processId,
         walletOrSigner: signer,
       };
 
-      if (process.parameters.envelopeType.hasEncryptedVotes) {
-        const keys = await VotingApi.getProcessKeys(process.id, pool);
-        envelopParams["processKeys"] = keys;
+      if (processInfo.parameters.envelopeType.hasEncryptedVotes) {
+        envelopParams.processKeys = await VotingApi.getProcessKeys(processId, pool);
       }
 
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
       await VotingApi.submitEnvelope(envelope, signer, pool);
-      dispatch({ type: "UPDATE_STATUS", status: { registered: true } });
+
+      dispatch({ type: "SET_STATE", state: { submitted: true } });
       setAlertMessage("Vote successful :-)", "success");
     } catch (err) {
-      console.log("Error in hook useVotes function onSubmitVote: ", err.message);
-      throw new Error(err.message);
+      console.log("Error in hook useVotes function submitVote: ", err.message);
+      throw err;
     } finally {
-      dispatch({ type: "UPDATE_STATUS", status: { submitting: false } });
+      dispatch({ type: "SET_STATE", state: { submitting: false } });
     }
   };
 
   return {
-    status: state,
-    updateStatus: (status: Partial<VoteStatus>) => dispatch({ type: "UPDATE_STATUS", status }),
-    voteInfo,
-    vote: onSubmitVote,
+    voteState,
+    setState: (state: Partial<VoteState>) => dispatch({ type: "SET_STATE", state }),
+    votingStatus,
+    refreshVotingStatus,
+    submitVote,
   };
 };
