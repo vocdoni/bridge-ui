@@ -61,7 +61,7 @@ const Radio = styled.label`
       ${({ theme }) => theme.gradients.primary.mg1.c1},
       ${({ theme }) => theme.gradients.primary.mg1.c2}
     );
-    z-index: 9;
+    z-index: 1;
     height: 14px;
     width: 14px;
     margin: 3px;
