@@ -78,8 +78,8 @@ const HeaderSubtitle = styled.p`
 `;
 
 const HeaderAdvice = styled.p`
-  width: 755px;
-  height: 32px;
+  max-width: 90%;
+  padding: 0px 24px 0px 24px;
   margin-top: 0px;
   text-align: center;
   background: ${({ theme }) => theme.blackAndWhite.w1}33;
@@ -92,7 +92,8 @@ const HeaderAdvice = styled.p`
 `;
 
 const HeaderAdviceText = styled.p`
-  margin-top: 5px;
+  margin-top: 6px;
+  margin-bottom: 6px;
   text-align: center;
   font-weight: 500;
   font-size: 16px;

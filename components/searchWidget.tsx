@@ -12,16 +12,13 @@ const SearchRow = styled.div`
   }
 `;
 
-const Button = styled(PrimaryButton)`
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-left: 0;
-    margin-top: 10px;
-  }
-`;
-
 const Box = styled.div`
-  display: flex;
-  margin-right: 10px;
+  flex-grow: 1;
+  margin-right: 9px;
+  max-width: 664px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-right: 0px;
+  }
 `;
 
 type SearchWidgetProps = {
@@ -35,12 +32,7 @@ const SearchWidget = ({ onChange, onKeyDown, onClick, loading }: SearchWidgetPro
   return (
     <SearchRow>
       <Box>
-        <TextInput
-          placeholder="ERC Token address..."
-          onKeyDown={onKeyDown}
-          onChange={onChange}
-          widthValue={664}
-        />
+        <TextInput placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} />
       </Box>
       <PrimaryButton onClick={loading ? null : onClick}>
         {loading ? <StyledSpinner /> : "Validate contract"}
