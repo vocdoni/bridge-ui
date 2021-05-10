@@ -23,6 +23,14 @@ type PQuestion = ProcessMetadata["questions"][0];
 type PChoice = ProcessMetadata["questions"][0]["choices"][0];
 type PResult = ProcessResults[0]["choices"][0];
 
+function readablePercent(percent: string): string {
+  if (!percent) return ""
+  else if (percent === "N/A") return "Locked"
+  else if (percent === "0") return "0.0%"
+  else if (percent === "small") return "<0.1%"
+  else return percent + "%"
+}
+
 const Option = ({
   choice,
   choiceResult,
@@ -44,13 +52,7 @@ const Option = ({
     ) : (
       <ChoiceInfo>
         <Percentage>
-          {choiceResult?.percentage === "N/A"
-            ? "Locked"
-            : choiceResult?.percentage === "0"
-              ? "0.0%"
-              : choiceResult?.percentage === "small"
-                ? "<0.1%"
-                : `${choiceResult?.percentage}%`}
+          {readablePercent(choiceResult?.percentage)}
         </Percentage>
       </ChoiceInfo>
     )}
