@@ -33,7 +33,8 @@ const ConnectWalletButton = styled.div`
   cursor: pointer;
   position: relative;
   z-index: 1;
-  <<<<<<< HEAD =======>>>>>>>main &:before {
+  
+  main &:before {
     position: absolute;
     content: "";
     top: 0;

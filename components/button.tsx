@@ -31,7 +31,7 @@ export const PrimaryButton = styled(Button)`
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-size: 16px;
   font-weight: 500;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   line-height: 22px;
   position: relative;
   z-index: 1;
@@ -75,7 +75,7 @@ export const SecondaryButton = styled(Button)`
   box-sizing: border-box;
   border-radius: 8px;
   color: ${({ theme }) => theme.primary.p1};
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;
@@ -83,12 +83,8 @@ export const SecondaryButton = styled(Button)`
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
     transition: 300ms ease-in-out;
-<<<<<<< HEAD
   }
 
-=======
-  
->>>>>>> main
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
   }

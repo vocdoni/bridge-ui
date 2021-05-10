@@ -272,12 +272,12 @@ a {
     }
 }
 textarea {
-    font-family: Manrope;
+    font-family: 'Manrope', sans-serif !important;
     font-size: 16px;
     min-height: 72px;
 }
 input {
-    font-family: Manrope;
+    font-family: 'Manrope', sans-serif !important;
     font-size: 16px;
 }
 `;

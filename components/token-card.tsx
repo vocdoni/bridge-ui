@@ -76,7 +76,7 @@ const TokenLogo = styled.img`
 
 const Symbol = styled.div`
   display: block;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-style: normal;
   font-weight: 500;
   font-size: 29px;
@@ -93,7 +93,7 @@ const Name = styled.div`
   align-items: center;
   letter-spacing: 0.02em;
   margin: 0;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 18px;

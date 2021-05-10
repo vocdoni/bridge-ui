@@ -25,7 +25,7 @@ const ModalTitle = styled.div`
   box-sizing: border-box;
   margin-top: 10px;
   padding-left: 16px;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -67,7 +67,7 @@ const WalletName = styled.h4`
   display: flex;
   margin-top: 10px;
   color: #25314d;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 20px;
@@ -92,7 +92,7 @@ const ExternalLinkOption = styled.a`
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 12px;
@@ -108,7 +108,7 @@ const CloseIcon = styled.div`
 
 const DontHaveAccount = styled.a`
   text-decoration: none;
-  font-family: Manrope;
+  font-family: 'Manrope', sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 18px;
