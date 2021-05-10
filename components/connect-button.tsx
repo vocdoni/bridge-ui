@@ -145,15 +145,8 @@ export const ConnectButton = () => {
       return "Wallet connection rejected";
     }
 
-    return isConnected ? "Connected" : "Connect account";
+    return isConnected ? "Connected" : "Connect Wallet";
   }, [poolLoading, status, error]);
-
-  const mode = useMemo(() => {
-    if (error) return "negative";
-    if (inLanding) return "strong";
-
-    return "normal";
-  }, [error, loadingOrConnecting]);
 
   const handleButtonClick = async () => {
     if (loadingOrConnecting) {
@@ -180,7 +173,7 @@ export const ConnectButton = () => {
   );
 };
 
-export const ConnectTextButton = () => {
+export const ConnectWalletLink = () => {
   const { dispatch } = useModal();
 
   const openWallets = () => {
@@ -189,9 +182,10 @@ export const ConnectTextButton = () => {
     });
   };
 
+  /* TODO is this async wrap necessary, or could we just pass openWallet to onClick? */
   const handleButtonClick = async () => {
     openWallets();
   };
 
-  return <TextLink onClick={handleButtonClick}>Connect account</TextLink>;
+  return <TextLink onClick={handleButtonClick}>Connect Wallet</TextLink>;
 };
