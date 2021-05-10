@@ -182,10 +182,5 @@ export const ConnectWalletLink = () => {
     });
   };
 
-  /* TODO is this async wrap necessary, or could we just pass openWallet to onClick? */
-  const handleButtonClick = async () => {
-    openWallets();
-  };
-
-  return <TextLink onClick={handleButtonClick}>Connect Wallet</TextLink>;
+  return <TextLink onClick={openWallets}>Connect Wallet</TextLink>;
 };
