@@ -1,4 +1,4 @@
-export const FALLBACK_TOKEN_ICON = "/media/coin.svg";
+export const FALLBACK_TOKEN_ICON = "/media/eth-logo.png";
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 
 export const ERC20_ABI = [

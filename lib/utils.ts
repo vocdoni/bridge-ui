@@ -1,5 +1,5 @@
 import { ProcessMetadata } from "dvote-js";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
 
 export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
@@ -48,9 +48,8 @@ export function shortTokenName(tokenName: string, slashIndex = 22): string {
 
 export function tokenIconUrl(address = "") {
   if (process.env.ETH_NETWORK_ID == "goerli") return FALLBACK_TOKEN_ICON;
-
   try {
-    address = toChecksumAddress(address.trim());
+    address = ethers.utils.getAddress(address);
   } catch (err) {
     return null;
   }
@@ -58,7 +57,6 @@ export function tokenIconUrl(address = "") {
   if (address === EMPTY_ADDRESS) {
     return `${TRUST_WALLET_BASE_URL}/info/logo.png`;
   }
-
   return `${TRUST_WALLET_BASE_URL}/assets/${address}/logo.png`;
 }
 

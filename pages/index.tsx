@@ -299,11 +299,11 @@ const IndexPage = () => {
         ) : tokenInfoList.length ? (
           <TokenList>
             {tokenInfoList.map(
-              ({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+              ({ symbol, address, name, totalSupplyFormatted, icon }: Partial<TokenInfo>) => (
                 <TokenCard
                   key={address}
                   name={symbol}
-                  icon={FALLBACK_TOKEN_ICON}
+                  icon={icon}
                   rightText=""
                   href={address ? "/tokens/info#/" + address : ""}
                   tokenCap={totalSupplyFormatted}
@@ -331,11 +331,11 @@ const IndexPage = () => {
         />
 
         <TokenList>
-          {featuredTokenInfos.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+          {featuredTokenInfos.map(({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
             <TokenCard
               key={address}
               name={symbol}
-              icon={FALLBACK_TOKEN_ICON}
+              icon={icon}
               rightText=""
               href={address ? "/tokens/info#/" + address : ""}
               tokenCap={totalSupplyFormatted}

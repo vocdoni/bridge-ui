@@ -196,7 +196,6 @@ const ProcessCard = (props: { process: ProcessInfo; token?: TokenInfo }) => {
         <strong>{limitedText(proc?.metadata?.title?.default, 35) || "No title"}</strong>
         <br />
         {limitedText(proc?.metadata?.description?.default) || "No description"}
-        jaja
       </p>
     </TokenCard>
   );
