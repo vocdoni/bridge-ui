@@ -48,9 +48,10 @@ const TooltipText = styled.div<Props>`
   color: ${({ theme }) => theme.secondary.s3};
   float: left;
   font-size: 16px;
-  margin-bottom: 0px;
-  margin-left: 40px;
-  margin-top: ${(props) => (props.topText ? "0px" : "-20px")};
+  margin-bottom: ${(props) => (props.newLine ? "8px" : "0px")};
+  margin-left: ${(props) => (props.newLine ? "-160px" : "40px")};
+  margin-top: ${(props) =>
+    props.newLine ? (props.topText ? "22px" : "-5px") : props.topText ? "0px" : "-20px"};
   padding: 14px 16px;
   text-align: left;
   visibility: hidden;
@@ -74,7 +75,9 @@ const Tooltip = () => {
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
-        <TooltipText topText>{realtimeText}</TooltipText>
+        <TooltipText newLine={false} topText>
+          {realtimeText}
+        </TooltipText>
       </CircleContainer>
 
       <br />
