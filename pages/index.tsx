@@ -238,7 +238,6 @@ const IndexPage = () => {
     .filter((tok) => !!tok);
   const { tokenInfoList } = useTokensWithBalance();
   const wallet = useWallet();
-  analytics.page();
 
   tokenInfoList?.sort?.((a, b) => {
     if (a?.symbol > b?.symbol) return 1;
