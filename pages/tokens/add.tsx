@@ -161,7 +161,9 @@ const TokenAddPage = () => {
   const { setAlertMessage } = useMessageAlert();
   const { storedTokens, refresh: refreshStoredTokens, loading } = useStoredTokens();
 
-  const alreadyRegistered = storedTokens.some(t => t?.address.toLowerCase() == formTokenAddress.toLowerCase());
+  const alreadyRegistered = storedTokens.some(
+    (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
+  );
 
   // Callbacks
 
@@ -233,7 +235,7 @@ const TokenAddPage = () => {
     <>
       <SectionTitle
         title="Register a new token"
-        subtitle="Enter the detais of an ERC20 token and start submiiting governance processes"
+        subtitle="Enter the details of any ERC-20 token and start submitting new governance proposals"
       />
 
       <br />
@@ -242,7 +244,7 @@ const TokenAddPage = () => {
         <SectionTitle
           smallerTitle={true}
           title="Token contract address"
-          subtitle="Enter the address of the ERC20 contract that you want to register"
+          subtitle="Enter the address of the ERC-20 contract that you would like to register"
         />
         <SearchWidget
           onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}

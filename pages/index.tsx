@@ -274,14 +274,9 @@ const IndexPage = () => {
         </SearchRow> */}
       </Head>
 
-      {/* NOTE temporarily removed this section, as it is not part of landing page's must 
-      haves. Should be implemented later, along with the fallback screens. VR 23-04-2021 */}
       {/* YOUR TOKENS */}
       <TokenSection>
-        <SectionTitle
-          title="Tokens you hold"
-          subtitle="Some of the tokens belonging to your wallet"
-        />
+        <SectionTitle title="Tokens you hold" subtitle="Compatible tokens in your wallet" />
         {!wallet?.ethereum || !wallet?.account ? (
           <GrayRectangleTall>
             <LightningBolt />
@@ -315,9 +310,9 @@ const IndexPage = () => {
           </TokenList>
         ) : (
           <GrayRectangle>
-            <GreyInfo>No tokens here</GreyInfo>
+            <GreyInfo>No tokens found</GreyInfo>
             <Link href="/tokens/add">
-              <NotListedLink>My token is not listed</NotListedLink>
+              <NotListedLink>Register a token</NotListedLink>
             </Link>
           </GrayRectangle>
         )}
@@ -327,7 +322,7 @@ const IndexPage = () => {
       <TokenSection>
         <SectionTitle
           title="Top Tokens"
-          subtitle="Some of the most relevant tokens on the platform"
+          subtitle="Some of the most relevant tokens on Aragon Voice"
         />
 
         <TokenList>

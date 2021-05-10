@@ -64,11 +64,11 @@ const TokensPage = () => {
           {/* NOTE temporarily removed search bar, as it is not part of the page's must 
     haves. VR 23-04-2021 */}
           {/* <SearchWidget /> */}
-          <SecondaryButton href="/tokens/add">My Token is not listed</SecondaryButton>
+          <SecondaryButton href="/tokens/add">Register a token</SecondaryButton>
         </ButtonContainer>
       </Top>
       <TokenList>
-        <When condition={!(storedTokens?.length) && tokenListLoading}>
+        <When condition={!storedTokens?.length && tokenListLoading}>
           <div>{renderEmpty()}</div>
         </When>
 
