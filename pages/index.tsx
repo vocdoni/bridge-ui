@@ -338,7 +338,8 @@ const IndexPage = () => {
               >
                 <p>{shortTokenName(name) || "Loading..."}</p>
               </TokenCard>
-            ))}
+            )
+          )}
         </TokenList>
         <Row>
           <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
