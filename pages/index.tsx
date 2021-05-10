@@ -9,7 +9,7 @@ import { TokenList } from "./dashboard";
 
 import TokenCard from "../components/token-card";
 import { SecondaryButton } from "../components/button";
-import { ConnectTextButton } from "../components/connect-button";
+import { ConnectWalletLink } from "../components/connect-button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
@@ -231,11 +231,11 @@ const NotListedLink = styled.p`
 // MAIN COMPONENT
 const IndexPage = () => {
   useScrollTop();
-  const { storedTokens, loading: tokenListLoading, error: tokenListError } = useStoredTokens()
+  const { storedTokens, loading: tokenListLoading, error: tokenListError } = useStoredTokens();
   const featuredTokenList: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
   const featuredTokenInfos = featuredTokenList
-    .map(addr => storedTokens.find(t => t?.address == addr))
-    .filter(tok => !!tok);
+    .map((addr) => storedTokens.find((t) => t?.address == addr))
+    .filter((tok) => !!tok);
   const { tokenInfoList } = useTokensWithBalance();
   const wallet = useWallet();
 
@@ -289,7 +289,7 @@ const IndexPage = () => {
               Connect your account and discover the proposals related to your tokens
             </GreyInfo>
             <Link href="/tokens/add">
-              <ConnectTextButton />
+              <ConnectWalletLink />
             </Link>
           </GrayRectangleTall>
         ) : !tokenInfoList ? (
@@ -331,18 +331,19 @@ const IndexPage = () => {
         />
 
         <TokenList>
-          {featuredTokenInfos.map(({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
-            <TokenCard
-              key={address}
-              name={symbol}
-              icon={icon}
-              rightText=""
-              href={address ? "/tokens/info#/" + address : ""}
-              tokenCap={totalSupplyFormatted}
-            >
-              <p>{shortTokenName(name) || "Loading..."}</p>
-            </TokenCard>
-          ))}
+          {featuredTokenInfos.map(
+            ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+              <TokenCard
+                key={address}
+                name={symbol}
+                icon={icon}
+                rightText=""
+                href={address ? "/tokens/info#/" + address : ""}
+                tokenCap={totalSupplyFormatted}
+              >
+                <p>{shortTokenName(name) || "Loading..."}</p>
+              </TokenCard>
+            ))}
         </TokenList>
         <Row>
           <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
