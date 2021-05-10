@@ -6,6 +6,7 @@ import { useMessageAlert } from "../message-alert";
 import { useStoredTokens } from "./useStoredTokens";
 import { ERC20_ABI } from "../../constants";
 import { TokenInfo } from "../../types";
+import { usePool } from "@vocdoni/react-hooks";
 
 interface UserTokenInfo {
   tokenInfoList: TokenInfo[];
@@ -32,6 +33,7 @@ export function useTokensWithBalance() {
 export function UseTokensWithBalance({ children }) {
   const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
   const { setAlertMessage } = useMessageAlert();
+  const { poolPromise } = usePool();
   const wallet = useWallet<providers.JsonRpcFetchFunc>();
   const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,9 +48,9 @@ export function UseTokensWithBalance({ children }) {
 
     try {
       setLoading(true);
+      const pool = await poolPromise;
 
-      const provider = new providers.Web3Provider(wallet.ethereum);
-      const ethcallProvider = new Provider(provider, wallet.chainId);
+      const ethcallProvider = new Provider(pool.provider, wallet.chainId);
       const tokenBalanceCalls: ContractCall[] = storedTokens.map((tokenInfo) =>
         new Contract(tokenInfo?.address, ERC20_ABI).balanceOf(wallet.account)
       );
