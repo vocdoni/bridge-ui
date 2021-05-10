@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
-const TextInput = styled.input<{ widthValue?: number }>`
+const TextInput = styled.input`
   type: text;
-  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "unset")};
   height: 46px;
   padding-left: 10px;
-
+  width: 100%;
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
@@ -17,6 +16,7 @@ const TextInput = styled.input<{ widthValue?: number }>`
   @media ${({ theme }) => theme.screens.tablet} {
     display: flex;
     width: 100%;
+    margin-bottom: 9px;
   }
 `;
 

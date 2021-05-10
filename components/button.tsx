@@ -19,6 +19,7 @@ interface ButtonProps {
 }
 
 export const PrimaryButton = styled(Button)`
+  flex-shrink: 0;
   height: 45px;
   padding: 11px 20px 12px;
   background: linear-gradient(
@@ -31,7 +32,7 @@ export const PrimaryButton = styled(Button)`
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-size: 16px;
   font-weight: 500;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   line-height: 22px;
   position: relative;
   z-index: 1;
