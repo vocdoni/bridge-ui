@@ -10,9 +10,9 @@ const SearchRow = styled.div`
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
   }
-  `;
-  
-  const Button = styled(PrimaryButton)`
+`;
+
+const Button = styled(PrimaryButton)`
   @media ${({ theme }) => theme.screens.tablet} {
     margin-left: 0;
     margin-top: 10px;
@@ -43,7 +43,7 @@ const SearchWidget = ({ onChange, onKeyDown, onClick, loading }: SearchWidgetPro
         />
       </Box>
       <PrimaryButton onClick={loading ? null : onClick}>
-        {loading ? <StyledSpinner /> : "Check token"}
+        {loading ? <StyledSpinner /> : "Validate contract"}
       </PrimaryButton>
     </SearchRow>
   );
