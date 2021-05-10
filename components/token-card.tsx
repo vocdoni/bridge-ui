@@ -179,7 +179,6 @@ const ActiveProposalsText = styled.p`
 // eslint-disable-next-line react/display-name
 const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children, tokenCap }, ref) => {
-    console.log(icon);
     return (
       <Card onClick={onClick} ref={ref}>
         <TokenLogoContainer>
