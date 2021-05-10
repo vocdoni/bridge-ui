@@ -33,7 +33,7 @@ import Tooltip from "../../components/tooltip";
 import { findMaxValue } from "../../lib/utils";
 import { useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
-import { getProof } from "../../lib/api";
+import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 const NewProcessContainer = styled.div`
@@ -370,10 +370,15 @@ const NewProcessPage = () => {
       };
 
       const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
+
+      // Wait until effectively created
+      const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
+      if (!ready) throw new Error("The proposal is not available after a while");
+
       Router.push("/processes#/" + processId);
       setSubmitting(false);
 
-      setAlertMessage("The governance process has been successfully created", "success");
+      setAlertMessage("The proposal has been successfully created", "success");
     } catch (err) {
       setSubmitting(false);
 
@@ -382,7 +387,7 @@ const NewProcessPage = () => {
       }
 
       console.error(err);
-      setAlertMessage("The governance process could not be created");
+      setAlertMessage("The proposal could not be created");
     }
   };
 
