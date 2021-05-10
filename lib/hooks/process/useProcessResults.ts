@@ -36,8 +36,10 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
     if (!tokenInfo || !processId || !tokenAddress) return;
     else if (!blockStatus) return;
 
+    const hasEncryptedVotes = processInfo.parameters.envelopeType.hasEncryptedVotes;
+
     // Encrypted and not ended?
-    if (processInfo.parameters.envelopeType.hasEncryptedVotes) {
+    if (hasEncryptedVotes) {
       const endBlock = processInfo.parameters.startBlock + processInfo.parameters.blockCount;
       if (blockStatus.blockNumber < endBlock) {
         // Return empty results
@@ -97,8 +99,8 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
           ({ title, choices }) => {
             const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
               title: choiceTitle.default,
-              votes: "",
-              percentage: "N/A",
+              votes: hasEncryptedVotes ? "" : "0 " + tokenInfo.symbol,
+              percentage: hasEncryptedVotes ? "" : "0.0%",
             }));
             return {
               title: title.default,
