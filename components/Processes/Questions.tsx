@@ -47,10 +47,10 @@ const Option = ({
           {choiceResult?.percentage === "N/A"
             ? "Locked"
             : choiceResult?.percentage === "0"
-            ? "0.0%"
-            : choiceResult?.percentage === "small"
-            ? "<0.1%"
-            : `${choiceResult?.percentage}%`}
+              ? "0.0%"
+              : choiceResult?.percentage === "small"
+                ? "<0.1%"
+                : `${choiceResult?.percentage}%`}
         </Percentage>
       </ChoiceInfo>
     )}
