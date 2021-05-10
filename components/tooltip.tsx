@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 interface Props {
-  newLine: boolean;
   topText: boolean;
 }
 
@@ -49,10 +48,9 @@ const TooltipText = styled.div<Props>`
   color: ${({ theme }) => theme.secondary.s3};
   float: left;
   font-size: 16px;
-  margin-bottom: ${(props) => (props.newLine ? "8px" : "0px")};
-  margin-left: ${(props) => (props.newLine ? "-160px" : "40px")};
-  margin-top: ${(props) =>
-    props.newLine ? (props.topText ? "22px" : "-5px") : props.topText ? "0px" : "-20px"};
+  margin-bottom: 0px;
+  margin-left: 40px;
+  margin-top: ${(props) => (props.topText ? "0px" : "-20px")};
   padding: 14px 16px;
   text-align: left;
   visibility: hidden;
@@ -76,9 +74,7 @@ const Tooltip = () => {
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
-        <TooltipText newLine={false} topText>
-          {realtimeText}
-        </TooltipText>
+        <TooltipText topText>{realtimeText}</TooltipText>
       </CircleContainer>
 
       <br />
@@ -88,12 +84,10 @@ const Tooltip = () => {
         <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
         </CircleEncrypted>
-        <TooltipText newLine={false} topText={false}>
-          {encryptedText}
-        </TooltipText>
+        <TooltipText topText={false}>{encryptedText}</TooltipText>
       </CircleContainer>
     </div>
   );
 };
 
-export default Tooltip
+export default Tooltip;
