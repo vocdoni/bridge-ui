@@ -1,4 +1,4 @@
-import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
+import { ProcessInfo, useBlockStatus, usePool } from "@vocdoni/react-hooks";
 import { VotingApi } from "dvote-js";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -15,6 +15,7 @@ export type ProcessResults = {
 
 export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<TokenInfo>) => {
   const { poolPromise } = usePool();
+  const { blockStatus } = useBlockStatus();
   const [results, setResults] = useState<ProcessResults>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -27,12 +28,38 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
     fetchCurrentResults()
 
     return () => clearInterval(interval)
-  }, [processId, tokenAddress])
+  }, [processId, tokenAddress, !!blockStatus])
 
   // Loader
 
   const fetchCurrentResults = async () => {
     if (!tokenInfo || !processId || !tokenAddress) return;
+    else if (!blockStatus) return;
+
+    // Encrypted and not ended?
+    if (processInfo.parameters.envelopeType.hasEncryptedVotes) {
+      const endBlock = processInfo.parameters.startBlock + processInfo.parameters.blockCount;
+      if (blockStatus.blockNumber < endBlock) {
+        // Return empty results
+
+        const results = processInfo.metadata.questions.map(
+          ({ title, choices }) => {
+            const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
+              title: choiceTitle.default,
+              votes: "",
+              percentage: "N/A",
+            }));
+            return {
+              title: title.default,
+              choices: choicesFormatted,
+            };
+          }
+        );
+        setResults(results);
+        setError("");
+        return;
+      }
+    }
 
     setLoading(true);
     const pool = await poolPromise;
@@ -70,7 +97,7 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
           ({ title, choices }) => {
             const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
               title: choiceTitle.default,
-              votes: "0 " + tokenInfo.symbol,
+              votes: "",
               percentage: "N/A",
             }));
             return {

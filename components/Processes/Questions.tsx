@@ -30,7 +30,7 @@ const Option = ({ choice, choiceResult, onChoiceSelect, questionIdx, checked, ca
       <Checkbox checked={checked} onChange={() => onChoiceSelect(questionIdx, choice.value)} />
     ) : (
       <ChoiceInfo>
-        <Percentage>{choiceResult?.percentage === "N/A" ? "" : `${choiceResult?.percentage && choiceResult?.percentage || "0.0"}%`}</Percentage>
+        <Percentage>{choiceResult?.percentage === "N/A" ? "Locked" : `${choiceResult?.percentage && choiceResult?.percentage || "0.0"}%`}</Percentage>
       </ChoiceInfo>
     )}
     <OptionTitleContainer>
