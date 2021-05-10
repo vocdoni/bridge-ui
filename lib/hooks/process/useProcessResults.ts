@@ -91,7 +91,7 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
               // than 0.1%.
               percentage = "small"; //vote is too small for percentage with 1 decimal
             } else {
-              percentage = (factorBn.toNumber() / 100).toFixed(1);
+              percentage = (factorBn.toNumber() / 10).toFixed(1);
               //percentage is now within [0,100], rounded to 1 decimal place.
             }
           }
