@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  CensusErc20Api,
   IProcessCreateParams,
   ProcessCensusOrigin,
   ProcessEnvelopeType,
@@ -14,7 +13,7 @@ import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
 import { ProcessMetadataTemplate } from "dvote-js";
 import Datetime from "react-datetime";
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import Router from "next/router";
 import Spinner from "react-svg-spinner";
 
@@ -22,7 +21,7 @@ import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
-import { handleValidation } from "../../lib/processValidator";
+import { validateProposal } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
@@ -35,6 +34,8 @@ import { useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import { NO_TOKEN_BALANCE } from "../../lib/errors";
+
+import { useIsWide } from "../../lib/hooks/useWindowSize";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -63,12 +64,13 @@ const FieldRow = styled.div`
 `;
 
 const FieldRowLeftSection = styled.div`
-  max-width: 735px;
+  max-width: 680px;
+  margin-right: 13px;
 `;
 
-const FieldRowRightSection = styled.div<{ marginTop: number }>`
+const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   width: 480px;
-  margin-top: ${({ marginTop }) => marginTop}px;
+  margin-top: ${({ marginTop, isLarge }) => (isLarge ? marginTop + 60 : marginTop)}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
     margin-left: 0;
@@ -93,7 +95,7 @@ const RowQuestions = styled.div`
 
 const RowQuestionLeftSection = styled.div`
   flex: 6;
-  width: 700px;
+  width: 680px;
   @media ${({ theme }) => theme.screens.tablet} {
     flex: 12;
   }
@@ -173,6 +175,7 @@ const NewProcessPage = () => {
   const wallet = useWallet();
 
   const isMobile = useIsMobile();
+  const isLarge = useIsWide();
 
   const [metadata, setMetadata] = useState<ProcessMetadata>(
     JSON.parse(JSON.stringify(ProcessMetadataTemplate))
@@ -271,45 +274,9 @@ const NewProcessPage = () => {
   };
   const onSubmit = async () => {
     try {
-      metadata.questions.map(handleValidation);
+      validateProposal(metadata, startDate, endDate);
     } catch (error) {
       return setAlertMessage(error.message);
-    }
-
-    if (!metadata.title || metadata.title.default.trim().length < 2)
-      return setAlertMessage("Please enter a title");
-    else if (metadata.title.default.trim().length > 50)
-      return setAlertMessage("Please enter a shorter title");
-
-    if (!metadata.description || metadata.description.default.trim().length < 2)
-      return setAlertMessage("Please enter a description");
-    else if (metadata.description.default.trim().length > 300)
-      return setAlertMessage("Please enter a shorter description");
-
-    if (!startDate) return setAlertMessage("Please enter a start date");
-    else if (!endDate) return setAlertMessage("Please enter an ending date");
-
-    if (moment(startDate).isBefore(moment().add(5, "minutes"))) {
-      return setAlertMessage("The start date must be at least 5 minutes from now");
-    } else if (moment(endDate).isBefore(moment().add(10, "minutes"))) {
-      return setAlertMessage("The end date must be at least 10 minutes from now");
-    } else if (moment(endDate).isBefore(moment(startDate).add(5, "minutes"))) {
-      return setAlertMessage("The end date must be at least 5 minutes after the start");
-    }
-
-    for (let qIdx = 0; qIdx < metadata.questions.length; qIdx++) {
-      const question = metadata.questions[qIdx];
-      if (!question.title.default.trim())
-        return setAlertMessage("Please enter a title for question " + (qIdx + 1));
-
-      for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
-        const choice = question.choices[cIdx];
-        if (!choice.title.default.trim())
-          return setAlertMessage("Please fill in all the choices for question " + (qIdx + 1));
-
-        // Ensure values are unique and sequential
-        question.choices[cIdx].value = cIdx;
-      }
     }
 
     if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
@@ -321,7 +288,7 @@ const NewProcessPage = () => {
     // FINAL CONFIRMATION
     if (
       !confirm(
-        "You are about to create a new governance process. The process cannot be altered, paused or canceled.\n\nDo you want to continue?"
+        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
       )
     )
       return;
@@ -394,8 +361,8 @@ const NewProcessPage = () => {
   return (
     <div>
       <SectionTitle
-        title="New governance process"
-        subtitle="Enter the details of a new governance process and submit
+        title="New proposal"
+        subtitle="Enter the details of a new proposal and submit
                 them."
       />
       <NewProcessContainer>
@@ -406,14 +373,16 @@ const NewProcessPage = () => {
               subtitle="Short name to identify the process"
               smallerTitle
             />
-            <TextInput
-              placeholder="Title"
-              onChange={(e) => setMainTitle(e.target.value)}
-              value={metadata.title.default}
-              widthValue={735}
-            />
+            <InputBox>
+              <TextInput
+                placeholder="Title"
+                onChange={(e) => setMainTitle(e.target.value)}
+                value={metadata.title.default}
+                widthValue={680}
+              />
+            </InputBox>
           </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={90}>
+          <FieldRowRightSection marginTop={60} isLarge={isLarge}>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -451,10 +420,11 @@ const NewProcessPage = () => {
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
+              widthValue={680}
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={100}>
+          <FieldRowRightSection marginTop={70} isLarge={isLarge}>
             <Datetime
               value={startDate}
               inputProps={{
@@ -492,7 +462,7 @@ const NewProcessPage = () => {
                     placeholder="Title"
                     value={question.title.default}
                     onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                    widthValue={735}
+                    widthValue={680}
                   />
                 </InputBox>
 
@@ -502,6 +472,7 @@ const NewProcessPage = () => {
                     placeholder="Description"
                     value={question.description.default}
                     onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                    widthValue={660}
                   />
                 </InputBox>
               </RowQuestionLeftSection>
@@ -516,7 +487,7 @@ const NewProcessPage = () => {
                       placeholder="Choice"
                       value={choice.title.default}
                       onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                      widthValue={683}
+                      widthValue={633}
                     />
                   </RowQuestionLeftSection>
                   <ChoiceRightSection>

@@ -25,9 +25,9 @@ export const useWindowSize = () => {
   return windowSize;
 };
 
-export const useTooltipNewLine = () => {
+export const useIsWide = () => {
   const { width } = useWindowSize();
-  return (768 <= width && width <= 1200) || (width <= 490);
+  return width >= 1504;
 };
 
 export const useIsMobile = () => {

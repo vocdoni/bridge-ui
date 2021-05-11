@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useTooltipNewLine } from "../lib/hooks/useWindowSize";
 
 interface Props {
-  newLine: boolean;
   topText: boolean;
 }
 
@@ -22,7 +20,6 @@ const Circle = styled.div`
   float: left;
   width: 16px;
   height: 16px;
-
   ${CircleContainer}:hover & {
     background: ${({ theme }) => theme.secondary.s6};
     box-shadow: ${({ theme }) => theme.shadows.cardShadow};
@@ -31,22 +28,8 @@ const Circle = styled.div`
   }
 `;
 
-const CircleEncrypted = styled.div`
-  background: ${({ theme }) => theme.secondary.s3};
-  border-radius: 50%;
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  color: white;
-  float: left;
-  width: 16px;
-  height: 16px;
+const CircleEncrypted = styled(Circle)`
   margin-top: -20px;
-
-  ${CircleContainer}:hover & {
-    background: ${({ theme }) => theme.secondary.s6};
-    box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-    transition: all 0.2s ease-out;
-    transform: translateY(-1px);
-  }
 `;
 
 const QuestionMark = styled.div`
@@ -65,37 +48,33 @@ const TooltipText = styled.div<Props>`
   color: ${({ theme }) => theme.secondary.s3};
   float: left;
   font-size: 16px;
-  margin-bottom: ${(props) => (props.newLine ? "8px" : "0px")};
-  margin-left: ${(props) => (props.newLine ? "-160px" : "40px")};
-  margin-top: ${(props) => (props.newLine ? (props.topText ? "19px" : "8px") : "0px")};
+  margin-bottom: 0px;
+  margin-left: 40px;
+  margin-top: ${(props) => (props.topText ? "0px" : "-20px")};
   padding: 14px 16px;
   text-align: left;
   visibility: hidden;
-  width: ${(props) => (props.newLine ? "180px" : "160px")};
+  max-width: 293px;
   position: absolute;
   z-index: 1;
-
   ${CircleContainer}:hover & {
     visibility: visible;
   }
 `;
 
 const Tooltip = () => {
-  const tooltipNewLine = useTooltipNewLine();
-  const realtimeText = "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to."
-  const encryptedText = "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed."
+  const realtimeText =
+    "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to.";
+  const encryptedText =
+    "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed.";
 
-  return tooltipNewLine ? (
+  return (
     <div>
       <CircleContainer>
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
-        <br />
-        <br />
-        <TooltipText newLine topText>
-          {realtimeText}
-        </TooltipText>
+        <TooltipText topText>{realtimeText}</TooltipText>
       </CircleContainer>
 
       <br />
@@ -105,36 +84,10 @@ const Tooltip = () => {
         <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
         </CircleEncrypted>
-        <br />
-        <TooltipText newLine topText={false}>
-          {encryptedText}
-        </TooltipText>
-      </CircleContainer>
-    </div>
-  ) : (
-    <div>
-      <CircleContainer>
-        <Circle>
-          <QuestionMark>?</QuestionMark>
-        </Circle>
-        <TooltipText newLine={false} topText={false}>
-          {realtimeText}
-        </TooltipText>
-      </CircleContainer>
-
-      <br />
-      <br />
-
-      <CircleContainer>
-        <CircleEncrypted>
-          <QuestionMark>?</QuestionMark>
-        </CircleEncrypted>
-        <TooltipText newLine={false} topText={false}>
-          {encryptedText}
-        </TooltipText>
+        <TooltipText topText={false}>{encryptedText}</TooltipText>
       </CircleContainer>
     </div>
   );
 };
 
-export default Tooltip
+export default Tooltip;

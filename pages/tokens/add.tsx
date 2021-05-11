@@ -82,13 +82,20 @@ const ButtonRow = styled.div`
   }
 `;
 
+const Content = styled.div`
+  max-width: 844px;
+  width: 100%;
+`;
+
 const WhiteSection = styled.div`
-  padding: 80px 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 27px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
   @media ${({ theme }) => theme.screens.tablet} {
     box-sizing: border-box;
-    padding: 10px 27px;
   }
 `;
 
@@ -121,7 +128,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
     <SectionTitle
       smallerTitle={true}
       title="Token contract details"
-      subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+      subtitle="The following token will be registered. All token holders will be able to submit new proposals."
     />
     <RowSummary>
       <Info>
@@ -235,31 +242,48 @@ const TokenAddPage = () => {
     <>
       <SectionTitle
         title="Register a new token"
-        subtitle="Enter the details of any ERC-20 token and start submitting new governance proposals"
+        subtitle="Enter the details of any ERC-20 token and start submitting new proposals"
       />
 
       <br />
 
       <WhiteSection>
-        <SectionTitle
-          smallerTitle={true}
-          title="Token contract address"
-          subtitle="Enter the address of the ERC-20 contract that you would like to register"
-        />
-        <SearchWidget
-          onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            setFormTokenAddress(ev.target.value)
-          }
-          onClick={loadingToken ? undefined : checkToken}
-          loading={loading && !storedTokens?.length}
-        />
+        <Content>
+          <SectionTitle
+            smallerTitle={true}
+            title="Token contract address"
+            subtitle="Enter the address of the ERC-20 contract that you would like to register"
+          />
+          <SearchWidget
+            onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
+            onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+              setFormTokenAddress(ev.target.value)
+            }
+            onClick={loadingToken ? undefined : checkToken}
+            loading={loading && !storedTokens?.length}
+          />
 
-        <br />
-        <br />
+          <br />
+          <br />
 
-        {!isMobile && tokenInfo ? (
-          <>
+          {!isMobile && tokenInfo ? (
+            <>
+              <TokenContainer {...tokenInfo} />
+              <RegisterButton
+                registeringToken={registeringToken}
+                alreadyRegistered={alreadyRegistered}
+                onSubmit={onSubmit}
+                address={tokenInfo?.address || ""}
+                isConnected={isConnected}
+              />
+            </>
+          ) : null}
+        </Content>
+      </WhiteSection>
+      <br />
+      {tokenInfo && isMobile ? (
+        <WhiteSection>
+          <Content>
             <TokenContainer {...tokenInfo} />
             <RegisterButton
               registeringToken={registeringToken}
@@ -268,20 +292,7 @@ const TokenAddPage = () => {
               address={tokenInfo?.address || ""}
               isConnected={isConnected}
             />
-          </>
-        ) : null}
-      </WhiteSection>
-      <br />
-      {tokenInfo && isMobile ? (
-        <WhiteSection>
-          <TokenContainer {...tokenInfo} />
-          <RegisterButton
-            registeringToken={registeringToken}
-            alreadyRegistered={alreadyRegistered}
-            onSubmit={onSubmit}
-            address={tokenInfo?.address || ""}
-            isConnected={isConnected}
-          />
+          </Content>
         </WhiteSection>
       ) : null}
     </>
