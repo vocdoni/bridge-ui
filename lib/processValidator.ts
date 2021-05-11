@@ -51,7 +51,6 @@ export const validateProposal = (proposal: ProcessMetadata, startDate: Date, end
 
 export const validateQuestion = ({ title, description, choices }, index) => {  
     
-  console.log(title)
   if (!title || title.default.trim().length < 2)
     throw new Error(`Please enter a title for question #${index + 1}`);
 
