@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const TextInput = styled.input<{ widthValue?: number }>`
   type: text;
-  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "unset")};
+  flex: 4;
   height: 46px;
   padding-left: 10px;
 

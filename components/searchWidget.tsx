@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ThHTMLAttributes } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { StyledSpinner } from "../pages/tokens/add";
@@ -12,16 +12,14 @@ const SearchRow = styled.div`
   }
 `;
 
-const Button = styled(PrimaryButton)`
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-left: 0;
-    margin-top: 10px;
-  }
-`;
-
 const Box = styled.div`
+  width: 80%;
   display: flex;
   margin-right: 10px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    margin-bottom: 8px;
+  }
 `;
 
 type SearchWidgetProps = {

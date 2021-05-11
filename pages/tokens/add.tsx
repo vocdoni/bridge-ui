@@ -83,7 +83,7 @@ const ButtonRow = styled.div`
 `;
 
 const WhiteSection = styled.div`
-  padding: 80px 230px;
+  padding: 80px 18%;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
   @media ${({ theme }) => theme.screens.tablet} {
