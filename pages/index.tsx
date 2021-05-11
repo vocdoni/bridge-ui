@@ -4,10 +4,10 @@ import styled from "styled-components";
 
 import { featuredTokens } from "../lib/tokens";
 import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
-import { FALLBACK_TOKEN_ICON, LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
+import { LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
 import { TokenList } from "./dashboard";
 
-import TokenCard from "../components/token-card";
+import { TokenCard } from "../components/token-card";
 import { SecondaryButton } from "../components/button";
 import { ConnectWalletLink } from "../components/connect-button";
 import SectionTitle from "../components/sectionTitle";
