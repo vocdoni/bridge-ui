@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  CensusErc20Api,
   IProcessCreateParams,
   ProcessCensusOrigin,
   ProcessEnvelopeType,
@@ -14,7 +13,7 @@ import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
 import { ProcessMetadataTemplate } from "dvote-js";
 import Datetime from "react-datetime";
-import moment, { Moment } from "moment";
+import { Moment } from "moment";
 import Router from "next/router";
 import Spinner from "react-svg-spinner";
 
@@ -22,7 +21,7 @@ import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
-import { handleValidation } from "../../lib/processValidator";
+import { validateProposal } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
@@ -275,45 +274,9 @@ const NewProcessPage = () => {
   };
   const onSubmit = async () => {
     try {
-      metadata.questions.map(handleValidation);
+      validateProposal(metadata, startDate, endDate);
     } catch (error) {
       return setAlertMessage(error.message);
-    }
-
-    if (!metadata.title || metadata.title.default.trim().length < 2)
-      return setAlertMessage("Please enter a title");
-    else if (metadata.title.default.trim().length > 50)
-      return setAlertMessage("Please enter a shorter title");
-
-    if (!metadata.description || metadata.description.default.trim().length < 2)
-      return setAlertMessage("Please enter a description");
-    else if (metadata.description.default.trim().length > 300)
-      return setAlertMessage("Please enter a shorter description");
-
-    if (!startDate) return setAlertMessage("Please enter a start date");
-    else if (!endDate) return setAlertMessage("Please enter an ending date");
-
-    if (moment(startDate).isBefore(moment().add(5, "minutes"))) {
-      return setAlertMessage("The start date must be at least 5 minutes from now");
-    } else if (moment(endDate).isBefore(moment().add(10, "minutes"))) {
-      return setAlertMessage("The end date must be at least 10 minutes from now");
-    } else if (moment(endDate).isBefore(moment(startDate).add(5, "minutes"))) {
-      return setAlertMessage("The end date must be at least 5 minutes after the start");
-    }
-
-    for (let qIdx = 0; qIdx < metadata.questions.length; qIdx++) {
-      const question = metadata.questions[qIdx];
-      if (!question.title.default.trim())
-        return setAlertMessage("Please enter a title for question " + (qIdx + 1));
-
-      for (let cIdx = 0; cIdx < question.choices.length; cIdx++) {
-        const choice = question.choices[cIdx];
-        if (!choice.title.default.trim())
-          return setAlertMessage("Please fill in all the choices for question " + (qIdx + 1));
-
-        // Ensure values are unique and sequential
-        question.choices[cIdx].value = cIdx;
-      }
     }
 
     if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
