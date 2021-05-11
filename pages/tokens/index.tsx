@@ -12,15 +12,7 @@ import { SecondaryButton } from "../../components/button";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-
-const TokenList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    justify-content: center;
-  }
-`;
+import { TokenList } from "../dashboard";
 
 const ButtonContainer = styled.div`
   display: flex;
