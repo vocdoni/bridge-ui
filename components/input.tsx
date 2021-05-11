@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
-const TextInput = styled.input`
+const TextInput = styled.input<{ widthValue?: number }>`
   type: text;
   height: 46px;
   padding-left: 10px;
-  width: 100%;
+  max-width: 735px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
+  min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
