@@ -55,7 +55,7 @@ const WalletOption = styled.div`
   border-radius: 8px;
   text-align: center;
   white-space: normal;
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};;
+  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,7 +130,7 @@ const HARDWARE_WALLETS_METAMASK_ARTICLE =
 
 export const WalletList = () => {
   const { connect, error, reset } = useWallet();
-  const { push, pathname } = useRouter();
+  const { pathname } = useRouter();
   const { state, dispatch } = useModal();
   const { setAlertMessage } = useMessageAlert();
 
@@ -143,8 +143,8 @@ export const WalletList = () => {
   };
 
   const handleConnection = async (wallet) => {
-    // @TODO: Remove this when ledger and trezor are implemented in useWallet
-    if (wallet === "ledger" || wallet === "trezor") return;
+    // @TODO: Remove this when trezor is implemented in useWallet
+    if (wallet === "trezor") return;
     try {
       await connect(wallet);
       if (!error && inLanding) reset();
@@ -177,8 +177,8 @@ export const WalletList = () => {
             );
             return (
               <OptionContainer key={"wallet_" + wallet}>
-                {/* @TODO: Remove this when ledger and trezor are implemented in useWallet */}
-                {name === "Ledger" || name === "Trezor" ? (
+                {/* @TODO: Remove this when trezor is implemented in useWallet */}
+                {name === "Trezor" ? (
                   <ExternalLinkOption
                     rel="noreferrer noopener"
                     target="_blank"
