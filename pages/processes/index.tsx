@@ -28,6 +28,7 @@ import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { LoadingSpinner } from "../../components/loading-spinner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 const ProcessPage = () => {
@@ -108,7 +109,7 @@ const ProcessPage = () => {
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
-          {summary?.length ?
+          {summary?.length ? (
             summary.map(({ description, value }, i) => (
               <ProcessDataContainer key={i}>
                 <ProcessDataInfo>
@@ -118,7 +119,10 @@ const ProcessPage = () => {
                   <ProcessDataValue>{value}</ProcessDataValue>
                 </ProcessDataInfo>
               </ProcessDataContainer>
-            )) : <p>Loading... <Spinner /></p>}
+            ))
+          ) : (
+            <LoadingSpinner fullPage={false} />
+          )}
         </ProcessData>
       </ProcessContainer>
 
@@ -151,14 +155,7 @@ const ProcessPage = () => {
 
 // TODO: Render a better UI
 function renderEmpty() {
-  return (
-    <div>
-      <br />
-      <p>
-        Loading... <Spinner />
-      </p>
-    </div>
-  );
+  return <LoadingSpinner fullPage={true} />;
 }
 
 export default withRouter(ProcessPage);
