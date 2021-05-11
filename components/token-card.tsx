@@ -10,11 +10,10 @@ const Container = styled.div`
   cursor: pointer;
   flex: 1 0 500px;
   box-sizing: border-box;
-  margin: 0.5rem 0.5em;
   border-radius: 13px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border: 1px solid ${({ theme }) => theme.grayScale.g2};
-  max-width: calc(33.3333333% - 1em);
+  max-width: calc(33.3333333% - 0.3333333em);
   min-width: 347px;
   max-height: 164px;
   position: relative;
@@ -44,12 +43,11 @@ const Container = styled.div`
   }
 
   @media ${({ theme }) => theme.screens.laptopL} {
-    max-width: calc(50% - 1em);
+    max-width: calc(50% - 0.25em);
     min-width: 332px;
   }
 
   @media ${({ theme }) => theme.screens.tabletL} {
-    margin: 10px 0px;
     max-width: 100%;
     width: 100%;
     z-index: 0;
