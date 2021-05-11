@@ -22,13 +22,15 @@ export const TokenList = styled.div`
   margin-left: -10px;
 
   @media ${({ theme }) => theme.screens.tabletL} {
-    & > div:first-child {
-      margin-left: 10px;
-    }
     & > div:nth-child(4n) {
       margin-left: 10px;
     }
-    margin: 0 10px;
+    margin: 0 0px;
+    justify-content: center;
+    text-align: start;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    margin: 0 0px;
     justify-content: center;
     text-align: start;
   }

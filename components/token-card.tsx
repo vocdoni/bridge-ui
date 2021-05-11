@@ -44,14 +44,9 @@ const Container = styled.div`
   }
 
   @media ${({ theme }) => theme.screens.tablet} {
-    margin: 10px;
-    max-width: calc(50% - 2em);
-    text-align: start;
-    justify-content: center;
-    z-index: 0;
-  }
-  @media ${({ theme }) => theme.screens.mobileL} {
-    max-width: calc(100% - 2em);
+    margin: 10px 0px;
+    max-width: 100%;
+    width: 100%;
     min-width: unset;
     z-index: 0;
   }
