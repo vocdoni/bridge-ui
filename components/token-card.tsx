@@ -183,7 +183,7 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
     return (
       <Card onClick={onClick} ref={ref}>
         <TokenLogoContainer>
-          <TokenLogo src={icon} onError={loadFallback} />
+          <TokenLogo src={icon} onError={loadImageFallback} />
         </TokenLogoContainer>
 
         {rightText && <RightText>{rightText}</RightText>}
@@ -290,7 +290,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
       <StyledVoteCard onClick={onClick} ref={ref}>
         <CardHeader>
           <div>
-            <VoteTokenLogo src={icon} onError={loadFallback} />
+            <VoteTokenLogo src={icon} onError={loadImageFallback} />
           </div>
           <TokenDescription>
             <VoteSymbol>{symbol}</VoteSymbol>
@@ -303,7 +303,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
   }
 );
 
-function loadFallback(event) {
+export function loadImageFallback(event) {
   event.target.src = FALLBACK_TOKEN_ICON;
 }
 

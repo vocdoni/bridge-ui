@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { ProcessInfo, useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
-import { VoteCard } from "../../components/token-card";
+import { loadImageFallback, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList } from "../../lib/api";
@@ -16,6 +16,7 @@ import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
+import { StyledSpinner } from "./add";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -280,7 +281,7 @@ const TokenPage = () => {
     <>
       <HeaderContainer>
         <HeaderLeft>
-          <TokenLogo src={tokenInfo?.icon} />
+          <TokenLogo src={tokenInfo?.icon} onError={loadImageFallback} />
           <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>
         <PrimaryButton onClick={() => onCreateProcess()}>
