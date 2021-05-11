@@ -27,7 +27,6 @@ export const DescriptionInput = styled.textarea<{ widthValue?: number }>`
   type: text;
   max-width: 735px;
   width: ${({ widthValue }) => (widthValue ? widthValue - 60 + "px" : "100%")};
-  // min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
   min-width: 680px;
   height: 143px;
   padding-left: 10px;

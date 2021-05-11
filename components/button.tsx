@@ -35,7 +35,6 @@ export const PrimaryButton = styled(Button)`
   font-family: "Manrope", sans-serif !important;
   line-height: 22px;
   position: relative;
-  z-index: 1;
 
   &:before {
     position: absolute;
