@@ -101,6 +101,10 @@ const TextLink = styled.p`
   cursor: pointer;
   margin-top: -15px;
   font-weight: 400;
+  font-size: 18px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 16px;
+  }
   &:hover {
     color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
   }
