@@ -72,7 +72,7 @@ const StyledVoteCard = styled(Card)`
 const TokenLogo = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 100px;
+  border-radius: 50%;
 `;
 
 const Symbol = styled.div`
@@ -238,7 +238,7 @@ const VoteTokenLogo = styled.img`
   padding-top: 2px;
   width: 71px;
   height: 71px;
-  border-radius: 100px;
+  border-radius: 50%;
 `;
 
 const TokenDescription = styled.div`
