@@ -159,6 +159,32 @@ const RowContinue = styled.div`
   }
 `;
 
+const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
+  max-width: 735px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
+  min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    display: flex;
+    width: 100%;
+    margin-bottom: 9px;
+  }
+`;
+
+const WidthControlDescription = styled(DescriptionInput)<{ widthValue?: number }>`
+  max-width: 735px;
+  width: ${({ widthValue }) => (widthValue ? widthValue - 60 + "px" : "100%")};
+  min-width: 680px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+    display: flex;
+    width: 100%;
+    min-width: 100%;
+  }
+`;
+
 const SubmitButton = ({ submitting, onSubmit }) =>
   submitting ? (
     <p>
@@ -374,7 +400,7 @@ const NewProcessPage = () => {
               smallerTitle
             />
             <InputBox>
-              <TextInput
+              <WidthControlInput
                 placeholder="Title"
                 onChange={(e) => setMainTitle(e.target.value)}
                 value={metadata.title.default}
@@ -416,7 +442,7 @@ const NewProcessPage = () => {
               subtitle="An introduction of about 2-3 lines"
               smallerTitle
             />
-            <DescriptionInput
+            <WidthControlDescription
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
@@ -458,7 +484,7 @@ const NewProcessPage = () => {
                   {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
                 </RemoveButton>
                 <InputBox>
-                  <TextInput
+                  <WidthControlInput
                     placeholder="Title"
                     value={question.title.default}
                     onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
@@ -468,7 +494,7 @@ const NewProcessPage = () => {
 
                 <SectionTitle title="Description" smallerTitle />
                 <InputBox>
-                  <DescriptionInput
+                  <WidthControlDescription
                     placeholder="Description"
                     value={question.description.default}
                     onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
@@ -483,11 +509,11 @@ const NewProcessPage = () => {
               {question.choices.map((choice, cIdx) => (
                 <RowQuestions key={cIdx}>
                   <RowQuestionLeftSection>
-                    <TextInput
+                    <WidthControlInput
                       placeholder="Choice"
                       value={choice.title.default}
                       onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                      widthValue={633}
+                      widthValue={627}
                     />
                   </RowQuestionLeftSection>
                   <ChoiceRightSection>
