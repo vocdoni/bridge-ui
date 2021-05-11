@@ -72,11 +72,12 @@ const StyledVoteCard = styled(Card)`
 const TokenLogo = styled.img`
   width: 100%;
   height: 100%;
+  border-radius: 100px;
 `;
 
 const Symbol = styled.div`
   display: block;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 500;
   font-size: 29px;
@@ -237,6 +238,7 @@ const VoteTokenLogo = styled.img`
   padding-top: 2px;
   width: 71px;
   height: 71px;
+  border-radius: 100px;
 `;
 
 const TokenDescription = styled.div`
