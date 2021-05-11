@@ -37,8 +37,7 @@ const Body = styled.div`
   padding: 15px;
   display: flex;
   flex-wrap: wrap;
-  /* Modified content justification from space-between to center until wallet providers are properly tested. */
-  justify-content: center;
+  justify-content: space-between;
 
   @media ${({ theme }) => theme.screens.mobileL} {
     overflow-y: auto;

@@ -26,13 +26,17 @@ export const WALLETS: ConnectorData[] = [
   //   connector: "portis",
   //   properties: { dAppId: "4402221a-b7c2-4781-9a0e-b1509dabaa1e" },
   // },
-  // {
-  //   name: "Fortmatic",
-  //   connector: "fortmatic",
-  //   properties: {
-  //     apiKey: "pk_live_5C08E0B6C4BEF5CE",
-  //   },
-  // },
+  // @TODO: Fortmatic api keys are personal, we need to change them to Aragon created keys.
+  {
+    name: "Fortmatic",
+    connector: "fortmatic",
+    properties: {
+      apiKey:
+        process.env.VOCDONI_ENVIRONMENT === "dev"
+          ? "enter_development_apikey"
+          : "enter_production_apikey",
+    },
+  },
   // {
   //   name: "Wallet Connect",
   //   connector: "walletconnect",
