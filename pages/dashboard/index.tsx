@@ -19,8 +19,6 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 export const TokenList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  text-align: start;
   gap: 0.5em;
 
   @media ${({ theme }) => theme.screens.mobile} {
