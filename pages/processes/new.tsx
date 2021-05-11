@@ -112,7 +112,7 @@ const RowQuestionRightSection = styled.div`
 `;
 
 const ChoiceRightSection = styled.div`
-  flex: 6;
+  flex: 20;
   margin-left: 13px;
   display: flex;
   flex-direction: column;
@@ -161,7 +161,7 @@ const RowContinue = styled.div`
 `;
 
 const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
-  max-width: 735px;
+  max-width: 680px;
   width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
   min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
 
@@ -173,8 +173,8 @@ const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
 `;
 
 const WidthControlDescription = styled(DescriptionInput)<{ widthValue?: number }>`
-  max-width: 735px;
-  width: ${({ widthValue }) => (widthValue ? widthValue - 60 + "px" : "100%")};
+  max-width: 680px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
   min-width: 680px;
 
   @media ${({ theme }) => theme.screens.tablet} {
@@ -377,7 +377,7 @@ const NewProcessPage = () => {
         block: sourceBlockHeight,
         balanceMappingPosition: tokenInfo.balanceMappingPosition,
         pool,
-      })
+      });
 
       const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
         metadata: ProcessMetadata;
