@@ -32,7 +32,7 @@ const Head = styled.div`
   min-height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   @media ${({ theme }) => theme.screens.tablet} {
     width: calc(100% + 30px);
     border-radius: 0;
@@ -49,7 +49,7 @@ const HeadContent = styled.div`
 `;
 
 const HeaderTitle = styled.h4`
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 600;
   margin: 0;
@@ -68,7 +68,7 @@ const HeaderTitle = styled.h4`
 `;
 
 const HeaderSubtitle = styled.p`
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
@@ -130,7 +130,7 @@ const SearchInput = styled.input`
   border-radius: 8px;
   height: 46px;
 
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -194,7 +194,7 @@ const GrayRectangle = styled.div`
   min-height: 161px;
   border-radius: 16px;
   color: ${({ theme }) => theme.grayScale.g5};
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
 `;
 
 const GrayRectangleTall = styled(GrayRectangle)`

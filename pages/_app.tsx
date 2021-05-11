@@ -18,6 +18,8 @@ import "react-datetime/css/react-datetime.css";
 import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
 
+Router.events.on("routeChangeComplete", (url: string) => (window as any).analytics?.page());
+
 type NextAppProps = AppInitialProps & {
   Component: NextComponentType<NextPageContext, any, any>;
   router: Router;

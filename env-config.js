@@ -6,7 +6,8 @@ const DEVELOPMENT = process.env.NODE_ENV !== "production";
 
 module.exports = {
   LANG: lang,
-  APP_TITLE: "Aragon Voice - the ultimate solution for creating and managing proposals and voting in a decentralized, cost-effective, and secure manner",
+  APP_TITLE:
+    "Aragon Voice - the ultimate solution for creating and managing proposals and voting in a decentralized, cost-effective, and secure manner",
   DEVELOPMENT,
   VOCDONI_ENVIRONMENT: process.env.VOCDONI_ENVIRONMENT || "dev",
 
@@ -20,6 +21,9 @@ module.exports = {
 
   // GATEWAYS
   BOOTNODES_URL: process.env.BOOTNODES_URL || "https://bootnodes.vocdoni.net/gateways.dev.json",
+
+  // ANALYTICS
+  ANALYTICS_KEY: "4ohZSOqAi2Wy0pDuzFPB7fDN5XirRjsq",
 };
 
 console.log("Building the frontend with ENV:", module.exports);

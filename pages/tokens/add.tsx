@@ -23,7 +23,7 @@ export const StyledSpinner = styled(Spinner)`
   color: ${({ theme }) => theme.accent2};
 `;
 
-const RowSummary = styled.div`
+const TokenSummary = styled.div`
   margin-top: 2em;
   display: flex;
   justify-content: space-between;
@@ -46,6 +46,7 @@ const Info = styled.div`
 `;
 
 const TokenAttributeTitle = styled.p`
+  height: 60px;
   margin-top: 9px;
   margin-bottom: 0;
   line-height: 27px;
@@ -53,22 +54,26 @@ const TokenAttributeTitle = styled.p`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
+  @media ${({ theme }) => theme.screens.tablet} {
+    height: unset;
+  }
 `;
 
 const Description = styled.h4`
   font-size: 18px;
-  overflow-wrap: break-word;
   letter-spacing: 0;
-  margin: 0;
-`;
-
-const Address = styled.h4`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const Address = styled.h4`
   max-width: 200px;
   font-size: 18px;
   letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ButtonRow = styled.div`
@@ -91,7 +96,7 @@ const WhiteSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 27px;
+  padding: 80px 18%;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
   @media ${({ theme }) => theme.screens.tablet} {
@@ -130,13 +135,14 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
       title="Token contract details"
       subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
     />
-    <RowSummary>
+    <TokenSummary>
       <Info>
         <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
         <Description>{symbol}</Description>
       </Info>
       <Info>
         <TokenAttributeTitle>Token name</TokenAttributeTitle>
+
         <Description>{name}</Description>
       </Info>
       <Info>
@@ -147,7 +153,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
         <TokenAttributeTitle>Token address</TokenAttributeTitle>
         <Address>{address}</Address>
       </Info>
-    </RowSummary>
+    </TokenSummary>
   </>
 );
 
