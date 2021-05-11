@@ -15,7 +15,7 @@ const Container = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border: 1px solid ${({ theme }) => theme.grayScale.g2};
   max-width: calc(33.3333333% - 1em);
-  min-width: 395px;
+  min-width: 347px;
   max-height: 164px;
   position: relative;
   z-index: 1;
@@ -43,11 +43,15 @@ const Container = styled.div`
     opacity: 1;
   }
 
-  @media ${({ theme }) => theme.screens.tablet} {
+  @media ${({ theme }) => theme.screens.laptopL} {
+    max-width: calc(50% - 1em);
+    min-width: 332px;
+  }
+
+  @media ${({ theme }) => theme.screens.tabletL} {
     margin: 10px 0px;
     max-width: 100%;
     width: 100%;
-    min-width: unset;
     z-index: 0;
   }
 `;
