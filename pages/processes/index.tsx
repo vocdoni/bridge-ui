@@ -98,7 +98,7 @@ const ProcessPage = () => {
     <div>
       <SectionTitle
         title={`${tokenInfo?.symbol || "Token"} proposal`}
-        subtitle={"Cast your vote and see the ongoing results as they are received."}
+        subtitle={"Cast your vote and view results as they come in."}
       />
       <ProcessContainer>
         <ProcessInformation>
