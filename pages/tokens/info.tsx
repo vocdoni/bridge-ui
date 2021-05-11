@@ -284,7 +284,7 @@ const TokenPage = () => {
           <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>
         <PrimaryButton onClick={() => onCreateProcess()}>
-          Create a governance process
+          Create New Proposal
         </PrimaryButton>
       </HeaderContainer>
 

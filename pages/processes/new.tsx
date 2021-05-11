@@ -288,7 +288,7 @@ const NewProcessPage = () => {
     // FINAL CONFIRMATION
     if (
       !confirm(
-        "You are about to create a new governance process. The process cannot be altered, paused or canceled.\n\nDo you want to continue?"
+        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
       )
     )
       return;
@@ -361,8 +361,8 @@ const NewProcessPage = () => {
   return (
     <div>
       <SectionTitle
-        title="New governance process"
-        subtitle="Enter the details of a new governance process and submit
+        title="New proposal"
+        subtitle="Enter the details of a new proposal and submit
                 them."
       />
       <NewProcessContainer>
