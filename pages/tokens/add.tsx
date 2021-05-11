@@ -128,7 +128,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
     <SectionTitle
       smallerTitle={true}
       title="Token contract details"
-      subtitle="The following token will be registered. All token holders will be able to submit new governance processes."
+      subtitle="The following token will be registered. All token holders will be able to submit new proposals."
     />
     <RowSummary>
       <Info>
@@ -242,7 +242,7 @@ const TokenAddPage = () => {
     <>
       <SectionTitle
         title="Register a new token"
-        subtitle="Enter the details of any ERC-20 token and start submitting new governance proposals"
+        subtitle="Enter the details of any ERC-20 token and start submitting new proposals"
       />
 
       <br />

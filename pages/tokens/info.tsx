@@ -112,9 +112,12 @@ const InfoDescription = styled.h4`
   margin-bottom: 30px;
 `;
 
-const InfoWrapper = styled.div`
-  min-width: 200px;
-`;
+const TokenLogo = styled.img`
+  margin-right: 20px; 
+  margin-top: 9px;
+  width: 71px;
+  height: 71px;
+`
 
 type VotingSectionProps = {
   allProcesses: Map<string, ProcessInfo>,
@@ -277,16 +280,11 @@ const TokenPage = () => {
     <>
       <HeaderContainer>
         <HeaderLeft>
-          <img
-            src={FALLBACK_TOKEN_ICON}
-            width={71}
-            height={71}
-            style={{ marginRight: 20, marginTop: 9 }}
-          />
+          <TokenLogo src={tokenInfo?.icon} />
           <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>
         <PrimaryButton onClick={() => onCreateProcess()}>
-          Create a governance process
+          Create New Proposal
         </PrimaryButton>
       </HeaderContainer>
 

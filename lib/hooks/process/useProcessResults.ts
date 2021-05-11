@@ -79,19 +79,23 @@ export const useProcessResults = (processInfo: ProcessInfo, tokenInfo: Partial<T
         const choices = voteResults.map(({ title, votes }) => {
           let percentage = "0";
           if (!votes.isZero()) {
-            // Since BigNumber only does rounded division, it is necessary to multiply the
-            // votes by 100 before the division. However, this will yield integer
-            // percentages. In order to get percentages with 1 decimal place, it is
-            // necessary to multiply the votes by an additional 10 before the division
-            const factorBn = votes.mul(100 * 10).div(totalVoteAmountBn);
-            // factor is now within [0,1'000]
+            // NOTES:
+            // a) Since BigNumber only does rounded division, it is necessary to multiply the
+            // votes by 100 *before* the division. Otherwise, roundDown(1/2)*100=0*100=0%,
+            // instead of roundDown(100*1/2)=roundDown(50)=50%.
+            // b) However, this will always yield integer percentages. In order to get
+            // percentages with 1 decimal place, it is necessary to multiply the votes by
+            // an additional 100 before the division. This will carry enough information
+            // to display *1* decimal places.
+            const factorBn = votes.mul(100 * 100).div(totalVoteAmountBn);
+            // factor is now within [0,10'000]
 
             if (factorBn.isZero()) {
               // If the result of that division is 0, it means the percentage is smaller
               // than 0.1%.
               percentage = "small"; //vote is too small for percentage with 1 decimal
             } else {
-              percentage = (factorBn.toNumber() / 10).toFixed(1);
+              percentage = (factorBn.toNumber() / 100).toFixed(1);
               //percentage is now within [0,100], rounded to 1 decimal place.
             }
           }
