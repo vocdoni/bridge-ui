@@ -64,11 +64,11 @@ const TokensPage = () => {
           <div>{renderEmpty()}</div>
         </When>
 
-        {storedTokens.map(({ symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+        {storedTokens.map(({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
           <TokenCard
             key={address}
             name={symbol}
-            icon={FALLBACK_TOKEN_ICON}
+            icon={icon}
             rightText=""
             href={address ? "/tokens/info#/" + address : ""}
             tokenCap={totalSupplyFormatted}

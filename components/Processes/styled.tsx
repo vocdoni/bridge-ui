@@ -14,6 +14,7 @@ export const ProcessDescription = styled.p`
   font-weight: 400;
   color: ${({ theme }) => theme.grayScale.g5};
   word-break: break-word;
+  white-space: pre-wrap;
 `;
 
 export const ProcessInformation = styled.div`

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const TextInput = styled.input<{ widthValue?: number }>`
+export const TextInput = styled.input<{ widthValue?: number }>`
   type: text;
   flex: 4;
   height: 46px;
@@ -22,8 +22,10 @@ const TextInput = styled.input<{ widthValue?: number }>`
 
 export const DescriptionInput = styled.textarea<{ widthValue?: number }>`
   type: text;
-  width: 735px;
-  min-width: 735px;
+  max-width: 735px;
+  width: ${({ widthValue }) => (widthValue ? widthValue - 60 + "px" : "100%")};
+  // min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
+  min-width: 680px;
   height: 143px;
   padding-left: 10px;
 
@@ -44,5 +46,3 @@ export const DescriptionInput = styled.textarea<{ widthValue?: number }>`
     min-width: 100%;
   }
 `;
-
-export default TextInput;
