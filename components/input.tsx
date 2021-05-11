@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
-const TextInput = styled.input`
+const TextInput = styled.input<{ widthValue?: number }>`
   type: text;
   height: 46px;
   padding-left: 10px;
-  width: 100%;
+  max-width: 735px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
+  min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
@@ -20,16 +22,12 @@ const TextInput = styled.input`
   }
 `;
 
-export const DescriptionInput = styled.textarea`
-  @media ${({ theme }) => theme.screens.tablet} {
-    display: flex;
-    width: 100%;
-    margin-left: 0;
-    margin-top: 10px;
-  }
+export const DescriptionInput = styled.textarea<{ widthValue?: number }>`
   type: text;
-  width: 735px;
-  min-width: 735px;
+  max-width: 735px;
+  width: ${({ widthValue }) => (widthValue ? widthValue - 60 + "px" : "100%")};
+  // min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
+  min-width: 680px;
   height: 143px;
   padding-left: 10px;
 
@@ -43,8 +41,11 @@ export const DescriptionInput = styled.textarea`
   }
 
   @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+    display: flex;
     width: 100%;
-    min-width: unset;
+    min-width: 100%;
   }
 `;
 

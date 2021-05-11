@@ -36,6 +36,8 @@ import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
+import { useIsWide } from "../../lib/hooks/useWindowSize";
+
 const NewProcessContainer = styled.div`
   input[type="text"],
   textarea {
@@ -63,12 +65,13 @@ const FieldRow = styled.div`
 `;
 
 const FieldRowLeftSection = styled.div`
-  max-width: 735px;
+  max-width: 680px;
+  margin-right: 13px;
 `;
 
-const FieldRowRightSection = styled.div<{ marginTop: number }>`
+const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   width: 480px;
-  margin-top: ${({ marginTop }) => marginTop}px;
+  margin-top: ${({ marginTop, isLarge }) => (isLarge ? marginTop + 60 : marginTop)}px;
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
     margin-left: 0;
@@ -93,7 +96,7 @@ const RowQuestions = styled.div`
 
 const RowQuestionLeftSection = styled.div`
   flex: 6;
-  width: 700px;
+  width: 680px;
   @media ${({ theme }) => theme.screens.tablet} {
     flex: 12;
   }
@@ -173,6 +176,7 @@ const NewProcessPage = () => {
   const wallet = useWallet();
 
   const isMobile = useIsMobile();
+  const isLarge = useIsWide();
 
   const [metadata, setMetadata] = useState<ProcessMetadata>(
     JSON.parse(JSON.stringify(ProcessMetadataTemplate))
@@ -406,14 +410,16 @@ const NewProcessPage = () => {
               subtitle="Short name to identify the process"
               smallerTitle
             />
-            <TextInput
-              placeholder="Title"
-              onChange={(e) => setMainTitle(e.target.value)}
-              value={metadata.title.default}
-              widthValue={735}
-            />
+            <InputBox>
+              <TextInput
+                placeholder="Title"
+                onChange={(e) => setMainTitle(e.target.value)}
+                value={metadata.title.default}
+                widthValue={680}
+              />
+            </InputBox>
           </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={90}>
+          <FieldRowRightSection marginTop={60} isLarge={isLarge}>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -451,10 +457,11 @@ const NewProcessPage = () => {
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
+              widthValue={680}
             />
           </FieldRowLeftSection>
 
-          <FieldRowRightSection marginTop={100}>
+          <FieldRowRightSection marginTop={70} isLarge={isLarge}>
             <Datetime
               value={startDate}
               inputProps={{
@@ -492,7 +499,7 @@ const NewProcessPage = () => {
                     placeholder="Title"
                     value={question.title.default}
                     onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                    widthValue={735}
+                    widthValue={680}
                   />
                 </InputBox>
 
@@ -502,6 +509,7 @@ const NewProcessPage = () => {
                     placeholder="Description"
                     value={question.description.default}
                     onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                    widthValue={660}
                   />
                 </InputBox>
               </RowQuestionLeftSection>
@@ -516,7 +524,7 @@ const NewProcessPage = () => {
                       placeholder="Choice"
                       value={choice.title.default}
                       onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                      widthValue={683}
+                      widthValue={633}
                     />
                   </RowQuestionLeftSection>
                   <ChoiceRightSection>

@@ -25,6 +25,11 @@ export const useWindowSize = () => {
   return windowSize;
 };
 
+export const useIsWide = () => {
+  const { width } = useWindowSize();
+  return width >= 1504;
+};
+
 export const useIsMobile = () => {
   const { width } = useWindowSize();
   return width <= size.tablet;
