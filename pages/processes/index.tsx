@@ -97,7 +97,7 @@ const ProcessPage = () => {
   return (
     <div>
       <SectionTitle
-        title={`${tokenInfo?.symbol || "Token"} governance process`}
+        title={`${tokenInfo?.symbol || "Token"} proposal`}
         subtitle={"Cast your vote and see the ongoing results as they are received."}
       />
       <ProcessContainer>
