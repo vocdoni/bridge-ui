@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { ProcessInfo, useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
-import { loadImageFallback, VoteCard } from "../../components/token-card";
+import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList } from "../../lib/api";
@@ -113,12 +113,11 @@ const InfoDescription = styled.h4`
   margin-bottom: 30px;
 `;
 
-const TokenLogo = styled.img`
-  margin-right: 20px; 
-  margin-top: 9px;
-  width: 71px;
-  height: 71px;
+const TokenLogoContainer = styled.div`
+  margin-right: 20px;
+  margin-top: 25px;
 `
+
 
 type VotingSectionProps = {
   allProcesses: Map<string, ProcessInfo>,
@@ -281,7 +280,9 @@ const TokenPage = () => {
     <>
       <HeaderContainer>
         <HeaderLeft>
-          <TokenLogo src={tokenInfo?.icon} onError={loadImageFallback} />
+          <TokenLogoContainer>
+            <TokenLogo src={tokenInfo?.icon}  />
+          </TokenLogoContainer>
           <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>
         <PrimaryButton onClick={() => onCreateProcess()}>
