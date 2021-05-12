@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
@@ -161,8 +161,17 @@ const TokenLogoImg = styled.img`
   height: 71px;
 `;
 
-export const TokenLogo = ({ src }) => {
-  return <TokenLogoImg src={src} onError={loadImageFallback} />;
+export const TokenLogo: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (props) => {
+  const [src, setSrc] = useState<string>(() => props.src || FALLBACK_TOKEN_ICON)
+  useEffect(() => {
+    setSrc(props.src || FALLBACK_TOKEN_ICON)
+  }, [props.src])
+
+  const onError = () => {
+    setSrc(FALLBACK_TOKEN_ICON)
+  }
+
+  return <TokenLogoImg {...props} src={src} onError={onError} />
 };
 
 // eslint-disable-next-line react/display-name
@@ -281,10 +290,6 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
     );
   }
 );
-
-function loadImageFallback(event) {
-  event.target.src = FALLBACK_TOKEN_ICON;
-}
 
 export const TokenCard = ({ children, ...props }: CardProps) => (
   <Container>
