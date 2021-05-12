@@ -7,7 +7,6 @@ import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList } from "../../lib/api";
-import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import Spinner from "react-svg-spinner";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
