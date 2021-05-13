@@ -26,7 +26,7 @@ import { useSigner } from "../../lib/hooks/useSigner";
 import { ConnectButton } from "../../components/connect-button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
 import SectionTitle from "../../components/sectionTitle";
-import TextInput, { DescriptionInput } from "../../components/input";
+import { TextInput, DescriptionInput } from "../../components/input";
 import Tooltip from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
@@ -56,16 +56,20 @@ const NewProcessContainer = styled.div`
 const FieldRow = styled.div`
   margin-top: 2em;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   flex-wrap: wrap;
   @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: 0;
     flex-direction: column;
   }
 `;
 
 const FieldRowLeftSection = styled.div`
   max-width: 680px;
-  margin-right: 13px;
+  margin-right: 40px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-right: 0;
+  }
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
@@ -396,7 +400,7 @@ const NewProcessPage = () => {
           <FieldRowLeftSection>
             <SectionTitle
               title="Title"
-              subtitle="Short name to identify the process"
+              subtitle="Identify your proposal"
               smallerTitle
             />
             <InputBox>
@@ -439,7 +443,7 @@ const NewProcessPage = () => {
           <FieldRowLeftSection>
             <SectionTitle
               title="Description"
-              subtitle="An introduction of about 2-3 lines"
+              subtitle="Describe your proposal"
               smallerTitle
             />
             <WidthControlDescription

@@ -19,6 +19,7 @@ import {
   ButtonContainer,
   EndedContainer,
   EndedInfo,
+  ProcessDataCard,
 } from "../../components/Processes/styled";
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
@@ -81,7 +82,7 @@ const ProcessPage = () => {
   if (!processId || !process) return renderEmpty();
 
   let mainButtonText: string
-  if (!isConnected) mainButtonText = "Connect your wallet"
+  if (!isConnected) mainButtonText = "Connect wallet"
   else if (!inCensus) {
     if (proofLoading) mainButtonText = "Please wait"
     else mainButtonText = "You are not a token holder"
@@ -109,20 +110,22 @@ const ProcessPage = () => {
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
-          {summary?.length ? (
-            summary.map(({ description, value }, i) => (
-              <ProcessDataContainer key={i}>
-                <ProcessDataInfo>
-                  <ProcessDataDescription>{description}</ProcessDataDescription>
-                </ProcessDataInfo>
-                <ProcessDataInfo>
-                  <ProcessDataValue>{value}</ProcessDataValue>
-                </ProcessDataInfo>
-              </ProcessDataContainer>
-            ))
-          ) : (
-            <LoadingSpinner fullPage={false} />
-          )}
+          <ProcessDataCard>
+            {summary?.length ? (
+              summary.map(({ description, value }, i) => (
+                <ProcessDataContainer key={i}>
+                  <ProcessDataInfo>
+                    <ProcessDataDescription>{description}</ProcessDataDescription>
+                  </ProcessDataInfo>
+                  <ProcessDataInfo>
+                    <ProcessDataValue>{value}</ProcessDataValue>
+                  </ProcessDataInfo>
+                </ProcessDataContainer>
+              ))
+            ) : (
+              <LoadingSpinner fullPage={false} />
+            )}
+          </ProcessDataCard>
         </ProcessData>
       </ProcessContainer>
 

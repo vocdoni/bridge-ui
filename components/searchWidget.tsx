@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { StyledSpinner } from "../pages/tokens/add";
 import { PrimaryButton } from "./button";
-import TextInput from "./input";
+import { TextInput } from "./input";
 
 const SearchRow = styled.div`
   display: flex;

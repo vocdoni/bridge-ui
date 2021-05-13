@@ -40,14 +40,17 @@ export const ProcessData = styled.div`
   min-height: 183px;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border-radius: 13px;
   box-sizing: border-box;
-  padding: 25px 26px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
   }
+`;
+
+export const ProcessDataCard= styled.div`
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 25px 26px;
 `;
 
 export const ProcessDataInfo = styled.div`
