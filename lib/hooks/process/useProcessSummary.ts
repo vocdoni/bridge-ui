@@ -1,5 +1,5 @@
-import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
-import { VotingApi } from "dvote-js";
+import { usePool } from "@vocdoni/react-hooks";
+import { IProcessInfo, VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -8,7 +8,7 @@ import { TokenInfo } from "../../types";
 import { useProcessDates } from "./useProcessDates";
 
 export const useProcessSummary = ({ processInfo, tokenInfo }:
-  { processInfo: ProcessInfo, tokenInfo: Partial<TokenInfo> }) => {
+  { processInfo: IProcessInfo, tokenInfo: Partial<TokenInfo> }) => {
   const { poolPromise } = usePool();
   const { startDate, endDate, hasStarted } = useProcessDates(processInfo);
   const [voteCount, setVoteCount] = useState(0)

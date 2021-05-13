@@ -1,5 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { ProcessContractParameters, ProcessMetadata } from "dvote-js";
+import { ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js";
+import { Awaited } from "./utils";
 
 export type TokenInfo = {
   name: string;
@@ -13,12 +14,5 @@ export type TokenInfo = {
   processes: string[];
 };
 export type TokenEntry = Omit<TokenInfo, "processes">;
-
-export type ProcessInfo = {
-  id: string;
-  metadata: ProcessMetadata;
-  parameters: ProcessContractParameters;
-  tokenAddress: string;
-};
 
 export type MsgType = "error" | "success" | "warning" | "info";

@@ -1,20 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { VotingApi } from "dvote-js";
+import React, { useEffect, useMemo } from "react";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
-import { usePool } from "@vocdoni/react-hooks";
+import { useBlockHeight, usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 import { useRouter } from "next/router";
 
 import { TokenCard } from "../../components/token-card";
 // import Select from 'react-select'
 import { useStoredTokens } from "../../lib/hooks/tokens";
-import { getTokenProcesses } from "../../lib/api";
-import { ProcessInfo, TokenInfo } from "../../lib/types";
+import { TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/utils";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { IProcessInfo } from "dvote-js";
 
 export const TokenList = styled.div`
   display: flex;
@@ -40,53 +39,12 @@ const DashboardPage = () => {
   useScrollTop();
   const { account } = useWallet();
   const router = useRouter();
-  const { poolPromise } = usePool();
   const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
-  const [blockNumber, setBlockNumber] = useState(0);
-  const [loadingProcesses, setLoadingProcesses] = useState(false);
-  const [processes, setProcesses] = useState<ProcessInfo[]>([]);
+  const processIds = storedTokens.filter(token => token?.address).map(token => token.address);
+  const { processes, loading: processesLoading, error: processesError } = useProcesses(processIds);
+  const { blockHeight } = useBlockHeight()
 
-  // Block update
-  useEffect(() => {
-    const updateBlockHeight = () => {
-      poolPromise
-        .then((pool) => VotingApi.getBlockHeight(pool))
-        .then((num) => setBlockNumber(num))
-        .catch((err) => console.error(err));
-    };
-
-    const interval = setInterval(() => updateBlockHeight(), 1000 * 15);
-    updateBlockHeight();
-
-    // Done
-    return () => clearInterval(interval);
-  }, []);
-
-  // Process list fetch
-  useEffect(() => {
-    let skip = false;
-
-    setLoadingProcesses(true);
-
-    poolPromise
-      .then((pool) => Promise.all(
-        storedTokens.map((tokenInfo) => getTokenProcesses(tokenInfo?.address, pool))
-      ))
-      .then((processArrays) => {
-        if (skip) return;
-
-        const procs = processArrays.reduce((prev, cur) => prev.concat(cur), []);
-        setProcesses(procs);
-        setLoadingProcesses(false);
-      })
-      .catch((err) => {
-        setLoadingProcesses(false);
-      });
-
-    return () => {
-      skip = true;
-    };
-  }, [storedTokens]);
+  const processList = [...processes.values()]
 
   useEffect(() => {
     if (!account) {
@@ -94,14 +52,14 @@ const DashboardPage = () => {
     }
   }, [account]);
 
-  const upcomingProcesses = processes.filter((proc) => blockNumber < proc.parameters.startBlock);
-  const activeProcesses = processes.filter(
+  const upcomingProcesses = processList.filter((proc) => blockHeight < proc.parameters.startBlock);
+  const activeProcesses = processList.filter(
     (proc) =>
-      blockNumber >= proc.parameters.startBlock &&
-      blockNumber < proc.parameters.startBlock + proc.parameters.blockCount
+      blockHeight >= proc.parameters.startBlock &&
+      blockHeight < proc.parameters.startBlock + proc.parameters.blockCount
   );
-  const endedProcesses = processes.filter(
-    (proc) => blockNumber >= proc.parameters.startBlock + proc.parameters.blockCount
+  const endedProcesses = processList.filter(
+    (proc) => blockHeight >= proc.parameters.startBlock + proc.parameters.blockCount
   );
 
   const VOTING_SECTIONS = [
@@ -136,7 +94,7 @@ const DashboardPage = () => {
         <VoteSection
           {...section}
           key={section.title}
-          loadingProcesses={loadingProcesses}
+          loadingProcesses={tokenListLoading || processesLoading}
           tokenInfos={storedTokens}
         />
       ))}
@@ -172,7 +130,7 @@ export const VoteSection = ({
   );
 };
 
-const ProcessCard = (props: { process: ProcessInfo; token?: TokenInfo }) => {
+const ProcessCard = (props: { process: IProcessInfo; token?: TokenInfo }) => {
   const proc = props.process;
   const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : props?.token.icon;
 

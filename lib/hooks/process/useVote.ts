@@ -1,5 +1,5 @@
-import { ProcessInfo, usePool } from "@vocdoni/react-hooks";
-import { SignedEnvelopeParams, VotingApi } from "dvote-js";
+import { usePool } from "@vocdoni/react-hooks";
+import { IProcessInfo, SignedEnvelopeParams, VotingApi } from "dvote-js";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useWallet } from "use-wallet";
 import { CensusProof } from "../../api";
@@ -46,7 +46,7 @@ export const voteStateReducer = (state: VoteState, action: StatusAction) => {
   }
 };
 
-export const useVote = (processInfo: ProcessInfo) => {
+export const useVote = (processInfo: IProcessInfo) => {
   const [voteState, dispatch] = useReducer(voteStateReducer, INITIAL_STATE);
   const wallet = useWallet();
   const signer = useSigner();
@@ -91,7 +91,7 @@ export const useVote = (processInfo: ProcessInfo) => {
       })
   };
 
-  const submitVote = async (processInfo: ProcessInfo, proof: CensusProof): Promise<void> => {
+  const submitVote = async (processInfo: IProcessInfo, proof: CensusProof): Promise<void> => {
     try {
       dispatch({ type: "SET_STATE", state: { submitting: true } });
       const pool = await poolPromise;

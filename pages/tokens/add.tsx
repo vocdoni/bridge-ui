@@ -3,7 +3,6 @@ import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
 import { useWallet } from "use-wallet";
-import Spinner from "react-svg-spinner";
 import { usePool } from "@vocdoni/react-hooks";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
@@ -18,10 +17,7 @@ import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-
-export const StyledSpinner = styled(Spinner)`
-  color: ${({ theme }) => theme.accent2};
-`;
+import { Spinner } from "../../components/spinner";
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -114,7 +110,7 @@ const RegisterButton = ({
   <ButtonRow>
     {registeringToken ? (
       <Button>
-        <StyledSpinner />
+        <Spinner />
       </Button>
     ) : alreadyRegistered ? (
       <SecondaryButton href={address ? "/tokens/info#/" + address : ""}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-import { ProcessInfo, useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
+import { useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
 import { TokenLogo, VoteCard } from "../../components/token-card";
@@ -16,6 +16,7 @@ import SectionTitle from "../../components/sectionTitle";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
 import { StyledSpinner } from "./add";
+import { IProcessInfo } from "dvote-js";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -119,7 +120,7 @@ const TokenLogoContainer = styled.div`
 
 
 type VotingSectionProps = {
-  allProcesses: Map<string, ProcessInfo>,
+  allProcesses: Map<string, IProcessInfo>,
   processes: string[],
   token: TokenInfo,
   loadingProcesses: boolean,
@@ -280,7 +281,7 @@ const TokenPage = () => {
       <HeaderContainer>
         <HeaderLeft>
           <TokenLogoContainer>
-            <TokenLogo src={tokenInfo?.icon}  />
+            <TokenLogo src={tokenInfo?.icon} />
           </TokenLogoContainer>
           <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>

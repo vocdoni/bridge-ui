@@ -1,9 +1,9 @@
 import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
-import { CensusErc20Api, GatewayPool, ITokenStorageProofContract, VotingApi } from "dvote-js";
+import { CensusErc20Api, GatewayPool, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
-import { ProcessInfo, TokenInfo } from "./types";
+import { TokenInfo } from "./types";
 import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants";
 import { Awaited, tokenIconUrl } from "./utils";
 
@@ -13,38 +13,6 @@ export interface ProofParameters {
   pool: GatewayPool;
   block: number;
   balanceMappingPosition: number;
-}
-
-export async function getTokenProcesses(
-  tokenAddr: string,
-  pool: GatewayPool
-): Promise<ProcessInfo[]> {
-  try {
-    const list = await getProcessList(tokenAddr, pool);
-    const allProcess = list.map((processId) => getProcessInfo(processId, pool));
-    const allProcessesInformation = await Promise.allSettled(allProcess);
-    const sanitizeProccesses = (p) => {
-      if (p.status === "fulfilled") return p.value;
-    };
-    return allProcessesInformation.map(sanitizeProccesses);
-  } catch (err) {
-    if (err?.message?.includes("Key not found")) return [];
-    throw err;
-  }
-}
-
-export async function getProcessInfo(processId: string, pool: GatewayPool): Promise<ProcessInfo> {
-  const results = await Promise.all([
-    VotingApi.getProcessMetadata(processId, pool),
-    VotingApi.getProcessParameters(processId, pool),
-  ]);
-
-  return {
-    metadata: results[0],
-    parameters: results[1],
-    id: processId, // pass-through to have the value for links
-    tokenAddress: results[1].entityAddress.toLowerCase(),
-  };
 }
 
 export async function getProcessList(tokenAddress: string, pool: GatewayPool): Promise<string[]> {

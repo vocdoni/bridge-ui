@@ -1,8 +1,8 @@
-import { ProcessInfo, useBlockStatus } from "@vocdoni/react-hooks";
-import { VotingApi } from "dvote-js";
+import { useBlockStatus } from "@vocdoni/react-hooks";
+import { IProcessInfo, VotingApi } from "dvote-js";
 import { useEffect, useState } from "react";
 
-export const useProcessDates = (processInfo: ProcessInfo) => {
+export const useProcessDates = (processInfo: IProcessInfo) => {
   const { blockStatus, loading, error } = useBlockStatus()
   const [startDate, setStartDate] = useState<Date>(null)
   const [endDate, setEndDate] = useState<Date>(null)

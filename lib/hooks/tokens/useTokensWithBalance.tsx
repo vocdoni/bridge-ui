@@ -9,7 +9,7 @@ import { TokenInfo } from "../../types";
 import { usePool } from "@vocdoni/react-hooks";
 
 interface UserTokenInfo {
-  tokenInfoList: TokenInfo[];
+  tokens: TokenInfo[];
   refresh: any;
   error?: string;
   loading: boolean;
@@ -76,7 +76,7 @@ export function UseTokensWithBalance({ children }) {
   return (
     <UseTokensWithBalanceContext.Provider
       value={{
-        tokenInfoList,
+        tokens: tokenInfoList,
         refresh: fetchUserTokens,
         error: error || tokenListError,
         loading: loading || tokenListLoading
