@@ -18,6 +18,7 @@ import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { Spinner } from "../../components/spinner";
+import { When } from "react-if";
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -261,29 +262,27 @@ const TokenAddPage = () => {
             onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
               setFormTokenAddress(ev.target.value)
             }
-            onClick={loadingToken ? undefined : checkToken}
-            loading={loading && !storedTokens?.length}
+            onClick={(loading || loadingToken) ? undefined : checkToken}
+            loading={loading || loadingToken}
           />
 
           <br />
           <br />
 
-          {!isMobile && tokenInfo ? (
-            <>
-              <TokenContainer {...tokenInfo} />
-              <RegisterButton
-                registeringToken={registeringToken}
-                alreadyRegistered={alreadyRegistered}
-                onSubmit={onSubmit}
-                address={tokenInfo?.address || ""}
-                isConnected={isConnected}
-              />
-            </>
-          ) : null}
+          <When condition={!isMobile && !!tokenInfo}>
+            <TokenContainer {...tokenInfo} />
+            <RegisterButton
+              registeringToken={registeringToken}
+              alreadyRegistered={alreadyRegistered}
+              onSubmit={onSubmit}
+              address={tokenInfo?.address || ""}
+              isConnected={isConnected}
+            />
+          </When>
         </Content>
       </WhiteSection>
       <br />
-      {tokenInfo && isMobile ? (
+      <When condition={!!tokenInfo && isMobile}>
         <WhiteSection>
           <Content>
             <TokenContainer {...tokenInfo} />
@@ -296,7 +295,7 @@ const TokenAddPage = () => {
             />
           </Content>
         </WhiteSection>
-      ) : null}
+      </When>
     </>
   );
 };

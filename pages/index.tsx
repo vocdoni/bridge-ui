@@ -8,7 +8,6 @@ import { LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
 import { TokenList } from "./dashboard";
 
 import { TokenCard } from "../components/token-card";
-import { Spinner } from "../components/spinner";
 import { SecondaryButton } from "../components/button";
 import { ConnectWalletLink } from "../components/connect-button";
 import SectionTitle from "../components/sectionTitle";
@@ -19,6 +18,8 @@ import { Else, If, Then, Unless, When } from "react-if";
 import Link from "next/link";
 import { useWallet } from "use-wallet";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
+import { GrayRectangle, GrayRectangleTall } from "../components/gray-rectangle";
+import { LoadingRectangle } from "../components/loading-rectangle";
 
 // MAIN COMPONENT
 
@@ -67,6 +68,41 @@ const IndexPage = () => {
         </SearchRow> */}
       </Head>
 
+      {/* TOP TOKENS */}
+      <TokenSection >
+        <SectionTitle
+          title="Top Tokens"
+          subtitle="Some of the most relevant tokens on Aragon Voice"
+        />
+        <If condition={tokenListLoading && !featuredTokenInfos?.length}>
+          <Then>
+            <LoadingRectangle message="Loading tokens" />
+          </Then>
+          <Else>
+            <TokenList>
+              {featuredTokenInfos.map(
+                ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+                  <TokenCard
+                    key={address}
+                    name={symbol}
+                    icon={icon}
+                    rightText=""
+                    href={address ? "/tokens/info#/" + address : ""}
+                    tokenCap={totalSupplyFormatted}
+                  >
+                    <p>{shortTokenName(name) || "Loading..."}</p>
+                  </TokenCard>
+                )
+              )}
+            </TokenList>
+          </Else>
+        </If>
+
+        <Row>
+          <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
+        </Row>
+      </TokenSection >
+
       {/* YOUR TOKENS */}
       <TokenSection>
         <SectionTitle title="Tokens you hold" subtitle="Compatible tokens in your wallet" />
@@ -107,7 +143,7 @@ const IndexPage = () => {
               <Else>
                 {/* No tokens with balance */}
                 <When condition={tokensWithBalanceLoading}>
-                  <LoadingRectangle />
+                  <LoadingRectangle message="Loading tokens" />
                 </When>
                 <Unless condition={tokensWithBalanceLoading}>
                   <GrayRectangle>
@@ -121,52 +157,11 @@ const IndexPage = () => {
             </If>
           </Else>
         </If>
-      </TokenSection >
-
-      {/* TOP TOKENS */}
-      < TokenSection >
-        <SectionTitle
-          title="Top Tokens"
-          subtitle="Some of the most relevant tokens on Aragon Voice"
-        />
-        <If condition={tokenListLoading && !featuredTokenInfos?.length}>
-          <Then>
-            <LoadingRectangle />
-          </Then>
-          <Else>
-            <TokenList>
-              {featuredTokenInfos.map(
-                ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
-                  <TokenCard
-                    key={address}
-                    name={symbol}
-                    icon={icon}
-                    rightText=""
-                    href={address ? "/tokens/info#/" + address : ""}
-                    tokenCap={totalSupplyFormatted}
-                  >
-                    <p>{shortTokenName(name) || "Loading..."}</p>
-                  </TokenCard>
-                )
-              )}
-            </TokenList>
-          </Else>
-        </If>
-
-        <Row>
-          <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
-        </Row>
-      </TokenSection >
+        <br />
+      </TokenSection>
     </>
   );
 };
-
-const LoadingRectangle = () => <GrayRectangle>
-  <div>
-    <span>Loading tokens &nbsp;</span>
-    <Spinner />
-  </div>
-</GrayRectangle>;
 
 
 const Head = styled.div`
@@ -327,23 +322,6 @@ const SearchButton = styled.div`
   cursor: pointer;
   min-width: 120px;
   height: 46px;
-`;
-
-const GrayRectangle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: ${({ theme }) => theme.homepageRectangle.c1};
-  width: 100%;
-  min-height: 161px;
-  border-radius: 16px;
-  color: ${({ theme }) => theme.grayScale.g5};
-  font-family: "Manrope", sans-serif !important;
-`;
-
-const GrayRectangleTall = styled(GrayRectangle)`
-  min-height: 227px;
 `;
 
 const LightningBolt = styled.div`

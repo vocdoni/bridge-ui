@@ -1,22 +1,20 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
-import { useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
+import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
-import { getProcessList } from "../../lib/api";
-import Spinner from "react-svg-spinner";
-import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
-import { StyledSpinner } from "./add";
 import { IProcessInfo } from "dvote-js";
+import { Else, If, Then, Unless, When } from "react-if";
+import { LoadingRectangle } from "../../components/loading-rectangle";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -132,28 +130,31 @@ type VotingSectionProps = {
 const VoteSection = (params: VotingSectionProps) => {
   const { allProcesses, processes, token, loadingProcesses, title, noProcessesMessage, processesMessage } = params;
 
-  const processList = <>
-    {processes.map((processId) => {
-      const title = allProcesses.get(processId)?.metadata?.title?.default || "No title";
-      return <ProcessCard key={processId} id={processId} title={title} token={token} />;
-    })}
-  </>
-
   return (
     <VoteSectionContainer>
-      {processes.length ? (
-        <>
+      <If condition={processes?.length}>
+        <Then>
           <SectionTitle title={title} subtitle={processesMessage} />
-          <TokenList>{loadingProcesses ? <Spinner /> : processList}</TokenList>
-        </>
-      ) : (
-        <>
-          <SectionTitle title={title} />
-          <EmptySection>
-            <LightText>{processes.length ? processesMessage : noProcessesMessage}</LightText>
-          </EmptySection>
-        </>
-      )}
+          <TokenList>
+            {processes.map((processId) => {
+              const title = allProcesses.get(processId)?.metadata?.title?.default || "No title";
+              return <ProcessCard key={processId} id={processId} title={title} token={token} />;
+            })}
+          </TokenList>
+        </Then>
+        <Else>
+          <SectionTitle title={title} subtitle={processesMessage} />
+
+          <When condition={loadingProcesses}>
+            <LoadingRectangle message="Loading" />
+          </When>
+          <Unless condition={loadingProcesses}>
+            <EmptySection>
+              <LightText>{noProcessesMessage}</LightText>
+            </EmptySection>
+          </Unless>
+        </Else>
+      </If>
     </VoteSectionContainer>
   );
 };
@@ -175,52 +176,14 @@ const ProcessCard = ({ id, token, title }) => {
 // MAIN COMPONENT
 const TokenPage = () => {
   useScrollTop();
-  const { poolPromise } = usePool();
   const tokenAddress = useUrlHash().substr(1);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
-  const [loadingProcessList, setLoadingProcessList] = useState(true);
-  const [processIds, setProcessIds] = useState<string[]>([]);
-  const { processes, error: proposalsError, loading: proposalsLoading } = useProcesses(processIds || []);
+  const processIds = tokenInfo?.processes || []
+  const { processes, loading: proposalsLoading, error: proposalsError } = useProcesses(processIds);
   const { blockStatus } = useBlockStatus();
-  const { setAlertMessage } = useMessageAlert();
 
   const blockNumber = blockStatus?.blockNumber || 0;
-  const loading = tokenLoading || proposalsLoading || loadingProcessList
-
-  // TODO: Use proposalsError, proposalsLoading
-
-  // Effects
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => updateProcessIds, 1000 * 60);
-    updateProcessIds();
-
-    // Done
-    return () => clearInterval(interval);
-  }, [tokenAddress]);
-
-  // Loaders
-
-  const updateProcessIds = () => {
-    if (!tokenAddress) return;
-    setLoadingProcessList(true);
-
-    poolPromise
-      .then((pool) => getProcessList(tokenAddress, pool))
-      .then((ids) => {
-        setLoadingProcessList(false);
-        setProcessIds(ids);
-      })
-      .catch((err) => {
-        setLoadingProcessList(false);
-
-        console.error(err);
-        setAlertMessage("The list of processes could not be loaded");
-      });
-  };
+  const loading = tokenLoading || proposalsLoading;
 
   // Callbacks
 

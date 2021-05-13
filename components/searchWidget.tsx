@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { StyledSpinner } from "../pages/tokens/add";
+import { Spinner } from "../components/spinner";
 import { PrimaryButton } from "./button";
 import { TextInput } from "./input";
 
@@ -36,7 +36,7 @@ const SearchWidget = ({ onChange, onKeyDown, onClick, loading }: SearchWidgetPro
         <TextInput placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} />
       </Box>
       <PrimaryButton onClick={loading ? null : onClick}>
-        {loading ? <StyledSpinner /> : "Validate contract"}
+        {loading ? <Spinner /> : "Validate contract"}
       </PrimaryButton>
     </SearchRow>
   );
