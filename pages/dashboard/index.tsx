@@ -21,7 +21,7 @@ export const TokenList = styled.div`
   flex-wrap: wrap;
   gap: 0.5em;
 
-  @media ${({ theme }) => theme.screens.mobile} {
+  @media ${({ theme }) => theme.screens.mobileL} {
     margin-top: 10px;
   }
 `;
