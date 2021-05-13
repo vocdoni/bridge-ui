@@ -115,3 +115,76 @@ jobs:
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
             ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+
+  gcp-release:
+    runs-on: self-hosted
+    if:
+      startsWith(github.ref, 'refs/heads/release')
+    environment: production
+    steps:
+      - uses: AutoModality/action-clean@v1.1.0
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        with:
+         fetch-depth: 0
+      - name: Get short branch name
+        id: var
+        shell: bash
+        # Grab the short branch name
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      - name: Get Last Branch and Semantic Version Containing String
+        id: lrb
+        uses: vdo/github-action-get-regex-branch@v1.0.9
+        with:
+          regex-string: 'release-'
+      - name: Compare with current branch, exit if not last
+        if: ${{ steps.lrb.outputs.last-semver-branch }} != ${{ steps.var.outputs.branch }}
+        run: |
+          echo "lrb: ${{ steps.lrb.outputs.last-semver-branch }}"
+          echo "branch: ${{ steps.var.outputs.branch }}"
+          exit 1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCP_PRODUCTION }}
+          export_default_credentials: true
+      - name: Install dependencies and build (mainnet)
+        run: |
+          npm install
+          npm run export
+        env:
+          VOCDONI_ENVIRONMENT: prod
+          ETH_NETWORK_ID: mainnet
+          ETH_CHAIN_ID: 1
+          BOOTNODES_URL: https://bootnodes.vocdoni.net/gateways.json
+          SIGNALING_ORACLE_URL: https://signaling-oracle.vocdoni.net/dvote
+          BLOCK_TIME: 10
+          ETHERSCAN_PREFIX: https://etherscan.io
+          ANALYTICS_KEY: gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
+          FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
+      - name: Upload static site to GCS
+        run: |
+          gsutil -m cp -r build/* gs://voice.aragon.org
+      - name: Install dependencies and build (xdai)
+        run: |
+          npm clean
+          npm install
+          npm run export
+        env:
+          VOCDONI_ENVIRONMENT: prod
+          ETH_NETWORK_ID: xdai
+          ETH_CHAIN_ID: 100
+          BOOTNODES_URL: https://bootnodes.vocdoni.net/gateways.json
+          SIGNALING_ORACLE_URL: https://signaling-oracle-xdai.vocdoni.net/dvote
+          BLOCK_TIME: 10
+          ETHERSCAN_PREFIX: https://etherscan.io
+          ANALYTICS_KEY: gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
+          FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
+      - name: Upload static site to GCS
+        run: |
+          gsutil -m cp -r build/* gs://voice-xdai.aragon.org
