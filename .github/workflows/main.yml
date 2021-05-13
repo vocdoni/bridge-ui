@@ -87,7 +87,7 @@ jobs:
           context: .
           file: ./Dockerfile.static
           platforms: linux/amd64
-          build-args:
+          build-args: |
             VOCDONI_ENVIRONMENT=stg
             ETH_NETWORK_ID=goerli
             BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.stg.json
@@ -103,13 +103,14 @@ jobs:
           context: .
           file: ./Dockerfile.static
           platforms: linux/amd64
-          build-args:
+          build-args: |
             VOCDONI_ENVIRONMENT=prod
             ETH_NETWORK_ID=mainnet
             ETH_CHAIN_ID=1
             BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.json
             BLOCK_TIME=10
             ETHERSCAN_PREFIX=https://etherscan.io
+            ANALYTICS_KEY=gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
           push: true
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},

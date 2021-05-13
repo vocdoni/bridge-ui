@@ -25,9 +25,14 @@ export class VoiceStorage extends Dexie {
   /** Persists any of the given tokens into IndexedDB. If they already exist, it overwrites their values. */
   writeTokens(tokens: TokenInfo[]): Promise<any> {
     return Promise.all(tokens.map(tokenInfo => this.tokens.put(tokenInfo)))
+      .catch(err => console.error("Incognito mode might be on", err))
   }
 
   readTokens(): Promise<TokenInfo[]> {
     return this.tokens.toArray()
+      .catch(err => {
+        console.error("Incognito mode might be on", err)
+        return []
+      })
   }
 }

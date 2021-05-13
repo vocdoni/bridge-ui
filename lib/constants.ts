@@ -18,7 +18,7 @@ export const ERC20_ABI_MAKER = [
   "function totalSupply() public view returns (uint256)",
 ];
 
-export const LIGHTNING_BOLT = "media/lightning_bolt.svg";
+export const LIGHTNING_BOLT = "/media/lightning_bolt.svg";
 
 
 // from aragon/use-wallet

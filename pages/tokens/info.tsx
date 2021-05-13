@@ -3,11 +3,10 @@ import React, { useState, useEffect, useMemo } from "react";
 import { ProcessInfo, useBlockStatus, usePool, useProcesses } from "@vocdoni/react-hooks";
 import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
-import { VoteCard } from "../../components/token-card";
+import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
 import { getProcessList } from "../../lib/api";
-import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import Spinner from "react-svg-spinner";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
@@ -16,6 +15,7 @@ import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 import SectionTitle from "../../components/sectionTitle";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
+import { StyledSpinner } from "./add";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -112,12 +112,11 @@ const InfoDescription = styled.h4`
   margin-bottom: 30px;
 `;
 
-const TokenLogo = styled.img`
-  margin-right: 20px; 
-  margin-top: 9px;
-  width: 71px;
-  height: 71px;
+const TokenLogoContainer = styled.div`
+  margin-right: 20px;
+  margin-top: 25px;
 `
+
 
 type VotingSectionProps = {
   allProcesses: Map<string, ProcessInfo>,
@@ -280,7 +279,9 @@ const TokenPage = () => {
     <>
       <HeaderContainer>
         <HeaderLeft>
-          <TokenLogo src={tokenInfo?.icon} />
+          <TokenLogoContainer>
+            <TokenLogo src={tokenInfo?.icon}  />
+          </TokenLogoContainer>
           <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
         </HeaderLeft>
         <PrimaryButton onClick={() => onCreateProcess()}>

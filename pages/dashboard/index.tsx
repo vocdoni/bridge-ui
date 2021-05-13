@@ -6,7 +6,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 import { useRouter } from "next/router";
 
-import TokenCard from "../../components/token-card";
+import { TokenCard } from "../../components/token-card";
 // import Select from 'react-select'
 import { useStoredTokens } from "../../lib/hooks/tokens";
 import { getTokenProcesses } from "../../lib/api";
