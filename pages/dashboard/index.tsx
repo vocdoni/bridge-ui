@@ -19,18 +19,10 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 export const TokenList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-left: -10px;
+  gap: 0.5em;
 
-  @media ${({ theme }) => theme.screens.tabletL} {
-    & > div:first-child {
-      margin-left: 10px;
-    }
-    & > div:nth-child(4n) {
-      margin-left: 10px;
-    }
-    margin: 0 10px;
-    justify-content: center;
-    text-align: start;
+  @media ${({ theme }) => theme.screens.mobile} {
+    margin-top: 10px;
   }
 `;
 

@@ -19,6 +19,7 @@ import {
   ButtonContainer,
   EndedContainer,
   EndedInfo,
+  ProcessDataCard,
 } from "../../components/Processes/styled";
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
@@ -28,6 +29,7 @@ import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { LoadingSpinner } from "../../components/loading-spinner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 const ProcessPage = () => {
@@ -80,7 +82,7 @@ const ProcessPage = () => {
   if (!processId || !process) return renderEmpty();
 
   let mainButtonText: string
-  if (!isConnected) mainButtonText = "Connect your wallet"
+  if (!isConnected) mainButtonText = "Connect wallet"
   else if (!inCensus) {
     if (proofLoading) mainButtonText = "Please wait"
     else mainButtonText = "You are not a token holder"
@@ -108,17 +110,22 @@ const ProcessPage = () => {
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
-          {summary?.length ?
-            summary.map(({ description, value }, i) => (
-              <ProcessDataContainer key={i}>
-                <ProcessDataInfo>
-                  <ProcessDataDescription>{description}</ProcessDataDescription>
-                </ProcessDataInfo>
-                <ProcessDataInfo>
-                  <ProcessDataValue>{value}</ProcessDataValue>
-                </ProcessDataInfo>
-              </ProcessDataContainer>
-            )) : <p>Loading... <Spinner /></p>}
+          <ProcessDataCard>
+            {summary?.length ? (
+              summary.map(({ description, value }, i) => (
+                <ProcessDataContainer key={i}>
+                  <ProcessDataInfo>
+                    <ProcessDataDescription>{description}</ProcessDataDescription>
+                  </ProcessDataInfo>
+                  <ProcessDataInfo>
+                    <ProcessDataValue>{value}</ProcessDataValue>
+                  </ProcessDataInfo>
+                </ProcessDataContainer>
+              ))
+            ) : (
+              <LoadingSpinner fullPage={false} />
+            )}
+          </ProcessDataCard>
         </ProcessData>
       </ProcessContainer>
 
@@ -151,14 +158,7 @@ const ProcessPage = () => {
 
 // TODO: Render a better UI
 function renderEmpty() {
-  return (
-    <div>
-      <br />
-      <p>
-        Loading... <Spinner />
-      </p>
-    </div>
-  );
+  return <LoadingSpinner fullPage={true} />;
 }
 
 export default withRouter(ProcessPage);

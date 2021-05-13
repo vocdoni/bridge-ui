@@ -210,11 +210,14 @@ const LightningBolt = styled.div`
 `;
 
 const GreyInfo = styled.p`
-  width: 600px;
+  max-width: 98%;
   text-align: center;
-
+  font-size: 18px;
   @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 16px;
     width: 100%;
+    height: 100%;
+    text-align: center;
   }
 `;
 

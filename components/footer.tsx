@@ -71,7 +71,6 @@ const MobileFooter = styled.div`
   box-sizing: border-box;
   width: 100%;
   padding: 16px;
-  min-height: 100px;
   left: 0;
   right: 0;
   bottom: 0;

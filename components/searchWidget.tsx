@@ -1,9 +1,9 @@
-import React, { ButtonHTMLAttributes, ThHTMLAttributes } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { StyledSpinner } from "../pages/tokens/add";
 import { PrimaryButton } from "./button";
-import TextInput from "./input";
+import { TextInput } from "./input";
 
 const SearchRow = styled.div`
   display: flex;
@@ -13,11 +13,12 @@ const SearchRow = styled.div`
 `;
 
 const Box = styled.div`
-  flex-grow: 1;
-  margin-right: 9px;
-  max-width: 664px;
+  width: 80%;
+  display: flex;
+  margin-right: 10px;
   @media ${({ theme }) => theme.screens.tablet} {
-    margin-right: 0px;
+    width: 100%;
+    margin-bottom: 8px;
   }
 `;
 

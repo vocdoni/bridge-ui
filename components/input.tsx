@@ -1,12 +1,10 @@
 import styled from "styled-components";
 
-const TextInput = styled.input<{ widthValue?: number }>`
+export const TextInput = styled.input`
   type: text;
+  flex: 4;
   height: 46px;
   padding-left: 10px;
-  max-width: 735px;
-  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
-  min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
   border: 2px solid ${({ theme }) => theme.grayScale.g2};
   box-sizing: border-box;
   box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
@@ -22,11 +20,9 @@ const TextInput = styled.input<{ widthValue?: number }>`
   }
 `;
 
-export const DescriptionInput = styled.textarea<{ widthValue?: number }>`
+export const DescriptionInput = styled.textarea`
   type: text;
   max-width: 735px;
-  width: ${({ widthValue }) => (widthValue ? widthValue - 60 + "px" : "100%")};
-  // min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
   min-width: 680px;
   height: 143px;
   padding-left: 10px;
@@ -49,4 +45,3 @@ export const DescriptionInput = styled.textarea<{ widthValue?: number }>`
   }
 `;
 
-export default TextInput;
