@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
@@ -67,12 +67,6 @@ const Card = styled.div`
 
 const StyledVoteCard = styled(Card)`
   flex-direction: column;
-`;
-
-const TokenLogo = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
 `;
 
 const Symbol = styled.div`
@@ -155,36 +149,37 @@ const CardBody = styled.div`
   flex: 1;
 `;
 
-const TokenLogoContainer = styled.div`
-  padding-top: 2px;
-  width: 71px;
-  height: 71px;
-`;
-
 const TokenBodyHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
 
-const ActiveProposalsText = styled.p`
-  margin: 0;
-  display: block;
-  padding-top: 8px;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 18px;
-  letter-spacing: 0.02em;
-  color: #00c2ff;
+const TokenLogoImg = styled.img`
+  padding-top: 2px;
+  border-radius: 50%;
+  width: 71px;
+  height: 71px;
 `;
+
+export const TokenLogo: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (props) => {
+  const [src, setSrc] = useState<string>(() => props.src || FALLBACK_TOKEN_ICON)
+  useEffect(() => {
+    setSrc(props.src || FALLBACK_TOKEN_ICON)
+  }, [props.src])
+
+  const onError = () => {
+    setSrc(FALLBACK_TOKEN_ICON)
+  }
+
+  return <TokenLogoImg {...props} src={src} onError={onError} />
+};
 
 // eslint-disable-next-line react/display-name
 const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
   ({ onClick, icon, rightText, name, children, tokenCap }, ref) => {
     return (
       <Card onClick={onClick} ref={ref}>
-        <TokenLogoContainer>
-          <TokenLogo src={icon} onError={loadFallback} />
-        </TokenLogoContainer>
+        <TokenLogo src={icon} />
 
         {rightText && <RightText>{rightText}</RightText>}
         <CardBody>
@@ -232,13 +227,6 @@ function abbreviatedTokenAmount(amount: string): string {
 const CardHeader = styled.div`
   display: flex;
   margin-bottom: 0px;
-`;
-
-const VoteTokenLogo = styled.img`
-  padding-top: 2px;
-  width: 71px;
-  height: 71px;
-  border-radius: 50%;
 `;
 
 const TokenDescription = styled.div`
@@ -290,7 +278,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
       <StyledVoteCard onClick={onClick} ref={ref}>
         <CardHeader>
           <div>
-            <VoteTokenLogo src={icon} onError={loadFallback} />
+            <TokenLogo src={icon} />
           </div>
           <TokenDescription>
             <VoteSymbol>{symbol}</VoteSymbol>
@@ -303,11 +291,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
   }
 );
 
-function loadFallback(event) {
-  event.target.src = FALLBACK_TOKEN_ICON;
-}
-
-const TokenCard = ({ children, ...props }: CardProps) => (
+export const TokenCard = ({ children, ...props }: CardProps) => (
   <Container>
     <Link href={props.href}>
       <ClickableTokenCard {...props}>{children}</ClickableTokenCard>
@@ -322,5 +306,3 @@ export const VoteCard = ({ children, ...props }: CardProps) => (
     </Link>
   </Container>
 );
-
-export default TokenCard;

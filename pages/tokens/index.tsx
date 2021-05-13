@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { If, Then, When } from "react-if";
 import Spinner from "react-svg-spinner";
 
-import TokenCard from "../../components/token-card";
+import { TokenCard } from "../../components/token-card";
 import { useStoredTokens } from "../../lib/hooks/tokens";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
@@ -71,7 +71,7 @@ const TokensPage = () => {
         <When condition={!storedTokens?.length && tokenListLoading}>
           <div>{renderEmpty()}</div>
         </When>
-
+        
         {storedTokens.map(({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
           <TokenCard
             key={address}
