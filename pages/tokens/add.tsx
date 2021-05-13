@@ -96,7 +96,7 @@ const WhiteSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 27px;
+  padding: 80px 18%;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
   @media ${({ theme }) => theme.screens.tablet} {
