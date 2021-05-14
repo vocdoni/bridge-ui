@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 
-import { Modal } from ".";
+import { Modal, ProposalModal } from ".";
 import { ActionTypes, useModal } from "./context";
 import { TextLink } from "../button";
 import Link from "next/link";
@@ -94,25 +94,26 @@ const CloseIcon = styled.div`
   cursor: pointer;
 `;
 
-export const ProposalTypeList = ({ isOpen }) => {
+export const ProposalTypeList = () => {
   const { push, asPath } = useRouter();
   const { state, dispatch } = useModal();
   const address = asPath.split("/").pop();
 
   const closeModal = () => {
     dispatch({
-      type: ActionTypes.CLOSE,
+      type: ActionTypes.CLOSE_PROPOSAL_LIST,
     });
   };
   function onChoice(proposalType) {
     // push("/processes/new#/" + address);
     // push({ pathname: "/processes/new#/" + address, query: { type: proposalType } });
     push({ pathname: "/processes/new/", query: { address: address, type: proposalType } });
+    closeModal();
     // return "/processes/new#/" + address;
   }
 
   return (
-    <Modal open={isOpen} height={414} width={468}>
+    <ProposalModal open={state.proposalList.open} height={414} width={468}>
       <Layout>
         <Header>
           <ModalTitle>New Governance Process</ModalTitle>
@@ -135,7 +136,7 @@ export const ProposalTypeList = ({ isOpen }) => {
           </Link>
         </Body>
       </Layout>
-    </Modal>
+    </ProposalModal>
   );
 };
 
