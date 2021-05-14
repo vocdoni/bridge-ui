@@ -162,6 +162,7 @@ const InputBox = styled.div`
 `;
 
 const dateTimeStyle = {
+  width: "100%",
   border: "2px solid #EFF1F7",
   boxSizing: "border-box",
   boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
@@ -495,7 +496,14 @@ const NewProcessPage = () => {
               onChange={(date) => onEndDate(date)}
               strictParsing
             />
-            <div style={{ marginTop: "13px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "13px",
+                width: "100%",
+              }}
+            >
               {wallet.status === "connected" ? (
                 <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
               ) : !isMobile ? (
