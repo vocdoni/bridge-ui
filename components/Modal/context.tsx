@@ -3,21 +3,38 @@ import { WalletList } from "./WalletList";
 
 export enum ActionTypes {
   OPEN_WALLET_LIST = "OPEN_WALLET_LIST",
-  CLOSE = "CLOSE",
+  OPEN_PROPOSAL_LIST = "OPEN_PROPOSAL_LIST",
+  CLOSE_PROPOSAL_LIST = "CLOSE_PROPOSAL_LIST",
+  CLOSE_WALLET_LIST = "CLOSE_WALLET_LIST",
 }
+
+type ProposalListAction = {
+  type: ActionTypes.OPEN_PROPOSAL_LIST;
+};
 
 type WalletListAction = {
   type: ActionTypes.OPEN_WALLET_LIST;
 };
 
-type CloseAction = {
-  type: ActionTypes.CLOSE;
+type CloseWalletAction = {
+  type: ActionTypes.CLOSE_WALLET_LIST;
 };
 
-type ModalsContextAction = WalletListAction | CloseAction;
+type CloseProposalAction = {
+  type: ActionTypes.CLOSE_PROPOSAL_LIST;
+};
+
+type ModalsContextAction =
+  | WalletListAction
+  | ProposalListAction
+  | CloseWalletAction
+  | CloseProposalAction;
 
 interface ModalContextState {
   walletList: {
+    open: boolean;
+  };
+  proposalList: {
     open: boolean;
   };
 }
@@ -31,6 +48,9 @@ const INITIAL_STATE: ModalContextState = {
   walletList: {
     open: false,
   },
+  proposalList: {
+    open: false,
+  },
 };
 
 const ModalsContext = createContext<Context>({
@@ -40,13 +60,26 @@ const ModalsContext = createContext<Context>({
 
 const reducer = (state: ModalContextState, action: ModalsContextAction): ModalContextState => {
   switch (action.type) {
+    case ActionTypes.OPEN_PROPOSAL_LIST:
+      return {
+        ...state,
+        proposalList: { open: true },
+      };
     case ActionTypes.OPEN_WALLET_LIST:
       return {
         ...state,
-        walletList: { open: !state.walletList.open },
+        walletList: { open: true },
       };
-    case ActionTypes.CLOSE:
-      return INITIAL_STATE;
+    case ActionTypes.CLOSE_PROPOSAL_LIST:
+      return {
+        ...state,
+        proposalList: { open: false },
+      };
+    case ActionTypes.CLOSE_WALLET_LIST:
+      return {
+        ...state,
+        walletList: { open: false },
+      };
     default:
       throw new Error(`Unrecognized action in Modals Provider`);
   }

@@ -5,10 +5,6 @@ import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
-import Router from "next/router";
-import { getProcessList } from "../../lib/api";
-import Spinner from "react-svg-spinner";
-import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
@@ -19,6 +15,7 @@ import { IProcessInfo } from "dvote-js";
 import { Else, If, Then, Unless, When } from "react-if";
 import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
+import { ActionTypes, useModal } from "../../components/Modal/context";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -195,12 +192,14 @@ const TokenPage = () => {
 
   const blockNumber = blockStatus?.blockNumber || 0;
   const loading = tokenLoading || proposalsLoading;
+  const { state, dispatch } = useModal();
 
-  // Callbacks
-
-  const onCreateProcess = () => {
-    setOpen(true);
+  const onCreate = () => {
+    dispatch({
+      type: ActionTypes.OPEN_PROPOSAL_LIST,
+    });
   };
+  // Callbacks
 
   const upcomingProcesses = processIds.filter(
     (id) => processes.has(id) && blockNumber < processes.get(id).parameters.startBlock
@@ -251,7 +250,7 @@ const TokenPage = () => {
 
   return (
     <>
-      <ProposalTypeList isOpen={isOpen} />;
+      <ProposalTypeList />
       <HeaderContainer>
         <HeaderLeft>
           <TokenLogoContainer>
@@ -262,7 +261,7 @@ const TokenPage = () => {
             subtitle={`See the details of ${tokenInfo?.symbol}`}
           />
         </HeaderLeft>
-        <PrimaryButton onClick={() => onCreateProcess()}>Create New Proposal</PrimaryButton>
+        <PrimaryButton onClick={onCreate}>Create New Proposal</PrimaryButton>
       </HeaderContainer>
       <WhiteSection>
         <RowSummary>

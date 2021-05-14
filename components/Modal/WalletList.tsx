@@ -138,7 +138,7 @@ export const WalletList = () => {
 
   const closeModal = () => {
     dispatch({
-      type: ActionTypes.CLOSE,
+      type: ActionTypes.CLOSE_WALLET_LIST,
     });
   };
 
