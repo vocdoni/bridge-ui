@@ -114,7 +114,7 @@ export const useVote = (processInfo: IProcessInfo) => {
 
       // loop until the vote is registered
       let voted = false
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 60; i++) {
         const { registered, date } = await VotingApi.getEnvelopeStatus(
           processId,
           nullifier,
@@ -125,7 +125,7 @@ export const useVote = (processInfo: IProcessInfo) => {
           break
         }
         // keep waiting
-        await new Promise(res => setTimeout(res, 1000 * 7))
+        await new Promise(res => setTimeout(res, 1000 * 3))
       }
       if (!voted) throw new Error("The vote has not been registered yet")
 
