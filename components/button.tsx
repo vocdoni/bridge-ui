@@ -75,7 +75,7 @@ export const SecondaryButton = styled(Button)`
   box-sizing: border-box;
   border-radius: 8px;
   color: ${({ theme }) => theme.primary.p1};
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;
@@ -87,6 +87,17 @@ export const SecondaryButton = styled(Button)`
 
   @media ${({ theme }) => theme.screens.tablet} {
     width: 100%;
+  }
+`;
+
+export const TextLink = styled.p`
+  color: ${({ theme }) => theme.primary.p1};
+  text-align: center;
+  cursor: pointer;
+  margin-top: -15px;
+  font-weight: 400;
+  &:hover {
+    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
   }
 `;
 
