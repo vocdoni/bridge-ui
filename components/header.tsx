@@ -44,7 +44,7 @@ const BetaLabel = styled.div`
   left: calc(50% - 43px / 2 - 549.5px);
   top: calc(50% - 19px / 2 - 750px);
 
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-size: 12px;
   font-weight: 600;
 
@@ -106,8 +106,8 @@ const VoiceLink = styled.a`
 `;
 
 const ClickableLink = styled.a`
-  display: flex;
-  padding: 10px 38px 10px 0;
+  padding: 10px 0px 10px 0;
+  margin-right: 38px;
   text-decoration: none;
   font-size: 16px;
   font-weight: 400;
@@ -147,7 +147,7 @@ const MobileMenuContainer = styled.div<{ showMenu: boolean }>`
 
 const Section = styled.span`
   flex: 1;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -169,7 +169,7 @@ const LinksWrapper = styled.div`
   align-items: center;
 
   a {
-    font-family: 'Manrope', sans-serif !important;
+    font-family: "Manrope", sans-serif !important;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -290,8 +290,8 @@ export const Header = () => {
               <LinksWrapper>
                 {HEADER_LINKS.map((link) => (
                   <LinkItem {...link} key={link.name} />
-                ))}{" "}
-                <ConnectButton></ConnectButton>
+                ))}
+                <ConnectButton wide={false}></ConnectButton>
               </LinksWrapper>
             )}{" "}
           </MenuItemsContainer>

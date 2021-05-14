@@ -22,7 +22,7 @@ const ConnectWalletButton = styled.div<{ wide: boolean }>`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: ${({ wide }) => (wide ? "173px" : "100%")};
+  width: ${({ wide }) => (wide ? "170px" : "100%")};
   height: 45px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 500;
