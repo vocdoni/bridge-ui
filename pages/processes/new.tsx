@@ -60,6 +60,12 @@ const ProposalRow = styled.div`
     margin-top: 0;
     flex-direction: column;
   }
+
+  @media ${({ theme }) => theme.screens.mobileL} {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
 `;
 
 const FieldRowLeftSection = styled.div`
@@ -77,10 +83,18 @@ const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border-radius: 13px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
+  box-sizing: border-box;
   @media ${({ theme }) => theme.screens.tablet} {
+    margin-right: 13px;
+    width: 100%;
     margin-top: 25px;
     margin-left: 0;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    margin-right: 13px;
     width: 100%;
+    margin-top: 25px;
+    margin-left: 0;
   }
 `;
 
@@ -89,6 +103,14 @@ const RightSectionTitle = styled.p`
   margin-bottom: 9px;
   line-height: 150%;
   text-align: left;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 18px;
+  }
+
+  @media ${({ theme }) => theme.screens.mobileL} {
+    font-size: 18px;
+  }
 `;
 
 const RemoveButton = styled.div<{ marginTop: number }>`

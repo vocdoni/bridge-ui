@@ -131,7 +131,7 @@ export const ProposalTypeList = () => {
             <OptionDescription>{PROPOSAL_TYPES[1].description}</OptionDescription>
           </OptionContainer>
           {/* TODO: Insert URL for explanations */}
-          <Link href="wwww.google.com">
+          <Link href="https://aragon.org/blog">
             <TextLink>More information on the proposal types</TextLink>
           </Link>
         </Body>
