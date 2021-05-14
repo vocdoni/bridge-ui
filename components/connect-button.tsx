@@ -95,21 +95,6 @@ const ConnectedWalletIcon = styled.div`
   margin-right: 10px;
 `;
 
-const TextLink = styled.p`
-  color: ${({ theme }) => theme.primary.p1};
-  text-align: center;
-  cursor: pointer;
-  margin-top: -15px;
-  font-weight: 400;
-  font-size: 18px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    font-size: 16px;
-  }
-  &:hover {
-    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
-  }
-`;
-
 const WalletAddress = ({ account }) => {
   return (
     <ButtonContainer>
@@ -127,11 +112,7 @@ export const ConnectButton = () => {
   const { status, networkName, reset, error, account } = useWallet();
   const { loading: poolLoading } = usePool();
 
-  const openWallets = () => {
-    dispatch({
-      type: ActionTypes.OPEN_WALLET_LIST,
-    });
-  };
+  const openWallets = () => dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
 
   const isConnected = status == "connected";
   const inLanding = pathname === "/";
@@ -140,29 +121,17 @@ export const ConnectButton = () => {
   const label = useMemo(() => {
     if (poolLoading) return "Connecting...";
     if (status === "connecting") return "Connecting to " + networkName;
-
-    if (error instanceof ChainUnsupportedError) {
-      return networkName + " is not enabled";
-    }
-
-    if (error instanceof ConnectionRejectedError) {
-      return "Wallet connection rejected";
-    }
+    if (error instanceof ChainUnsupportedError) return networkName + " is not enabled";
+    if (error instanceof ConnectionRejectedError) return "Wallet connection rejected";
 
     return isConnected ? "Connected" : "Connect Wallet";
   }, [poolLoading, status, error]);
 
   const handleButtonClick = async () => {
-    if (loadingOrConnecting) {
+    if (loadingOrConnecting || (inLanding && isConnected)) {
       reset();
       return;
     }
-
-    if (inLanding && isConnected) {
-      reset();
-      return;
-    }
-
     openWallets();
   };
 
@@ -180,11 +149,7 @@ export const ConnectButton = () => {
 export const ConnectWalletLink = () => {
   const { dispatch } = useModal();
 
-  const openWallets = () => {
-    dispatch({
-      type: ActionTypes.OPEN_WALLET_LIST,
-    });
-  };
+  const openWallets = () => dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
 
   return <TextLink onClick={openWallets}>Connect Wallet</TextLink>;
 };

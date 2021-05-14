@@ -6,6 +6,9 @@ import { useUrlHash } from "use-url-hash";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
 import Router from "next/router";
+import { getProcessList } from "../../lib/api";
+import Spinner from "react-svg-spinner";
+import { useMessageAlert } from "../../lib/hooks/message-alert";
 import styled from "styled-components";
 import { shortAddress } from "../../lib/utils";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
@@ -15,6 +18,7 @@ import { TokenInfo } from "../../lib/types";
 import { IProcessInfo } from "dvote-js";
 import { Else, If, Then, Unless, When } from "react-if";
 import { LoadingRectangle } from "../../components/loading-rectangle";
+import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -195,8 +199,7 @@ const TokenPage = () => {
   // Callbacks
 
   const onCreateProcess = () => {
-    if (!tokenAddress) return;
-    Router.push("/processes/new#/" + tokenAddress);
+    setOpen(true);
   };
 
   const upcomingProcesses = processIds.filter(
@@ -248,6 +251,7 @@ const TokenPage = () => {
 
   return (
     <>
+      <ProposalTypeList isOpen={isOpen} />;
       <HeaderContainer>
         <HeaderLeft>
           <TokenLogoContainer>
@@ -260,7 +264,6 @@ const TokenPage = () => {
         </HeaderLeft>
         <PrimaryButton onClick={() => onCreateProcess()}>Create New Proposal</PrimaryButton>
       </HeaderContainer>
-
       <WhiteSection>
         <RowSummary>
           <Info>
@@ -281,7 +284,6 @@ const TokenPage = () => {
           </Info>
         </RowSummary>
       </WhiteSection>
-
       {VOTING_SECTIONS.map((section, i) => (
         <VoteSection
           {...section}
