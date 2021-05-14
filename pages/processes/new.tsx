@@ -205,7 +205,9 @@ const SubmitButton = ({ submitting, onSubmit }) =>
       <Spinner />
     </p>
   ) : (
-    <PrimaryButton onClick={onSubmit}>Create proposal</PrimaryButton>
+    <PrimaryButton wide onClick={onSubmit}>
+      Create proposal
+    </PrimaryButton>
   );
 
 const NewProcessPage = () => {
@@ -507,7 +509,7 @@ const NewProcessPage = () => {
               {wallet.status === "connected" ? (
                 <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
               ) : !isMobile ? (
-                <ConnectButton />
+                <ConnectButton wide />
               ) : null}
             </div>
           </FieldRowRightSection>
