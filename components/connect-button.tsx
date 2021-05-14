@@ -11,17 +11,18 @@ import { WALLET_IDENTICON } from "../lib/constants";
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
   }
 `;
 
-const ConnectWalletButton = styled.div`
+const ConnectWalletButton = styled.div<{ wide: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 173px;
+  width: ${({ wide }) => (wide ? "173px" : "100%")};
   height: 45px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 500;
@@ -106,7 +107,7 @@ const WalletAddress = ({ account }) => {
   );
 };
 
-export const ConnectButton = () => {
+export const ConnectButton = ({ wide }) => {
   const { dispatch } = useModal();
   const { pathname, push } = useRouter();
   const { status, networkName, reset, error, account } = useWallet();
@@ -141,7 +142,9 @@ export const ConnectButton = () => {
 
   return (
     <ButtonContainer>
-      <ConnectWalletButton onClick={handleButtonClick}>{label}</ConnectWalletButton>
+      <ConnectWalletButton wide={wide} onClick={handleButtonClick}>
+        {label}
+      </ConnectWalletButton>
     </ButtonContainer>
   );
 };
