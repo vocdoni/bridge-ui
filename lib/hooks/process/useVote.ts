@@ -112,22 +112,22 @@ export const useVote = (processInfo: IProcessInfo) => {
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
       await VotingApi.submitEnvelope(envelope, signer, pool);
 
-      // loop until the vote is registered
-      let voted = false
-      for (let i = 0; i < 60; i++) {
-        const { registered, date } = await VotingApi.getEnvelopeStatus(
-          processId,
-          nullifier,
-          pool
-        )
-        if (registered) {
-          voted = true
-          break
-        }
-        // keep waiting
-        await new Promise(res => setTimeout(res, 1000 * 3))
-      }
-      if (!voted) throw new Error("The vote has not been registered yet")
+      // // loop until the vote is registered
+      // let voted = false
+      // for (let i = 0; i < 60; i++) {
+      //   const { registered, date } = await VotingApi.getEnvelopeStatus(
+      //     processId,
+      //     nullifier,
+      //     pool
+      //   )
+      //   if (registered) {
+      //     voted = true
+      //     break
+      //   }
+      //   // keep waiting
+      //   await new Promise(res => setTimeout(res, 1000 * 3))
+      // }
+      // if (!voted) throw new Error("The vote has not been registered yet")
 
       dispatch({ type: "SET_STATE", state: { submitted: true } });
       setAlertMessage("Vote successful :-)", "success");
