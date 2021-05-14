@@ -9,12 +9,11 @@ import {
 } from "dvote-js";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
-import { useUrlHash } from "use-url-hash";
 import { useWallet } from "use-wallet";
 import { ProcessMetadataTemplate } from "dvote-js";
 import Datetime from "react-datetime";
 import { Moment } from "moment";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
@@ -53,8 +52,7 @@ const NewProcessContainer = styled.div`
   }
 `;
 
-const FieldRow = styled.div`
-  margin-top: 2em;
+const ProposalRow = styled.div`
   display: flex;
   justify-content: start;
   flex-wrap: wrap;
@@ -66,20 +64,31 @@ const FieldRow = styled.div`
 
 const FieldRowLeftSection = styled.div`
   max-width: 680px;
-  margin-right: 40px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-right: 0;
+  margin-right: 13px;
+  & > :first-child {
+    margin-top: 0px;
   }
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   width: 480px;
-  margin-top: ${({ marginTop, isLarge }) => (isLarge ? marginTop + 60 : marginTop)}px;
+  margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
+  padding: 14px 24px 29px 24px;
+  box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+  border-radius: 13px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
     margin-left: 0;
     width: 100%;
   }
+`;
+
+const RightSectionTitle = styled.p`
+  font-weight: 500;
+  margin-bottom: 9px;
+  line-height: 150%;
+  text-align: left;
 `;
 
 const RemoveButton = styled.div<{ marginTop: number }>`
@@ -152,16 +161,14 @@ const InputBox = styled.div`
   margin-bottom: 30px;
 `;
 
-const RowContinue = styled.div`
-  margin-top: 5em;
-
-  display: flex;
-  justify-content: space-around;
-
-  & > * {
-    min-width: 250px;
-  }
-`;
+const dateTimeStyle = {
+  border: "2px solid #EFF1F7",
+  boxSizing: "border-box",
+  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
+  borderRadius: "8px",
+  marginTop: "0px",
+  marginBottom: "14px",
+};
 
 const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
   max-width: 680px;
@@ -214,7 +221,9 @@ const NewProcessPage = () => {
   const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0));
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
-  const tokenAddress = useUrlHash().substr(1);
+  const router = useRouter();
+  const tokenAddress = router.query.address as string;
+  const [pType, setPType] = useState(router.query.type as string);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
@@ -381,7 +390,7 @@ const NewProcessPage = () => {
       setSubmitting(false);
 
       if (err?.message == NO_TOKEN_BALANCE) {
-        return setAlertMessage(NO_TOKEN_BALANCE)
+        return setAlertMessage(NO_TOKEN_BALANCE);
       }
 
       console.error(err);
@@ -391,19 +400,15 @@ const NewProcessPage = () => {
 
   return (
     <div>
-      <SectionTitle
-        title="New proposal"
-        subtitle="Enter the details of a new proposal and submit
-                them."
-      />
       <NewProcessContainer>
-        <FieldRow>
+        <ProposalRow>
           <FieldRowLeftSection>
             <SectionTitle
-              title="Title"
-              subtitle="Identify your proposal"
-              smallerTitle
+              title="New proposal"
+              subtitle="Enter the details of a new proposal and submit
+                them."
             />
+            <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
             <InputBox>
               <WidthControlInput
                 placeholder="Title"
@@ -412,8 +417,34 @@ const NewProcessPage = () => {
                 widthValue={680}
               />
             </InputBox>
+            <SectionTitle
+              title="Description"
+              subtitle="An introduction of about 2-3 lines"
+              smallerTitle
+            />
+            <DescriptionInput
+              placeholder="Description"
+              onChange={(e) => setMainDescription(e.target.value)}
+              value={metadata.description.default}
+              widthValue={680}
+            />
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={60} isLarge={isLarge}>
+            <RightSectionTitle>Proposal Type</RightSectionTitle>
+            <RadioChoice onClick={() => setPType("binding")}>
+              {" "}
+              {console.log("pType? " + pType)}
+              {console.log("is binding? " + pType === "binding")}
+              {console.log("is signaling? " + pType === "signaling")}
+              <input type="radio" readOnly checked={pType === "binding"} name="proposal-type" />
+              <div className="checkmark"></div> Binding proposal
+            </RadioChoice>
+            <RadioChoice onClick={() => setPType("signaling")}>
+              {" "}
+              <input type="radio" readOnly checked={pType === "signaling"} name="proposal-type" />
+              <div className="checkmark"></div> Signaling proposal
+            </RadioChoice>
+            <RightSectionTitle>Results</RightSectionTitle>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
                 {" "}
@@ -436,30 +467,15 @@ const NewProcessPage = () => {
                 <div className="checkmark"></div> Encrypted results
               </RadioChoice>
             </div>
+            {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
             <Tooltip />
-          </FieldRowRightSection>
-        </FieldRow>
-
-        <FieldRow>
-          <FieldRowLeftSection>
-            <SectionTitle
-              title="Description"
-              subtitle="Describe your proposal"
-              smallerTitle
-            />
-            <WidthControlDescription
-              placeholder="Description"
-              onChange={(e) => setMainDescription(e.target.value)}
-              value={metadata.description.default}
-              widthValue={680}
-            />
-          </FieldRowLeftSection>
-
-          <FieldRowRightSection marginTop={70} isLarge={isLarge}>
+            <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
+            <RightSectionTitle>Proposal date</RightSectionTitle>
             <Datetime
               value={startDate}
               inputProps={{
                 placeholder: "Start date (d/m/y h:m)",
+                style: dateTimeStyle,
               }}
               isValidDate={(cur: Moment) => isValidFutureDate(cur)}
               dateFormat="D/MM/YYYY"
@@ -469,15 +485,25 @@ const NewProcessPage = () => {
             />
             <Datetime
               value={endDate}
-              inputProps={{ placeholder: "End date (d/m/y h:m)" }}
+              inputProps={{
+                placeholder: "End date (d/m/y h:m)",
+                style: dateTimeStyle,
+              }}
               isValidDate={(cur: Moment) => isValidFutureDate(cur)}
               dateFormat="D/MM/YYYY"
               timeFormat="HH:mm[h]"
               onChange={(date) => onEndDate(date)}
               strictParsing
             />
+            <div style={{ marginTop: "13px" }}>
+              {wallet.status === "connected" ? (
+                <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
+              ) : !isMobile ? (
+                <ConnectButton />
+              ) : null}
+            </div>
           </FieldRowRightSection>
-        </FieldRow>
+        </ProposalRow>
 
         {metadata.questions.map((question, qIdx) => (
           <div key={qIdx}>
@@ -538,15 +564,6 @@ const NewProcessPage = () => {
             ) : null}
           </div>
         ))}
-        <FieldRowLeftSection>
-          <RowContinue>
-            {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-            ) : !isMobile ? (
-              <ConnectButton />
-            ) : null}
-          </RowContinue>
-        </FieldRowLeftSection>
       </NewProcessContainer>
     </div>
   );
