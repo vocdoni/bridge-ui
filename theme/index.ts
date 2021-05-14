@@ -260,7 +260,7 @@ h6 {
 }
 p { 
     font-size: 18px;
-    font-weight: 300; 
+    font-weight: 300;
     @media ${({ theme }) => theme.screens.tablet} {
         font-size: 12px; 
     }
