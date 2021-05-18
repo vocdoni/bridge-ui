@@ -262,7 +262,7 @@ const TokenAddPage = () => {
             onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
               setFormTokenAddress(ev.target.value)
             }
-            onClick={(loading || loadingToken) ? undefined : checkToken}
+            onClick={loading || loadingToken ? undefined : checkToken}
             loading={loading || loadingToken}
           />
 
