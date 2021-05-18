@@ -25,7 +25,7 @@ const ModalTitle = styled.div`
   box-sizing: border-box;
   margin-top: 10px;
   padding-left: 16px;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -68,7 +68,7 @@ const WalletName = styled.h4`
   display: flex;
   margin-top: 10px;
   color: #25314d;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 20px;
@@ -93,7 +93,7 @@ const ExternalLinkOption = styled.a`
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 12px;
@@ -109,7 +109,7 @@ const CloseIcon = styled.div`
 
 const DontHaveAccount = styled.a`
   text-decoration: none;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 300;
   font-size: 18px;
@@ -158,7 +158,7 @@ export const WalletList = () => {
   };
   return (
     /* Reducing the modal container height from 565px to 225px until wallet providers are properly tested. */
-    <Modal open={state.walletList.open} height={225} width={452}>
+    <Modal open={state.walletList.open} height={365} width={452}>
       <ModalContainer>
         <Header>
           <ModalTitle>USE ACCOUNT FROM</ModalTitle>
