@@ -4,7 +4,7 @@ export interface ConnectorData {
   properties?: Record<string, string | number>;
 }
 
-export type SUPPORTED_CONNECTORS = "injected" | "portis" | "fortmatic" | "walletconnect";
+export type SUPPORTED_CONNECTORS = "injected" | "portis" | "fortmatic" | "walletconnect" | "ledger";
 
 export const WALLETS: ConnectorData[] = [
   {
