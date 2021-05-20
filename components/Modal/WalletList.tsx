@@ -158,7 +158,7 @@ export const WalletList = () => {
   };
   return (
     /* Reducing the modal container height from 565px to 225px until wallet providers are properly tested. */
-    <Modal open={state.walletList.open} height={365} width={452}>
+    <Modal open={state.walletList.open} height={465} width={452}>
       <ModalContainer>
         <Header>
           <ModalTitle>USE ACCOUNT FROM</ModalTitle>
