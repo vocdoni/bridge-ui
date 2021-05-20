@@ -6,6 +6,11 @@ export interface ConnectorData {
 
 export type SUPPORTED_CONNECTORS = "injected" | "portis" | "fortmatic" | "walletconnect" | "ledger";
 
+// NOTE: This list of wallets is tentative. So far, only Metamask has been properly
+// vetted. Portis and Fortmatic have been successfully tested on rinkeby-voice (Using
+// firefox on desktop). Walletconnect could faild to connect on rinkeby-voice, reporting a
+// "wrong chain error". Ledger has not been tested at all, so far. [VR 20-05-2021]
+
 export const WALLETS: ConnectorData[] = [
   {
     name: "Metamask",
@@ -23,6 +28,7 @@ export const WALLETS: ConnectorData[] = [
       apiKey: process.env.FORTMATIC_API_KEY,
     },
   },
+  // FIXME: Wallet connect seems unable to connect to testnets. [VR 20-05-2021]
   {
     name: "Wallet Connect",
     connector: "walletconnect",
