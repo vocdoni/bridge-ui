@@ -1,5 +1,4 @@
 ---
-
 name: Main
 
 on: [push, pull_request]
@@ -8,26 +7,24 @@ jobs:
   node-tests:
     runs-on: self-hosted
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14.x
+      - name: Install dependencies
+        run: npm install
+          npm test
 
-    - name: Install dependencies
-      run: npm install
-        npm test
-
-    - name: Run tests
-      run: npm test
+      - name: Run tests
+        run: npm test
 
   docker-release:
     runs-on: self-hosted
-    if:
-      github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release')
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release')
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -54,7 +51,7 @@ jobs:
         shell: bash
         # Grab the short branch name, convert slashes to dashes
         run: |
-         echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )"
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )"
 
       - name: Push to Docker Hub and ghcr.io (main)
         uses: docker/build-push-action@v2
@@ -111,6 +108,7 @@ jobs:
             BLOCK_TIME=10
             ETHERSCAN_PREFIX=https://etherscan.io
             ANALYTICS_KEY=gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
+            FORTMATIC_API_KEY=pk_live_A08FE109CFF97C4F
           push: true
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},

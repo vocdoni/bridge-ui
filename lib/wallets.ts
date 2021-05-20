@@ -20,7 +20,7 @@ export const WALLETS: ConnectorData[] = [
     name: "Fortmatic",
     connector: "fortmatic",
     properties: {
-      apiKey: "pk_test_A5D318B08D001541",
+      apiKey: process.env.FORTMATIC_API_KEY,
     },
   },
   {
