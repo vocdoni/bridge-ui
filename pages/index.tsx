@@ -69,7 +69,7 @@ const IndexPage = () => {
       </Head>
 
       {/* TOP TOKENS */}
-      <TokenSection >
+      <TokenSection>
         <SectionTitle
           title="Top Tokens"
           subtitle="Some of the most relevant tokens on Aragon Voice"
@@ -101,7 +101,7 @@ const IndexPage = () => {
         <Row>
           <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
         </Row>
-      </TokenSection >
+      </TokenSection>
 
       {/* YOUR TOKENS */}
       <TokenSection>
@@ -113,7 +113,7 @@ const IndexPage = () => {
               <LightningBolt />
               <GreyInfo>
                 Connect your account and discover the proposals related to your tokens
-            </GreyInfo>
+              </GreyInfo>
               <Link href="/tokens/add">
                 <ConnectWalletLink />
               </Link>
@@ -162,7 +162,6 @@ const IndexPage = () => {
     </>
   );
 };
-
 
 const Head = styled.div`
   display: flex;

@@ -24,6 +24,8 @@ module.exports = {
 
   // ANALYTICS
   ANALYTICS_KEY: process.env.ANALYTICS_KEY || "4ohZSOqAi2Wy0pDuzFPB7fDN5XirRjsq",
+
+  FORTMATIC_API_KEY: process.env.FORTMATIC_API_KEY || "pk_test_A5D318B08D001541",
 };
 
 console.log("Building the frontend with ENV:", module.exports);
