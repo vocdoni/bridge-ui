@@ -1,4 +1,3 @@
-export const FALLBACK_TOKEN_ICON = "/media/eth-logo.png";
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 
 export const ERC20_ABI = [
@@ -53,13 +52,20 @@ export const GOERLI_MULTICALL = "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e";
 
 export const GOERLI_CHAINID = 5;
 
-export const LANDING_PAGE_CTA = "/media/landing-background.svg";
+//LOGOS
+export const FALLBACK_TOKEN_ICON = "/media/eth-logo.png";
 export const HEADER_LOGO = "/media/logo_voice.svg";
 export const FOOTER_LOGO = "/media/footer_logo.svg";
+
+//ICONS
 export const PLUS_ICON = "/media/plus_icon.svg";
 export const MINUS_ICON = "/media/minus_icon.svg";
 export const LIGHTNING_ICON = "/media/lightning_bolt.svg";
 export const WARNING_ICON = "/media/exclamation_icon.png";
+
+//IMAGES
+export const LANDING_PAGE_CTA = "/media/landing-background.svg";
 export const WALLET_IDENTICON = "/media/connected_wallet_icon.svg";
 export const MEDITATING_LADY_IMG = "/media/meditating_lady_img.svg";
 export const ISLAND_FLAG_IMG = "/media/island_flag_img.svg";
+export const PEOPLE_IMG = "/media/people_img.svg";
