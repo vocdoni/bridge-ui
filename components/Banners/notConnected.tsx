@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
 
-import { LIGHTNING_BOLT } from "../../lib/constants";
+import { LIGHTNING_ICON, WARNING_ICON } from "../../lib/constants";
 import { ConnectWalletLink } from "../connect-button";
 import { GrayRectangleTall } from "../gray-rectangle";
 
@@ -20,10 +20,19 @@ const GreyInfo = styled.p`
 
 const LightningBolt = styled.div`
   margin: 15px auto;
-  background: url(${LIGHTNING_BOLT});
+  background: url(${LIGHTNING_ICON});
   background-repeat: no-repeat;
   width: 52px;
   height: 54px;
+`;
+
+// TODO replace background
+const ExclamationMark = styled.div`
+  margin: 15px auto;
+  background: url(${WARNING_ICON});
+  background-repeat: no-repeat;
+  width: 55px;
+  height: 52px;
 `;
 
 export const NotConnected = ({ connectMessage = "" }: { connectMessage?: string }) => {
@@ -34,6 +43,19 @@ export const NotConnected = ({ connectMessage = "" }: { connectMessage?: string 
       <Link href="/tokens/add">
         <ConnectWalletLink />
       </Link>
+    </GrayRectangleTall>
+  );
+};
+
+export const NoTokens = () => {
+  return (
+    <GrayRectangleTall>
+      <ExclamationMark />
+      <GreyInfo>You are not a token holder</GreyInfo>
+      {/* TODO add a link that motivates user to buy tokens [VR 21-05-2021] */}
+      {/* <Link href="/tokens/add">
+        <ConnectWalletLink />
+      </Link> */}
     </GrayRectangleTall>
   );
 };

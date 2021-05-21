@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { featuredTokens } from "../lib/tokens";
 import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
-import { LANDING_PAGE_CTA, LIGHTNING_BOLT } from "../lib/constants";
+import { LANDING_PAGE_CTA } from "../lib/constants";
 import { TokenList } from "./dashboard";
 
 import { TokenCard } from "../components/token-card";
