@@ -36,7 +36,7 @@ import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { NotConnected } from "../../components/Banners/notConnected";
+import { NotConnected, NoTokens } from "../../components/Banners/notConnected";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -162,13 +162,11 @@ const ProcessPage = () => {
         </EndedContainer>
       ) : !isConnected ? (
         <NotConnected connectMessage="Connect your account to vote on this proposal" />
+      ) : !canVote ? (
+        <NoTokens />
       ) : (
         <ButtonContainer>
-          <Button
-            // @TODO: Improve this conditional
-            disabled={isConnected && !canVote}
-            onClick={onVoteSubmit}
-          >
+          <Button onClick={onVoteSubmit}>
             {voteState.submitting ? <Spinner /> : mainButtonText}
           </Button>
         </ButtonContainer>
