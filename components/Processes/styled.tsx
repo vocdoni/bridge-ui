@@ -47,7 +47,7 @@ export const ProcessData = styled.div`
   }
 `;
 
-export const ProcessDataCard= styled.div`
+export const ProcessDataCard = styled.div`
   background: #ffffff;
   border-radius: 14px;
   padding: 25px 26px;
@@ -203,6 +203,7 @@ export const Percentage = styled.h5`
 
 export const EndedContainer = styled.div`
   width: 100%;
+  max-width: 1266px;
   height: 249px;
 
   background: #eef4fb;

@@ -20,6 +20,7 @@ import { useWallet } from "use-wallet";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { GrayRectangle, GrayRectangleTall } from "../components/gray-rectangle";
 import { LoadingRectangle } from "../components/loading-rectangle";
+import { NotConnected } from "../components/Banners/notConnected";
 
 // MAIN COMPONENT
 
@@ -109,15 +110,7 @@ const IndexPage = () => {
 
         <If condition={!wallet?.ethereum || !wallet?.account}>
           <Then>
-            <GrayRectangleTall>
-              <LightningBolt />
-              <GreyInfo>
-                Connect your account and discover the proposals related to your tokens
-              </GreyInfo>
-              <Link href="/tokens/add">
-                <ConnectWalletLink />
-              </Link>
-            </GrayRectangleTall>
+            <NotConnected connectMessage="Connect your account and discover the proposals related to your tokens" />
           </Then>
           <Else>
             <If condition={tokensWithBalance?.length}>
