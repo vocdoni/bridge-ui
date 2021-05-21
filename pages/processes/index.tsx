@@ -79,8 +79,6 @@ const ProcessPage = () => {
   const alreadyVoted = votingStatus?.registered || voteState.submitted;
   const canSelect = !alreadyVoted && hasStarted && !hasEnded && inCensus;
   const canVote = canSelect && questionsFilled;
-  if (votingStatus) console.log("Is registered? " + votingStatus.registered);
-  else console.log("No info yet");
 
   const onVoteSubmit = async () => {
     if (!isConnected) {
@@ -164,11 +162,11 @@ const ProcessPage = () => {
         </EndedContainer>
       ) : !isConnected ? (
         <NotConnected connectMessage="Connect your account to vote on this proposal" />
-      ) : !votingStatus?.registered ? (
+      ) : !inCensus ? (
         <NoTokens />
       ) : (
         <ButtonContainer>
-          <Button onClick={onVoteSubmit}>
+          <Button disabled={!canVote} mode="strong" onClick={onVoteSubmit}>
             {voteState.submitting ? <Spinner /> : mainButtonText}
           </Button>
         </ButtonContainer>
