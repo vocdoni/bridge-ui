@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { If, Then, When } from "react-if";
+import { When } from "react-if";
 import Spinner from "react-svg-spinner";
 
 import { TokenCard } from "../../components/token-card";
 import { useStoredTokens } from "../../lib/hooks/tokens";
-import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 
 import SectionTitle from "../../components/sectionTitle";
 import { SecondaryButton } from "../../components/button";
@@ -63,19 +62,21 @@ const TokensPage = () => {
         <When condition={!storedTokens?.length && tokenListLoading}>
           <div>{renderEmpty()}</div>
         </When>
-        
-        {storedTokens.map(({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
-          <TokenCard
-            key={address}
-            name={symbol}
-            icon={icon}
-            rightText=""
-            href={address ? "/tokens/info#/" + address : ""}
-            tokenCap={totalSupplyFormatted}
-          >
-            <p>{shortTokenName(name) || "Loading..."}</p>
-          </TokenCard>
-        ))}
+
+        {storedTokens.map(
+          ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+            <TokenCard
+              key={address}
+              name={symbol}
+              icon={icon}
+              rightText=""
+              href={address ? "/tokens/info#/" + address : ""}
+              tokenCap={totalSupplyFormatted}
+            >
+              <p>{shortTokenName(name) || "Loading..."}</p>
+            </TokenCard>
+          )
+        )}
       </TokenList>
     </div>
   );

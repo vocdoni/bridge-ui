@@ -3,8 +3,15 @@ import React from "react";
 
 import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG } from "../../lib/constants";
 import { ConnectWalletLink } from "../connect-button";
-import { GrayRectangle, GrayRectangleTall } from "../gray-rectangle";
-import { LightningBolt, GreyInfo, ExclamationMark, EndedInfo, WaitingImg } from "./styled";
+import {
+  LightningBolt,
+  GreyInfo,
+  ExclamationMark,
+  GrayInfoMargined,
+  WaitingImg,
+  GrayRectangle,
+  GrayRectangleTall,
+} from "./styled";
 
 export const NotConnected = ({ connectMessage = "" }: { connectMessage?: string }) => {
   return (
@@ -35,7 +42,7 @@ export const NotStartedBanner = () => {
   return (
     <GrayRectangle>
       <WaitingImg src={MEDITATING_LADY_IMG} />
-      <EndedInfo>The process has not yet started</EndedInfo>
+      <GrayInfoMargined>The process has not yet started</GrayInfoMargined>
     </GrayRectangle>
   );
 };
@@ -44,7 +51,7 @@ export const HasFinishedBanner = () => {
   return (
     <GrayRectangle>
       <img src={ISLAND_FLAG_IMG} />
-      <EndedInfo>The process has not yet started</EndedInfo>
+      <GrayInfoMargined>The process has not yet started</GrayInfoMargined>
     </GrayRectangle>
   );
 };

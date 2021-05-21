@@ -19,7 +19,7 @@ import { useWallet } from "use-wallet";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { GrayRectangle } from "../components/gray-rectangle";
 import { LoadingRectangle } from "../components/loading-rectangle";
-import { NotConnected } from "../components/Banners/notConnected";
+import { NotConnected } from "../components/Banners/GrayBanners";
 
 // MAIN COMPONENT
 
