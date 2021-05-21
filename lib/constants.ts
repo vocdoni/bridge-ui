@@ -60,4 +60,6 @@ export const PLUS_ICON = "/media/plus_icon.svg";
 export const MINUS_ICON = "/media/minus_icon.svg";
 export const LIGHTNING_ICON = "/media/lightning_bolt.svg";
 export const WARNING_ICON = "/media/exclamation_icon.png";
-export const CONNECTED_WALLET_ICON = "/media/connected_wallet_icon.svg";
+export const WALLET_IDENTICON = "/media/connected_wallet_icon.svg";
+export const MEDITATING_LADY_IMG = "/media/meditating_lady_img.svg";
+export const ISLAND_FLAG_IMG = "/media/island_flag_img.svg";

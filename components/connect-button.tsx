@@ -6,7 +6,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
 import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
-import { CONNECTED_WALLET_ICON } from "../lib/constants";
+import { WALLET_IDENTICON } from "../lib/constants";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const ConnectWalletButton = styled.div`
   cursor: pointer;
   position: relative;
   z-index: 1;
-  
+
   main &:before {
     position: absolute;
     content: "";
@@ -88,7 +88,7 @@ const ConnectedWalletButton = styled.div`
 `;
 
 const ConnectedWalletIcon = styled.div`
-  background: url(${CONNECTED_WALLET_ICON});
+  background: url(${WALLET_IDENTICON});
   position: asbsolute;
   width: 24px;
   height: 24px;

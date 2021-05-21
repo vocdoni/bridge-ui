@@ -17,8 +17,6 @@ import {
   ProcessDataDescription,
   ProcessDataValue,
   ButtonContainer,
-  EndedContainer,
-  EndedInfo,
   ProcessDataCard,
 } from "../../components/Processes/styled";
 import SectionTitle from "../../components/sectionTitle";
@@ -36,7 +34,13 @@ import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { NotConnected, NoTokens } from "../../components/Banners/notConnected";
+import {
+  NotConnected,
+  NoTokens,
+  HasFinishedBanner,
+  NotStartedBanner,
+} from "../../components/Banners/notConnected";
+import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG } from "../../lib/constants";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -155,13 +159,12 @@ const ProcessPage = () => {
         onChoiceSelect={onSelect}
         canSelect={canSelect}
       />
-      {hasEnded ? (
-        <EndedContainer>
-          <img src="/media/ended.svg" />
-          <EndedInfo>The process has ended</EndedInfo>
-        </EndedContainer>
+      {!hasStarted ? (
+        <NotStartedBanner />
+      ) : hasEnded ? (
+        <HasFinishedBanner />
       ) : !isConnected ? (
-        <NotConnected connectMessage="Connect your account to vote on this proposal" />
+        <NotConnected connectMessage="Connect your wallet to vote on this proposal" />
       ) : !inCensus ? (
         <NoTokens />
       ) : (

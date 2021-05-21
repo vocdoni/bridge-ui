@@ -41,8 +41,8 @@ export const colors: Colors = {
     a3: "#FEF8EC",
     a4: "#EBF3FE",
   },
-  homepageRectangle: {
-    c1: "#EEF4FB",
+  backgroundGray: {
+    bg1: "#EEF4FB",
   },
   placeholderInputText: {
     c1: "#97A8DC",
