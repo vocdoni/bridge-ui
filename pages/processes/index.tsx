@@ -39,6 +39,7 @@ import {
   NoTokens,
   HasFinishedBanner,
   NotStartedBanner,
+  AlreadyVotedBanner,
 } from "../../components/Banners/GrayBanners";
 
 const ProcessPage = () => {
@@ -79,8 +80,8 @@ const ProcessPage = () => {
   const allQuestionsSelected = voteState.choices.length === process?.metadata?.questions?.length;
   const questionsFilled = allQuestionsSelected && areAllNumbers(voteState.choices);
   const inCensus = !!proof;
-  const alreadyVoted = votingStatus?.registered || voteState.submitted;
-  const canSelect = !alreadyVoted && hasStarted && !hasEnded && inCensus;
+  const hasAlreadyVoted = votingStatus?.registered || voteState.submitted;
+  const canSelect = !hasAlreadyVoted && hasStarted && !hasEnded && inCensus;
   const canVote = canSelect && questionsFilled;
 
   const onVoteSubmit = async () => {
@@ -108,7 +109,7 @@ const ProcessPage = () => {
   else if (!inCensus) {
     if (proofLoading) mainButtonText = "Please wait";
     else mainButtonText = "You are not a token holder";
-  } else if (alreadyVoted) mainButtonText = "You already voted";
+  } else if (hasAlreadyVoted) mainButtonText = "You already voted";
   else if (!hasStarted) mainButtonText = "Voting has not started yet";
   else if (hasEnded) mainButtonText = "Voting has ended";
   else if (!questionsFilled) mainButtonText = "Fill all the choices";
@@ -166,6 +167,8 @@ const ProcessPage = () => {
         <NotConnected connectMessage="Connect your wallet to vote on this proposal" />
       ) : !inCensus ? (
         <NoTokens />
+      ) : hasAlreadyVoted ? (
+        <AlreadyVotedBanner />
       ) : (
         <ButtonContainer>
           <Button disabled={!canVote} mode="strong" onClick={onVoteSubmit}>

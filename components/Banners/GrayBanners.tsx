@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG } from "../../lib/constants";
+import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG, PEOPLE_IMG } from "../../lib/constants";
 import { ConnectWalletLink } from "../connect-button";
 import {
   LightningBolt,
@@ -51,6 +51,15 @@ export const HasFinishedBanner = () => {
   return (
     <GrayRectangle>
       <img src={ISLAND_FLAG_IMG} />
+      <GrayInfoMargined>The process has not yet started</GrayInfoMargined>
+    </GrayRectangle>
+  );
+};
+
+export const AlreadyVotedBanner = () => {
+  return (
+    <GrayRectangle>
+      <img src={PEOPLE_IMG} />
       <GrayInfoMargined>The process has not yet started</GrayInfoMargined>
     </GrayRectangle>
   );

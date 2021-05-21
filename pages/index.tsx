@@ -17,7 +17,7 @@ import { Else, If, Then, Unless, When } from "react-if";
 import Link from "next/link";
 import { useWallet } from "use-wallet";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
-import { GrayRectangle } from "../components/gray-rectangle";
+import { GrayRectangle } from "../components/Banners/styled";
 import { LoadingRectangle } from "../components/loading-rectangle";
 import { NotConnected } from "../components/Banners/GrayBanners";
 
