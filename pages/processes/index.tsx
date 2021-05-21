@@ -24,13 +24,19 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/button";
-import { useProcessResults, useProcessDates, useProcessSummary, useVote } from "../../lib/hooks/process";
+import {
+  useProcessResults,
+  useProcessDates,
+  useProcessSummary,
+  useVote,
+} from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
 import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { NotConnected } from "../../components/Banners/notConnected";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -47,9 +53,22 @@ const ProcessPage = () => {
   const { process } = useProcess(processId);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(process?.entity);
   const { hasEnded, hasStarted } = useProcessDates(process);
-  const { results, error: resultsError, loading: resultsLoading, refresh: refreshResults } = useProcessResults(process, tokenInfo);
-  const { summary, error: summaryError, loading: summaryLoading, refresh: refreshSummary } = useProcessSummary({ processInfo: process, tokenInfo });
-  const { proof, loading: proofLoading, error: proofError } = useCensusProof(tokenInfo, process?.parameters?.sourceBlockHeight);
+  const {
+    results,
+    error: resultsError,
+    loading: resultsLoading,
+    refresh: refreshResults,
+  } = useProcessResults(process, tokenInfo);
+  const {
+    summary,
+    error: summaryError,
+    loading: summaryLoading,
+    refresh: refreshSummary,
+  } = useProcessSummary({ processInfo: process, tokenInfo });
+  const { proof, loading: proofLoading, error: proofError } = useCensusProof(
+    tokenInfo,
+    process?.parameters?.sourceBlockHeight
+  );
   const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(process);
   const wallet = useWallet();
 
@@ -81,18 +100,18 @@ const ProcessPage = () => {
 
   if (!processId || !process) return renderEmpty();
 
-  let mainButtonText: string
-  if (!isConnected) mainButtonText = "Connect wallet"
+  let mainButtonText: string;
+  if (!isConnected) mainButtonText = "Connect wallet";
   else if (!inCensus) {
-    if (proofLoading) mainButtonText = "Please wait"
-    else mainButtonText = "You are not a token holder"
-  }
-  else if (alreadyVoted) mainButtonText = "You already voted"
-  else if (!hasStarted) mainButtonText = "Voting has not started yet"
-  else if (hasEnded) mainButtonText = "Voting has ended"
-  else if (!questionsFilled) mainButtonText = "Fill all the choices"
-  else if (!canVote) mainButtonText = "You cannot vote" // catch-all
-  else mainButtonText = "Submit your vote"
+    if (proofLoading) mainButtonText = "Please wait";
+    else mainButtonText = "You are not a token holder";
+  } else if (alreadyVoted) mainButtonText = "You already voted";
+  else if (!hasStarted) mainButtonText = "Voting has not started yet";
+  else if (hasEnded) mainButtonText = "Voting has ended";
+  else if (!questionsFilled) mainButtonText = "Fill all the choices";
+  else if (!canVote) mainButtonText = "You cannot vote";
+  // catch-all
+  else mainButtonText = "Submit your vote";
 
   // TODO: Use tokenLoading, tokenError, resultsError, resultsLoading, summaryError, summaryLoading
 
@@ -141,6 +160,8 @@ const ProcessPage = () => {
           <img src="/media/ended.svg" />
           <EndedInfo>The process has ended</EndedInfo>
         </EndedContainer>
+      ) : !isConnected ? (
+        <NotConnected connectMessage="Connect your account to vote on this proposal" />
       ) : (
         <ButtonContainer>
           <Button
