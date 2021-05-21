@@ -83,7 +83,7 @@ const TokenAttribute = styled.p`
 
 const EmptySection = styled.div`
   padding: 60px;
-  background: #eef4fb;
+  background: ${({ theme }) => theme.backgroundGray.bg1};
   border-radius: 13px;
   text-align: center;
   font-size: 18px;
@@ -114,21 +114,28 @@ const InfoDescription = styled.h4`
 const TokenLogoContainer = styled.div`
   margin-right: 20px;
   margin-top: 25px;
-`
-
+`;
 
 type VotingSectionProps = {
-  allProcesses: Map<string, IProcessInfo>,
-  processes: string[],
-  token: TokenInfo,
-  loadingProcesses: boolean,
-  title: string,
-  noProcessesMessage: string,
-  processesMessage: string,
+  allProcesses: Map<string, IProcessInfo>;
+  processes: string[];
+  token: TokenInfo;
+  loadingProcesses: boolean;
+  title: string;
+  noProcessesMessage: string;
+  processesMessage: string;
 };
 
 const VoteSection = (params: VotingSectionProps) => {
-  const { allProcesses, processes, token, loadingProcesses, title, noProcessesMessage, processesMessage } = params;
+  const {
+    allProcesses,
+    processes,
+    token,
+    loadingProcesses,
+    title,
+    noProcessesMessage,
+    processesMessage,
+  } = params;
 
   return (
     <VoteSectionContainer>
@@ -178,7 +185,7 @@ const TokenPage = () => {
   useScrollTop();
   const tokenAddress = useUrlHash().substr(1);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
-  const processIds = tokenInfo?.processes || []
+  const processIds = tokenInfo?.processes || [];
   const { processes, loading: proposalsLoading, error: proposalsError } = useProcesses(processIds);
   const { blockStatus } = useBlockStatus();
 
@@ -200,13 +207,13 @@ const TokenPage = () => {
       processes.has(id) &&
       blockNumber >= processes.get(id).parameters.startBlock &&
       blockNumber <
-      processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
+        processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
   );
   const endedProcesses = processIds.filter(
     (id) =>
       processes.has(id) &&
       blockNumber >=
-      processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
+        processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
   );
 
   // This exact logic is being done in dashboard/index.tsx
@@ -246,11 +253,12 @@ const TokenPage = () => {
           <TokenLogoContainer>
             <TokenLogo src={tokenInfo?.icon} />
           </TokenLogoContainer>
-          <SectionTitle title="Token details" subtitle={`See the details of ${tokenInfo?.symbol}`} />
+          <SectionTitle
+            title="Token details"
+            subtitle={`See the details of ${tokenInfo?.symbol}`}
+          />
         </HeaderLeft>
-        <PrimaryButton onClick={() => onCreateProcess()}>
-          Create New Proposal
-        </PrimaryButton>
+        <PrimaryButton onClick={() => onCreateProcess()}>Create New Proposal</PrimaryButton>
       </HeaderContainer>
 
       <WhiteSection>
