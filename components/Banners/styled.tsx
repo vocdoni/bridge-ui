@@ -1,6 +1,24 @@
 import styled from "styled-components";
 import { LIGHTNING_ICON, WARNING_ICON } from "../../lib/constants";
 
+export const GrayRectangle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: ${({ theme }) => theme.backgroundGray.bg1};
+  width: 100%;
+  min-height: 161px;
+  border-radius: 13px;
+  color: ${({ theme }) => theme.grayScale.g5};
+  font-family: "Manrope", sans-serif !important;
+  max-width: 1266px;
+`;
+
+export const GrayRectangleTall = styled(GrayRectangle)`
+  min-height: 227px;
+`;
+
 export const GreyInfo = styled.p`
   max-width: 98%;
   text-align: center;
@@ -19,19 +37,9 @@ export const WaitingImg = styled.img`
   width: 200px;
 `;
 
-export const EndedContainer = styled.div`
-  width: 100%;
-  max-width: 1266px;
-  border-radius: 13px;
-  background: ${({ theme }) => theme.backgroundGray.bg1};
-  text-align: center;
-`;
-
-export const EndedInfo = styled.p`
+export const GrayInfoMargined = styled(GreyInfo)`
   margin-top: 0px;
   margin-bottom: 24px;
-  font-size: 18px;
-  font-weight: 400;
 `;
 
 export const LightningBolt = styled.div`

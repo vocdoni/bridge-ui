@@ -39,8 +39,7 @@ import {
   NoTokens,
   HasFinishedBanner,
   NotStartedBanner,
-} from "../../components/Banners/notConnected";
-import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG } from "../../lib/constants";
+} from "../../components/Banners/GrayBanners";
 
 const ProcessPage = () => {
   useScrollTop();
