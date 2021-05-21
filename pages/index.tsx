@@ -9,7 +9,6 @@ import { TokenList } from "./dashboard";
 
 import { TokenCard } from "../components/token-card";
 import { SecondaryButton } from "../components/button";
-import { ConnectWalletLink } from "../components/connect-button";
 import SectionTitle from "../components/sectionTitle";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
@@ -18,7 +17,7 @@ import { Else, If, Then, Unless, When } from "react-if";
 import Link from "next/link";
 import { useWallet } from "use-wallet";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
-import { GrayRectangle, GrayRectangleTall } from "../components/gray-rectangle";
+import { GrayRectangle } from "../components/gray-rectangle";
 import { LoadingRectangle } from "../components/loading-rectangle";
 import { NotConnected } from "../components/Banners/notConnected";
 
@@ -252,76 +251,6 @@ const Row = styled.div`
 
 const TokenSection = styled.div`
   padding-top: 30px;
-`;
-
-const SearchInput = styled.input`
-  background: #ffffff;
-  border: 2px solid #eff1f7;
-  box-sizing: border-box;
-  box-shadow: inset 0px 2px 3px rgba(180, 193, 228, 0.35);
-  border-radius: 8px;
-  height: 46px;
-
-  font-family: "Manrope", sans-serif !important;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  padding: 10px;
-
-  &::placeholder {
-    color: #97a8dc;
-  }
-`;
-
-const SearchContainer = styled.div`
-  padding-top: 10px;
-  display: flex;
-  width: 100%;
-  flex-flow: row no-wrap;
-  justify-content: center;
-
-  & > input {
-    width: 66%;
-    margin-right: 10px;
-  }
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-flow: row wrap;
-
-    & > input {
-      width: 100%;
-      margin-right: 0;
-      margin-bottom: 10px;
-    }
-
-    & > div {
-      width: 100%;
-    }
-  }
-`;
-
-const SearchButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-size: 16px;
-  background: ${({ theme }) =>
-    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
-
-  box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-  border-radius: 8px;
-  cursor: pointer;
-  min-width: 120px;
-  height: 46px;
-`;
-
-const LightningBolt = styled.div`
-  margin: 15px auto;
-  background: url(${LIGHTNING_BOLT});
-  background-repeat: no-repeat;
-  width: 52px;
-  height: 54px;
 `;
 
 const GreyInfo = styled.p`
