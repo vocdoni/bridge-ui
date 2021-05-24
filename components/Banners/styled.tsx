@@ -31,7 +31,7 @@ export const GreyInfo = styled.p`
   }
 `;
 
-export const WaitingImg = styled.img`
+export const SizedImg = styled.img`
   margin-top: 16px;
   margin-bottom: 8px;
   width: 200px;

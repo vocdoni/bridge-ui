@@ -8,7 +8,7 @@ import {
   GreyInfo,
   ExclamationMark,
   GrayInfoMargined,
-  WaitingImg,
+  SizedImg,
   GrayRectangle,
   GrayRectangleTall,
 } from "./styled";
@@ -41,7 +41,7 @@ export const NoTokens = () => {
 export const NotStartedBanner = () => {
   return (
     <GrayRectangle>
-      <WaitingImg src={MEDITATING_LADY_IMG} />
+      <SizedImg src={MEDITATING_LADY_IMG} />
       <GrayInfoMargined>The process has not yet started</GrayInfoMargined>
     </GrayRectangle>
   );
@@ -59,7 +59,7 @@ export const HasFinishedBanner = () => {
 export const AlreadyVotedBanner = () => {
   return (
     <GrayRectangle>
-      <WaitingImg src={PEOPLE_IMG} />
+      <SizedImg src={PEOPLE_IMG} />
       <GrayInfoMargined>You have already voted</GrayInfoMargined>
     </GrayRectangle>
   );
