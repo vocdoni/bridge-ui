@@ -43,6 +43,7 @@ export const colors: Colors = {
   },
   backgroundGray: {
     bg1: "#EEF4FB",
+    skeletonAnimation: "#DFEBFA",
   },
   placeholderInputText: {
     c1: "#97A8DC",
