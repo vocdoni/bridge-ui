@@ -90,17 +90,6 @@ export const SecondaryButton = styled(Button)`
   }
 `;
 
-export const TextLink = styled.p`
-  color: ${({ theme }) => theme.primary.p1};
-  text-align: center;
-  cursor: pointer;
-  margin-top: -15px;
-  font-weight: 400;
-  &:hover {
-    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
-  }
-`;
-
 function Button({ href, ...props }: ButtonProps & AragonButtonProps) {
   if (href) {
     return (
