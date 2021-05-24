@@ -106,12 +106,12 @@ const VoiceLink = styled.a`
 `;
 
 const ClickableLink = styled.a`
-  padding: 10px 0px 10px 0;
-  margin-right: 38px;
+  padding: 10px 0px;
+  margin-right: 32px;
   text-decoration: none;
   font-size: 16px;
   font-weight: 400;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
+  white-space: nowrap;
   &:hover {
     color: ${({ theme }) => theme.primary.p1};
   }

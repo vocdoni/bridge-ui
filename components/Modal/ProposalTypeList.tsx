@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 
 import { Modal, ProposalModal } from ".";
 import { ActionTypes, useModal } from "./context";
-import { TextLink } from "../button";
 import Link from "next/link";
+import { TextLink } from "../connect-button";
 
 const Layout = styled.div`
   width: 100%;
