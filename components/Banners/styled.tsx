@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { LIGHTNING_ICON, WARNING_ICON } from "../../lib/constants";
 
 export const GrayRectangle = styled.div`
@@ -17,6 +17,28 @@ export const GrayRectangle = styled.div`
 
 export const GrayRectangleTall = styled(GrayRectangle)`
   min-height: 227px;
+`;
+
+export const skeletonKeyframes = keyframes`
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: calc(400px + 100%) 0;
+  }
+`;
+
+
+export const GrayRectangleLoading = styled(GrayRectangleTall)`
+  animation: ${skeletonKeyframes} 2s linear infinite;
+  background-image: linear-gradient(
+    90deg,
+    ${({ theme }) => theme.backgroundGray.bg1},
+    ${({ theme }) => theme.backgroundGray.skeletonAnimation},
+    ${({ theme }) => theme.backgroundGray.bg1}
+  );
+  background-size: 400px 100%;
+  background-repeat: no-repeat;
 `;
 
 export const GreyInfo = styled.p`

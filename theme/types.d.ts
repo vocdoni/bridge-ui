@@ -43,6 +43,7 @@ export interface Colors extends Partial<Colors> {
   };
   backgroundGray: {
     bg1: Color;
+    skeletonAnimation: Color;
   };
   placeholderInputText: {
     c1: Color;

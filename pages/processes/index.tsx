@@ -40,6 +40,7 @@ import {
   HasFinishedBanner,
   NotStartedBanner,
   AlreadyVotedBanner,
+  Loading
 } from "../../components/Banners/GrayBanners";
 
 const ProcessPage = () => {
@@ -51,6 +52,8 @@ const ProcessPage = () => {
     console.error("Invalid process ID", processId);
     router.replace("/tokens");
   }
+
+  let loading = true;
 
   const { dispatch } = useModal();
 
@@ -159,7 +162,10 @@ const ProcessPage = () => {
         onChoiceSelect={onSelect}
         canSelect={canSelect}
       />
-      {!hasStarted ? (
+      
+      {loading ? (
+        <Loading />
+      ) : !hasStarted ? (
         <NotStartedBanner />
       ) : hasEnded ? (
         <HasFinishedBanner />

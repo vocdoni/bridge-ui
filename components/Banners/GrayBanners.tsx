@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-
 import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG, PEOPLE_IMG } from "../../lib/constants";
 import { ConnectWalletLink } from "../connect-button";
 import {
@@ -11,7 +10,15 @@ import {
   SizedImg,
   GrayRectangle,
   GrayRectangleTall,
+  GrayRectangleLoading
 } from "./styled";
+
+
+export const Loading = () => {
+  return (
+    <GrayRectangleLoading />
+  );
+};
 
 export const NotConnected = ({ connectMessage = "" }: { connectMessage?: string }) => {
   return (
