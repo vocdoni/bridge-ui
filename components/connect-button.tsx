@@ -22,8 +22,9 @@ const ConnectWalletButton = styled.div<{ wide: boolean }>`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: ${({ wide }) => (wide ? "170px" : "100%")};
-  height: 45px;
+  text-align: center;
+  width: ${({ wide }) => (wide ? "100%" : "172px")};
+  height: 48px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
   font-weight: 500;
   font-size: 16px;
@@ -96,7 +97,7 @@ const ConnectedWalletIcon = styled.div`
   margin-right: 10px;
 `;
 
-const TextLink = styled.p`
+export const TextLink = styled.p`
   color: ${({ theme }) => theme.primary.p1};
   text-align: center;
   cursor: pointer;
@@ -122,7 +123,7 @@ const WalletAddress = ({ account }) => {
   );
 };
 
-export const ConnectButton = ({ wide }) => {
+export const ConnectButton = ({ wide }: { wide: boolean }) => {
   const { dispatch } = useModal();
   const { pathname, push } = useRouter();
   const { status, networkName, reset, error, account } = useWallet();
