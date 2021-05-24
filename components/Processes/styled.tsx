@@ -140,13 +140,15 @@ export const QuestionDescription = styled.div`
   word-break: break-word;
 `;
 
-export const QuestionOptions = styled.div`
+export const QuestionOptions = styled.div<{ no_choices: number }>`
   display: flex;
   width: 40%;
   flex-direction: column;
   justify-content: center;
+  ${({ no_choices }) => (no_choices > 3 ? "padding-top: 20px;" : "")}
 
-  @media ${({ theme }) => theme.screens.tablet} {
+  @media 
+  ${({ theme }) => theme.screens.tablet} {
     width: 100%;
     margin-left: 26px;
   }
