@@ -5,7 +5,7 @@ import {
   QuestionDescription,
   QuestionInformation,
   QuestionNumber,
-  QuestionOptions,
+  QuestionOptionsFew,
   QuestionTitle,
   OptionSubtitle,
   OptionLabel,
@@ -13,6 +13,8 @@ import {
   OptionTitle,
   ChoiceInfo,
   Percentage,
+  QuestionOptionsMany,
+  QuestionOptions,
 } from "./styled";
 
 import Checkbox from "./checkbox";
@@ -24,11 +26,11 @@ type PChoice = ProcessMetadata["questions"][0]["choices"][0];
 type PResult = ProcessResults[0]["choices"][0];
 
 function readablePercent(percent: string): string {
-  if (!percent) return ""
-  else if (percent === "N/A") return "Locked"
-  else if (percent === "0") return "0.0%"
-  else if (percent === "small") return "<0.1%"
-  else return percent + "%"
+  if (!percent) return "";
+  else if (percent === "N/A") return "Locked";
+  else if (percent === "0") return "0.0%";
+  else if (percent === "small") return "<0.1%";
+  else return percent + "%";
 }
 
 const Option = ({
@@ -51,9 +53,7 @@ const Option = ({
       <Checkbox checked={checked} onChange={() => onChoiceSelect(questionIdx, choice.value)} />
     ) : (
       <ChoiceInfo>
-        <Percentage>
-          {readablePercent(choiceResult?.percentage)}
-        </Percentage>
+        <Percentage>{readablePercent(choiceResult?.percentage)}</Percentage>
       </ChoiceInfo>
     )}
     <OptionTitleContainer>
@@ -87,7 +87,7 @@ export const Questions = ({
             <QuestionTitle>{title.default}</QuestionTitle>
             <QuestionDescription>{description.default}</QuestionDescription>
           </QuestionInformation>
-          <QuestionOptions>
+          <QuestionOptions no_choices={choices.length}>
             {choices.map((choice, cIdx) => {
               const choiceResult = results && results[qIdx] && results[qIdx].choices[cIdx];
               return (
