@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import {
+  DVoteGateway,
+  GatewayPool,
   IProcessCreateParams,
   ProcessCensusOrigin,
   ProcessEnvelopeType,
   ProcessMetadata,
   ProcessMode,
   VotingApi,
+  VotingOracleApi,
 } from "dvote-js";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
@@ -363,54 +366,10 @@ const NewProcessPage = () => {
       setSubmitting(true);
       const pool = await poolPromise;
 
-      // Estimate start/end blocks
-      const [startBlock, endBlock] = await Promise.all([
-        VotingApi.estimateBlockAtDateTime(startDate, pool),
-        VotingApi.estimateBlockAtDateTime(endDate, pool),
-      ]);
-      const blockCount = endBlock - startBlock;
-
-      // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
-      // Otherwise, proofs will not match
-      const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
-      const proof = await getProof({
-        account: wallet.account,
-        token: tokenInfo.address,
-        block: sourceBlockHeight,
-        balanceMappingPosition: tokenInfo.balanceMappingPosition,
-        pool,
-      });
-
-      const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
-        metadata: ProcessMetadata;
-      } = {
-        mode: ProcessMode.make({ autoStart: true }),
-        envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
-        censusOrigin: ProcessCensusOrigin.ERC20,
-        metadata: metadata,
-        censusRoot: proof.storageHash,
-        startBlock,
-        blockCount,
-        maxCount: metadata.questions.length,
-        maxValue: findMaxValue(metadata),
-        maxTotalCost: 0,
-        costExponent: 10000,
-        maxVoteOverwrites: 1,
-        tokenAddress,
-        sourceBlockHeight,
-        paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
-      };
-
-      const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
-
-      // Wait until effectively created
-      const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
-      if (!ready) throw new Error("The proposal is not available after a while");
-
-      Router.push("/processes#/" + processId);
-      setSubmitting(false);
-
-      setAlertMessage("The proposal has been successfully created", "success");
+      /* TODO properly handle type query and consequent flag logic into */
+      if (pType === "binding") submitBindingVote(pool);
+      else if (pType === "signaling") submitSignalingVote(pool);
+      else console.error("Unknown voting type");
     } catch (err) {
       setSubmitting(false);
 
@@ -422,6 +381,110 @@ const NewProcessPage = () => {
       setAlertMessage("The proposal could not be created");
     }
   };
+
+  async function submitSignalingVote(pool: GatewayPool) {
+    const oracleClient = new DVoteGateway({
+      uri: "https://signaling-oracle.dev.vocdoni.net/dvote",
+      supportedApis: ["oracle"],
+    });
+    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - 1;
+    const currentBlock = await VotingApi.getBlockHeight(pool);
+    const startBlock = currentBlock + 5;
+    const blockCount = 6 * 1;
+
+    const signalingProcessParams = {
+      mode: ProcessMode.make({ autoStart: true }),
+      envelopeType: ProcessEnvelopeType.make({
+        encryptedVotes: envelopeType.hasEncryptedVotes,
+      }), // bit mask
+      censusOrigin: ProcessCensusOrigin.ERC20,
+      metadata: metadata,
+      startBlock,
+      blockCount,
+      maxCount: metadata.questions.length,
+      maxValue: findMaxValue(metadata),
+      maxTotalCost: 0,
+      costExponent: 10000,
+      maxVoteOverwrites: 1,
+      tokenAddress,
+      sourceBlockHeight,
+      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    };
+    console.log("Before signing:");
+    const processId = await VotingOracleApi.newProcessErc20(
+      signalingProcessParams,
+      signer,
+      pool,
+      oracleClient
+    );
+    console.log("After signing:");
+    console.log(processId);
+    // assert.strictEqual(processInfo.entityId.toLowerCase(), config.tokenAddress.toLowerCase());
+    // assert.strictEqual(
+    //   processInfo.startBlock,
+    //   processParams.startBlock,
+    //   "SENT " + JSON.stringify(processParams) + " GOT " + JSON.stringify(processParams)
+    // );
+    // assert.strictEqual(processInfo.endBlock - processInfo.startBlock,
+    // processParams.blockCount);
+    const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
+    if (!ready) throw new Error("The proposal is not available after a while");
+
+    Router.push("/processes#/" + processId);
+    setSubmitting(false);
+
+    setAlertMessage("The proposal has been successfully created", "success");
+  }
+
+  async function submitBindingVote(pool: GatewayPool) {
+    // Estimate start/end blocks
+    const [startBlock, endBlock] = await Promise.all([
+      VotingApi.estimateBlockAtDateTime(startDate, pool),
+      VotingApi.estimateBlockAtDateTime(endDate, pool),
+    ]);
+    const blockCount = endBlock - startBlock;
+
+    // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
+    // Otherwise, proofs will not match
+    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+    const proof = await getProof({
+      account: wallet.account,
+      token: tokenInfo.address,
+      block: sourceBlockHeight,
+      balanceMappingPosition: tokenInfo.balanceMappingPosition,
+      pool,
+    });
+
+    const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
+      metadata: ProcessMetadata;
+    } = {
+      mode: ProcessMode.make({ autoStart: true }),
+      envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
+      censusOrigin: ProcessCensusOrigin.ERC20,
+      metadata: metadata,
+      censusRoot: proof.storageHash,
+      startBlock,
+      blockCount,
+      maxCount: metadata.questions.length,
+      maxValue: findMaxValue(metadata),
+      maxTotalCost: 0,
+      costExponent: 10000,
+      maxVoteOverwrites: 1,
+      tokenAddress,
+      sourceBlockHeight,
+      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    };
+
+    const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
+    // Wait until effectively created
+    const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
+    if (!ready) throw new Error("The proposal is not available after a while");
+
+    Router.push("/processes#/" + processId);
+    setSubmitting(false);
+
+    setAlertMessage("The proposal has been successfully created", "success");
+  }
 
   return (
     <div>
@@ -451,7 +514,6 @@ const NewProcessPage = () => {
               placeholder="Description"
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
-              widthValue={680}
             />
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={60} isLarge={isLarge}>
