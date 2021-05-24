@@ -5,7 +5,6 @@ import {
   QuestionDescription,
   QuestionInformation,
   QuestionNumber,
-  QuestionOptionsFew,
   QuestionTitle,
   OptionSubtitle,
   OptionLabel,
@@ -13,7 +12,6 @@ import {
   OptionTitle,
   ChoiceInfo,
   Percentage,
-  QuestionOptionsMany,
   QuestionOptions,
 } from "./styled";
 

@@ -101,7 +101,6 @@ const ProcessPage = () => {
       choices: voteState.choices,
     });
   };
-  console.log("Is in census? " + inCensus);
 
   if (!processId || !process) return renderEmpty();
 
