@@ -96,6 +96,21 @@ const ConnectedWalletIcon = styled.div`
   margin-right: 10px;
 `;
 
+const TextLink = styled.p`
+  color: ${({ theme }) => theme.primary.p1};
+  text-align: center;
+  cursor: pointer;
+  margin-top: -15px;
+  font-weight: 400;
+  font-size: 18px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 16px;
+  }
+  &:hover {
+    color: ${({ theme }) => theme.gradients.primary.mg1_soft.c1};
+  }
+`;
+
 const WalletAddress = ({ account }) => {
   return (
     <ButtonContainer>
