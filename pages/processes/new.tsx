@@ -419,14 +419,7 @@ const NewProcessPage = () => {
     );
     console.log("After signing:");
     console.log(processId);
-    // assert.strictEqual(processInfo.entityId.toLowerCase(), config.tokenAddress.toLowerCase());
-    // assert.strictEqual(
-    //   processInfo.startBlock,
-    //   processParams.startBlock,
-    //   "SENT " + JSON.stringify(processParams) + " GOT " + JSON.stringify(processParams)
-    // );
-    // assert.strictEqual(processInfo.endBlock - processInfo.startBlock,
-    // processParams.blockCount);
+
     const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
     if (!ready) throw new Error("The proposal is not available after a while");
 
