@@ -47,7 +47,6 @@ function useOutsideAlerter(ref) {
   useEffect(() => {
     function handleClickOutside(event) {
       const isOutside = !ref.current.contains(event.target);
-      console.log("Is outside wallet? " + isOutside);
       if (ref.current && isOutside) {
         dispatch({
           type: ActionTypes.CLOSE_WALLET_LIST,
@@ -68,7 +67,6 @@ function useOutsideAlerterProposal(ref) {
   useEffect(() => {
     function handleClickOutside(event) {
       const isOutside = !ref.current.contains(event.target);
-      console.log("Is outside proposal? " + isOutside);
       if (ref.current && isOutside) {
         dispatch({
           type: ActionTypes.CLOSE_PROPOSAL_LIST,

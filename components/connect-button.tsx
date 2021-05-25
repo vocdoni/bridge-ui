@@ -1,9 +1,8 @@
 import React from "react";
 import { useMemo } from "react";
-import { useRouter } from "next/router";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
-import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from "use-wallet";
+import { useWallet } from "use-wallet";
 import { shortAddress } from "../lib/utils";
 import { useModal, ActionTypes } from "./Modal/context";
 import { WALLET_IDENTICON } from "../lib/constants";
@@ -125,31 +124,21 @@ const WalletAddress = ({ account }) => {
 
 export const ConnectButton = ({ wide }: { wide: boolean }) => {
   const { dispatch } = useModal();
-  const { pathname, push } = useRouter();
-  const { status, networkName, reset, error, account } = useWallet();
+  const { status, networkName, account } = useWallet();
   const { loading: poolLoading } = usePool();
 
-  const openWallets = () => dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
-
-  const isConnected = status == "connected";
-  const inLanding = pathname === "/";
-  const loadingOrConnecting = poolLoading || status === "connecting";
+  const isConnected = status === "connected";
 
   const label = useMemo(() => {
-    if (poolLoading) return "Connecting...";
+    if (poolLoading) return "Loading...";
     if (status === "connecting") return "Connecting to " + networkName;
-    if (error instanceof ChainUnsupportedError) return networkName + " is not enabled";
-    if (error instanceof ConnectionRejectedError) return "Wallet connection rejected";
-
-    return isConnected ? "Connected" : "Connect Wallet";
-  }, [poolLoading, status, error]);
+    return "Connect Wallet";
+  }, [poolLoading, status]);
 
   const handleButtonClick = async () => {
-    if (loadingOrConnecting || (inLanding && isConnected)) {
-      reset();
-      return;
-    }
-    openWallets();
+    // This opens the modal containing the list of wallets. The connection logic is
+    // handeled from there.
+    dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
   };
 
   if (isConnected) {
