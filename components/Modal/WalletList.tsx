@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useWallet } from "use-wallet";
@@ -134,30 +134,30 @@ export const WalletList = () => {
   const { state, dispatch } = useModal();
   const { setAlertMessage } = useMessageAlert();
 
-  const inLanding = pathname === "/";
-
   const closeModal = () => {
-    console.log("ho");
     dispatch({
       type: ActionTypes.CLOSE_WALLET_LIST,
     });
   };
 
+  // NOTE This hook is necessary to set potential errors generated during use-wallet's
+  // connect(...) method. They are extracted into this hook because (for some reason),
+  // the errors are not available right after the execution of connect(). [VR 25-05-2021]
+  useEffect(() => {
+    if (error?.name === "ConnectionRejectedError")
+      setAlertMessage("You rejected the connection attempt", "warning");
+    if (error?.name === "ChainUnsupportedError")
+      setAlertMessage("This chain is not supported. Please set your wallet to Mainnet");
+  }, [error]);
+
   const handleConnection = async (wallet) => {
-    console.log("hi");
     // @TODO: Remove this when trezor is implemented in useWallet
     if (wallet === "trezor") return;
-    try {
-      await connect(wallet);
-      if (!error && inLanding) reset();
-      closeModal();
-    } catch (e) {
-      reset();
-      if (e.message.includes("Unsupported chainId")) {
-        setAlertMessage(`${wallet} is not supported on current chain`);
-      }
-    }
+    await connect(wallet);
+    closeModal();
+    reset();
   };
+
   return (
     /* Reducing the modal container height from 565px to 225px until wallet providers are properly tested. */
     <WalletModal open={state.walletList.open} height={465} width={452}>
