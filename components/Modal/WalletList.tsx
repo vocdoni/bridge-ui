@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useWallet } from "use-wallet";
 
-import { Modal } from ".";
+import { WalletModal } from ".";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
 
-const ModalContainer = styled.div`
+const WalletModalLayout = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -137,12 +137,14 @@ export const WalletList = () => {
   const inLanding = pathname === "/";
 
   const closeModal = () => {
+    console.log("ho");
     dispatch({
       type: ActionTypes.CLOSE_WALLET_LIST,
     });
   };
 
   const handleConnection = async (wallet) => {
+    console.log("hi");
     // @TODO: Remove this when trezor is implemented in useWallet
     if (wallet === "trezor") return;
     try {
@@ -158,8 +160,8 @@ export const WalletList = () => {
   };
   return (
     /* Reducing the modal container height from 565px to 225px until wallet providers are properly tested. */
-    <Modal open={state.walletList.open} height={465} width={452}>
-      <ModalContainer>
+    <WalletModal open={state.walletList.open} height={465} width={452}>
+      <WalletModalLayout>
         <Header>
           <ModalTitle>USE ACCOUNT FROM</ModalTitle>
           <CloseIcon onClick={closeModal}>
@@ -169,12 +171,6 @@ export const WalletList = () => {
         <Body>
           {Object.keys(WALLETS).map((wallet) => {
             const { connector, name } = WALLETS[wallet];
-            const Option = () => (
-              <WalletOption onClick={() => handleConnection(connector)}>
-                <WalletLogo src={`/media/wallets/${connector}.svg`} />
-                <WalletName>{name}</WalletName>
-              </WalletOption>
-            );
             return (
               <OptionContainer key={"wallet_" + wallet}>
                 {/* @TODO: Remove this when trezor is implemented in useWallet */}
@@ -184,10 +180,16 @@ export const WalletList = () => {
                     target="_blank"
                     href={HARDWARE_WALLETS_METAMASK_ARTICLE}
                   >
-                    <Option />
+                    <WalletOption onClick={() => handleConnection(connector)}>
+                      <WalletLogo src={`/media/wallets/${connector}.svg`} />
+                      <WalletName>{name}</WalletName>
+                    </WalletOption>
                   </ExternalLinkOption>
                 ) : (
-                  <Option />
+                  <WalletOption onClick={() => handleConnection(connector)}>
+                    <WalletLogo src={`/media/wallets/${connector}.svg`} />
+                    <WalletName>{name}</WalletName>
+                  </WalletOption>
                 )}
               </OptionContainer>
             );
@@ -200,7 +202,7 @@ export const WalletList = () => {
             {"Don't have an Ethereum account?"}
           </DontHaveAccount>
         </Body>
-      </ModalContainer>
-    </Modal>
+      </WalletModalLayout>
+    </WalletModal>
   );
 };
