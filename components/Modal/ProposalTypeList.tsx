@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 
-import { Modal, ProposalModal } from ".";
+import { ProposalModal } from ".";
 import { ActionTypes, useModal } from "./context";
 import Link from "next/link";
 import { TextLink } from "../connect-button";
@@ -105,11 +105,8 @@ export const ProposalTypeList = () => {
     });
   };
   function onChoice(proposalType) {
-    // push("/processes/new#/" + address);
-    // push({ pathname: "/processes/new#/" + address, query: { type: proposalType } });
     push({ pathname: "/processes/new/", query: { address: address, type: proposalType } });
     closeModal();
-    // return "/processes/new#/" + address;
   }
 
   return (
