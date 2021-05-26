@@ -89,16 +89,20 @@ const ProcessPage = () => {
   }, [processLoading, tokenLoading, processDatesLoading, resultsLoading]);
 
   useEffect(() => {
-    let errorMessage: string = "Oops, there was an error loading the ";
-    if (processError) errorMessage += "process";
-    else if (tokenError) errorMessage += "token";
-    else if (processDatesError) errorMessage += "processDates";
-    else if (resultsError) errorMessage += "results";
-    else if (proofError) errorMessage += "proof";
-    // else if (summaryError) errorMessage += "summary";
-    else errorMessage = "";
-
-    if (errorMessage !== "") setAlertMessage(errorMessage);
+    let errorName = "";
+    if (processError) errorName += "process";
+    else if (tokenError) errorName += "token";
+    else if (processDatesError) errorName += "processDates";
+    else if (resultsError) errorName += "results";
+    else if (proofError) errorName += "proof";
+    // else if (summaryError) errorName += "summary";
+    if (errorName !== "") {
+      const errorMessage =
+        "Oops, there was an error loading the " +
+        errorName +
+        " information. Please refresh the page or try again later.";
+      setAlertMessage(errorMessage);
+    }
   }, [processError, tokenError, processDatesError, resultsError, proofError]);
 
   const isConnected = !!wallet.account;

@@ -10,13 +10,14 @@ import {
   SizedImg,
   GrayRectangle,
   GrayRectangleTall,
-  GrayRectangleLoading
+  GrayRectangleLoading,
 } from "./styled";
-
 
 export const Loading = () => {
   return (
-    <GrayRectangleLoading />
+    <GrayRectangleLoading>
+      <GreyInfo>Loading...</GreyInfo>
+    </GrayRectangleLoading>
   );
 };
 
