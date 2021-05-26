@@ -1,5 +1,5 @@
-import React from "react";
-import { withRouter, useRouter } from "next/router";
+import React, { useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { useProcess } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
@@ -40,8 +40,9 @@ import {
   HasFinishedBanner,
   NotStartedBanner,
   AlreadyVotedBanner,
-  Loading
+  Loading,
 } from "../../components/Banners/GrayBanners";
+import { useMessageAlert } from "../../lib/hooks/message-alert";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -53,23 +54,28 @@ const ProcessPage = () => {
     router.replace("/tokens");
   }
 
-  let loading = true;
-
+  const wallet = useWallet();
   const { dispatch } = useModal();
+  const { setAlertMessage } = useMessageAlert();
 
-  const { process } = useProcess(processId);
+  const { process, loading: processLoading, error: processError } = useProcess(processId);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(process?.entity);
-  const { hasEnded, hasStarted } = useProcessDates(process);
+  const {
+    hasEnded,
+    hasStarted,
+    loading: processDatesLoading,
+    error: processDatesError,
+  } = useProcessDates(process);
   const {
     results,
-    error: resultsError,
     loading: resultsLoading,
+    error: resultsError,
     refresh: refreshResults,
   } = useProcessResults(process, tokenInfo);
   const {
     summary,
-    error: summaryError,
     loading: summaryLoading,
+    error: summaryError,
     refresh: refreshSummary,
   } = useProcessSummary({ processInfo: process, tokenInfo });
   const { proof, loading: proofLoading, error: proofError } = useCensusProof(
@@ -77,7 +83,23 @@ const ProcessPage = () => {
     process?.parameters?.sourceBlockHeight
   );
   const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(process);
-  const wallet = useWallet();
+
+  let isLoading = useMemo(() => {
+    return processLoading || tokenLoading || processDatesLoading || resultsLoading;
+  }, [processLoading, tokenLoading, processDatesLoading, resultsLoading]);
+
+  useEffect(() => {
+    let errorMessage: string = "Oops, there was an error loading the ";
+    if (processError) errorMessage += "process";
+    else if (tokenError) errorMessage += "token";
+    else if (processDatesError) errorMessage += "processDates";
+    else if (resultsError) errorMessage += "results";
+    else if (proofError) errorMessage += "proof";
+    // else if (summaryError) errorMessage += "summary";
+    else errorMessage = "";
+
+    if (errorMessage !== "") setAlertMessage(errorMessage);
+  }, [processError, tokenError, processDatesError, resultsError, proofError]);
 
   const isConnected = !!wallet.account;
   const allQuestionsSelected = voteState.choices.length === process?.metadata?.questions?.length;
@@ -120,8 +142,6 @@ const ProcessPage = () => {
   // catch-all
   else mainButtonText = "Submit your vote";
 
-  // TODO: Use tokenLoading, tokenError, resultsError, resultsLoading, summaryError, summaryLoading
-
   return (
     <div>
       <SectionTitle
@@ -162,8 +182,8 @@ const ProcessPage = () => {
         onChoiceSelect={onSelect}
         canSelect={canSelect}
       />
-      
-      {loading ? (
+
+      {isLoading ? (
         <Loading />
       ) : !hasStarted ? (
         <NotStartedBanner />
@@ -191,4 +211,4 @@ function renderEmpty() {
   return <LoadingSpinner fullPage={true} />;
 }
 
-export default withRouter(ProcessPage);
+export default ProcessPage;
