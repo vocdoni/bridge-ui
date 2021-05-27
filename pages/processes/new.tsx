@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import {
   DVoteGateway,
   GatewayPool,
@@ -186,7 +186,7 @@ const InputBox = styled.div`
   margin-bottom: 30px;
 `;
 
-const dateTimeStyle = {
+const dateTimeStyle: CSSProperties = {
   width: "100%",
   border: "2px solid #EFF1F7",
   boxSizing: "border-box",
