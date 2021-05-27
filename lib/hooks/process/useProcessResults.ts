@@ -37,11 +37,11 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
     if (!tokenInfo || !processId || !tokenAddress) return;
     else if (!blockStatus) return;
 
-    const hasEncryptedVotes = processInfo.parameters.envelopeType.hasEncryptedVotes;
+    const hasEncryptedVotes = processInfo.parameters.envelopeType.encryptedVotes;
 
     // Encrypted and not ended?
     if (hasEncryptedVotes) {
-      const endBlock = processInfo.parameters.startBlock + processInfo.parameters.blockCount;
+      const endBlock = processInfo.parameters.endBlock;
       if (blockStatus.blockNumber < endBlock) {
         // Return empty results
 
