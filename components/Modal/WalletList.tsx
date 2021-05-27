@@ -173,27 +173,24 @@ export const WalletList = () => {
             const { connector, name } = WALLETS[wallet];
             return (
               <OptionContainer key={"wallet_" + wallet}>
-                {/* @TODO: Remove this when trezor is implemented in useWallet */}
-                {name === "Trezor" ? (
-                  <ExternalLinkOption
-                    rel="noreferrer noopener"
-                    target="_blank"
-                    href={HARDWARE_WALLETS_METAMASK_ARTICLE}
-                  >
-                    <WalletOption onClick={() => handleConnection(connector)}>
-                      <WalletLogo src={`/media/wallets/${connector}.svg`} />
-                      <WalletName>{name}</WalletName>
-                    </WalletOption>
-                  </ExternalLinkOption>
-                ) : (
-                  <WalletOption onClick={() => handleConnection(connector)}>
-                    <WalletLogo src={`/media/wallets/${connector}.svg`} />
-                    <WalletName>{name}</WalletName>
-                  </WalletOption>
-                )}
+                <WalletOption onClick={() => handleConnection(connector)}>
+                  <WalletLogo src={`/media/wallets/${connector}.svg`} />
+                  <WalletName>{name}</WalletName>
+                </WalletOption>
               </OptionContainer>
             );
           })}
+          <OptionContainer>
+            <ExternalLinkOption
+              rel="noreferrer noopener"
+              target="_blank"
+              href={HARDWARE_WALLETS_METAMASK_ARTICLE}
+            >
+              <WalletOption>
+                <WalletName>Other Wallets</WalletName>
+              </WalletOption>
+            </ExternalLinkOption>
+          </OptionContainer>
           <DontHaveAccount
             rel="noreferrer noopener"
             target="_blank"

@@ -383,14 +383,17 @@ const NewProcessPage = () => {
   };
 
   async function submitSignalingVote(pool: GatewayPool) {
+    // Estimate start/end blocks
+    const [startBlock, endBlock] = await Promise.all([
+      VotingApi.estimateBlockAtDateTime(startDate, pool),
+      VotingApi.estimateBlockAtDateTime(endDate, pool),
+    ]);
+    const blockCount = endBlock - startBlock;
     const oracleClient = new DVoteGateway({
       uri: "https://signaling-oracle.dev.vocdoni.net/dvote",
       supportedApis: ["oracle"],
     });
-    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - 1;
-    const currentBlock = await VotingApi.getBlockHeight(pool);
-    const startBlock = currentBlock + 5;
-    const blockCount = 6 * 1;
+    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
 
     const signalingProcessParams = {
       mode: ProcessMode.make({ autoStart: true }),
@@ -399,7 +402,7 @@ const NewProcessPage = () => {
       }), // bit mask
       censusOrigin: ProcessCensusOrigin.ERC20,
       metadata: metadata,
-      startBlock,
+      startBlock: startBlock,
       blockCount,
       maxCount: metadata.questions.length,
       maxValue: findMaxValue(metadata),
