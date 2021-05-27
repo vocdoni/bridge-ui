@@ -159,8 +159,10 @@ export const WalletList = () => {
   };
 
   return (
-    /* Reducing the modal container height from 565px to 225px until wallet providers are properly tested. */
-    <WalletModal open={state.walletList.open} height={465} width={452}>
+    /* Reducing the modal container height from 565px to 225px until wallet providers are
+        properly tested. */
+    /* TODO make size dynamic. */
+    <WalletModal open={state.walletList.open} height={235} width={452}>
       <WalletModalLayout>
         <Header>
           <ModalTitle>USE ACCOUNT FROM</ModalTitle>
@@ -180,7 +182,7 @@ export const WalletList = () => {
               </OptionContainer>
             );
           })}
-          <OptionContainer>
+          {/* <OptionContainer>
             <ExternalLinkOption
               rel="noreferrer noopener"
               target="_blank"
@@ -190,7 +192,7 @@ export const WalletList = () => {
                 <WalletName>Other Wallets</WalletName>
               </WalletOption>
             </ExternalLinkOption>
-          </OptionContainer>
+          </OptionContainer> */}
           <DontHaveAccount
             rel="noreferrer noopener"
             target="_blank"
