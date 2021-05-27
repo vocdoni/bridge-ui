@@ -99,7 +99,8 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
               //percentage is now within [0,100], rounded to 1 decimal place.
             }
           }
-          const vote = new TokenAmount(votes, tokenInfo.decimals);
+          let vote = new TokenAmount(votes, tokenInfo.decimals).toString();
+          if (!votes.isZero() && vote === "0") vote = "<1";
           return {
             title: title.default,
             votes: `${vote.toString()} ${tokenInfo.symbol}`,
