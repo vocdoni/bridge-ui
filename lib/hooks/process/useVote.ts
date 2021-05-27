@@ -105,7 +105,7 @@ export const useVote = (processInfo: IProcessInfo) => {
         walletOrSigner: signer,
       };
 
-      if (processInfo.parameters.envelopeType.hasEncryptedVotes) {
+      if (processInfo.parameters.envelopeType.encryptedVotes) {
         envelopParams.processKeys = await VotingApi.getProcessKeys(processId, pool);
       }
 

@@ -56,10 +56,10 @@ const DashboardPage = () => {
   const activeProcesses = processList.filter(
     (proc) =>
       blockHeight >= proc.parameters.startBlock &&
-      blockHeight < proc.parameters.startBlock + proc.parameters.blockCount
+      blockHeight < proc.parameters.endBlock
   );
   const endedProcesses = processList.filter(
-    (proc) => blockHeight >= proc.parameters.startBlock + proc.parameters.blockCount
+    (proc) => blockHeight >= proc.parameters.endBlock
   );
 
   const VOTING_SECTIONS = [

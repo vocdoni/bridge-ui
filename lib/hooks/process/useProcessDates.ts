@@ -9,7 +9,7 @@ export const useProcessDates = (processInfo: IProcessInfo) => {
 
   const blockHeight = blockStatus?.blockNumber || 0
   const startBlock = processInfo?.parameters?.startBlock || 0
-  const endBlock = startBlock + (processInfo?.parameters?.blockCount || 0)
+  const endBlock = processInfo?.parameters?.endBlock || 0
 
   // Lazy auto refresh
   useEffect(() => {
