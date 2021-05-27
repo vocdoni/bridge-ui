@@ -413,15 +413,12 @@ const NewProcessPage = () => {
       sourceBlockHeight,
       paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
     };
-    console.log("Before signing:");
     const processId = await VotingOracleApi.newProcessErc20(
       signalingProcessParams,
       signer,
       pool,
       oracleClient
     );
-    console.log("After signing:");
-    console.log(processId);
 
     const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
     if (!ready) throw new Error("The proposal is not available after a while");
@@ -516,9 +513,6 @@ const NewProcessPage = () => {
             <RightSectionTitle>Proposal Type</RightSectionTitle>
             <RadioChoice onClick={() => setPType("binding")}>
               {" "}
-              {console.log("pType? " + pType)}
-              {console.log("is binding? " + pType === "binding")}
-              {console.log("is signaling? " + pType === "signaling")}
               <input type="radio" readOnly checked={pType === "binding"} name="proposal-type" />
               <div className="checkmark"></div> Binding proposal
             </RadioChoice>
