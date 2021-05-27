@@ -208,14 +208,12 @@ const TokenPage = () => {
     (id) =>
       processes.has(id) &&
       blockNumber >= processes.get(id).parameters.startBlock &&
-      blockNumber <
-        processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
+      blockNumber < processes.get(id).parameters.endBlock
   );
   const endedProcesses = processIds.filter(
     (id) =>
       processes.has(id) &&
-      blockNumber >=
-        processes.get(id).parameters.startBlock + processes.get(id).parameters.blockCount
+      blockNumber >= processes.get(id).parameters.endBlock
   );
 
   // This exact logic is being done in dashboard/index.tsx
