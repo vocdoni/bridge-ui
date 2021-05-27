@@ -122,7 +122,7 @@ const WalletAddress = ({ account }) => {
   );
 };
 
-export const ConnectButton = ({ wide }: { wide: boolean }) => {
+export const ConnectButton = ({ wide = false }: { wide?: boolean }) => {
   const { dispatch } = useModal();
   const { status, networkName, account } = useWallet();
   const { loading: poolLoading } = usePool();

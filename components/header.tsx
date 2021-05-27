@@ -291,7 +291,7 @@ export const Header = () => {
                 {HEADER_LINKS.map((link) => (
                   <LinkItem {...link} key={link.name} />
                 ))}
-                <ConnectButton wide={false}></ConnectButton>
+                <ConnectButton />
               </LinksWrapper>
             )}{" "}
           </MenuItemsContainer>
