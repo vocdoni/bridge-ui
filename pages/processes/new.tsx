@@ -56,7 +56,7 @@ const NewProcessContainer = styled.div`
   }
 `;
 
-const ProposalRow = styled.div`
+const FormContainer = styled.div`
   display: flex;
   justify-content: start;
   flex-wrap: wrap;
@@ -72,7 +72,7 @@ const ProposalRow = styled.div`
   }
 `;
 
-const FieldRowLeftSection = styled.div`
+const InformationSection = styled.div`
   width: 680px;
   margin-right: 16px;
   & > :first-child {
@@ -92,7 +92,7 @@ const FieldRowLeftSection = styled.div`
   }
 `;
 
-const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
+const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   height: 600px;
   width: 480px;
   margin-left: 24px;
@@ -548,189 +548,187 @@ const NewProcessPage = () => {
   }
 
   return (
-    <div>
-      <NewProcessContainer>
-        <ProposalRow>
-          <FieldRowLeftSection>
-            <SectionTitle
-              title="New proposal"
-              subtitle="Enter the details of a new proposal and submit
+    <NewProcessContainer>
+      <FormContainer>
+        <InformationSection>
+          <SectionTitle
+            title="New proposal"
+            subtitle="Enter the details of a new proposal and submit
                 them."
+          />
+          <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
+          <InputBox>
+            <WidthControlInput
+              placeholder="Title"
+              onChange={(e) => setMainTitle(e.target.value)}
+              value={metadata.title.default}
+              widthValue={680}
             />
-            <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
-            <InputBox>
-              <WidthControlInput
-                placeholder="Title"
-                onChange={(e) => setMainTitle(e.target.value)}
-                value={metadata.title.default}
-                widthValue={680}
-              />
-            </InputBox>
-            <SectionTitle
-              title="Description"
-              subtitle="An introduction of about 2-3 lines"
-              smallerTitle
-            />
-            <DescriptionInput
-              placeholder="Description"
-              onChange={(e) => setMainDescription(e.target.value)}
-              value={metadata.description.default}
-            />
-            {metadata.questions.map((question, qIdx) => (
-              <div key={qIdx}>
-                <RowQuestions>
-                  <RowQuestionLeftSection>
-                    <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                    <QuestionText>Question</QuestionText>
-                    <RemoveButton marginTop={-57}>
-                      {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
-                    </RemoveButton>
-                    <InputBox>
+          </InputBox>
+          <SectionTitle
+            title="Description"
+            subtitle="An introduction of about 2-3 lines"
+            smallerTitle
+          />
+          <DescriptionInput
+            placeholder="Description"
+            onChange={(e) => setMainDescription(e.target.value)}
+            value={metadata.description.default}
+          />
+          {metadata.questions.map((question, qIdx) => (
+            <div key={qIdx}>
+              <RowQuestions>
+                <RowQuestionLeftSection>
+                  <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+                  <QuestionText>Question</QuestionText>
+                  <RemoveButton marginTop={-57}>
+                    {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+                  </RemoveButton>
+                  <InputBox>
+                    <WidthControlInput
+                      placeholder="Title"
+                      value={question.title.default}
+                      onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                      widthValue={680}
+                    />
+                  </InputBox>
+
+                  <SectionTitle title="Description" smallerTitle />
+                  <InputBox>
+                    <WidthControlDescription
+                      placeholder="Description"
+                      value={question.description.default}
+                      onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                      widthValue={660}
+                    />
+                  </InputBox>
+                </RowQuestionLeftSection>
+                <RowQuestionRightSection />
+              </RowQuestions>
+              <div>
+                <SectionTitle title="Choices" smallerTitle />
+                {question.choices.map((choice, cIdx) => (
+                  <RowQuestions key={cIdx}>
+                    <RowQuestionLeftSection>
                       <WidthControlInput
-                        placeholder="Title"
-                        value={question.title.default}
-                        onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                        widthValue={680}
+                        placeholder="Choice"
+                        value={choice.title.default}
+                        onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                        widthValue={627}
                       />
-                    </InputBox>
-
-                    <SectionTitle title="Description" smallerTitle />
-                    <InputBox>
-                      <WidthControlDescription
-                        placeholder="Description"
-                        value={question.description.default}
-                        onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                        widthValue={660}
+                    </RowQuestionLeftSection>
+                    <ChoiceRightSection>
+                      <PlusBox
+                        onClick={handleChoice}
+                        currentChoice={cIdx}
+                        choices={question.choices}
+                        currentQuestion={qIdx}
                       />
-                    </InputBox>
-                  </RowQuestionLeftSection>
-                  <RowQuestionRightSection />
-                </RowQuestions>
-                <div>
-                  <SectionTitle title="Choices" smallerTitle />
-                  {question.choices.map((choice, cIdx) => (
-                    <RowQuestions key={cIdx}>
-                      <RowQuestionLeftSection>
-                        <WidthControlInput
-                          placeholder="Choice"
-                          value={choice.title.default}
-                          onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                          widthValue={627}
-                        />
-                      </RowQuestionLeftSection>
-                      <ChoiceRightSection>
-                        <PlusBox
-                          onClick={handleChoice}
-                          currentChoice={cIdx}
-                          choices={question.choices}
-                          currentQuestion={qIdx}
-                        />
-                      </ChoiceRightSection>
-                    </RowQuestions>
-                  ))}
-                </div>
-
-                {qIdx == metadata.questions.length - 1 ? (
-                  <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-                ) : null}
+                    </ChoiceRightSection>
+                  </RowQuestions>
+                ))}
               </div>
-            ))}
-          </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={60} isLarge={isLarge}>
-            <RightSectionTitle>Proposal Type</RightSectionTitle>
-            <div style={{ float: "left" }}>
-              <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={processType === ProcessTypes.SIGNALING}
-                  name="proposal-type"
-                />
-                <div className="checkmark"></div> Signaling proposal
-              </RadioChoice>
-              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={processType === ProcessTypes.BINDING}
-                  name="proposal-type"
-                />
-                <div className="checkmark"></div> On-chain proposal
-              </RadioChoice>
-            </div>
-            <Tooltip type={TooltipType.PROCESS} />
-            <br style={{ height: "0px" }} />
-            <RightSectionTitle>Results</RightSectionTitle>
-            <div style={{ float: "left" }}>
-              <RadioChoice onClick={() => setEncryptedVotes(false)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={!envelopeType.hasEncryptedVotes}
-                  name="vote-encryption"
-                />
-                <div className="checkmark"></div> Real time results
-              </RadioChoice>
-              <RadioChoice onClick={() => setEncryptedVotes(true)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={envelopeType.hasEncryptedVotes}
-                  name="vote-encryption"
-                />
-                <div className="checkmark"></div> Encrypted results
-              </RadioChoice>
-            </div>
-            {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
-            <Tooltip type={TooltipType.RESULTS} />
-            <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
-            <RightSectionTitle>Proposal date</RightSectionTitle>
-            <Datetime
-              value={startDate}
-              inputProps={{
-                placeholder: "Start date (d/m/y h:m)",
-                style: dateTimeStyle,
-              }}
-              isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-              dateFormat="D/MM/YYYY"
-              timeFormat="HH:mm[h]"
-              onChange={(date) => onStartDate(date)}
-              strictParsing
-            />
-            <Datetime
-              value={endDate}
-              inputProps={{
-                placeholder: "End date (d/m/y h:m)",
-                style: dateTimeStyle,
-              }}
-              isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-              dateFormat="D/MM/YYYY"
-              timeFormat="HH:mm[h]"
-              onChange={(date) => onEndDate(date)}
-              strictParsing
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "13px",
-                width: "100%",
-              }}
-            >
-              {wallet.status === "connected" ? (
-                <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-              ) : !isMobile ? (
-                <ConnectButton wide />
+
+              {qIdx == metadata.questions.length - 1 ? (
+                <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
               ) : null}
             </div>
-          </FieldRowRightSection>
-        </ProposalRow>
-      </NewProcessContainer>
-    </div>
+          ))}
+        </InformationSection>
+        <OptionSection marginTop={60} isLarge={isLarge}>
+          <RightSectionTitle>Proposal Type</RightSectionTitle>
+          <div style={{ float: "left" }}>
+            <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
+              {" "}
+              <input
+                type="radio"
+                readOnly
+                checked={processType === ProcessTypes.SIGNALING}
+                name="proposal-type"
+              />
+              <div className="checkmark"></div> Signaling proposal
+            </RadioChoice>
+            <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
+              {" "}
+              <input
+                type="radio"
+                readOnly
+                checked={processType === ProcessTypes.BINDING}
+                name="proposal-type"
+              />
+              <div className="checkmark"></div> On-chain proposal
+            </RadioChoice>
+          </div>
+          <Tooltip type={TooltipType.PROCESS} />
+          <br style={{ height: "0px" }} />
+          <RightSectionTitle>Results</RightSectionTitle>
+          <div style={{ float: "left" }}>
+            <RadioChoice onClick={() => setEncryptedVotes(false)}>
+              {" "}
+              <input
+                type="radio"
+                readOnly
+                checked={!envelopeType.hasEncryptedVotes}
+                name="vote-encryption"
+              />
+              <div className="checkmark"></div> Real time results
+            </RadioChoice>
+            <RadioChoice onClick={() => setEncryptedVotes(true)}>
+              {" "}
+              <input
+                type="radio"
+                readOnly
+                checked={envelopeType.hasEncryptedVotes}
+                name="vote-encryption"
+              />
+              <div className="checkmark"></div> Encrypted results
+            </RadioChoice>
+          </div>
+          {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
+          <Tooltip type={TooltipType.RESULTS} />
+          <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
+          <RightSectionTitle>Proposal date</RightSectionTitle>
+          <Datetime
+            value={startDate}
+            inputProps={{
+              placeholder: "Start date (d/m/y h:m)",
+              style: dateTimeStyle,
+            }}
+            isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+            dateFormat="D/MM/YYYY"
+            timeFormat="HH:mm[h]"
+            onChange={(date) => onStartDate(date)}
+            strictParsing
+          />
+          <Datetime
+            value={endDate}
+            inputProps={{
+              placeholder: "End date (d/m/y h:m)",
+              style: dateTimeStyle,
+            }}
+            isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+            dateFormat="D/MM/YYYY"
+            timeFormat="HH:mm[h]"
+            onChange={(date) => onEndDate(date)}
+            strictParsing
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "13px",
+              width: "100%",
+            }}
+          >
+            {wallet.status === "connected" ? (
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
+            ) : !isMobile ? (
+              <ConnectButton wide />
+            ) : null}
+          </div>
+        </OptionSection>
+      </FormContainer>
+    </NewProcessContainer>
   );
 };
 
