@@ -90,8 +90,8 @@ const FieldRowLeftSection = styled.div`
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
-  width: 480px;
   height: 600px;
+  width: 480px;
   margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
   padding: 14px 24px 29px 24px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
@@ -99,15 +99,17 @@ const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>
   background: ${({ theme }) => theme.blackAndWhite.w1};
   box-sizing: border-box;
   @media ${({ theme }) => theme.screens.tablet} {
-    margin-right: 13px;
+    height: 520px;
     width: 100%;
     margin-top: 25px;
+    margin-right: 13px;
     margin-left: 0;
   }
   @media ${({ theme }) => theme.screens.mobileL} {
-    margin-right: 13px;
+    height: 520px;
     width: 100%;
     margin-top: 25px;
+    margin-right: 13px;
     margin-left: 0;
   }
 `;
