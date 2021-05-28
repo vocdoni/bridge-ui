@@ -590,16 +590,6 @@ const NewProcessPage = () => {
           <FieldRowRightSection marginTop={60} isLarge={isLarge}>
             <RightSectionTitle>Proposal Type</RightSectionTitle>
             <div style={{ float: "left" }}>
-              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={processType === ProcessTypes.BINDING}
-                  name="proposal-type"
-                />
-                <div className="checkmark"></div> Binding proposal
-              </RadioChoice>
               <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
                 {" "}
                 <input
@@ -609,6 +599,16 @@ const NewProcessPage = () => {
                   name="proposal-type"
                 />
                 <div className="checkmark"></div> Signaling proposal
+              </RadioChoice>
+              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={processType === ProcessTypes.BINDING}
+                  name="proposal-type"
+                />
+                <div className="checkmark"></div> On-chain proposal
               </RadioChoice>
             </div>
             <Tooltip type={TooltipType.PROCESS} />
