@@ -235,10 +235,19 @@ const SubmitButton = ({ submitting, onSubmit }) =>
     </PrimaryButton>
   );
 
+enum ProcessTypes {
+  BINDING,
+  SIGNALING,
+}
+
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
   const signer = useSigner();
   const wallet = useWallet();
+  const router = useRouter();
+  const tokenAddress = router.query.address as string;
+  const initProcessType: ProcessTypes =
+    (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
 
   const isMobile = useIsMobile();
   const isLarge = useIsWide();
@@ -249,9 +258,7 @@ const NewProcessPage = () => {
   const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0));
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
-  const router = useRouter();
-  const tokenAddress = router.query.address as string;
-  const [pType, setPType] = useState(router.query.type as string);
+  const [processType, setProcessType] = useState<ProcessTypes>(initProcessType);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
@@ -277,7 +284,6 @@ const NewProcessPage = () => {
     if (typeof date == "string") return;
     setEndDate(date.toDate());
   };
-
   const setMainTitle = (title: string) => {
     metadata.title.default = title;
     setMetadata(Object.assign({}, metadata));
@@ -365,11 +371,8 @@ const NewProcessPage = () => {
     try {
       setSubmitting(true);
       const pool = await poolPromise;
-
-      /* TODO properly handle type query and consequent flag logic into */
-      if (pType === "binding") submitBindingVote(pool);
-      else if (pType === "signaling") submitSignalingVote(pool);
-      else console.error("Unknown voting type");
+      if (processType === ProcessTypes.BINDING) submitBindingVote(pool);
+      else submitSignalingVote(pool);
     } catch (err) {
       setSubmitting(false);
 
@@ -511,14 +514,24 @@ const NewProcessPage = () => {
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={60} isLarge={isLarge}>
             <RightSectionTitle>Proposal Type</RightSectionTitle>
-            <RadioChoice onClick={() => setPType("binding")}>
+            <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
               {" "}
-              <input type="radio" readOnly checked={pType === "binding"} name="proposal-type" />
+              <input
+                type="radio"
+                readOnly
+                checked={processType === ProcessTypes.BINDING}
+                name="proposal-type"
+              />
               <div className="checkmark"></div> Binding proposal
             </RadioChoice>
-            <RadioChoice onClick={() => setPType("signaling")}>
+            <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
               {" "}
-              <input type="radio" readOnly checked={pType === "signaling"} name="proposal-type" />
+              <input
+                type="radio"
+                readOnly
+                checked={processType === ProcessTypes.SIGNALING}
+                name="proposal-type"
+              />
               <div className="checkmark"></div> Signaling proposal
             </RadioChoice>
             <RightSectionTitle>Results</RightSectionTitle>
