@@ -77,6 +77,16 @@ const FieldRowLeftSection = styled.div`
   & > :first-child {
     margin-top: 0px;
   }
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
