@@ -58,13 +58,14 @@ const NewProcessContainer = styled.div`
 
 const FormContainer = styled.div`
   display: flex;
-  justify-content: start;
-  flex-wrap: wrap;
-  @media ${({ theme }) => theme.screens.tablet} {
+  @media ${({ theme }) => theme.screens.laptopL} {
     margin-top: 0;
     flex-direction: column;
   }
-
+  @media ${({ theme }) => theme.screens.tabletL} {
+    margin-top: 0;
+    flex-direction: column;
+  }
   @media ${({ theme }) => theme.screens.mobileL} {
     width: 100%;
     margin-top: 0;
@@ -102,6 +103,10 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   border-radius: 13px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   box-sizing: border-box;
+  @media ${({ theme }) => theme.screens.laptopL} {
+    margin-top: 25px;
+    margin-left: 0;
+  }
   @media ${({ theme }) => theme.screens.tablet} {
     height: 520px;
     width: 100%;
