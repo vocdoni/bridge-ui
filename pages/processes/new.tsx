@@ -72,17 +72,19 @@ const ProposalRow = styled.div`
 `;
 
 const FieldRowLeftSection = styled.div`
-  max-width: 680px;
-  margin-right: 13px;
+  width: 680px;
+  margin-right: 16px;
   & > :first-child {
     margin-top: 0px;
   }
   @media ${({ theme }) => theme.screens.tablet} {
+    margin-right: 13px;
     width: 100%;
     margin-top: 0;
     flex-direction: column;
   }
   @media ${({ theme }) => theme.screens.mobileL} {
+    margin-right: 13px;
     width: 100%;
     margin-top: 0;
     flex-direction: column;
@@ -92,6 +94,7 @@ const FieldRowLeftSection = styled.div`
 const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   height: 600px;
   width: 480px;
+  margin-left: 24px;
   margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
   padding: 14px 24px 29px 24px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
@@ -259,6 +262,9 @@ const NewProcessPage = () => {
   const wallet = useWallet();
   const router = useRouter();
   const tokenAddress = router.query.address as string;
+  if (router.isReady && !tokenAddress) {
+    router.push("/");
+  }
   const initProcessType: ProcessTypes =
     (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
 
@@ -587,16 +593,6 @@ const NewProcessPage = () => {
           <FieldRowRightSection marginTop={60} isLarge={isLarge}>
             <RightSectionTitle>Proposal Type</RightSectionTitle>
             <div style={{ float: "left" }}>
-              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={processType === ProcessTypes.BINDING}
-                  name="proposal-type"
-                />
-                <div className="checkmark"></div> Binding proposal
-              </RadioChoice>
               <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
                 {" "}
                 <input
@@ -606,6 +602,16 @@ const NewProcessPage = () => {
                   name="proposal-type"
                 />
                 <div className="checkmark"></div> Signaling proposal
+              </RadioChoice>
+              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={processType === ProcessTypes.BINDING}
+                  name="proposal-type"
+                />
+                <div className="checkmark"></div> On-chain proposal
               </RadioChoice>
             </div>
             <Tooltip type={TooltipType.PROCESS} />
