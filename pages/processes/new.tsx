@@ -262,6 +262,9 @@ const NewProcessPage = () => {
   const wallet = useWallet();
   const router = useRouter();
   const tokenAddress = router.query.address as string;
+  if (router.isReady && !tokenAddress) {
+    router.push("/");
+  }
   const initProcessType: ProcessTypes =
     (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
 
