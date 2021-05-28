@@ -111,7 +111,7 @@ export const ProposalTypeList = () => {
     <ProposalModal open={state.proposalList.open} height={368} width={468}>
       <Layout>
         <Header>
-          <ModalTitle>New Proposal</ModalTitle>
+          <ModalTitle>New proposal</ModalTitle>
           <CloseIcon onClick={closeModal}>
             <img src="/media/close.svg" />
           </CloseIcon>
