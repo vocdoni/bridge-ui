@@ -622,7 +622,7 @@ const NewProcessPage = () => {
               </RadioChoice>
             </div>
             {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
-            <Tooltip type={TooltipType.PROCESS} />
+            <Tooltip type={TooltipType.RESULTS} />
             <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
             <RightSectionTitle>Proposal date</RightSectionTitle>
             <Datetime
