@@ -100,7 +100,7 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
             }
           }
           let vote = new TokenAmount(votes, tokenInfo.decimals).toString();
-          if (!votes.isZero() && vote === "0") vote = "<1";
+          if (!votes.isZero() && vote === "0") vote = "<0.01";
           return {
             title: title.default,
             votes: `${vote.toString()} ${tokenInfo.symbol}`,
