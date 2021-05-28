@@ -88,6 +88,7 @@ jobs:
             VOCDONI_ENVIRONMENT=stg
             ETH_NETWORK_ID=goerli
             BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.stg.json
+            SIGNALING_ORACLE_URL=https://signaling-oracle.dev.vocdoni.net/dvote
           push: true
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
@@ -105,6 +106,7 @@ jobs:
             ETH_NETWORK_ID=mainnet
             ETH_CHAIN_ID=1
             BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.json
+            SIGNALING_ORACLE_URL=https://signaling-oracle.vocdoni.net/dvote
             BLOCK_TIME=10
             ETHERSCAN_PREFIX=https://etherscan.io
             ANALYTICS_KEY=gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
