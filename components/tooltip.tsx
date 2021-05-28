@@ -62,11 +62,29 @@ const TooltipText = styled.div<Props>`
   }
 `;
 
-const Tooltip = () => {
-  const realtimeText =
+export enum TooltipType {
+  PROCESS,
+  RESULTS,
+}
+
+const Tooltip = ({ type }: { type: TooltipType }) => {
+  const REALTIME_DESCRIPTION =
     "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to.";
-  const encryptedText =
+  const ENCRYPTED_DESCRIPTION =
     "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed.";
+  const SINGALING_DESCRIPTION = "Gasless proposal creation using Vochain layer 2 solution";
+  const BINDING_DESCRIPTION =
+    "Metadata is stored on Ethereum, increasing decentralization and verifiability";
+
+  let firstText = "";
+  let secondText = "";
+  if (type === TooltipType.PROCESS) {
+    firstText = SINGALING_DESCRIPTION;
+    secondText = BINDING_DESCRIPTION;
+  } else {
+    firstText = REALTIME_DESCRIPTION;
+    secondText = ENCRYPTED_DESCRIPTION;
+  }
 
   return (
     <div>
@@ -74,7 +92,7 @@ const Tooltip = () => {
         <Circle>
           <QuestionMark>?</QuestionMark>
         </Circle>
-        <TooltipText topText>{realtimeText}</TooltipText>
+        <TooltipText topText>{firstText}</TooltipText>
       </CircleContainer>
 
       <br />
@@ -84,7 +102,7 @@ const Tooltip = () => {
         <CircleEncrypted>
           <QuestionMark>?</QuestionMark>
         </CircleEncrypted>
-        <TooltipText topText={false}>{encryptedText}</TooltipText>
+        <TooltipText topText={false}>{secondText}</TooltipText>
       </CircleContainer>
     </div>
   );

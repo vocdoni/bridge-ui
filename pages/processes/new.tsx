@@ -29,7 +29,7 @@ import { ConnectButton } from "../../components/connect-button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/input";
-import Tooltip from "../../components/tooltip";
+import Tooltip, { TooltipType } from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
 import { useToken } from "../../lib/hooks/tokens";
@@ -77,9 +77,20 @@ const FieldRowLeftSection = styled.div`
   & > :first-child {
     margin-top: 0px;
   }
+  @media ${({ theme }) => theme.screens.tablet} {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
 `;
 
 const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
+  height: 600px;
   width: 480px;
   margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
   padding: 14px 24px 29px 24px;
@@ -88,15 +99,17 @@ const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>
   background: ${({ theme }) => theme.blackAndWhite.w1};
   box-sizing: border-box;
   @media ${({ theme }) => theme.screens.tablet} {
-    margin-right: 13px;
+    height: 520px;
     width: 100%;
     margin-top: 25px;
+    margin-right: 13px;
     margin-left: 0;
   }
   @media ${({ theme }) => theme.screens.mobileL} {
-    margin-right: 13px;
+    height: 520px;
     width: 100%;
     margin-top: 25px;
+    margin-right: 13px;
     margin-left: 0;
   }
 `;
@@ -235,10 +248,19 @@ const SubmitButton = ({ submitting, onSubmit }) =>
     </PrimaryButton>
   );
 
+enum ProcessTypes {
+  BINDING,
+  SIGNALING,
+}
+
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
   const signer = useSigner();
   const wallet = useWallet();
+  const router = useRouter();
+  const tokenAddress = router.query.address as string;
+  const initProcessType: ProcessTypes =
+    (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
 
   const isMobile = useIsMobile();
   const isLarge = useIsWide();
@@ -249,9 +271,7 @@ const NewProcessPage = () => {
   const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0));
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
-  const router = useRouter();
-  const tokenAddress = router.query.address as string;
-  const [pType, setPType] = useState(router.query.type as string);
+  const [processType, setProcessType] = useState<ProcessTypes>(initProcessType);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
@@ -277,7 +297,6 @@ const NewProcessPage = () => {
     if (typeof date == "string") return;
     setEndDate(date.toDate());
   };
-
   const setMainTitle = (title: string) => {
     metadata.title.default = title;
     setMetadata(Object.assign({}, metadata));
@@ -365,11 +384,8 @@ const NewProcessPage = () => {
     try {
       setSubmitting(true);
       const pool = await poolPromise;
-
-      /* TODO properly handle type query and consequent flag logic into */
-      if (pType === "binding") submitBindingVote(pool);
-      else if (pType === "signaling") submitSignalingVote(pool);
-      else console.error("Unknown voting type");
+      if (processType === ProcessTypes.BINDING) submitBindingVote(pool);
+      else submitSignalingVote(pool);
     } catch (err) {
       setSubmitting(false);
 
@@ -508,19 +524,92 @@ const NewProcessPage = () => {
               onChange={(e) => setMainDescription(e.target.value)}
               value={metadata.description.default}
             />
+            {metadata.questions.map((question, qIdx) => (
+              <div key={qIdx}>
+                <RowQuestions>
+                  <RowQuestionLeftSection>
+                    <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+                    <QuestionText>Question</QuestionText>
+                    <RemoveButton marginTop={-57}>
+                      {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+                    </RemoveButton>
+                    <InputBox>
+                      <WidthControlInput
+                        placeholder="Title"
+                        value={question.title.default}
+                        onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                        widthValue={680}
+                      />
+                    </InputBox>
+
+                    <SectionTitle title="Description" smallerTitle />
+                    <InputBox>
+                      <WidthControlDescription
+                        placeholder="Description"
+                        value={question.description.default}
+                        onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                        widthValue={660}
+                      />
+                    </InputBox>
+                  </RowQuestionLeftSection>
+                  <RowQuestionRightSection />
+                </RowQuestions>
+                <div>
+                  <SectionTitle title="Choices" smallerTitle />
+                  {question.choices.map((choice, cIdx) => (
+                    <RowQuestions key={cIdx}>
+                      <RowQuestionLeftSection>
+                        <WidthControlInput
+                          placeholder="Choice"
+                          value={choice.title.default}
+                          onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                          widthValue={627}
+                        />
+                      </RowQuestionLeftSection>
+                      <ChoiceRightSection>
+                        <PlusBox
+                          onClick={handleChoice}
+                          currentChoice={cIdx}
+                          choices={question.choices}
+                          currentQuestion={qIdx}
+                        />
+                      </ChoiceRightSection>
+                    </RowQuestions>
+                  ))}
+                </div>
+
+                {qIdx == metadata.questions.length - 1 ? (
+                  <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
+                ) : null}
+              </div>
+            ))}
           </FieldRowLeftSection>
           <FieldRowRightSection marginTop={60} isLarge={isLarge}>
             <RightSectionTitle>Proposal Type</RightSectionTitle>
-            <RadioChoice onClick={() => setPType("binding")}>
-              {" "}
-              <input type="radio" readOnly checked={pType === "binding"} name="proposal-type" />
-              <div className="checkmark"></div> Binding proposal
-            </RadioChoice>
-            <RadioChoice onClick={() => setPType("signaling")}>
-              {" "}
-              <input type="radio" readOnly checked={pType === "signaling"} name="proposal-type" />
-              <div className="checkmark"></div> Signaling proposal
-            </RadioChoice>
+            <div style={{ float: "left" }}>
+              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={processType === ProcessTypes.BINDING}
+                  name="proposal-type"
+                />
+                <div className="checkmark"></div> Binding proposal
+              </RadioChoice>
+              <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={processType === ProcessTypes.SIGNALING}
+                  name="proposal-type"
+                />
+                <div className="checkmark"></div> Signaling proposal
+              </RadioChoice>
+            </div>
+            <Tooltip type={TooltipType.PROCESS} />
+            <br style={{ height: "0px" }} />
             <RightSectionTitle>Results</RightSectionTitle>
             <div style={{ float: "left" }}>
               <RadioChoice onClick={() => setEncryptedVotes(false)}>
@@ -545,7 +634,7 @@ const NewProcessPage = () => {
               </RadioChoice>
             </div>
             {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
-            <Tooltip />
+            <Tooltip type={TooltipType.RESULTS} />
             <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
             <RightSectionTitle>Proposal date</RightSectionTitle>
             <Datetime
@@ -588,66 +677,6 @@ const NewProcessPage = () => {
             </div>
           </FieldRowRightSection>
         </ProposalRow>
-
-        {metadata.questions.map((question, qIdx) => (
-          <div key={qIdx}>
-            <RowQuestions>
-              <RowQuestionLeftSection>
-                <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                <QuestionText>Question</QuestionText>
-                <RemoveButton marginTop={-57}>
-                  {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
-                </RemoveButton>
-                <InputBox>
-                  <WidthControlInput
-                    placeholder="Title"
-                    value={question.title.default}
-                    onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                    widthValue={680}
-                  />
-                </InputBox>
-
-                <SectionTitle title="Description" smallerTitle />
-                <InputBox>
-                  <WidthControlDescription
-                    placeholder="Description"
-                    value={question.description.default}
-                    onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                    widthValue={660}
-                  />
-                </InputBox>
-              </RowQuestionLeftSection>
-              <RowQuestionRightSection />
-            </RowQuestions>
-            <div>
-              <SectionTitle title="Choices" smallerTitle />
-              {question.choices.map((choice, cIdx) => (
-                <RowQuestions key={cIdx}>
-                  <RowQuestionLeftSection>
-                    <WidthControlInput
-                      placeholder="Choice"
-                      value={choice.title.default}
-                      onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                      widthValue={627}
-                    />
-                  </RowQuestionLeftSection>
-                  <ChoiceRightSection>
-                    <PlusBox
-                      onClick={handleChoice}
-                      currentChoice={cIdx}
-                      choices={question.choices}
-                      currentQuestion={qIdx}
-                    />
-                  </ChoiceRightSection>
-                </RowQuestions>
-              ))}
-            </div>
-
-            {qIdx == metadata.questions.length - 1 ? (
-              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-            ) : null}
-          </div>
-        ))}
       </NewProcessContainer>
     </div>
   );

@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 
 import { ProposalModal } from ".";
 import { ActionTypes, useModal } from "./context";
-import Link from "next/link";
-import { TextLink } from "../connect-button";
 
 const Layout = styled.div`
   width: 100%;
@@ -110,7 +108,7 @@ export const ProposalTypeList = () => {
   }
 
   return (
-    <ProposalModal open={state.proposalList.open} height={414} width={468}>
+    <ProposalModal open={state.proposalList.open} height={368} width={468}>
       <Layout>
         <Header>
           <ModalTitle>New Governance Process</ModalTitle>
@@ -119,18 +117,14 @@ export const ProposalTypeList = () => {
           </CloseIcon>
         </Header>
         <Body>
-          <OptionContainer onClick={() => onChoice("binding")}>
-            <OptionTitle>{PROPOSAL_TYPES[0].title}</OptionTitle>
-            <OptionDescription>{PROPOSAL_TYPES[0].description}</OptionDescription>
-          </OptionContainer>
           <OptionContainer onClick={() => onChoice("signaling")}>
             <OptionTitle>{PROPOSAL_TYPES[1].title}</OptionTitle>
             <OptionDescription>{PROPOSAL_TYPES[1].description}</OptionDescription>
           </OptionContainer>
-          {/* TODO: Insert URL for explanations */}
-          <Link href="https://aragon.org/blog">
-            <TextLink>More information on the proposal types</TextLink>
-          </Link>
+          <OptionContainer onClick={() => onChoice("binding")}>
+            <OptionTitle>{PROPOSAL_TYPES[0].title}</OptionTitle>
+            <OptionDescription>{PROPOSAL_TYPES[0].description}</OptionDescription>
+          </OptionContainer>
         </Body>
       </Layout>
     </ProposalModal>
@@ -139,11 +133,11 @@ export const ProposalTypeList = () => {
 
 const PROPOSAL_TYPES = [
   {
-    title: "Binding proposal",
-    description: "This is the decription for a binding proposal on 2 lines",
+    title: "On-chain proposal",
+    description: "Metadata is stored on Ethereum, increasing decentralization and verifiability",
   },
   {
     title: "Signaling proposal",
-    description: "This is the decription for a signaling proposal on 2 lines",
+    description: "Gasless proposal creation using Vochain layer 2 solution",
   },
 ];
