@@ -21,6 +21,7 @@ module.exports = {
 
   // GATEWAYS
   BOOTNODES_URL: process.env.BOOTNODES_URL || "https://bootnodes.vocdoni.net/gateways.dev.json",
+  SIGNALING_ORACLE_URL: process.env.SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
 
   // ANALYTICS
   ANALYTICS_KEY: process.env.ANALYTICS_KEY || "4ohZSOqAi2Wy0pDuzFPB7fDN5XirRjsq",

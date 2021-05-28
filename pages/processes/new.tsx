@@ -212,7 +212,7 @@ const dateTimeStyle: CSSProperties = {
   marginBottom: "14px",
 };
 
-const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
+const WidthControlInput = styled(TextInput) <{ widthValue?: number }>`
   max-width: 680px;
   width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
   min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
@@ -225,7 +225,7 @@ const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
   }
 `;
 
-const WidthControlDescription = styled(DescriptionInput)<{ widthValue?: number }>`
+const WidthControlDescription = styled(DescriptionInput) <{ widthValue?: number }>`
   max-width: 680px;
   width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
   min-width: 680px;
@@ -405,50 +405,62 @@ const NewProcessPage = () => {
   };
 
   async function submitSignalingVote(pool: GatewayPool) {
-    // Estimate start/end blocks
-    const [startBlock, endBlock] = await Promise.all([
-      VotingApi.estimateBlockAtDateTime(startDate, pool),
-      VotingApi.estimateBlockAtDateTime(endDate, pool),
-    ]);
-    const blockCount = endBlock - startBlock;
-    const oracleClient = new DVoteGateway({
-      uri: "https://signaling-oracle.dev.vocdoni.net/dvote",
-      supportedApis: ["oracle"],
-    });
-    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+    try {
+      // Estimate start/end blocks
+      const [startBlock, endBlock] = await Promise.all([
+        VotingApi.estimateBlockAtDateTime(startDate, pool),
+        VotingApi.estimateBlockAtDateTime(endDate, pool),
+      ]);
+      const blockCount = endBlock - startBlock;
+      const oracleClient = new DVoteGateway({
+        uri: process.env.SIGNALING_ORACLE_URL,
+        supportedApis: ["oracle"],
+      });
+      const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
 
-    const signalingProcessParams = {
-      mode: ProcessMode.make({ autoStart: true }),
-      envelopeType: ProcessEnvelopeType.make({
-        encryptedVotes: envelopeType.hasEncryptedVotes,
-      }), // bit mask
-      censusOrigin: ProcessCensusOrigin.ERC20,
-      metadata: metadata,
-      startBlock: startBlock,
-      blockCount,
-      maxCount: metadata.questions.length,
-      maxValue: findMaxValue(metadata),
-      maxTotalCost: 0,
-      costExponent: 10000,
-      maxVoteOverwrites: 1,
-      tokenAddress,
-      sourceBlockHeight,
-      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
-    };
-    const processId = await VotingOracleApi.newProcessErc20(
-      signalingProcessParams,
-      signer,
-      pool,
-      oracleClient
-    );
+      const signalingProcessParams = {
+        mode: ProcessMode.make({ autoStart: true }),
+        envelopeType: ProcessEnvelopeType.make({
+          encryptedVotes: envelopeType.hasEncryptedVotes,
+        }), // bit mask
+        censusOrigin: ProcessCensusOrigin.ERC20,
+        metadata: metadata,
+        startBlock: startBlock,
+        blockCount,
+        maxCount: metadata.questions.length,
+        maxValue: findMaxValue(metadata),
+        maxTotalCost: 0,
+        costExponent: 10000,
+        maxVoteOverwrites: 1,
+        tokenAddress,
+        sourceBlockHeight,
+        paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      };
+      const processId = await VotingOracleApi.newProcessErc20(
+        signalingProcessParams,
+        signer,
+        pool,
+        oracleClient
+      );
 
-    const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
-    if (!ready) throw new Error("The proposal is not available after a while");
+      const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
+      if (!ready) throw new Error("The proposal is not available after a while");
 
-    Router.push("/processes#/" + processId);
-    setSubmitting(false);
+      Router.push("/processes#/" + processId);
+      setSubmitting(false);
 
-    setAlertMessage("The proposal has been successfully created", "success");
+      setAlertMessage("The proposal has been successfully created", "success");
+    }
+    catch (err) {
+      setSubmitting(false);
+      console.error(err);
+
+      if (err?.message?.indexOf?.("max proposals per address reached")) {
+        return setAlertMessage("You have hit the temporary limit of proposals");
+      }
+
+      setAlertMessage("The proposal could not be created");
+    }
   }
 
   async function submitBindingVote(pool: GatewayPool) {

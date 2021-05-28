@@ -28,6 +28,7 @@ Configure the `.env` file with the following variables:
 -   `BRIDGE_UI_TAG` Docker tag of the image (main, stage, release)
 -   `VOCDONI_ENVIRONMENT` Enviromnent type (dev, stage, prod)
 -   `BOOTNODES_URL` URL to fetch the JSON containing nodes information (gateways, etc.)
+-   `SIGNALING_ORACLE_URL` The URL of the signaling oracle, used to create gassless proposals
 -   `ETH_NETWORK_ID` Ethereum nework ID (xdai, goerli...)
 -   `DOMAIN` Domain name to be served. Used by Traefik to fetch SSL certificates from Let's Encrypt
 -   `LE_EMAIL` Email associated to the domain. Used by Traefik to fetch SSL certificates from Let's Encrypt
