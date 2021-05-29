@@ -122,7 +122,7 @@ const ProcessPage = () => {
       if ((error.message as string).includes("signature")) {
         return setAlertMessage("Signature denied.");
       }
-      setAlertMessage("The vote could not be submitted");
+      return setAlertMessage("The vote could not be submitted");
     }
     await refreshResults();
     await refreshVotingStatus();
