@@ -159,9 +159,7 @@ export const WalletList = () => {
   }, [status]);
 
   const handleConnection = async (wallet) => {
-    // @TODO: Remove this when trezor is implemented in useWallet
-    if (wallet === "trezor") return;
-    connect(wallet);
+    await connect(wallet);
     closeModal();
     reset();
   };
