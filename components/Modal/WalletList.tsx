@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useRouter } from "next/router";
 import { useWallet } from "use-wallet";
 
 import { WalletModal } from ".";
@@ -125,14 +124,11 @@ const DontHaveAccount = styled.a`
   }
 `;
 
-const HARDWARE_WALLETS_METAMASK_ARTICLE =
-  "https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet";
-
 export const WalletList = () => {
-  const { connect, error, reset } = useWallet();
-  const { pathname } = useRouter();
+  const { connect, error, reset, status, account, networkName, connector } = useWallet();
   const { state, dispatch } = useModal();
   const { setAlertMessage } = useMessageAlert();
+  const [firstId, setFirstId] = useState(true);
 
   const closeModal = () => {
     dispatch({
@@ -150,10 +146,22 @@ export const WalletList = () => {
       setAlertMessage("This chain is not supported. Please set your wallet to Mainnet");
   }, [error]);
 
+  useEffect(() => {
+    /* NOTE This logic is needed to ensure identification event is sent only once. */
+    if (status === "connected" && firstId) {
+      setFirstId(false);
+      (window as any).analytics?.identify({
+        wallet_address: account,
+        last_wallet_provider: connector,
+        last_network: networkName,
+      });
+    }
+  }, [status]);
+
   const handleConnection = async (wallet) => {
     // @TODO: Remove this when trezor is implemented in useWallet
     if (wallet === "trezor") return;
-    await connect(wallet);
+    connect(wallet);
     closeModal();
     reset();
   };

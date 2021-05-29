@@ -21,6 +21,9 @@ export const ERC20_ABI_MAKER = [
 export const TRUST_WALLET_BASE_URL =
   "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";
 
+export const HARDWARE_WALLETS_METAMASK_ARTICLE =
+  "https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet";
+
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // for ethers-multicall
@@ -68,6 +71,4 @@ export const LANDING_PAGE_CTA = "/media/landing-background.svg";
 export const WALLET_IDENTICON = "/media/connected_wallet_icon.svg";
 export const MEDITATING_LADY_IMG = "/media/meditating_lady_img.svg";
 export const ISLAND_FLAG_IMG = "/media/island_flag_img.svg";
-// TODO replace with svg image when transparent version available
-// export const PEOPLE_IMG = "/media/people_img.svg";
 export const PEOPLE_IMG = "/media/people_img_transparent.png";
