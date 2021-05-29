@@ -472,12 +472,13 @@ const NewProcessPage = () => {
       (window as any).analytics?.track("proposal_created", analytics_properties);
     } catch (err) {
       setSubmitting(false);
-      console.error(err);
 
+      if ((err.message as string).includes("signature")) {
+        return setAlertMessage("Signature denied.");
+      }
       if (err?.message?.indexOf?.("max proposals per address reached")) {
         return setAlertMessage("You have hit the temporary limit of proposals");
       }
-
       setAlertMessage("The proposal could not be created");
     }
   }

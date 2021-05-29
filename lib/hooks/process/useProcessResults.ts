@@ -124,7 +124,7 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
           const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
             title: choiceTitle.default,
             votes: hasEncryptedVotes ? "" : "0 " + tokenInfo.symbol,
-            percentage: hasEncryptedVotes ? "" : "0.0",
+            percentage: "Error",
           }));
           return {
             title: title.default,

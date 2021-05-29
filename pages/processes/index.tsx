@@ -43,6 +43,7 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
+import { ProcessResults } from "dvote-solidity";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -66,18 +67,14 @@ const ProcessPage = () => {
     loading: processDatesLoading,
     error: processDatesError,
   } = useProcessDates(process);
-  const {
-    results,
-    loading: resultsLoading,
-    error: resultsError,
-    refresh: refreshResults,
-  } = useProcessResults(process, tokenInfo);
-  const {
-    summary,
-    loading: summaryLoading,
-    error: summaryError,
-    refresh: refreshSummary,
-  } = useProcessSummary({ processInfo: process, tokenInfo });
+  const { results, error: resultsError, refresh: refreshResults } = useProcessResults(
+    process,
+    tokenInfo
+  );
+  const { summary, error: summaryError, refresh: refreshSummary } = useProcessSummary({
+    processInfo: process,
+    tokenInfo,
+  });
   const { proof, loading: proofLoading, error: proofError } = useCensusProof(
     tokenInfo,
     process?.parameters?.sourceBlockHeight
@@ -113,8 +110,21 @@ const ProcessPage = () => {
     if (!isConnected) {
       return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
     }
-
-    await submitVote(process, proof);
+    try {
+      await submitVote(process, proof);
+      const analytics_properties = {
+        proposal_id: processId,
+        wallet_address: wallet.account,
+        wallet_provider: wallet.connector,
+        network: wallet.networkName,
+      };
+      (window as any).analytics?.track("proposal_voted", analytics_properties);
+    } catch (error) {
+      if ((error.message as string).includes("signature")) {
+        return setAlertMessage("Signature denied.");
+      }
+      setAlertMessage("The vote could not be submitted");
+    }
     await refreshResults();
     await refreshVotingStatus();
     await refreshSummary();
@@ -142,7 +152,7 @@ const ProcessPage = () => {
   // catch-all
   else mainButtonText = "Submit your vote";
 
-  const isLoading = processLoading || tokenLoading || processDatesLoading || resultsLoading;
+  const isLoading = processLoading || tokenLoading || processDatesLoading || proofLoading;
 
   return (
     <div>
