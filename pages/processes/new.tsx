@@ -262,6 +262,195 @@ enum ProcessTypes {
   SIGNALING,
 }
 
+const FormContainer = styled.div`
+  display: flex;
+  @media ${({ theme }) => theme.screens.tabletL} {
+    margin-top: 0;
+    flex-direction: column;
+  }
+`;
+
+const InformationSection = styled.div`
+  width: 680px;
+  margin-right: 16px;
+  & > :first-child {
+    margin-top: 0px;
+  }
+  @media ${({ theme }) => theme.screens.laptopL} {
+    width: 65%;
+  }
+  @media ${({ theme }) => theme.screens.tabletL} {
+    margin-right: 13px;
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
+`;
+
+const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
+  height: 600px;
+  width: 480px;
+  margin-left: 24px;
+  margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
+  padding: 14px 24px 29px 24px;
+  box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+  border-radius: 13px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  box-sizing: border-box;
+  @media ${({ theme }) => theme.screens.laptopL} {
+    width: 33%;
+    margin-left: 0;
+  }
+  @media ${({ theme }) => theme.screens.tablet} {
+    height: 520px;
+    width: 100%;
+    margin-top: 25px;
+    margin-right: 13px;
+    margin-left: 0;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    height: 520px;
+    width: 100%;
+    margin-top: 25px;
+    margin-right: 13px;
+    margin-left: 0;
+  }
+`;
+
+const RightSectionTitle = styled.p`
+  font-weight: 500;
+  margin-bottom: 9px;
+  line-height: 150%;
+  text-align: left;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 18px;
+  }
+
+  @media ${({ theme }) => theme.screens.mobileL} {
+    font-size: 18px;
+  }
+`;
+
+const RemoveButton = styled.div<{ marginTop: number }>`
+  flex: 35%;
+  margin-left: 6.5em;
+  margin-top: ${({ marginTop }) => marginTop}px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: 25px;
+  }
+`;
+
+const RowQuestions = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const RowQuestionRightSection = styled.div`
+  flex: 4;
+  padding-left: 2em;
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex: 0;
+    padding-left: 0;
+  }
+`;
+
+const ChoiceRightSection = styled.div`
+  flex: 20;
+  margin-left: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex: 0;
+  }
+`;
+
+const QuestionNumber = styled.h6`
+  color: ${({ theme }) => theme.primary.p1};
+  font-size: 18px;
+  margin-bottom: -18px;
+  font-weight: 500;
+  line-height: 150%;
+`;
+
+const QuestionText = styled.h5`
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 38px;
+  letter-spacing: -0.03em;
+  margin-bottom: 85px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: 30px;
+  }
+`;
+
+const InputBox = styled.div`
+  display: flex;
+  margin-bottom: 30px;
+`;
+
+const dateTimeStyle: CSSProperties = {
+  width: "100%",
+  border: "2px solid #EFF1F7",
+  boxSizing: "border-box",
+  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
+  borderRadius: "8px",
+  marginTop: "0px",
+  marginBottom: "14px",
+  // border: none;
+  // background-color: ${({ theme }) => theme.blackAndWhite.w1};
+  padding: "1em",
+};
+
+const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
+  @media ${({ theme }) => theme.screens.tablet} {
+    display: flex;
+    min-width: 100%;
+    margin-bottom: 9px;
+    width: 100%;
+  }
+`;
+
+const WidthControlDescription = styled(DescriptionInput)`
+  width: 100%;
+  min-width: 100%;
+  border: none;
+  background-color: ${({ theme }) => theme.blackAndWhite.w1};
+  padding: 1em;
+  margin-top: 1em;
+  border-radius: 8px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+    display: flex;
+    width: 100%;
+    min-width: 100%;
+  }
+`;
+
+const SubmitButton = ({ submitting, onSubmit }) =>
+  submitting ? (
+    <p>
+      Please wait...
+      <Spinner />
+    </p>
+  ) : (
+    <PrimaryButton wide onClick={onSubmit}>
+      Create proposal
+    </PrimaryButton>
+  );
+
+enum ProcessTypes {
+  BINDING,
+  SIGNALING,
+}
+
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
   const { storeTokens } = useStoredTokens();
@@ -462,17 +651,6 @@ const NewProcessPage = () => {
 
       // Success
       setAlertMessage("The proposal has been successfully created", "success");
-      const results = envelopeType.hasEncryptedVotes ? "encrypted" : "normal";
-      const analytics_properties = {
-        entity_id: tokenAddress,
-        proposal_id: processId,
-        start: startDate,
-        end: endDate,
-        binding_type: "signaling",
-        results_type: results,
-        questions_length: metadata.questions.length,
-      };
-      trackEvent(EventType.PROPOSAL_CREATION, analytics_properties);
     } catch (err) {
       setSubmitting(false);
 
@@ -553,187 +731,178 @@ const NewProcessPage = () => {
   }
 
   return (
-    <NewProcessContainer>
-      <FormContainer>
-        <InformationSection>
-          <SectionTitle
-            title="New proposal"
-            subtitle="Enter the details of a new proposal and submit
+    <FormContainer>
+      <InformationSection>
+        <SectionTitle
+          title="New proposal"
+          subtitle="Enter the details of a new proposal and submit
                 them."
+        />
+        <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
+        <InputBox>
+          <WidthControlInput
+            placeholder="Title"
+            onChange={(e) => setMainTitle(e.target.value)}
+            value={metadata.title.default}
+            widthValue={680}
           />
-          <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
-          <InputBox>
-            <WidthControlInput
-              placeholder="Title"
-              onChange={(e) => setMainTitle(e.target.value)}
-              value={metadata.title.default}
-              widthValue={680}
-            />
-          </InputBox>
-          <SectionTitle
-            title="Description"
-            subtitle="An introduction of about 2-3 lines"
-            smallerTitle
-          />
-          <DescriptionInput
-            placeholder="Description"
-            onChange={(e) => setMainDescription(e.target.value)}
-            value={metadata.description.default}
-          />
-          {metadata.questions.map((question, qIdx) => (
-            <div key={qIdx}>
-              <RowQuestions>
-                <RowQuestionLeftSection>
-                  <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                  <QuestionText>Question</QuestionText>
-                  <RemoveButton marginTop={-57}>
-                    {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
-                  </RemoveButton>
-                  <InputBox>
-                    <WidthControlInput
-                      placeholder="Title"
-                      value={question.title.default}
-                      onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                      widthValue={680}
-                    />
-                  </InputBox>
+        </InputBox>
+        <SectionTitle
+          title="Description"
+          subtitle="An introduction of about 2-3 lines"
+          smallerTitle
+        />
+        <WidthControlDescription
+          placeholder="Description"
+          onChange={(e) => setMainDescription(e.target.value)}
+          value={metadata.description.default}
+        />
+        {metadata.questions.map((question, qIdx) => (
+          <>
+            <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+            <QuestionText>Question</QuestionText>
+            <RemoveButton marginTop={-57}>
+              {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+            </RemoveButton>
+            <InputBox>
+              <WidthControlInput
+                placeholder="Title"
+                value={question.title.default}
+                onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                widthValue={680}
+              />
+            </InputBox>
 
-                  <SectionTitle title="Description" smallerTitle />
-                  <InputBox>
-                    <WidthControlDescription
-                      placeholder="Description"
-                      value={question.description.default}
-                      onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                      widthValue={660}
+            <SectionTitle title="Description" smallerTitle />
+            <InputBox>
+              <WidthControlDescription
+                placeholder="Description"
+                value={question.description.default}
+                onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+              />
+            </InputBox>
+            <RowQuestionRightSection />
+            <div>
+              <SectionTitle title="Choices" smallerTitle />
+              {question.choices.map((choice, cIdx) => (
+                <RowQuestions key={cIdx}>
+                  <WidthControlInput
+                    placeholder="Choice"
+                    value={choice.title.default}
+                    onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                    widthValue={627}
+                  />
+                  <ChoiceRightSection>
+                    <PlusBox
+                      onClick={handleChoice}
+                      currentChoice={cIdx}
+                      choices={question.choices}
+                      currentQuestion={qIdx}
                     />
-                  </InputBox>
-                </RowQuestionLeftSection>
-                <RowQuestionRightSection />
-              </RowQuestions>
-              <div>
-                <SectionTitle title="Choices" smallerTitle />
-                {question.choices.map((choice, cIdx) => (
-                  <RowQuestions key={cIdx}>
-                    <RowQuestionLeftSection>
-                      <WidthControlInput
-                        placeholder="Choice"
-                        value={choice.title.default}
-                        onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                        widthValue={627}
-                      />
-                    </RowQuestionLeftSection>
-                    <ChoiceRightSection>
-                      <PlusBox
-                        onClick={handleChoice}
-                        currentChoice={cIdx}
-                        choices={question.choices}
-                        currentQuestion={qIdx}
-                      />
-                    </ChoiceRightSection>
-                  </RowQuestions>
-                ))}
-              </div>
-
-              {qIdx == metadata.questions.length - 1 ? (
-                <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-              ) : null}
+                  </ChoiceRightSection>
+                </RowQuestions>
+              ))}
             </div>
-          ))}
-        </InformationSection>
-        <OptionSection marginTop={60} isLarge={isLarge}>
-          <RightSectionTitle>Proposal Type</RightSectionTitle>
-          <div style={{ float: "left" }}>
-            <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
-              {" "}
-              <input
-                type="radio"
-                readOnly
-                checked={processType === ProcessTypes.SIGNALING}
-                name="proposal-type"
-              />
-              <div className="checkmark"></div> Signaling proposal
-            </RadioChoice>
-            <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
-              {" "}
-              <input
-                type="radio"
-                readOnly
-                checked={processType === ProcessTypes.BINDING}
-                name="proposal-type"
-              />
-              <div className="checkmark"></div> On-chain proposal
-            </RadioChoice>
-          </div>
-          <Tooltip type={TooltipType.PROCESS} />
-          <br style={{ height: "0px" }} />
-          <RightSectionTitle>Results</RightSectionTitle>
-          <div style={{ float: "left" }}>
-            <RadioChoice onClick={() => setEncryptedVotes(false)}>
-              {" "}
-              <input
-                type="radio"
-                readOnly
-                checked={!envelopeType.hasEncryptedVotes}
-                name="vote-encryption"
-              />
-              <div className="checkmark"></div> Real time results
-            </RadioChoice>
-            <RadioChoice onClick={() => setEncryptedVotes(true)}>
-              {" "}
-              <input
-                type="radio"
-                readOnly
-                checked={envelopeType.hasEncryptedVotes}
-                name="vote-encryption"
-              />
-              <div className="checkmark"></div> Encrypted results
-            </RadioChoice>
-          </div>
-          {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
-          <Tooltip type={TooltipType.RESULTS} />
-          <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
-          <RightSectionTitle>Proposal date</RightSectionTitle>
-          <Datetime
-            value={startDate}
-            inputProps={{
-              placeholder: "Start date (d/m/y h:m)",
-              style: dateTimeStyle,
-            }}
-            isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-            dateFormat="D/MM/YYYY"
-            timeFormat="HH:mm[h]"
-            onChange={(date) => onStartDate(date)}
-            strictParsing
-          />
-          <Datetime
-            value={endDate}
-            inputProps={{
-              placeholder: "End date (d/m/y h:m)",
-              style: dateTimeStyle,
-            }}
-            isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-            dateFormat="D/MM/YYYY"
-            timeFormat="HH:mm[h]"
-            onChange={(date) => onEndDate(date)}
-            strictParsing
-          />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "13px",
-              width: "100%",
-            }}
-          >
-            {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-            ) : !isMobile ? (
-              <ConnectButton wide />
+
+            {qIdx == metadata.questions.length - 1 ? (
+              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
             ) : null}
-          </div>
-        </OptionSection>
-      </FormContainer>
-    </NewProcessContainer>
+          </>
+        ))}
+      </InformationSection>
+      <OptionSection marginTop={60} isLarge={isLarge}>
+        <RightSectionTitle>Proposal Type</RightSectionTitle>
+        <div style={{ float: "left" }}>
+          <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
+            {" "}
+            <input
+              type="radio"
+              readOnly
+              checked={processType === ProcessTypes.SIGNALING}
+              name="proposal-type"
+            />
+            <div className="checkmark"></div> Signaling proposal
+          </RadioChoice>
+          <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
+            {" "}
+            <input
+              type="radio"
+              readOnly
+              checked={processType === ProcessTypes.BINDING}
+              name="proposal-type"
+            />
+            <div className="checkmark"></div> On-chain proposal
+          </RadioChoice>
+        </div>
+        <Tooltip type={TooltipType.PROCESS} />
+        <br style={{ height: "0px" }} />
+        <RightSectionTitle>Results</RightSectionTitle>
+        <div style={{ float: "left" }}>
+          <RadioChoice onClick={() => setEncryptedVotes(false)}>
+            {" "}
+            <input
+              type="radio"
+              readOnly
+              checked={!envelopeType.hasEncryptedVotes}
+              name="vote-encryption"
+            />
+            <div className="checkmark"></div> Real time results
+          </RadioChoice>
+          <RadioChoice onClick={() => setEncryptedVotes(true)}>
+            {" "}
+            <input
+              type="radio"
+              readOnly
+              checked={envelopeType.hasEncryptedVotes}
+              name="vote-encryption"
+            />
+            <div className="checkmark"></div> Encrypted results
+          </RadioChoice>
+        </div>
+        {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
+        <Tooltip type={TooltipType.RESULTS} />
+        <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
+        <RightSectionTitle>Proposal date</RightSectionTitle>
+        <Datetime
+          value={startDate}
+          inputProps={{
+            placeholder: "Start date (d/m/y h:m)",
+            style: dateTimeStyle,
+          }}
+          isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+          dateFormat="D/MM/YYYY"
+          timeFormat="HH:mm[h]"
+          onChange={(date) => onStartDate(date)}
+          strictParsing
+        />
+        <Datetime
+          value={endDate}
+          inputProps={{
+            placeholder: "End date (d/m/y h:m)",
+            style: dateTimeStyle,
+          }}
+          isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+          dateFormat="D/MM/YYYY"
+          timeFormat="HH:mm[h]"
+          onChange={(date) => onEndDate(date)}
+          strictParsing
+        />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "13px",
+            width: "100%",
+          }}
+        >
+          {wallet.status === "connected" ? (
+            <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
+          ) : !isMobile ? (
+            <ConnectButton wide />
+          ) : null}
+        </div>
+      </OptionSection>
+    </FormContainer>
   );
 };
 
