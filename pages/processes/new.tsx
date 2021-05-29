@@ -342,26 +342,13 @@ const RemoveButton = styled.div<{ marginTop: number }>`
 `;
 
 const RowQuestions = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const RowQuestionRightSection = styled.div`
-  flex: 4;
-  padding-left: 2em;
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex: 0;
-    padding-left: 0;
-  }
 `;
 
 const ChoiceRightSection = styled.div`
-  flex: 20;
+  width: 44px;
   margin-left: 13px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 
   @media ${({ theme }) => theme.screens.tablet} {
     flex: 0;
@@ -407,7 +394,8 @@ const dateTimeStyle: CSSProperties = {
   padding: "1em",
 };
 
-const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
+const WidthControlInput = styled(TextInput)`
+  flex-grow: 2000;
   @media ${({ theme }) => theme.screens.tablet} {
     display: flex;
     min-width: 100%;
@@ -416,7 +404,7 @@ const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
   }
 `;
 
-const WidthControlDescription = styled(DescriptionInput)`
+const QuestionDescription = styled(DescriptionInput)`
   width: 100%;
   min-width: 100%;
   border: none;
@@ -744,7 +732,6 @@ const NewProcessPage = () => {
             placeholder="Title"
             onChange={(e) => setMainTitle(e.target.value)}
             value={metadata.title.default}
-            widthValue={680}
           />
         </InputBox>
         <SectionTitle
@@ -752,7 +739,7 @@ const NewProcessPage = () => {
           subtitle="An introduction of about 2-3 lines"
           smallerTitle
         />
-        <WidthControlDescription
+        <QuestionDescription
           placeholder="Description"
           onChange={(e) => setMainDescription(e.target.value)}
           value={metadata.description.default}
@@ -769,41 +756,35 @@ const NewProcessPage = () => {
                 placeholder="Title"
                 value={question.title.default}
                 onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                widthValue={680}
               />
             </InputBox>
 
             <SectionTitle title="Description" smallerTitle />
             <InputBox>
-              <WidthControlDescription
+              <QuestionDescription
                 placeholder="Description"
                 value={question.description.default}
                 onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
               />
             </InputBox>
-            <RowQuestionRightSection />
-            <div>
-              <SectionTitle title="Choices" smallerTitle />
-              {question.choices.map((choice, cIdx) => (
-                <RowQuestions key={cIdx}>
-                  <WidthControlInput
-                    placeholder="Choice"
-                    value={choice.title.default}
-                    onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                    widthValue={627}
+            <SectionTitle title="Choices" smallerTitle />
+            {question.choices.map((choice, cIdx) => (
+              <RowQuestions key={cIdx}>
+                <WidthControlInput
+                  placeholder="Choice"
+                  value={choice.title.default}
+                  onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                />
+                <ChoiceRightSection>
+                  <PlusBox
+                    onClick={handleChoice}
+                    currentChoice={cIdx}
+                    choices={question.choices}
+                    currentQuestion={qIdx}
                   />
-                  <ChoiceRightSection>
-                    <PlusBox
-                      onClick={handleChoice}
-                      currentChoice={cIdx}
-                      choices={question.choices}
-                      currentQuestion={qIdx}
-                    />
-                  </ChoiceRightSection>
-                </RowQuestions>
-              ))}
-            </div>
-
+                </ChoiceRightSection>
+              </RowQuestions>
+            ))}
             {qIdx == metadata.questions.length - 1 ? (
               <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
             ) : null}
