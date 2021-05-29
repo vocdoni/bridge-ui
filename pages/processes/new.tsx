@@ -132,10 +132,6 @@ const RightSectionTitle = styled.p`
   @media ${({ theme }) => theme.screens.tablet} {
     font-size: 18px;
   }
-
-  @media ${({ theme }) => theme.screens.mobileL} {
-    font-size: 18px;
-  }
 `;
 
 const RemoveButton = styled.div<{ marginTop: number }>`
@@ -264,7 +260,7 @@ enum ProcessTypes {
 
 const FormContainer = styled.div`
   display: flex;
-  @media ${({ theme }) => theme.screens.tabletL} {
+  @media ${({ theme }) => theme.screens.laptop} {
     margin-top: 0;
     flex-direction: column;
   }
@@ -279,7 +275,7 @@ const InformationSection = styled.div`
   @media ${({ theme }) => theme.screens.laptopL} {
     width: 65%;
   }
-  @media ${({ theme }) => theme.screens.tabletL} {
+  @media ${({ theme }) => theme.screens.laptop} {
     margin-right: 13px;
     width: 100%;
     margin-top: 0;
@@ -301,14 +297,21 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
     width: 33%;
     margin-left: 0;
   }
-  @media ${({ theme }) => theme.screens.tablet} {
-    height: 520px;
+  @media ${({ theme }) => theme.screens.laptop} {
+    height: 600px;
     width: 100%;
     margin-top: 25px;
     margin-right: 13px;
     margin-left: 0;
   }
-  @media ${({ theme }) => theme.screens.mobileL} {
+  @media ${({ theme }) => theme.screens.tabletL} {
+    height: 600px;
+    width: 100%;
+    margin-top: 25px;
+    margin-right: 13px;
+    margin-left: 0;
+  }
+  @media ${({ theme }) => theme.screens.tablet} {
     height: 520px;
     width: 100%;
     margin-top: 25px;
@@ -389,8 +392,6 @@ const dateTimeStyle: CSSProperties = {
   borderRadius: "8px",
   marginTop: "0px",
   marginBottom: "14px",
-  // border: none;
-  // background-color: ${({ theme }) => theme.blackAndWhite.w1};
   padding: "1em",
 };
 
