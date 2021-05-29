@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { useProcess } from "@vocdoni/react-hooks";
@@ -43,7 +43,6 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { ProcessResults } from "dvote-solidity";
 
 const ProcessPage = () => {
   useScrollTop();

@@ -132,7 +132,7 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
           };
         });
         setResults(results);
-        setError("");
+        setError("The results are not available");
         return;
       }
 
