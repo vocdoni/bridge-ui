@@ -39,9 +39,226 @@ import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 import { useIsWide } from "../../lib/hooks/useWindowSize";
 
+const NewProcessContainer = styled.div`
+  input[type="text"],
+  textarea {
+    border: none;
+    background-color: ${({ theme }) => theme.blackAndWhite.w1};
+    padding: 1em;
+    margin-top: 1em;
+    border-radius: 8px;
+    width: calc(100% - 2 * 1em);
+  }
+
+  textarea {
+    min-height: 72px;
+  }
+`;
+
+const ProposalRow = styled.div`
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: 0;
+    flex-direction: column;
+  }
+
+  @media ${({ theme }) => theme.screens.mobileL} {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
+`;
+
+const FieldRowLeftSection = styled.div`
+  width: 680px;
+  margin-right: 16px;
+  & > :first-child {
+    margin-top: 0px;
+  }
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-right: 13px;
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    margin-right: 13px;
+    width: 100%;
+    margin-top: 0;
+    flex-direction: column;
+  }
+`;
+
+const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
+  height: 600px;
+  width: 480px;
+  margin-left: 24px;
+  margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
+  padding: 14px 24px 29px 24px;
+  box-shadow: ${({ theme }) => theme.shadows.cardShadow};
+  border-radius: 13px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  box-sizing: border-box;
+  @media ${({ theme }) => theme.screens.tablet} {
+    height: 520px;
+    width: 100%;
+    margin-top: 25px;
+    margin-right: 13px;
+    margin-left: 0;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    height: 520px;
+    width: 100%;
+    margin-top: 25px;
+    margin-right: 13px;
+    margin-left: 0;
+  }
+`;
+
+const RightSectionTitle = styled.p`
+  font-weight: 500;
+  margin-bottom: 9px;
+  line-height: 150%;
+  text-align: left;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 18px;
+  }
+
+  @media ${({ theme }) => theme.screens.mobileL} {
+    font-size: 18px;
+  }
+`;
+
+const RemoveButton = styled.div<{ marginTop: number }>`
+  flex: 35%;
+  margin-left: 6.5em;
+  margin-top: ${({ marginTop }) => marginTop}px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-top: 25px;
+  }
+`;
+
+const RowQuestions = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const RowQuestionLeftSection = styled.div`
+  flex: 6;
+  width: 680px;
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex: 12;
+  }
+`;
+
+const RowQuestionRightSection = styled.div`
+  flex: 4;
+  padding-left: 2em;
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex: 0;
+    padding-left: 0;
+  }
+`;
+
+const ChoiceRightSection = styled.div`
+  flex: 20;
+  margin-left: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex: 0;
+  }
+`;
+
+const QuestionNumber = styled.h6`
+  color: ${({ theme }) => theme.primary.p1};
+  font-size: 18px;
+  margin-bottom: -18px;
+  font-weight: 500;
+  line-height: 150%;
+`;
+
+const QuestionText = styled.h5`
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 38px;
+  letter-spacing: -0.03em;
+  margin-bottom: 85px;
+  color: ${({ theme }) => theme.blackAndWhite.b1};
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: 30px;
+  }
+`;
+
+const InputBox = styled.div`
+  display: flex;
+  margin-bottom: 30px;
+`;
+
+const dateTimeStyle: CSSProperties = {
+  width: "100%",
+  border: "2px solid #EFF1F7",
+  boxSizing: "border-box",
+  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
+  borderRadius: "8px",
+  marginTop: "0px",
+  marginBottom: "14px",
+};
+
+const WidthControlInput = styled(TextInput)<{ widthValue?: number }>`
+  max-width: 680px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
+  min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    display: flex;
+    min-width: 100%;
+    margin-bottom: 9px;
+    width: 100%;
+  }
+`;
+
+const WidthControlDescription = styled(DescriptionInput)<{ widthValue?: number }>`
+  max-width: 680px;
+  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
+  min-width: 680px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-left: 0;
+    margin-top: 10px;
+    display: flex;
+    width: 100%;
+    min-width: 100%;
+  }
+`;
+
+const SubmitButton = ({ submitting, onSubmit }) =>
+  submitting ? (
+    <p>
+      Please wait...
+      <Spinner />
+    </p>
+  ) : (
+    <PrimaryButton wide onClick={onSubmit}>
+      Create proposal
+    </PrimaryButton>
+  );
+
+enum ProcessTypes {
+  BINDING,
+  SIGNALING,
+}
+
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
-  const { storeTokens } = useStoredTokens()
+  const { storeTokens } = useStoredTokens();
   const signer = useSigner();
   const wallet = useWallet();
   const router = useRouter();
@@ -234,13 +451,26 @@ const NewProcessPage = () => {
       setSubmitting(false);
 
       // Write to the local DB
-      tokenInfo.processes.push(processId)
-      storeTokens([tokenInfo])
+      tokenInfo.processes.push(processId);
+      storeTokens([tokenInfo]);
 
       // Success
       setAlertMessage("The proposal has been successfully created", "success");
-    }
-    catch (err) {
+      const results = envelopeType.hasEncryptedVotes ? "encrypted" : "normal";
+      const analytics_properties = {
+        entity_id: tokenAddress,
+        proposal_id: processId,
+        start: startDate,
+        end: endDate,
+        binding_type: "signaling",
+        results_type: results,
+        questions_length: metadata.questions.length,
+        wallet_address: wallet.account,
+        wallet_provider: wallet.connector,
+        network: wallet.networkName,
+      };
+      (window as any).analytics?.track("proposal_created", analytics_properties);
+    } catch (err) {
       setSubmitting(false);
       console.error(err);
 
@@ -300,11 +530,25 @@ const NewProcessPage = () => {
     setSubmitting(false);
 
     // Write to the local DB
-    tokenInfo.processes.push(processId)
-    storeTokens([tokenInfo])
+    tokenInfo.processes.push(processId);
+    storeTokens([tokenInfo]);
 
     // Success
     setAlertMessage("The proposal has been successfully created", "success");
+    const results = envelopeType.hasEncryptedVotes ? "encrypted" : "normal";
+    const analytics_properties = {
+      entity_id: tokenAddress,
+      proposal_id: processId,
+      start: startDate,
+      end: endDate,
+      binding_type: "binding",
+      results_type: results,
+      questions_length: metadata.questions.length,
+      wallet_address: wallet.account,
+      wallet_provider: wallet.connector,
+      network: wallet.networkName,
+    };
+    (window as any).analytics?.track("proposal_created", analytics_properties);
   }
 
   return (
@@ -500,224 +744,5 @@ function isValidFutureDate(date: Moment): boolean {
   const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24);
   return date.isAfter(threshold);
 }
-
-const SubmitButton = ({ submitting, onSubmit }) =>
-  submitting ? (
-    <p>
-      Please wait...
-      <Spinner />
-    </p>
-  ) : (
-    <PrimaryButton wide onClick={onSubmit}>
-      Create proposal
-    </PrimaryButton>
-  );
-
-enum ProcessTypes {
-  BINDING,
-  SIGNALING,
-}
-
-// STYLED
-
-const NewProcessContainer = styled.div`
-  input[type="text"],
-  textarea {
-    border: none;
-    background-color: ${({ theme }) => theme.blackAndWhite.w1};
-    padding: 1em;
-    margin-top: 1em;
-    border-radius: 8px;
-    width: calc(100% - 2 * 1em);
-  }
-
-  textarea {
-    min-height: 72px;
-  }
-`;
-
-const ProposalRow = styled.div`
-  display: flex;
-  justify-content: start;
-  flex-wrap: wrap;
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-top: 0;
-    flex-direction: column;
-  }
-
-  @media ${({ theme }) => theme.screens.mobileL} {
-    width: 100%;
-    margin-top: 0;
-    flex-direction: column;
-  }
-`;
-
-const FieldRowLeftSection = styled.div`
-  width: 680px;
-  margin-right: 16px;
-  & > :first-child {
-    margin-top: 0px;
-  }
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-right: 13px;
-    width: 100%;
-    margin-top: 0;
-    flex-direction: column;
-  }
-  @media ${({ theme }) => theme.screens.mobileL} {
-    margin-right: 13px;
-    width: 100%;
-    margin-top: 0;
-    flex-direction: column;
-  }
-`;
-
-const FieldRowRightSection = styled.div<{ marginTop: number; isLarge: boolean }>`
-  height: 600px;
-  width: 480px;
-  margin-left: 24px;
-  margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
-  padding: 14px 24px 29px 24px;
-  box-shadow: ${({ theme }) => theme.shadows.cardShadow};
-  border-radius: 13px;
-  background: ${({ theme }) => theme.blackAndWhite.w1};
-  box-sizing: border-box;
-  @media ${({ theme }) => theme.screens.tablet} {
-    height: 520px;
-    width: 100%;
-    margin-top: 25px;
-    margin-right: 13px;
-    margin-left: 0;
-  }
-  @media ${({ theme }) => theme.screens.mobileL} {
-    height: 520px;
-    width: 100%;
-    margin-top: 25px;
-    margin-right: 13px;
-    margin-left: 0;
-  }
-`;
-
-const RightSectionTitle = styled.p`
-  font-weight: 500;
-  margin-bottom: 9px;
-  line-height: 150%;
-  text-align: left;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    font-size: 18px;
-  }
-
-  @media ${({ theme }) => theme.screens.mobileL} {
-    font-size: 18px;
-  }
-`;
-
-const RemoveButton = styled.div<{ marginTop: number }>`
-  flex: 35%;
-  margin-left: 6.5em;
-  margin-top: ${({ marginTop }) => marginTop}px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-top: 25px;
-  }
-`;
-
-const RowQuestions = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const RowQuestionLeftSection = styled.div`
-  flex: 6;
-  width: 680px;
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex: 12;
-  }
-`;
-
-const RowQuestionRightSection = styled.div`
-  flex: 4;
-  padding-left: 2em;
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex: 0;
-    padding-left: 0;
-  }
-`;
-
-const ChoiceRightSection = styled.div`
-  flex: 20;
-  margin-left: 13px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex: 0;
-  }
-`;
-
-const QuestionNumber = styled.h6`
-  color: ${({ theme }) => theme.primary.p1};
-  font-size: 18px;
-  margin-bottom: -18px;
-  font-weight: 500;
-  line-height: 150%;
-`;
-
-const QuestionText = styled.h5`
-  font-size: 28px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 38px;
-  letter-spacing: -0.03em;
-  margin-bottom: 85px;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-bottom: 30px;
-  }
-`;
-
-const InputBox = styled.div`
-  display: flex;
-  margin-bottom: 30px;
-`;
-
-const dateTimeStyle: CSSProperties = {
-  width: "100%",
-  border: "2px solid #EFF1F7",
-  boxSizing: "border-box",
-  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
-  borderRadius: "8px",
-  marginTop: "0px",
-  marginBottom: "14px",
-};
-
-const WidthControlInput = styled(TextInput) <{ widthValue?: number }>`
-  max-width: 680px;
-  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
-  min-width: ${({ widthValue }) => (widthValue ? widthValue - 265 + "px" : "100%")};
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    display: flex;
-    min-width: 100%;
-    margin-bottom: 9px;
-    width: 100%;
-  }
-`;
-
-const WidthControlDescription = styled(DescriptionInput) <{ widthValue?: number }>`
-  max-width: 680px;
-  width: ${({ widthValue }) => (widthValue ? widthValue + "px" : "100%")};
-  min-width: 680px;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-left: 0;
-    margin-top: 10px;
-    display: flex;
-    width: 100%;
-    min-width: 100%;
-  }
-`;
 
 export default NewProcessPage;
