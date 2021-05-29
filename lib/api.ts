@@ -1,5 +1,5 @@
 import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
-import { CensusErc20Api, GatewayPool, VotingApi } from "dvote-js";
+import { CensusErc20Api, GatewayPool, IProcessVochainParameters, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
@@ -161,21 +161,12 @@ export function getRegisteredTokenList(
 /** Waits for a while and returns true when the given process is already available for the given entity. 
  * Returns false after 30 failed attempts.
  */
-export async function waitUntilProcessCreated(processId: string, tokenAddress: string, pool: GatewayPool): Promise<boolean> {
+export async function waitUntilProcessCreated(processId: string, pool: GatewayPool): Promise<boolean> {
   let retries = 30;
-  let processList = await VotingApi.getProcessList({ entityId: tokenAddress }, pool);
-
-  const trimProcId = processId.replace(/^0x/, "");
-  let start = processList.length;
-
   while (retries >= 0) {
-    while (!processList.some(v => v == trimProcId)) {
-      processList = await VotingApi.getProcessList({ entityId: tokenAddress, from: start }, pool);
-      if (!processList.length) break;
+    const info: IProcessVochainParameters = await VotingApi.getProcessInfo(processId, pool).catch(() => null)
 
-      start += processList.length;
-    }
-    if (processList.length && processList.some(v => v == trimProcId)) {
+    if (info?.processId == processId) {
       return true;
     }
     await new Promise(r => setTimeout(r, 4000)) // Wait 4s;

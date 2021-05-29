@@ -32,12 +32,493 @@ import { TextInput, DescriptionInput } from "../../components/input";
 import Tooltip, { TooltipType } from "../../components/tooltip";
 
 import { findMaxValue } from "../../lib/utils";
-import { useToken } from "../../lib/hooks/tokens";
+import { useStoredTokens, useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 import { useIsWide } from "../../lib/hooks/useWindowSize";
+
+const NewProcessPage = () => {
+  const { poolPromise } = usePool();
+  const { storeTokens } = useStoredTokens()
+  const signer = useSigner();
+  const wallet = useWallet();
+  const router = useRouter();
+  const tokenAddress = router.query.address as string;
+  if (router.isReady && !tokenAddress) {
+    router.push("/");
+  }
+  const initProcessType: ProcessTypes =
+    (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
+
+  const isMobile = useIsMobile();
+  const isLarge = useIsWide();
+
+  const [metadata, setMetadata] = useState<ProcessMetadata>(
+    JSON.parse(JSON.stringify(ProcessMetadataTemplate))
+  );
+  const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0));
+  const [startDate, setStartDate] = useState(null as Date);
+  const [endDate, setEndDate] = useState(null as Date);
+  const [processType, setProcessType] = useState<ProcessTypes>(initProcessType);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
+  const [submitting, setSubmitting] = useState(false);
+  const { setAlertMessage } = useMessageAlert();
+
+  // Callbacks
+  const handleChoice = ({ currentQuestion, choices, currentChoice }) => {
+    const isDefault = choices[currentChoice].title.default;
+    const isLastQuestion = currentChoice === choices.length - 1;
+
+    if (isDefault && isLastQuestion) {
+      onAddChoice(currentQuestion);
+      return;
+    }
+
+    onRemoveChoice(currentQuestion, currentChoice);
+  };
+
+  const onStartDate = (date: string | Moment) => {
+    if (typeof date == "string") return;
+    setStartDate(date.toDate());
+  };
+  const onEndDate = (date: string | Moment) => {
+    if (typeof date == "string") return;
+    setEndDate(date.toDate());
+  };
+  const setMainTitle = (title: string) => {
+    metadata.title.default = title;
+    setMetadata(Object.assign({}, metadata));
+  };
+  const setMainDescription = (description: string) => {
+    metadata.description.default = description;
+    setMetadata(Object.assign({}, metadata));
+  };
+  const setEncryptedVotes = (value: boolean) => {
+    let current = envelopeType.value;
+    if (value) current = current | ProcessEnvelopeType.ENCRYPTED_VOTES;
+    else current = current & ~ProcessEnvelopeType.ENCRYPTED_VOTES & 0xff;
+    setEnvelopeType(new ProcessEnvelopeType(current));
+  };
+  const setQuestionTitle = (qIdx: number, title: string) => {
+    if (!metadata.questions[qIdx]) return;
+    metadata.questions[qIdx].title.default = title;
+    setMetadata(Object.assign({}, metadata));
+  };
+  const setQuestionDescription = (qIdx: number, description: string) => {
+    if (!metadata.questions[qIdx]) return;
+    metadata.questions[qIdx].description.default = description;
+    setMetadata(Object.assign({}, metadata));
+  };
+  const setChoiceText = (qIdx, cIdx, text: string) => {
+    if (!metadata.questions[qIdx]) return;
+    else if (!metadata.questions[qIdx].choices[cIdx]) return;
+    metadata.questions[qIdx].choices[cIdx].title.default = text;
+    setMetadata(Object.assign({}, metadata));
+  };
+  const onAddQuestion = () => {
+    metadata.questions.push(JSON.parse(JSON.stringify(ProcessMetadataTemplate.questions[0])));
+    setMetadata(Object.assign({}, metadata));
+  };
+
+  const onRemoveQuestion = (questionToRemove: number) => {
+    const newQuestions = metadata.questions.filter((_, id) => {
+      return questionToRemove !== id;
+    });
+
+    const newMetadata = { ...metadata, questions: newQuestions };
+    setMetadata(newMetadata);
+  };
+
+  const onAddChoice = (qIdx: number) => {
+    if (!metadata.questions[qIdx]) return;
+    metadata.questions[qIdx].choices.push({
+      title: { default: "" },
+      value: metadata.questions[qIdx].choices.length,
+    });
+    setMetadata(Object.assign({}, metadata));
+  };
+  const onRemoveChoice = (qIdx: number, cIdx: number) => {
+    if (!metadata.questions[qIdx]) return;
+    else if (metadata.questions[qIdx].choices.length <= 2) return;
+
+    metadata.questions[qIdx].choices.splice(cIdx, 1);
+    for (let i = 0; i < metadata.questions[qIdx].choices.length; i++) {
+      metadata.questions[qIdx].choices[i].value = i;
+    }
+    setMetadata(Object.assign({}, metadata));
+  };
+  const onSubmit = async () => {
+    try {
+      validateProposal(metadata, startDate, endDate);
+    } catch (error) {
+      return setAlertMessage(error.message);
+    }
+
+    if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
+      return setAlertMessage("The token address is not valid");
+
+    if (!wallet?.account)
+      return setAlertMessage("In order to continue, you need to use a Web3 provider like MetaMask");
+
+    // FINAL CONFIRMATION
+    if (
+      !confirm(
+        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
+      )
+    )
+      return;
+
+    // Continue
+    try {
+      setSubmitting(true);
+      const pool = await poolPromise;
+      if (processType === ProcessTypes.BINDING) submitBindingVote(pool);
+      else submitSignalingVote(pool);
+    } catch (err) {
+      setSubmitting(false);
+
+      if (err?.message == NO_TOKEN_BALANCE) {
+        return setAlertMessage(NO_TOKEN_BALANCE);
+      }
+
+      console.error(err);
+      setAlertMessage("The proposal could not be created");
+    }
+  };
+
+  async function submitSignalingVote(pool: GatewayPool) {
+    try {
+      // Estimate start/end blocks
+      const [startBlock, endBlock] = await Promise.all([
+        VotingApi.estimateBlockAtDateTime(startDate, pool),
+        VotingApi.estimateBlockAtDateTime(endDate, pool),
+      ]);
+      const blockCount = endBlock - startBlock;
+      const oracleClient = new DVoteGateway({
+        uri: process.env.SIGNALING_ORACLE_URL,
+        supportedApis: ["oracle"],
+      });
+      const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+
+      const signalingProcessParams = {
+        mode: ProcessMode.make({ autoStart: true }),
+        envelopeType: ProcessEnvelopeType.make({
+          encryptedVotes: envelopeType.hasEncryptedVotes,
+        }), // bit mask
+        censusOrigin: ProcessCensusOrigin.ERC20,
+        metadata: metadata,
+        startBlock: startBlock,
+        blockCount,
+        maxCount: metadata.questions.length,
+        maxValue: findMaxValue(metadata),
+        maxTotalCost: 0,
+        costExponent: 10000,
+        maxVoteOverwrites: 1,
+        tokenAddress,
+        sourceBlockHeight,
+        paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      };
+      const processId = await VotingOracleApi.newProcessErc20(
+        signalingProcessParams,
+        signer,
+        pool,
+        oracleClient
+      );
+
+      const ready = await waitUntilProcessCreated(processId, pool);
+      if (!ready) throw new Error("The proposal is not available after a while");
+
+      Router.push("/processes#/" + processId);
+      setSubmitting(false);
+
+      // Write to the local DB
+      tokenInfo.processes.push(processId)
+      storeTokens([tokenInfo])
+
+      // Success
+      setAlertMessage("The proposal has been successfully created", "success");
+    }
+    catch (err) {
+      setSubmitting(false);
+      console.error(err);
+
+      if (err?.message?.indexOf?.("max proposals per address reached")) {
+        return setAlertMessage("You have hit the temporary limit of proposals");
+      }
+
+      setAlertMessage("The proposal could not be created");
+    }
+  }
+
+  async function submitBindingVote(pool: GatewayPool) {
+    // Estimate start/end blocks
+    const [startBlock, endBlock] = await Promise.all([
+      VotingApi.estimateBlockAtDateTime(startDate, pool),
+      VotingApi.estimateBlockAtDateTime(endDate, pool),
+    ]);
+    const blockCount = endBlock - startBlock;
+
+    // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
+    // Otherwise, proofs will not match
+    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+    const proof = await getProof({
+      account: wallet.account,
+      token: tokenInfo.address,
+      block: sourceBlockHeight,
+      balanceMappingPosition: tokenInfo.balanceMappingPosition,
+      pool,
+    });
+
+    const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
+      metadata: ProcessMetadata;
+    } = {
+      mode: ProcessMode.make({ autoStart: true }),
+      envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
+      censusOrigin: ProcessCensusOrigin.ERC20,
+      metadata: metadata,
+      censusRoot: proof.storageHash,
+      startBlock,
+      blockCount,
+      maxCount: metadata.questions.length,
+      maxValue: findMaxValue(metadata),
+      maxTotalCost: 0,
+      costExponent: 10000,
+      maxVoteOverwrites: 1,
+      tokenAddress,
+      sourceBlockHeight,
+      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    };
+
+    const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
+    // Wait until effectively created
+    const ready = await waitUntilProcessCreated(processId, pool);
+    if (!ready) throw new Error("The proposal is not available after a while");
+
+    Router.push("/processes#/" + processId);
+    setSubmitting(false);
+
+    // Write to the local DB
+    tokenInfo.processes.push(processId)
+    storeTokens([tokenInfo])
+
+    // Success
+    setAlertMessage("The proposal has been successfully created", "success");
+  }
+
+  return (
+    <div>
+      <NewProcessContainer>
+        <ProposalRow>
+          <FieldRowLeftSection>
+            <SectionTitle
+              title="New proposal"
+              subtitle="Enter the details of a new proposal and submit
+                them."
+            />
+            <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
+            <InputBox>
+              <WidthControlInput
+                placeholder="Title"
+                onChange={(e) => setMainTitle(e.target.value)}
+                value={metadata.title.default}
+                widthValue={680}
+              />
+            </InputBox>
+            <SectionTitle
+              title="Description"
+              subtitle="An introduction of about 2-3 lines"
+              smallerTitle
+            />
+            <DescriptionInput
+              placeholder="Description"
+              onChange={(e) => setMainDescription(e.target.value)}
+              value={metadata.description.default}
+            />
+            {metadata.questions.map((question, qIdx) => (
+              <div key={qIdx}>
+                <RowQuestions>
+                  <RowQuestionLeftSection>
+                    <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+                    <QuestionText>Question</QuestionText>
+                    <RemoveButton marginTop={-57}>
+                      {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+                    </RemoveButton>
+                    <InputBox>
+                      <WidthControlInput
+                        placeholder="Title"
+                        value={question.title.default}
+                        onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+                        widthValue={680}
+                      />
+                    </InputBox>
+
+                    <SectionTitle title="Description" smallerTitle />
+                    <InputBox>
+                      <WidthControlDescription
+                        placeholder="Description"
+                        value={question.description.default}
+                        onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                        widthValue={660}
+                      />
+                    </InputBox>
+                  </RowQuestionLeftSection>
+                  <RowQuestionRightSection />
+                </RowQuestions>
+                <div>
+                  <SectionTitle title="Choices" smallerTitle />
+                  {question.choices.map((choice, cIdx) => (
+                    <RowQuestions key={cIdx}>
+                      <RowQuestionLeftSection>
+                        <WidthControlInput
+                          placeholder="Choice"
+                          value={choice.title.default}
+                          onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                          widthValue={627}
+                        />
+                      </RowQuestionLeftSection>
+                      <ChoiceRightSection>
+                        <PlusBox
+                          onClick={handleChoice}
+                          currentChoice={cIdx}
+                          choices={question.choices}
+                          currentQuestion={qIdx}
+                        />
+                      </ChoiceRightSection>
+                    </RowQuestions>
+                  ))}
+                </div>
+
+                {qIdx == metadata.questions.length - 1 ? (
+                  <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
+                ) : null}
+              </div>
+            ))}
+          </FieldRowLeftSection>
+          <FieldRowRightSection marginTop={60} isLarge={isLarge}>
+            <RightSectionTitle>Proposal Type</RightSectionTitle>
+            <div style={{ float: "left" }}>
+              <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={processType === ProcessTypes.SIGNALING}
+                  name="proposal-type"
+                />
+                <div className="checkmark"></div> Signaling proposal
+              </RadioChoice>
+              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={processType === ProcessTypes.BINDING}
+                  name="proposal-type"
+                />
+                <div className="checkmark"></div> On-chain proposal
+              </RadioChoice>
+            </div>
+            <Tooltip type={TooltipType.PROCESS} />
+            <br style={{ height: "0px" }} />
+            <RightSectionTitle>Results</RightSectionTitle>
+            <div style={{ float: "left" }}>
+              <RadioChoice onClick={() => setEncryptedVotes(false)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={!envelopeType.hasEncryptedVotes}
+                  name="vote-encryption"
+                />
+                <div className="checkmark"></div> Real time results
+              </RadioChoice>
+              <RadioChoice onClick={() => setEncryptedVotes(true)}>
+                {" "}
+                <input
+                  type="radio"
+                  readOnly
+                  checked={envelopeType.hasEncryptedVotes}
+                  name="vote-encryption"
+                />
+                <div className="checkmark"></div> Encrypted results
+              </RadioChoice>
+            </div>
+            {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
+            <Tooltip type={TooltipType.RESULTS} />
+            <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
+            <RightSectionTitle>Proposal date</RightSectionTitle>
+            <Datetime
+              value={startDate}
+              inputProps={{
+                placeholder: "Start date (d/m/y h:m)",
+                style: dateTimeStyle,
+              }}
+              isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+              dateFormat="D/MM/YYYY"
+              timeFormat="HH:mm[h]"
+              onChange={(date) => onStartDate(date)}
+              strictParsing
+            />
+            <Datetime
+              value={endDate}
+              inputProps={{
+                placeholder: "End date (d/m/y h:m)",
+                style: dateTimeStyle,
+              }}
+              isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+              dateFormat="D/MM/YYYY"
+              timeFormat="HH:mm[h]"
+              onChange={(date) => onEndDate(date)}
+              strictParsing
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "13px",
+                width: "100%",
+              }}
+            >
+              {wallet.status === "connected" ? (
+                <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
+              ) : !isMobile ? (
+                <ConnectButton wide />
+              ) : null}
+            </div>
+          </FieldRowRightSection>
+        </ProposalRow>
+      </NewProcessContainer>
+    </div>
+  );
+};
+
+// HELPERS
+
+function isValidFutureDate(date: Moment): boolean {
+  const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24);
+  return date.isAfter(threshold);
+}
+
+const SubmitButton = ({ submitting, onSubmit }) =>
+  submitting ? (
+    <p>
+      Please wait...
+      <Spinner />
+    </p>
+  ) : (
+    <PrimaryButton wide onClick={onSubmit}>
+      Create proposal
+    </PrimaryButton>
+  );
+
+enum ProcessTypes {
+  BINDING,
+  SIGNALING,
+}
+
+// STYLED
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -238,471 +719,5 @@ const WidthControlDescription = styled(DescriptionInput) <{ widthValue?: number 
     min-width: 100%;
   }
 `;
-
-const SubmitButton = ({ submitting, onSubmit }) =>
-  submitting ? (
-    <p>
-      Please wait...
-      <Spinner />
-    </p>
-  ) : (
-    <PrimaryButton wide onClick={onSubmit}>
-      Create proposal
-    </PrimaryButton>
-  );
-
-enum ProcessTypes {
-  BINDING,
-  SIGNALING,
-}
-
-const NewProcessPage = () => {
-  const { poolPromise } = usePool();
-  const signer = useSigner();
-  const wallet = useWallet();
-  const router = useRouter();
-  const tokenAddress = router.query.address as string;
-  if (router.isReady && !tokenAddress) {
-    router.push("/");
-  }
-  const initProcessType: ProcessTypes =
-    (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
-
-  const isMobile = useIsMobile();
-  const isLarge = useIsWide();
-
-  const [metadata, setMetadata] = useState<ProcessMetadata>(
-    JSON.parse(JSON.stringify(ProcessMetadataTemplate))
-  );
-  const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0));
-  const [startDate, setStartDate] = useState(null as Date);
-  const [endDate, setEndDate] = useState(null as Date);
-  const [processType, setProcessType] = useState<ProcessTypes>(initProcessType);
-  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
-  const [submitting, setSubmitting] = useState(false);
-  const { setAlertMessage } = useMessageAlert();
-
-  // Callbacks
-  const handleChoice = ({ currentQuestion, choices, currentChoice }) => {
-    const isDefault = choices[currentChoice].title.default;
-    const isLastQuestion = currentChoice === choices.length - 1;
-
-    if (isDefault && isLastQuestion) {
-      onAddChoice(currentQuestion);
-      return;
-    }
-
-    onRemoveChoice(currentQuestion, currentChoice);
-  };
-
-  const onStartDate = (date: string | Moment) => {
-    if (typeof date == "string") return;
-    setStartDate(date.toDate());
-  };
-  const onEndDate = (date: string | Moment) => {
-    if (typeof date == "string") return;
-    setEndDate(date.toDate());
-  };
-  const setMainTitle = (title: string) => {
-    metadata.title.default = title;
-    setMetadata(Object.assign({}, metadata));
-  };
-  const setMainDescription = (description: string) => {
-    metadata.description.default = description;
-    setMetadata(Object.assign({}, metadata));
-  };
-  const setEncryptedVotes = (value: boolean) => {
-    let current = envelopeType.value;
-    if (value) current = current | ProcessEnvelopeType.ENCRYPTED_VOTES;
-    else current = current & ~ProcessEnvelopeType.ENCRYPTED_VOTES & 0xff;
-    setEnvelopeType(new ProcessEnvelopeType(current));
-  };
-  const setQuestionTitle = (qIdx: number, title: string) => {
-    if (!metadata.questions[qIdx]) return;
-    metadata.questions[qIdx].title.default = title;
-    setMetadata(Object.assign({}, metadata));
-  };
-  const setQuestionDescription = (qIdx: number, description: string) => {
-    if (!metadata.questions[qIdx]) return;
-    metadata.questions[qIdx].description.default = description;
-    setMetadata(Object.assign({}, metadata));
-  };
-  const setChoiceText = (qIdx, cIdx, text: string) => {
-    if (!metadata.questions[qIdx]) return;
-    else if (!metadata.questions[qIdx].choices[cIdx]) return;
-    metadata.questions[qIdx].choices[cIdx].title.default = text;
-    setMetadata(Object.assign({}, metadata));
-  };
-  const onAddQuestion = () => {
-    metadata.questions.push(JSON.parse(JSON.stringify(ProcessMetadataTemplate.questions[0])));
-    setMetadata(Object.assign({}, metadata));
-  };
-
-  const onRemoveQuestion = (questionToRemove: number) => {
-    const newQuestions = metadata.questions.filter((_, id) => {
-      return questionToRemove !== id;
-    });
-
-    const newMetadata = { ...metadata, questions: newQuestions };
-    setMetadata(newMetadata);
-  };
-
-  const onAddChoice = (qIdx: number) => {
-    if (!metadata.questions[qIdx]) return;
-    metadata.questions[qIdx].choices.push({
-      title: { default: "" },
-      value: metadata.questions[qIdx].choices.length,
-    });
-    setMetadata(Object.assign({}, metadata));
-  };
-  const onRemoveChoice = (qIdx: number, cIdx: number) => {
-    if (!metadata.questions[qIdx]) return;
-    else if (metadata.questions[qIdx].choices.length <= 2) return;
-
-    metadata.questions[qIdx].choices.splice(cIdx, 1);
-    for (let i = 0; i < metadata.questions[qIdx].choices.length; i++) {
-      metadata.questions[qIdx].choices[i].value = i;
-    }
-    setMetadata(Object.assign({}, metadata));
-  };
-  const onSubmit = async () => {
-    try {
-      validateProposal(metadata, startDate, endDate);
-    } catch (error) {
-      return setAlertMessage(error.message);
-    }
-
-    if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
-      return setAlertMessage("The token address is not valid");
-
-    if (!wallet?.account)
-      return setAlertMessage("In order to continue, you need to use a Web3 provider like MetaMask");
-
-    // FINAL CONFIRMATION
-    if (
-      !confirm(
-        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
-      )
-    )
-      return;
-
-    // Continue
-    try {
-      setSubmitting(true);
-      const pool = await poolPromise;
-      if (processType === ProcessTypes.BINDING) submitBindingVote(pool);
-      else submitSignalingVote(pool);
-    } catch (err) {
-      setSubmitting(false);
-
-      if (err?.message == NO_TOKEN_BALANCE) {
-        return setAlertMessage(NO_TOKEN_BALANCE);
-      }
-
-      console.error(err);
-      setAlertMessage("The proposal could not be created");
-    }
-  };
-
-  async function submitSignalingVote(pool: GatewayPool) {
-    try {
-      // Estimate start/end blocks
-      const [startBlock, endBlock] = await Promise.all([
-        VotingApi.estimateBlockAtDateTime(startDate, pool),
-        VotingApi.estimateBlockAtDateTime(endDate, pool),
-      ]);
-      const blockCount = endBlock - startBlock;
-      const oracleClient = new DVoteGateway({
-        uri: process.env.SIGNALING_ORACLE_URL,
-        supportedApis: ["oracle"],
-      });
-      const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
-
-      const signalingProcessParams = {
-        mode: ProcessMode.make({ autoStart: true }),
-        envelopeType: ProcessEnvelopeType.make({
-          encryptedVotes: envelopeType.hasEncryptedVotes,
-        }), // bit mask
-        censusOrigin: ProcessCensusOrigin.ERC20,
-        metadata: metadata,
-        startBlock: startBlock,
-        blockCount,
-        maxCount: metadata.questions.length,
-        maxValue: findMaxValue(metadata),
-        maxTotalCost: 0,
-        costExponent: 10000,
-        maxVoteOverwrites: 1,
-        tokenAddress,
-        sourceBlockHeight,
-        paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
-      };
-      const processId = await VotingOracleApi.newProcessErc20(
-        signalingProcessParams,
-        signer,
-        pool,
-        oracleClient
-      );
-
-      const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
-      if (!ready) throw new Error("The proposal is not available after a while");
-
-      Router.push("/processes#/" + processId);
-      setSubmitting(false);
-
-      setAlertMessage("The proposal has been successfully created", "success");
-    }
-    catch (err) {
-      setSubmitting(false);
-      console.error(err);
-
-      if (err?.message?.indexOf?.("max proposals per address reached")) {
-        return setAlertMessage("You have hit the temporary limit of proposals");
-      }
-
-      setAlertMessage("The proposal could not be created");
-    }
-  }
-
-  async function submitBindingVote(pool: GatewayPool) {
-    // Estimate start/end blocks
-    const [startBlock, endBlock] = await Promise.all([
-      VotingApi.estimateBlockAtDateTime(startDate, pool),
-      VotingApi.estimateBlockAtDateTime(endDate, pool),
-    ]);
-    const blockCount = endBlock - startBlock;
-
-    // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
-    // Otherwise, proofs will not match
-    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
-    const proof = await getProof({
-      account: wallet.account,
-      token: tokenInfo.address,
-      block: sourceBlockHeight,
-      balanceMappingPosition: tokenInfo.balanceMappingPosition,
-      pool,
-    });
-
-    const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
-      metadata: ProcessMetadata;
-    } = {
-      mode: ProcessMode.make({ autoStart: true }),
-      envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
-      censusOrigin: ProcessCensusOrigin.ERC20,
-      metadata: metadata,
-      censusRoot: proof.storageHash,
-      startBlock,
-      blockCount,
-      maxCount: metadata.questions.length,
-      maxValue: findMaxValue(metadata),
-      maxTotalCost: 0,
-      costExponent: 10000,
-      maxVoteOverwrites: 1,
-      tokenAddress,
-      sourceBlockHeight,
-      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
-    };
-
-    const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
-    // Wait until effectively created
-    const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
-    if (!ready) throw new Error("The proposal is not available after a while");
-
-    Router.push("/processes#/" + processId);
-    setSubmitting(false);
-
-    setAlertMessage("The proposal has been successfully created", "success");
-  }
-
-  return (
-    <div>
-      <NewProcessContainer>
-        <ProposalRow>
-          <FieldRowLeftSection>
-            <SectionTitle
-              title="New proposal"
-              subtitle="Enter the details of a new proposal and submit
-                them."
-            />
-            <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
-            <InputBox>
-              <WidthControlInput
-                placeholder="Title"
-                onChange={(e) => setMainTitle(e.target.value)}
-                value={metadata.title.default}
-                widthValue={680}
-              />
-            </InputBox>
-            <SectionTitle
-              title="Description"
-              subtitle="An introduction of about 2-3 lines"
-              smallerTitle
-            />
-            <DescriptionInput
-              placeholder="Description"
-              onChange={(e) => setMainDescription(e.target.value)}
-              value={metadata.description.default}
-            />
-            {metadata.questions.map((question, qIdx) => (
-              <div key={qIdx}>
-                <RowQuestions>
-                  <RowQuestionLeftSection>
-                    <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-                    <QuestionText>Question</QuestionText>
-                    <RemoveButton marginTop={-57}>
-                      {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
-                    </RemoveButton>
-                    <InputBox>
-                      <WidthControlInput
-                        placeholder="Title"
-                        value={question.title.default}
-                        onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                        widthValue={680}
-                      />
-                    </InputBox>
-
-                    <SectionTitle title="Description" smallerTitle />
-                    <InputBox>
-                      <WidthControlDescription
-                        placeholder="Description"
-                        value={question.description.default}
-                        onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                        widthValue={660}
-                      />
-                    </InputBox>
-                  </RowQuestionLeftSection>
-                  <RowQuestionRightSection />
-                </RowQuestions>
-                <div>
-                  <SectionTitle title="Choices" smallerTitle />
-                  {question.choices.map((choice, cIdx) => (
-                    <RowQuestions key={cIdx}>
-                      <RowQuestionLeftSection>
-                        <WidthControlInput
-                          placeholder="Choice"
-                          value={choice.title.default}
-                          onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                          widthValue={627}
-                        />
-                      </RowQuestionLeftSection>
-                      <ChoiceRightSection>
-                        <PlusBox
-                          onClick={handleChoice}
-                          currentChoice={cIdx}
-                          choices={question.choices}
-                          currentQuestion={qIdx}
-                        />
-                      </ChoiceRightSection>
-                    </RowQuestions>
-                  ))}
-                </div>
-
-                {qIdx == metadata.questions.length - 1 ? (
-                  <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-                ) : null}
-              </div>
-            ))}
-          </FieldRowLeftSection>
-          <FieldRowRightSection marginTop={60} isLarge={isLarge}>
-            <RightSectionTitle>Proposal Type</RightSectionTitle>
-            <div style={{ float: "left" }}>
-              <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={processType === ProcessTypes.SIGNALING}
-                  name="proposal-type"
-                />
-                <div className="checkmark"></div> Signaling proposal
-              </RadioChoice>
-              <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={processType === ProcessTypes.BINDING}
-                  name="proposal-type"
-                />
-                <div className="checkmark"></div> On-chain proposal
-              </RadioChoice>
-            </div>
-            <Tooltip type={TooltipType.PROCESS} />
-            <br style={{ height: "0px" }} />
-            <RightSectionTitle>Results</RightSectionTitle>
-            <div style={{ float: "left" }}>
-              <RadioChoice onClick={() => setEncryptedVotes(false)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={!envelopeType.hasEncryptedVotes}
-                  name="vote-encryption"
-                />
-                <div className="checkmark"></div> Real time results
-              </RadioChoice>
-              <RadioChoice onClick={() => setEncryptedVotes(true)}>
-                {" "}
-                <input
-                  type="radio"
-                  readOnly
-                  checked={envelopeType.hasEncryptedVotes}
-                  name="vote-encryption"
-                />
-                <div className="checkmark"></div> Encrypted results
-              </RadioChoice>
-            </div>
-            {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
-            <Tooltip type={TooltipType.RESULTS} />
-            <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
-            <RightSectionTitle>Proposal date</RightSectionTitle>
-            <Datetime
-              value={startDate}
-              inputProps={{
-                placeholder: "Start date (d/m/y h:m)",
-                style: dateTimeStyle,
-              }}
-              isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-              dateFormat="D/MM/YYYY"
-              timeFormat="HH:mm[h]"
-              onChange={(date) => onStartDate(date)}
-              strictParsing
-            />
-            <Datetime
-              value={endDate}
-              inputProps={{
-                placeholder: "End date (d/m/y h:m)",
-                style: dateTimeStyle,
-              }}
-              isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-              dateFormat="D/MM/YYYY"
-              timeFormat="HH:mm[h]"
-              onChange={(date) => onEndDate(date)}
-              strictParsing
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "13px",
-                width: "100%",
-              }}
-            >
-              {wallet.status === "connected" ? (
-                <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-              ) : !isMobile ? (
-                <ConnectButton wide />
-              ) : null}
-            </div>
-          </FieldRowRightSection>
-        </ProposalRow>
-      </NewProcessContainer>
-    </div>
-  );
-};
-
-function isValidFutureDate(date: Moment): boolean {
-  const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24);
-  return date.isAfter(threshold);
-}
 
 export default NewProcessPage;
