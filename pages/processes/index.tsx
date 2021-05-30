@@ -43,7 +43,7 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { trackEvent } from "../../lib/analytics";
+import { EventType, trackEvent } from "../../lib/analytics";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -115,10 +115,10 @@ const ProcessPage = () => {
       const analytics_properties = {
         network: wallet.networkName,
       };
-      trackEvent("proposal_voted", wallet, analytics_properties);
+      trackEvent(EventType.VOTE_CREATION, analytics_properties);
     } catch (error) {
       if ((error.message as string).includes("signature")) {
-        return setAlertMessage("Signature denied.");
+        return setAlertMessage("Signature denied");
       }
       return setAlertMessage("The vote could not be submitted");
     }

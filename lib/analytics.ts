@@ -1,11 +1,20 @@
-import { Wallet } from "use-wallet";
-
 enum MethodType {
   PAGE,
   IDENTIFY,
   EVENT,
 }
 
+export enum EventType {
+  PROPOSAL_CREATION = "proposal_created",
+  VOTE_CREATION = "proposal_voted",
+}
+
+/**
+ * This private method extracts the necessary method from the global window object.
+ *
+ * @param methodType Type of analyts to track
+ * @returns the corresponding analytics method
+ */
 function getAnalyticsMethod(methodType: MethodType) {
   const windowAnalytics = (window as any).analytics;
   if (!windowAnalytics) {
@@ -17,41 +26,20 @@ function getAnalyticsMethod(methodType: MethodType) {
   if (methodType === MethodType.EVENT) return windowAnalytics.track;
 }
 
-type WalletInfo = {
-  wallet_address: string;
-  wallet_provider: string;
-  network: string;
-};
-
 /**
  * This method keeps track of certain events (like creation of proposals, etc.).
  *
  * @param eventName name of the event to be tracked
- * @param wallet wallet information (as provided by useWallet())
- * @param data additional data relating to tracked event
+ * @param data data relating to tracked event
  * @returns void
  */
-export function trackEvent<T>(eventName: string, wallet: Wallet, data: T) {
-  if (wallet.status !== "connected") {
-    console.warn("Analytics information missing");
-    return;
-  }
-  const walletData: WalletInfo = {
-    wallet_address: wallet.account,
-    wallet_provider: wallet.connector,
-    network: wallet.networkName,
-  };
-  const eventData: WalletInfo & T = {
-    ...walletData,
-    ...data,
-  };
-
+export function trackEvent<T>(eventType: EventType, eventData: T) {
   const trackerMethod = getAnalyticsMethod(MethodType.EVENT);
   if (typeof trackerMethod !== "function") {
     console.warn("analytics function not defined");
     return;
   }
-  trackerMethod(eventName, eventData);
+  trackerMethod(eventType, eventData);
 }
 
 /**
@@ -80,14 +68,14 @@ export function trackPage(pathName: string) {
  * @param connector Wallet connector used by use-wallet library
  * @returns void
  */
-export function trackId(account: string, networkName: string, connector: string) {
+export function identifyUser(account: string, networkName: string, connector: string) {
   const trackerMethod = getAnalyticsMethod(MethodType.IDENTIFY);
   if (typeof trackerMethod !== "function") {
     console.warn("analytics function not defined");
     return;
   }
 
-  const walletData: WalletInfo = {
+  const walletData = {
     wallet_address: account,
     wallet_provider: connector,
     network: networkName,

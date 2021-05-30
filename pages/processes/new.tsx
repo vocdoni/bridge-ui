@@ -38,7 +38,7 @@ import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 import { useIsWide } from "../../lib/hooks/useWindowSize";
-import { trackEvent } from "../../lib/analytics";
+import { trackEvent, EventType } from "../../lib/analytics";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -467,7 +467,7 @@ const NewProcessPage = () => {
         results_type: results,
         questions_length: metadata.questions.length,
       };
-      trackEvent("proposal_created", wallet, analytics_properties);
+      trackEvent(EventType.PROPOSAL_CREATION, analytics_properties);
     } catch (err) {
       setSubmitting(false);
 
@@ -544,7 +544,7 @@ const NewProcessPage = () => {
       results_type: results,
       questions_length: metadata.questions.length,
     };
-    trackEvent("proposal_created", wallet, analytics_properties);
+    trackEvent(EventType.PROPOSAL_CREATION, analytics_properties);
   }
 
   return (
