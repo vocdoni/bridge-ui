@@ -43,6 +43,7 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
+import { trackEvent } from "../../lib/analytics";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -112,12 +113,9 @@ const ProcessPage = () => {
     try {
       await submitVote(process, proof);
       const analytics_properties = {
-        proposal_id: processId,
-        wallet_address: wallet.account,
-        wallet_provider: wallet.connector,
         network: wallet.networkName,
       };
-      (window as any).analytics?.track("proposal_voted", analytics_properties);
+      trackEvent("proposal_voted", wallet, analytics_properties);
     } catch (error) {
       if ((error.message as string).includes("signature")) {
         return setAlertMessage("Signature denied.");

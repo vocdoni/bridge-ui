@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useWallet } from "use-wallet";
 
 import { WalletModal } from ".";
+import { trackId } from "../../lib/analytics";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
@@ -150,11 +151,7 @@ export const WalletList = () => {
     /* NOTE This logic is needed to ensure identification event is sent only once. */
     if (status === "connected" && firstId) {
       setFirstId(false);
-      (window as any).analytics?.identify({
-        wallet_address: account,
-        last_wallet_provider: connector,
-        last_network: networkName,
-      });
+      trackId(account, networkName, connector);
     }
   }, [status]);
 

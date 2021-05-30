@@ -17,12 +17,9 @@ import { FixedGlobalStyle, theme } from "../theme";
 import "react-datetime/css/react-datetime.css";
 import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
+import { trackPage } from "../lib/analytics";
 
-Router.events.on("routeChangeComplete", (url: string) => {
-  return (window as any).analytics?.page({
-    path: url,
-  });
-});
+Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
 
 type NextAppProps = AppInitialProps & {
   Component: NextComponentType<NextPageContext, any, any>;

@@ -38,6 +38,7 @@ import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import { NO_TOKEN_BALANCE } from "../../lib/errors";
 
 import { useIsWide } from "../../lib/hooks/useWindowSize";
+import { trackEvent } from "../../lib/analytics";
 
 const NewProcessContainer = styled.div`
   input[type="text"],
@@ -465,11 +466,8 @@ const NewProcessPage = () => {
         binding_type: "signaling",
         results_type: results,
         questions_length: metadata.questions.length,
-        wallet_address: wallet.account,
-        wallet_provider: wallet.connector,
-        network: wallet.networkName,
       };
-      (window as any).analytics?.track("proposal_created", analytics_properties);
+      trackEvent("proposal_created", wallet, analytics_properties);
     } catch (err) {
       setSubmitting(false);
 
@@ -545,11 +543,8 @@ const NewProcessPage = () => {
       binding_type: "binding",
       results_type: results,
       questions_length: metadata.questions.length,
-      wallet_address: wallet.account,
-      wallet_provider: wallet.connector,
-      network: wallet.networkName,
     };
-    (window as any).analytics?.track("proposal_created", analytics_properties);
+    trackEvent("proposal_created", wallet, analytics_properties);
   }
 
   return (
