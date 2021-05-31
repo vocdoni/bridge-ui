@@ -56,6 +56,7 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
             choices: choicesFormatted,
           };
         });
+        setLoading(false);
         setResults(results);
         setError("");
         return;

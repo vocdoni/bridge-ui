@@ -84,10 +84,6 @@ const ProcessPage = () => {
   );
   const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(process);
 
-  let isLoading = useMemo(() => {
-    return processLoading || tokenLoading || processDatesLoading || resultsLoading;
-  }, [processLoading, tokenLoading, processDatesLoading, resultsLoading]);
-
   useEffect(() => {
     let errorName = "";
     if (processError) errorName += "process";
@@ -145,6 +141,8 @@ const ProcessPage = () => {
   else if (!canVote) mainButtonText = "You cannot vote";
   // catch-all
   else mainButtonText = "Submit your vote";
+
+  const isLoading = processLoading || tokenLoading || processDatesLoading || resultsLoading;
 
   return (
     <div>
