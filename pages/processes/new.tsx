@@ -443,7 +443,7 @@ const NewProcessPage = () => {
         oracleClient
       );
 
-      const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
+      const ready = await waitUntilProcessCreated(processId, pool);
       if (!ready) throw new Error("The proposal is not available after a while");
 
       Router.push("/processes#/" + processId);
@@ -504,7 +504,7 @@ const NewProcessPage = () => {
 
     const processId = await VotingApi.newProcess(processParamsPre, signer, pool);
     // Wait until effectively created
-    const ready = await waitUntilProcessCreated(processId, tokenInfo.address, pool);
+    const ready = await waitUntilProcessCreated(processId, pool);
     if (!ready) throw new Error("The proposal is not available after a while");
 
     Router.push("/processes#/" + processId);
