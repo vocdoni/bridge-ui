@@ -1,4 +1,5 @@
 import React from "react";
+import { When } from "react-if";
 import styled from "styled-components";
 
 const TitleContainer = styled.div`
@@ -46,7 +47,9 @@ const SectionTitle = ({ title, subtitle, smallerTitle }: TitleProps) => {
       <Title hasSubtitle={hasSubtitle} isSmaller={smallerTitle}>
         {title}
       </Title>
-      {hasSubtitle ? <Subtitle>{subtitle}</Subtitle> : null}
+      <When condition={hasSubtitle}>
+        <Subtitle>{subtitle}</Subtitle>
+      </When>
     </TitleContainer>
   );
 };
