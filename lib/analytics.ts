@@ -13,6 +13,7 @@ export enum EventType {
   NEW_PROPOSAL_CLICKED = "proposal_button_clicked",
   PROPOSAL_TYPE_CHOSEN = "proposalType_button_clicked",
   TX_CANCELED = "transaction_canceled",
+  PROPOSAL_CREATION_ABANDONED = "proposal_abandoned",
 }
 
 /**
