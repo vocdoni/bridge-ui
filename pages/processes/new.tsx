@@ -418,7 +418,7 @@ const NewProcessPage = () => {
 
   async function submitBindingVote(pool: GatewayPool, startBlock, blockCount) {
     // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
-    // Otherwise, proofs will not match
+    // Otherwise, proofs will not match.
     const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
     const proof = await getProof({
       account: wallet.account,
