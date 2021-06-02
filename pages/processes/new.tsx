@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import {
   DVoteGateway,
   GatewayPool,
@@ -243,6 +243,22 @@ const NewProcessPage = () => {
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
+
+  useEffect(() => {
+    // If the router captures a change from this page to other pages it means that the
+    // user has abandoned creating a proposal. However, if the next page is the new
+    // proposal's page, it means the user has completed the proposal. In this case the
+    // event is NOT triggered.
+    function routeChangeHandler(url: string) {
+      if (!url.includes("/processes/#/"))
+        trackEvent(EventType.PROPOSAL_CREATION_ABANDONED, { entity_id: tokenAddress });
+    }
+
+    router.events.on("routeChangeStart", routeChangeHandler);
+    return () => {
+      router.events.off("routeChangeStart", routeChangeHandler);
+    };
+  });
 
   // Callbacks
   const handleChoice = ({ currentQuestion, choices, currentChoice }) => {
