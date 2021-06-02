@@ -8,6 +8,7 @@ export enum EventType {
   PROPOSAL_CREATED = "proposal_created",
   VOTE_SUBMITTED = "proposal_voted",
   TOKEN_REGISTERED = "token_registered",
+  TOKEN_REGISTRATION_FAILED = "token_registrationFalied",
 }
 
 /**
