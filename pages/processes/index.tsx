@@ -62,24 +62,24 @@ const ProcessPage = () => {
   const { setAlertMessage } = useMessageAlert();
 
   const { process, loading: processLoading, error: processError } = useProcess(processId);
-  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(process?.entity);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(process?.state?.entityId);
   const {
     hasEnded,
     hasStarted,
     loading: processDatesLoading,
     error: processDatesError,
-  } = useProcessDates(process);
+  } = useProcessDates(process?.state);
   const { results, error: resultsError, refresh: refreshResults } = useProcessResults(
     process,
     tokenInfo
   );
   const { summary, error: summaryError, refresh: refreshSummary } = useProcessSummary({
-    processInfo: process,
+    processDetails: process,
     tokenInfo,
   });
   const { proof, loading: proofLoading, error: proofError } = useCensusProof(
     tokenInfo,
-    process?.parameters?.sourceBlockHeight
+    process?.state?.sourceBlockHeight
   );
   const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(process);
 
@@ -160,9 +160,9 @@ const ProcessPage = () => {
       />
       <ProcessContainer>
         <ProcessInformation>
-          <ProcessTitle>{process.metadata.title.default || "No title"}</ProcessTitle>
+          <ProcessTitle>{process?.metadata?.title?.default || "No title"}</ProcessTitle>
           <ProcessDescription>
-            {process.metadata.description.default || "No description"}
+            {process?.metadata?.description?.default || "No description"}
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
@@ -186,7 +186,7 @@ const ProcessPage = () => {
       </ProcessContainer>
 
       <Questions
-        questions={process.metadata.questions}
+        questions={process?.metadata?.questions}
         results={results}
         choicesSelected={voteState.choices}
         onChoiceSelect={onSelect}

@@ -1,15 +1,15 @@
 import { useBlockStatus } from "@vocdoni/react-hooks";
-import { IProcessInfo, VotingApi } from "dvote-js";
+import { IProcessState, VotingApi } from "dvote-js";
 import { useEffect, useState } from "react";
 
-export const useProcessDates = (processInfo: IProcessInfo) => {
+export const useProcessDates = (processState: IProcessState) => {
   const { blockStatus, loading, error } = useBlockStatus()
   const [startDate, setStartDate] = useState<Date>(null)
   const [endDate, setEndDate] = useState<Date>(null)
 
   const blockHeight = blockStatus?.blockNumber || 0
-  const startBlock = processInfo?.parameters?.startBlock || 0
-  const endBlock = processInfo?.parameters?.endBlock || 0
+  const startBlock = processState?.startBlock || 0
+  const endBlock = processState?.endBlock || 0
 
   // Lazy auto refresh
   useEffect(() => {

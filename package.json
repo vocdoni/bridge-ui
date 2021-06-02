@@ -23,10 +23,10 @@
   "homepage": "https://github.com/vocdoni/bridge-ui#readme",
   "dependencies": {
     "@aragon/ui": "^1.7.0",
-    "@vocdoni/react-hooks": "0.8.3",
+    "@vocdoni/react-hooks": "^0.9.6",
     "bluebird": "^3.7.2",
     "dexie": "^3.0.3",
-    "dvote-js": "1.8.5",
+    "dvote-js": "^1.9.6",
     "eslint": "^7.14.0",
     "ethers": "^5.0.25",
     "ethers-multicall": "^0.2.0",

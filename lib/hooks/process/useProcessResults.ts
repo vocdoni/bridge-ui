@@ -1,5 +1,5 @@
 import { useBlockStatus, usePool } from "@vocdoni/react-hooks";
-import { IProcessInfo, VotingApi } from "dvote-js";
+import { IProcessDetails, VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -14,14 +14,14 @@ export type ProcessResults = {
   }[];
 }[];
 
-export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<TokenInfo>) => {
+export const useProcessResults = (processDetails: IProcessDetails, tokenInfo: Partial<TokenInfo>) => {
   const { poolPromise } = usePool();
   const { blockStatus } = useBlockStatus();
   const [results, setResults] = useState<ProcessResults>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const processId = processInfo?.id;
+  const processId = processDetails?.id;
   const tokenAddress = tokenInfo?.address;
 
   useEffect(() => {
@@ -37,15 +37,15 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
     if (!tokenInfo || !processId || !tokenAddress) return;
     else if (!blockStatus) return;
 
-    const hasEncryptedVotes = processInfo.parameters.envelopeType.encryptedVotes;
+    const hasEncryptedVotes = processDetails?.state?.envelopeType?.encryptedVotes;
 
     // Encrypted and not ended?
     if (hasEncryptedVotes) {
-      const endBlock = processInfo.parameters.endBlock;
+      const endBlock = processDetails?.state?.endBlock;
       if (blockStatus.blockNumber < endBlock) {
         // Return empty results
 
-        const results = processInfo.metadata.questions.map(({ title, choices }) => {
+        const results = processDetails?.metadata?.questions?.map?.(({ title, choices }) => {
           const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
             title: choiceTitle.default,
             votes: "",
@@ -55,7 +55,7 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
             title: title.default,
             choices: choicesFormatted,
           };
-        });
+        }) || [];
         setLoading(false);
         setResults(results);
         setError("");
@@ -67,7 +67,7 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
     const pool = await poolPromise;
 
     try {
-      const response = await VotingApi.getResultsDigest(processInfo.id, pool);
+      const response = await VotingApi.getResultsDigest(processDetails?.id, pool);
 
       // Note: This is supported for single choice multiquestion voting
       // we will need to add more complex logic to parse results
@@ -120,12 +120,12 @@ export const useProcessResults = (processInfo: IProcessInfo, tokenInfo: Partial<
       setLoading(false);
 
       if (e?.message == "The results are not available") {
-        const results: ProcessResults = processInfo.metadata.questions.map(({ title, choices }) => {
+        const results: ProcessResults = processDetails?.metadata?.questions?.map?.(({ title, choices }) => {
           const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
             title: choiceTitle.default,
             votes: hasEncryptedVotes ? "" : "0 " + tokenInfo.symbol,
             percentage: "Error",
-          }));
+          })) || [];
           return {
             title: title.default,
             choices: choicesFormatted,

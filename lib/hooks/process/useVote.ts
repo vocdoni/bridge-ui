@@ -1,5 +1,5 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { IProcessInfo, SignedEnvelopeParams, VotingApi } from "dvote-js";
+import { IProcessDetails, SignedEnvelopeParams, VotingApi } from "dvote-js";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useWallet } from "use-wallet";
 import { CensusProof } from "../../api";
@@ -46,7 +46,7 @@ export const voteStateReducer = (state: VoteState, action: StatusAction) => {
   }
 };
 
-export const useVote = (processInfo: IProcessInfo) => {
+export const useVote = (processDetails: IProcessDetails) => {
   const [voteState, dispatch] = useReducer(voteStateReducer, INITIAL_STATE);
   const wallet = useWallet();
   const signer = useSigner();
@@ -54,7 +54,7 @@ export const useVote = (processInfo: IProcessInfo) => {
   const { setAlertMessage } = useMessageAlert();
   const [votingStatus, setVotingStatus] = useState<VotingStatus>();
 
-  const processId = processInfo?.id || "";
+  const processId = processDetails?.id || "";
   const voterAddress = wallet?.account || "";
 
   const nullifier = useMemo(() => {
@@ -91,7 +91,7 @@ export const useVote = (processInfo: IProcessInfo) => {
       })
   };
 
-  const submitVote = async (processInfo: IProcessInfo, proof: CensusProof): Promise<void> => {
+  const submitVote = async (processDetails: IProcessDetails, proof: CensusProof): Promise<void> => {
     try {
       dispatch({ type: "SET_STATE", state: { submitting: true } });
       const pool = await poolPromise;
@@ -99,13 +99,13 @@ export const useVote = (processInfo: IProcessInfo) => {
       // Detect encryption
       const envelopParams: SignedEnvelopeParams = {
         votes: voteState.choices,
-        censusOrigin: processInfo?.parameters.censusOrigin,
+        censusOrigin: processDetails.state.censusOrigin,
         censusProof: proof.storageProof[0],
         processId: processId,
         walletOrSigner: signer,
       };
 
-      if (processInfo.parameters.envelopeType.encryptedVotes) {
+      if (processDetails.state.envelopeType.encryptedVotes) {
         envelopParams.processKeys = await VotingApi.getProcessKeys(processId, pool);
       }
 

@@ -1,5 +1,5 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { IProcessInfo, VotingApi } from "dvote-js";
+import { IProcessDetails, VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -8,14 +8,14 @@ import { TokenInfo } from "../../types";
 import { useProcessDates } from "./useProcessDates";
 
 export const useProcessSummary = ({
-  processInfo,
+  processDetails,
   tokenInfo,
 }: {
-  processInfo: IProcessInfo;
+  processDetails: IProcessDetails;
   tokenInfo: Partial<TokenInfo>;
 }) => {
   const { poolPromise } = usePool();
-  const { startDate, endDate, hasStarted } = useProcessDates(processInfo);
+  const { startDate, endDate, hasStarted } = useProcessDates(processDetails.state);
   const [voteCount, setVoteCount] = useState(0);
   const [resultsWeight, setResultsWeight] = useState(BigNumber.from(0));
   const [loading, setLoading] = useState(true);
@@ -26,20 +26,20 @@ export const useProcessSummary = ({
     updateProcessSummary();
 
     return () => clearInterval(interval);
-  }, [processInfo?.id, hasStarted]);
+  }, [processDetails?.id, hasStarted]);
 
   // Loader
 
   const updateProcessSummary = () => {
-    if (!processInfo?.id || !hasStarted) return;
+    if (!processDetails?.id || !hasStarted) return;
 
     setLoading(true);
 
     return poolPromise
       .then((pool) =>
         Promise.all([
-          VotingApi.getEnvelopeHeight(processInfo?.id, pool),
-          VotingApi.getResultsWeight(processInfo?.id, pool),
+          VotingApi.getEnvelopeHeight(processDetails?.id, pool),
+          VotingApi.getResultsWeight(processDetails?.id, pool),
         ])
       )
       .then(([voteCount, resultsWeight]) => {

@@ -1,5 +1,5 @@
 import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
-import { CensusErc20Api, GatewayPool, IProcessVochainParameters, VotingApi } from "dvote-js";
+import { CensusErc20Api, GatewayPool, IProcessSummary, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NO_TOKEN_BALANCE } from "./errors";
@@ -164,9 +164,9 @@ export function getRegisteredTokenList(
 export async function waitUntilProcessCreated(processId: string, pool: GatewayPool): Promise<boolean> {
   let retries = 30;
   while (retries >= 0) {
-    const info: IProcessVochainParameters = await VotingApi.getProcessInfo(processId, pool).catch(() => null)
+    const info: IProcessSummary = await VotingApi.getProcessSummary(processId, pool).catch(() => null)
 
-    if (info?.processId == processId) {
+    if (!!info) {
       return true;
     }
     await new Promise(r => setTimeout(r, 4000)) // Wait 4s;

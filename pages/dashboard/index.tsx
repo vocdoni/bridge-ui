@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
-import { useBlockHeight, usePool, useProcesses } from "@vocdoni/react-hooks";
+import { useBlockHeight, useProcesses } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 import { useRouter } from "next/router";
 
@@ -13,7 +13,8 @@ import { limitedText } from "../../lib/utils";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
 import { TopSection } from "../../components/top-section";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { IProcessInfo } from "dvote-js";
+import { IProcessSummary, ProcessMetadata } from "dvote-js";
+import { Else, If, Then } from "react-if";
 
 export const TokenList = styled.div`
   display: flex;
@@ -44,22 +45,20 @@ const DashboardPage = () => {
   const { processes, loading: processesLoading, error: processesError } = useProcesses(processIds);
   const { blockHeight } = useBlockHeight()
 
-  const processList = [...processes.values()]
-
   useEffect(() => {
     if (!account) {
       router.replace("/");
     }
   }, [account]);
 
-  const upcomingProcesses = processList.filter((proc) => blockHeight < proc.parameters.startBlock);
-  const activeProcesses = processList.filter(
+  const upcomingProcesses = processes.filter((proc) => blockHeight < proc.summary.startBlock);
+  const activeProcesses = processes.filter(
     (proc) =>
-      blockHeight >= proc.parameters.startBlock &&
-      blockHeight < proc.parameters.endBlock
+      blockHeight >= proc.summary.startBlock &&
+      blockHeight < (proc.summary.startBlock + proc.summary.blockCount)
   );
-  const endedProcesses = processList.filter(
-    (proc) => blockHeight >= proc.parameters.endBlock
+  const endedProcesses = processes.filter(
+    (proc) => blockHeight >= (proc.summary.startBlock + proc.summary.blockCount)
   );
 
   const VOTING_SECTIONS = [
@@ -95,30 +94,37 @@ const DashboardPage = () => {
           {...section}
           key={section.title}
           loadingProcesses={tokenListLoading || processesLoading}
-          tokenInfos={storedTokens}
+          tokenInfos={storedTokens || []}
         />
       ))}
     </div>
   );
 };
 
-export const VoteSection = ({
-  processes,
-  tokenInfos,
-  loadingProcesses,
-  title,
-  noProcessesMessage,
-  processesMessage,
+export const VoteSection = (props: {
+  processes: { id: string; summary: IProcessSummary; metadata?: ProcessMetadata; }[],
+  tokenInfos: TokenInfo[],
+  loadingProcesses: boolean,
+  title: string,
+  noProcessesMessage: string,
+  processesMessage: string
 }) => {
+  const {
+    processes,
+    tokenInfos,
+    loadingProcesses,
+    title,
+    noProcessesMessage,
+    processesMessage,
+  } = props
+
   const Processes = () => {
-    return useMemo(() => {
-      return processes.map((proc) => {
-        if (tokenInfos.size) {
-          const token = tokenInfos.get(proc.tokenAddress);
-          return <ProcessCard process={proc} token={token} />;
-        }
-      });
-    }, [tokenInfos, processes]);
+    return <>
+      {processes.map((proc) => {
+        const token = tokenInfos.find(token => token.address == proc.summary.entityId);
+        return <ProcessCard processId={proc.id} metadata={proc.metadata} token={token} />;
+      })}
+    </>;
   };
 
   return (
@@ -130,22 +136,28 @@ export const VoteSection = ({
   );
 };
 
-const ProcessCard = (props: { process: IProcessInfo; token?: TokenInfo }) => {
-  const proc = props.process;
+const ProcessCard = (props: { processId: string, metadata?: ProcessMetadata; token?: TokenInfo }) => {
   const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : props?.token.icon;
 
   return (
     <TokenCard
-      key={proc.id}
+      key={props.processId}
       name={props?.token?.symbol}
       icon={icon}
       rightText={/*strDateDiff()*/ ""}
-      href={proc?.id ? "/processes#/" + proc.id : ""}
+      href={props.processId ? "/processes#/" + props.processId : ""}
     >
       <p>
-        <strong>{limitedText(proc?.metadata?.title?.default, 35) || "No title"}</strong>
-        <br />
-        {limitedText(proc?.metadata?.description?.default) || "No description"}
+        <If condition={!!props.metadata}>
+          <Then>
+            <strong>{limitedText(props.metadata?.title?.default, 35) || "(No title)"}</strong>
+            <br />
+            {limitedText(props.metadata?.description?.default) || "(No description)"}
+          </Then>
+          <Else>
+            <Spinner />
+          </Else>
+        </If>
       </p>
     </TokenCard>
   );

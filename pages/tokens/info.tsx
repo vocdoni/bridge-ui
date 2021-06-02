@@ -3,16 +3,15 @@ import { Else, If, Then, Unless, When } from "react-if";
 import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import styled from "styled-components";
-import { IProcessInfo } from "dvote-js";
 
 import { useToken } from "../../lib/hooks/tokens";
 import { shortAddress } from "../../lib/utils";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
-
 import SectionTitle from "../../components/sectionTitle";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
+import { IProcessSummary, ProcessMetadata } from "dvote-js";
 import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 import { ActionTypes, useModal } from "../../components/Modal/context";
@@ -120,7 +119,11 @@ const TokenLogoContainer = styled.div`
 `;
 
 type VotingSectionProps = {
-  allProcesses: Map<string, IProcessInfo>;
+  allProcesses: {
+    id: string;
+    summary: IProcessSummary;
+    metadata?: ProcessMetadata;
+  }[];
   processes: string[];
   token: TokenInfo;
   loadingProcesses: boolean;
@@ -147,8 +150,9 @@ const VoteSection = (params: VotingSectionProps) => {
           <SectionTitle title={title} subtitle={processesMessage} />
           <TokenList>
             {processes.map((processId) => {
-              const title = allProcesses.get(processId)?.metadata?.title?.default || "No title";
-              return <ProcessCard key={processId} id={processId} title={title} token={token} />;
+              const proc = allProcesses.find(proc => proc.id == processId)
+              const title = proc?.metadata?.title?.default || "No title";
+              return <ProcessCard key={processId} id={processId} title={title} token={token} loading={!proc?.metadata} />;
             })}
           </TokenList>
         </Then>
@@ -169,7 +173,9 @@ const VoteSection = (params: VotingSectionProps) => {
   );
 };
 
-const ProcessCard = ({ id, token, title }) => {
+const ProcessCard = (props: { id: string, token: TokenInfo, title: string, loading?: boolean }) => {
+  const { id, token, title, loading } = props
+  // TODO: Show a spinner when `loading` is set
   return (
     <VoteCard
       name={token?.name}
@@ -196,26 +202,33 @@ const TokenPage = () => {
   const loading = tokenLoading || proposalsLoading;
   const { dispatch } = useModal();
 
+  // Callbacks
   const onCreate = () => {
     trackEvent(EventType.NEW_PROPOSAL_CLICKED, {});
     dispatch({
       type: ActionTypes.OPEN_PROPOSAL_LIST,
     });
   };
-  // Callbacks
 
-  const upcomingProcesses = processIds.filter(
-    (id) => processes.has(id) && blockNumber < processes.get(id).parameters.startBlock
-  );
-  const activeProcesses = processIds.filter(
-    (id) =>
-      processes.has(id) &&
-      blockNumber >= processes.get(id).parameters.startBlock &&
-      blockNumber < processes.get(id).parameters.endBlock
-  );
-  const endedProcesses = processIds.filter(
-    (id) => processes.has(id) && blockNumber >= processes.get(id).parameters.endBlock
-  );
+  const upcomingProcesses = processIds.filter((id) => {
+    const proc = processes.find(p => p.id == id);
+    if (!proc) return false;
+
+    return blockNumber < proc?.summary?.startBlock
+  });
+  const activeProcesses = processIds.filter((id) => {
+    const proc = processes.find(p => p.id == id);
+    if (!proc) return false;
+
+    return blockNumber >= proc?.summary?.startBlock &&
+      blockNumber < (proc?.summary?.startBlock + proc?.summary?.blockCount);
+  });
+  const endedProcesses = processIds.filter((id) => {
+    const proc = processes.find(p => p.id == id);
+    if (!proc) return false;
+
+    return blockNumber >= (proc?.summary?.startBlock + proc?.summary?.blockCount);
+  });
 
   // This exact logic is being done in dashboard/index.tsx
   // @TODO: Convert this logic into a hook so we apply some DRY
