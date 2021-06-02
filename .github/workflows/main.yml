@@ -139,7 +139,7 @@ jobs:
         with:
           regex-string: 'release-'
       - name: Compare with current branch, exit if not last
-        if: ${{ steps.lrb.outputs.last-semver-branch }} != ${{ steps.var.outputs.branch }}
+        if: steps.lrb.outputs.last-semver-branch != steps.var.outputs.branch
         run: |
           echo "lrb: ${{ steps.lrb.outputs.last-semver-branch }}"
           echo "branch: ${{ steps.var.outputs.branch }}"
@@ -172,7 +172,7 @@ jobs:
           gsutil -m cp -r build/* gs://voice.aragon.org
       - name: Install dependencies and build (xdai)
         run: |
-          npm clean
+          rm -rf build
           npm install
           npm run export
         env:
