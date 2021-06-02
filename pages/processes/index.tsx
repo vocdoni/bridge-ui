@@ -112,10 +112,7 @@ const ProcessPage = () => {
     }
     try {
       await submitVote(process, proof);
-      const analytics_properties = {
-        network: wallet.networkName,
-      };
-      trackEvent(EventType.VOTE_CREATION, analytics_properties);
+      trackEvent(EventType.VOTE_SUBMITTED, { proposal_id: processId });
     } catch (error) {
       if ((error.message as string).includes("signature")) {
         return setAlertMessage("Signature denied");
