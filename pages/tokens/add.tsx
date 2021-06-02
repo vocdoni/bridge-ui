@@ -1,25 +1,31 @@
 import React, { useCallback, useState } from "react";
+import { When } from "react-if";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
 import { useWallet } from "use-wallet";
 import { usePool } from "@vocdoni/react-hooks";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
-import { NO_TOKEN_BALANCE, TOKEN_ALREADY_REGISTERED } from "../../lib/errors";
+import {
+  NO_TOKEN_BALANCE,
+  TOKEN_ADDRESS_INVALID,
+  TOKEN_ALREADY_REGISTERED,
+} from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { useStoredTokens } from "../../lib/hooks/tokens";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { EventType, trackEvent } from "../../lib/analytics";
+import { FORTY_DIGITS_HEX } from "../../lib/regex";
+
+import { Spinner } from "../../components/spinner";
 import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
-import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { Spinner } from "../../components/spinner";
-import { When } from "react-if";
-import { EventType, trackEvent } from "../../lib/analytics";
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -178,26 +184,26 @@ const TokenAddPage = () => {
 
   // Callbacks
 
-  const checkToken = () => {
+  const checkToken = async () => {
     if (loadingToken || !formTokenAddress || loading) return;
-    else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
+    try {
+      if (!formTokenAddress.match(FORTY_DIGITS_HEX)) {
+        throw new Error(TOKEN_ADDRESS_INVALID);
+      }
+
+      setLoadingToken(true);
+      const pool = await poolPromise;
+      const newTokenInfo = await getTokenInfo(formTokenAddress, pool);
+
+      setLoadingToken(false);
+      setTokenInfo(newTokenInfo);
+    } catch (error) {
+      setLoadingToken(false);
       trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: tokenInfo.address });
-      return setAlertMessage("The token address is not valid");
+
+      if (error?.message === TOKEN_ADDRESS_INVALID) setAlertMessage(TOKEN_ADDRESS_INVALID);
+      else setAlertMessage("Could not fetch the contract details");
     }
-
-    setLoadingToken(true);
-
-    poolPromise
-      .then((pool) => getTokenInfo(formTokenAddress, pool))
-      .then((tokenInfo) => {
-        setLoadingToken(false);
-        setTokenInfo(tokenInfo);
-      })
-      .catch((err) => {
-        trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: tokenInfo.address });
-        setLoadingToken(false);
-        setAlertMessage("Could not fetch the contract details");
-      });
   };
 
   const isConnected = wallet.connector || wallet.account;
