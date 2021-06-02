@@ -239,8 +239,9 @@ const TokenAddPage = () => {
     } catch (error) {
       setRegisteringToken(false);
 
+      /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
       if ((error?.message as string)?.includes("signature")) {
-        trackEvent(EventType.TX_CANCELED, {});
+        trackEvent(EventType.TX_CANCELED, { event_canceled: "adding_token" });
         return setAlertMessage(USER_CANCELED_TX);
       }
 
