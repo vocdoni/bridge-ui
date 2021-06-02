@@ -13,6 +13,7 @@ export const useProcessDates = (processState: IProcessState) => {
 
   // Lazy auto refresh
   useEffect(() => {
+    if (!blockHeight) return
     const startDate = VotingApi.estimateDateAtBlockSync(startBlock, blockStatus)
     const endDate = VotingApi.estimateDateAtBlockSync(endBlock, blockStatus)
 
