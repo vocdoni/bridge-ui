@@ -10,6 +10,7 @@ export enum EventType {
   TOKEN_REGISTERED = "token_registered",
   TOKEN_FETCHING_FAILED = "token_fetchFalied",
   TOKEN_REGISTRATION_FAILED = "token_registrationFalied",
+  NEW_PROPOSAL_CLICKED = "proposal_button_clicked",
 }
 
 /**

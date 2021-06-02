@@ -1,21 +1,23 @@
 import React, { useMemo } from "react";
-
+import { Else, If, Then, Unless, When } from "react-if";
 import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
-import { useToken } from "../../lib/hooks/tokens";
 import { useUrlHash } from "use-url-hash";
-import { TokenLogo, VoteCard } from "../../components/token-card";
-import { PrimaryButton } from "../../components/button";
 import styled from "styled-components";
+import { IProcessInfo } from "dvote-js";
+
+import { useToken } from "../../lib/hooks/tokens";
 import { shortAddress } from "../../lib/utils";
-import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
-import SectionTitle from "../../components/sectionTitle";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
-import { IProcessInfo } from "dvote-js";
-import { Else, If, Then, Unless, When } from "react-if";
+
+import SectionTitle from "../../components/sectionTitle";
+import { TokenLogo, VoteCard } from "../../components/token-card";
+import { PrimaryButton } from "../../components/button";
 import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
+import { EventType, trackEvent } from "../../lib/analytics";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -192,9 +194,10 @@ const TokenPage = () => {
 
   const blockNumber = blockStatus?.blockNumber || 0;
   const loading = tokenLoading || proposalsLoading;
-  const { state, dispatch } = useModal();
+  const { dispatch } = useModal();
 
   const onCreate = () => {
+    trackEvent(EventType.NEW_PROPOSAL_CLICKED, {});
     dispatch({
       type: ActionTypes.OPEN_PROPOSAL_LIST,
     });
@@ -211,9 +214,7 @@ const TokenPage = () => {
       blockNumber < processes.get(id).parameters.endBlock
   );
   const endedProcesses = processIds.filter(
-    (id) =>
-      processes.has(id) &&
-      blockNumber >= processes.get(id).parameters.endBlock
+    (id) => processes.has(id) && blockNumber >= processes.get(id).parameters.endBlock
   );
 
   // This exact logic is being done in dashboard/index.tsx
