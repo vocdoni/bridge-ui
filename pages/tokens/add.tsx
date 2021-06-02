@@ -231,7 +231,7 @@ const TokenAddPage = () => {
     } catch (err) {
       console.log(err.message);
       setRegisteringToken(false);
-
+      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: tokenInfo.address });
       if (err && err.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
       else if (err && err.message == TOKEN_ALREADY_REGISTERED)
         return setAlertMessage(TOKEN_ALREADY_REGISTERED);
