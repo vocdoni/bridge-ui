@@ -188,7 +188,6 @@ const QuestionDescription = styled(DescriptionInput)`
   border: none;
   background-color: ${({ theme }) => theme.blackAndWhite.w1};
   padding: 1em;
-  margin-top: 1em;
   border-radius: 8px;
 
   @media ${({ theme }) => theme.screens.tablet} {
