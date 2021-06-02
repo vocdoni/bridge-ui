@@ -11,6 +11,7 @@ export enum EventType {
   TOKEN_FETCHING_FAILED = "token_fetchFalied",
   TOKEN_REGISTRATION_FAILED = "token_registrationFalied",
   NEW_PROPOSAL_CLICKED = "proposal_button_clicked",
+  PROPOSAL_TYPE_CHOSEN = "proposalType_button_clicked",
 }
 
 /**

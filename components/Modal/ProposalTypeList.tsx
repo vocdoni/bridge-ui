@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 
+import { EventType, trackEvent } from "../../lib/analytics";
+
 import { ProposalModal } from ".";
 import { ActionTypes, useModal } from "./context";
 
@@ -102,7 +104,9 @@ export const ProposalTypeList = () => {
       type: ActionTypes.CLOSE_PROPOSAL_LIST,
     });
   };
+
   function onChoice(proposalType) {
+    trackEvent(EventType.PROPOSAL_TYPE_CHOSEN, { binding_type: proposalType });
     push({ pathname: "/processes/new/", query: { address: address, type: proposalType } });
     closeModal();
   }
