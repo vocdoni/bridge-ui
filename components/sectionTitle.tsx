@@ -4,12 +4,17 @@ import styled from "styled-components";
 
 const TitleContainer = styled.div`
   padding-top: 48px;
-  padding-bottom: 16px;
+  padding-bottom: 24px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    font-size: 32px;
+    padding-top: 32px;
+  }
 `;
 
 const Title = styled.h4<{ hasSubtitle: boolean; isSmaller: boolean }>`
   margin-top: 0px;
-  ${({ hasSubtitle }) => (hasSubtitle ? "margin-bottom: 8px;" : "margin-bottom: 0px;")}
+  margin-bottom: 0px;
   font-style: normal;
   font-weight: 500;
   letter-spacing: -0.03em;
@@ -20,7 +25,6 @@ const Title = styled.h4<{ hasSubtitle: boolean; isSmaller: boolean }>`
 
   @media ${({ theme }) => theme.screens.tablet} {
     font-size: 32px;
-    margin-top: 30px;
   }
 `;
 
@@ -30,8 +34,8 @@ const Subtitle = styled.p`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin-top: 4px;
+  margin-bottom: 0px;
 `;
 
 type TitleProps = {
