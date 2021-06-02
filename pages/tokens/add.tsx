@@ -19,6 +19,7 @@ import { ActionTypes, useModal } from "../../components/Modal/context";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { Spinner } from "../../components/spinner";
 import { When } from "react-if";
+import { EventType, trackEvent } from "../../lib/analytics";
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -225,7 +226,7 @@ const TokenAddPage = () => {
 
       setAlertMessage("The token has been successfully registered", "success");
       setRegisteringToken(false);
-
+      trackEvent(EventType.TOKEN_REGISTERED, { token_address: tokenInfo.address });
       Router.push("/tokens/info#/" + tokenInfo.address);
     } catch (err) {
       console.log(err.message);
