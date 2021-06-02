@@ -5,8 +5,8 @@ enum MethodType {
 }
 
 export enum EventType {
-  PROPOSAL_CREATION = "proposal_created",
-  VOTE_CREATION = "proposal_voted",
+  PROPOSAL_CREATED = "proposal_created",
+  VOTE_SUBMITTED = "proposal_voted",
 }
 
 /**
