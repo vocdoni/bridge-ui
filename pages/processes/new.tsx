@@ -19,25 +19,26 @@ import { Moment } from "moment";
 import Router, { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 
-import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import RadioChoice from "../../components/radio";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { validateProposal } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
-import { ConnectButton } from "../../components/connect-button";
-import { PlusBox, MinusContainer } from "../../components/plusBox";
-import SectionTitle from "../../components/sectionTitle";
-import { TextInput, DescriptionInput } from "../../components/input";
-import Tooltip, { TooltipType } from "../../components/tooltip";
-
 import { findMaxValue } from "../../lib/utils";
 import { useStoredTokens, useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
-import { NO_TOKEN_BALANCE } from "../../lib/errors";
-
+import { NO_TOKEN_BALANCE, USER_CANCELED_TX } from "../../lib/errors";
 import { useIsWide } from "../../lib/hooks/useWindowSize";
+import { FORTY_DIGITS_HEX } from "../../lib/regex";
+import { EventType, trackEvent } from "../../lib/analytics";
+
+import { PrimaryButton, SecondaryButton } from "../../components/button";
+import { PlusBox, MinusContainer } from "../../components/plusBox";
+import RadioChoice from "../../components/radio";
+import { ConnectButton } from "../../components/connect-button";
+import SectionTitle from "../../components/sectionTitle";
+import { TextInput, DescriptionInput } from "../../components/input";
+import Tooltip, { TooltipType } from "../../components/tooltip";
 
 const FormContainer = styled.div`
   display: flex;
@@ -330,10 +331,10 @@ const NewProcessPage = () => {
     try {
       validateProposal(metadata, startDate, endDate);
     } catch (error) {
-      return setAlertMessage(error.message);
+      return setAlertMessage(error?.message);
     }
 
-    if (!tokenAddress || !tokenAddress.match(/^0x[0-9a-fA-F]{40}$/))
+    if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX))
       return setAlertMessage("The token address is not valid");
 
     if (!wallet?.account)
@@ -351,6 +352,7 @@ const NewProcessPage = () => {
     try {
       setSubmitting(true);
       const pool = await poolPromise;
+
       // Estimate start/end blocks
       const [startBlock, endBlock] = await Promise.all([
         VotingApi.estimateBlockAtDateTime(startDate, pool),
@@ -367,23 +369,28 @@ const NewProcessPage = () => {
       const ready = await waitUntilProcessCreated(processId, pool);
       if (!ready) throw new Error("The proposal is not available after a while");
 
-      Router.push("/processes#/" + processId);
       setSubmitting(false);
+      setAlertMessage("The proposal has been successfully created", "success");
 
       // Write to the local DB
       tokenInfo.processes.push(processId);
       storeTokens([tokenInfo]);
 
-      // Success
-      setAlertMessage("The proposal has been successfully created", "success");
-    } catch (err) {
+      Router.push("/processes#/" + processId);
+    } catch (error) {
       setSubmitting(false);
 
-      if (err?.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
-      if (err?.message?.indexOf?.("max proposals per address reached")) {
-        return setAlertMessage("You have hit the temporary limit of proposals");
+      /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
+      if ((error?.message as string)?.includes("signature")) {
+        trackEvent(EventType.TX_CANCELED, { event_canceled: "creating_proposal" });
+        return setAlertMessage(USER_CANCELED_TX);
       }
-      console.error(err);
+
+      if (error?.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
+      if (error?.message?.indexOf?.("max proposals per address reached"))
+        return setAlertMessage("You have hit the temporary limit of proposals");
+
+      console.error(error);
       setAlertMessage("The proposal could not be created");
     }
   };
@@ -417,7 +424,7 @@ const NewProcessPage = () => {
   }
 
   async function submitBindingVote(pool: GatewayPool, startBlock, blockCount) {
-    // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
+    // NOTE The process and the proof need to be created from the same exact `sourceBlockHeight`
     // Otherwise, proofs will not match.
     const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
     const proof = await getProof({
@@ -524,6 +531,7 @@ const NewProcessPage = () => {
           </>
         ))}
       </InformationSection>
+
       <OptionSection marginTop={60} isLarge={isLarge}>
         <RightSectionTitle>Proposal Type</RightSectionTitle>
         <div style={{ float: "left" }}>
