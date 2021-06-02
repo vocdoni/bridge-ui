@@ -7,6 +7,20 @@ import { useUrlHash } from "use-url-hash";
 import { HEX_REGEX } from "../../lib/regex";
 import { useToken } from "../../lib/hooks/tokens";
 import {
+  useProcessResults,
+  useProcessDates,
+  useProcessSummary,
+  useVote,
+} from "../../lib/hooks/process";
+import { areAllNumbers } from "../../lib/utils";
+import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
+import { useWallet } from "use-wallet";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { useMessageAlert } from "../../lib/hooks/message-alert";
+import { EventType, trackEvent } from "../../lib/analytics";
+import { USER_CANCELED_TX } from "../../lib/errors";
+
+import {
   ProcessTitle,
   ProcessDescription,
   ProcessInformation,
@@ -22,18 +36,8 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/button";
-import {
-  useProcessResults,
-  useProcessDates,
-  useProcessSummary,
-  useVote,
-} from "../../lib/hooks/process";
-import { areAllNumbers } from "../../lib/utils";
-import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
-import { useWallet } from "use-wallet";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LoadingSpinner } from "../../components/loading-spinner";
-import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import {
   NotConnected,
   NoTokens,
@@ -42,8 +46,6 @@ import {
   AlreadyVotedBanner,
   Loading,
 } from "../../components/Banners/GrayBanners";
-import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { EventType, trackEvent } from "../../lib/analytics";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -115,7 +117,8 @@ const ProcessPage = () => {
       trackEvent(EventType.VOTE_SUBMITTED, { proposal_id: processId });
     } catch (error) {
       if ((error.message as string).includes("signature")) {
-        return setAlertMessage("Signature denied");
+        trackEvent(EventType.TX_CANCELED, {});
+        return setAlertMessage(USER_CANCELED_TX);
       }
       return setAlertMessage("The vote could not be submitted");
     }
