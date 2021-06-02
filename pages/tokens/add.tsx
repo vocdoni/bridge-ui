@@ -10,6 +10,7 @@ import {
   NO_TOKEN_BALANCE,
   TOKEN_ADDRESS_INVALID,
   TOKEN_ALREADY_REGISTERED,
+  USER_CANCELED_TX,
 } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
@@ -178,6 +179,7 @@ const TokenAddPage = () => {
   const { setAlertMessage } = useMessageAlert();
   const { storedTokens, refresh: refreshStoredTokens, loading } = useStoredTokens();
 
+  const isConnected = wallet.connector || wallet.account;
   const alreadyRegistered = storedTokens.some(
     (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
   );
@@ -206,8 +208,6 @@ const TokenAddPage = () => {
     }
   };
 
-  const isConnected = wallet.connector || wallet.account;
-
   const onSubmit = useCallback(async () => {
     if (!tokenInfo) return;
     if (!isConnected) {
@@ -231,20 +231,26 @@ const TokenAddPage = () => {
       await registerToken(tokenInfo.address, pool, signer);
       await refreshStoredTokens();
 
+      setRegisteringToken(false);
       setAlertMessage("The token has been successfully registered", "success");
       trackEvent(EventType.TOKEN_REGISTERED, { token_address: tokenInfo.address });
-      setRegisteringToken(false);
 
       Router.push("/tokens/info#/" + tokenInfo.address);
-    } catch (err) {
-      console.log(err.message);
+    } catch (error) {
       setRegisteringToken(false);
+
+      if ((error?.message as string)?.includes("signature")) {
+        trackEvent(EventType.TX_CANCELED, {});
+        return setAlertMessage(USER_CANCELED_TX);
+      }
+
       trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: tokenInfo.address });
 
-      if (err && err.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
-      else if (err && err.message == TOKEN_ALREADY_REGISTERED)
+      if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
+      if (error?.message === TOKEN_ALREADY_REGISTERED)
         return setAlertMessage(TOKEN_ALREADY_REGISTERED);
 
+      console.error(error.message); //log unspecified errors.
       setAlertMessage("The token could not be registered");
     }
   }, [signer, wallet, tokenInfo]);
