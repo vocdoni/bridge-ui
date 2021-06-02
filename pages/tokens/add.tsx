@@ -181,6 +181,7 @@ const TokenAddPage = () => {
   const checkToken = () => {
     if (loadingToken || !formTokenAddress || loading) return;
     else if (!formTokenAddress.match(/^0x[0-9a-fA-F]{40}$/)) {
+      trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: tokenInfo.address });
       return setAlertMessage("The token address is not valid");
     }
 
@@ -193,6 +194,7 @@ const TokenAddPage = () => {
         setTokenInfo(tokenInfo);
       })
       .catch((err) => {
+        trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: tokenInfo.address });
         setLoadingToken(false);
         setAlertMessage("Could not fetch the contract details");
       });
@@ -221,17 +223,18 @@ const TokenAddPage = () => {
 
       // Register
       await registerToken(tokenInfo.address, pool, signer);
-
       await refreshStoredTokens();
 
       setAlertMessage("The token has been successfully registered", "success");
-      setRegisteringToken(false);
       trackEvent(EventType.TOKEN_REGISTERED, { token_address: tokenInfo.address });
+      setRegisteringToken(false);
+
       Router.push("/tokens/info#/" + tokenInfo.address);
     } catch (err) {
       console.log(err.message);
       setRegisteringToken(false);
       trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: tokenInfo.address });
+
       if (err && err.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
       else if (err && err.message == TOKEN_ALREADY_REGISTERED)
         return setAlertMessage(TOKEN_ALREADY_REGISTERED);
