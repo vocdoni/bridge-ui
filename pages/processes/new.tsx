@@ -388,6 +388,17 @@ const NewProcessPage = () => {
       setSubmitting(false);
       setAlertMessage("The proposal has been successfully created", "success");
 
+      const analytics_properties = {
+        entity_id: tokenAddress,
+        proposal_id: processId,
+        start: startDate,
+        end: endDate,
+        binding_type: processType === ProcessTypes.BINDING ? "binding" : "signaling",
+        results_type: envelopeType.hasEncryptedVotes ? "encrypted" : "normal",
+        questions_length: metadata.questions.length,
+      };
+      trackEvent(EventType.PROPOSAL_CREATED, analytics_properties);
+
       // Write to the local DB
       tokenInfo.processes.push(processId);
       storeTokens([tokenInfo]);
