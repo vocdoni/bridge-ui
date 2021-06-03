@@ -189,7 +189,7 @@ const TokenAddPage = () => {
   const checkToken = async () => {
     if (loadingToken || !formTokenAddress || loading) return;
     try {
-      if (!formTokenAddress.match(FORTY_DIGITS_HEX)) {
+      if (!formTokenAddress.trim().match(FORTY_DIGITS_HEX)) {
         throw new Error(TOKEN_ADDRESS_INVALID);
       }
 
