@@ -195,13 +195,13 @@ const TokenAddPage = () => {
 
       setLoadingToken(true);
       const pool = await poolPromise;
-      const newTokenInfo = await getTokenInfo(formTokenAddress, pool);
+      const newTokenInfo = await getTokenInfo(formTokenAddress.trim(), pool);
 
       setLoadingToken(false);
       setTokenInfo(newTokenInfo);
     } catch (error) {
       setLoadingToken(false);
-      trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress });
+      trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress.trim() });
 
       if (error?.message === TOKEN_ADDRESS_INVALID) setAlertMessage(TOKEN_ADDRESS_INVALID);
       else setAlertMessage("Could not fetch the contract details");
@@ -245,13 +245,13 @@ const TokenAddPage = () => {
         return setAlertMessage(USER_CANCELED_TX);
       }
 
-      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: formTokenAddress });
+      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: formTokenAddress.trim(), error: error?.message });
 
       if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
       if (error?.message === TOKEN_ALREADY_REGISTERED)
         return setAlertMessage(TOKEN_ALREADY_REGISTERED);
 
-      console.error(error.message); //log unspecified errors.
+      console.error(error?.message); //log unspecified errors.
       setAlertMessage("The token could not be registered");
     }
   }, [signer, wallet, tokenInfo]);
