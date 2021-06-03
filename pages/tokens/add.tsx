@@ -201,7 +201,7 @@ const TokenAddPage = () => {
       setTokenInfo(newTokenInfo);
     } catch (error) {
       setLoadingToken(false);
-      trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: tokenInfo.address });
+      trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress });
 
       if (error?.message === TOKEN_ADDRESS_INVALID) setAlertMessage(TOKEN_ADDRESS_INVALID);
       else setAlertMessage("Could not fetch the contract details");
@@ -245,7 +245,7 @@ const TokenAddPage = () => {
         return setAlertMessage(USER_CANCELED_TX);
       }
 
-      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: tokenInfo.address });
+      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: formTokenAddress });
 
       if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
       if (error?.message === TOKEN_ALREADY_REGISTERED)
