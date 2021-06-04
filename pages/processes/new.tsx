@@ -379,7 +379,7 @@ const NewProcessPage = () => {
       const processId =
         processType === ProcessTypes.BINDING
           ? await submitBindingVote(pool, startBlock, blockCount)
-          : await submitSignalingVote(pool, startBlock, endBlock);
+          : await submitSignalingVote(pool, startBlock, blockCount);
 
       // Wait until effectively created
       const ready = await waitUntilProcessCreated(processId, pool);
