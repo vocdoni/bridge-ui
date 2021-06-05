@@ -11,8 +11,8 @@ const SpinnerContainer = styled.div<{ fullPage?: boolean }>`
   text-align: center;
 `;
 
-export const LoadingSpinner = ({ fullPage }) => (
-  <SpinnerContainer fullPage={fullPage}>
+export const LoadingSpinner = (props: { fullPage?: boolean }) => (
+  <SpinnerContainer fullPage={props.fullPage}>
     Loading...
     <br />
     <br />

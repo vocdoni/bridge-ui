@@ -19,6 +19,7 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { USER_CANCELED_TX } from "../../lib/errors";
+import { Case, Default, Else, If, Switch, Then } from "react-if";
 
 import {
   ProcessTitle,
@@ -47,6 +48,7 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 
+
 const ProcessPage = () => {
   useScrollTop();
   const router = useRouter();
@@ -61,47 +63,47 @@ const ProcessPage = () => {
   const { dispatch } = useModal();
   const { setAlertMessage } = useMessageAlert();
 
-  const { process, loading: processLoading, error: processError } = useProcess(processId);
-  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(process?.state?.entityId);
+  const { process: processDetails, loading: processLoading, error: processError } = useProcess(processId);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(processDetails?.state?.entityId);
   const {
     hasEnded,
     hasStarted,
     loading: processDatesLoading,
     error: processDatesError,
-  } = useProcessDates(process?.state);
+  } = useProcessDates(processDetails?.state);
   const { results, error: resultsError, refresh: refreshResults } = useProcessResults(
-    process,
+    processDetails,
     tokenInfo
   );
   const { summary, error: summaryError, refresh: refreshSummary } = useProcessSummary({
-    processDetails: process,
+    processDetails,
     tokenInfo,
   });
   const { proof, loading: proofLoading, error: proofError } = useCensusProof(
     tokenInfo,
-    process?.state?.sourceBlockHeight
+    processDetails?.state?.sourceBlockHeight
   );
-  const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(process);
+  const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(processDetails);
 
   useEffect(() => {
-    let errorName = "";
-    if (processError) errorName += "process";
-    else if (tokenError) errorName += "token";
-    else if (processDatesError) errorName += "processDates";
-    else if (resultsError) errorName += "results";
-    else if (proofError) errorName += "proof";
-    // else if (summaryError) errorName += "summary";
-    if (errorName !== "") {
-      const errorMessage =
-        "Oops, there was an error loading the " +
-        errorName +
-        " information. Please refresh the page or try again later.";
-      setAlertMessage(errorMessage);
-    }
+    let errorName: string;
+    if (processError) errorName = "proposal details";
+    else if (tokenError) errorName = "token details";
+    else if (processDatesError) errorName = "dates";
+    else if (resultsError) errorName = "results";
+    else if (proofError) errorName = "census proof";
+    // else if (summaryError) errorName = "summary";
+    if (!errorName) return
+
+    const errorMessage =
+      "Oops, there was an error loading the " +
+      errorName +
+      ". Please refresh the page or try again later.";
+    setAlertMessage(errorMessage);
   }, [processError, tokenError, processDatesError, resultsError, proofError]);
 
   const isConnected = !!wallet.account;
-  const allQuestionsSelected = voteState.choices.length === process?.metadata?.questions?.length;
+  const allQuestionsSelected = voteState.choices.length === processDetails?.metadata?.questions?.length;
   const questionsFilled = allQuestionsSelected && areAllNumbers(voteState.choices);
   const inCensus = !!proof;
   const hasAlreadyVoted = votingStatus?.registered || voteState.submitted;
@@ -113,7 +115,7 @@ const ProcessPage = () => {
       return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
     }
     try {
-      await submitVote(process, proof);
+      await submitVote(processDetails, proof);
       trackEvent(EventType.VOTE_SUBMITTED, { proposal_id: processId });
     } catch (error) {
       /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
@@ -135,21 +137,24 @@ const ProcessPage = () => {
     });
   };
 
-  if (!processId || !process) return renderEmpty();
+  if (!processId || !processDetails) {
+    return renderEmpty();
+  }
 
   let mainButtonText: string;
-  if (!isConnected) mainButtonText = "Connect wallet";
-  else if (!inCensus) {
-    if (proofLoading) mainButtonText = "Please wait";
-    else mainButtonText = "You are not a token holder";
-  } else if (hasAlreadyVoted) mainButtonText = "You already voted";
-  else if (!hasStarted) mainButtonText = "Voting has not started yet";
-  else if (hasEnded) mainButtonText = "Voting has ended";
-  else if (!questionsFilled) mainButtonText = "Fill all the choices";
-  else if (!canVote) mainButtonText = "You cannot vote";
-  // catch-all
-  else mainButtonText = "Submit your vote";
-
+  {
+    if (!isConnected) mainButtonText = "Connect wallet";
+    else if (!inCensus) {
+      if (proofLoading) mainButtonText = "Please wait";
+      else mainButtonText = "You are not a token holder";
+    } else if (hasAlreadyVoted) mainButtonText = "You already voted";
+    else if (!hasStarted) mainButtonText = "Voting has not started yet";
+    else if (hasEnded) mainButtonText = "Voting has ended";
+    else if (!questionsFilled) mainButtonText = "Fill all the choices";
+    else if (!canVote) mainButtonText = "You cannot vote";
+    // catch-all
+    else mainButtonText = "Submit your vote";
+  }
   const isLoading = processLoading || tokenLoading || processDatesLoading || proofLoading;
 
   return (
@@ -160,65 +165,75 @@ const ProcessPage = () => {
       />
       <ProcessContainer>
         <ProcessInformation>
-          <ProcessTitle>{process?.metadata?.title?.default || "No title"}</ProcessTitle>
+          <ProcessTitle>{processDetails?.metadata?.title?.default || "No title"}</ProcessTitle>
           <ProcessDescription>
-            {process?.metadata?.description?.default || "No description"}
+            {processDetails?.metadata?.description?.default || "No description"}
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
           <ProcessDataCard>
-            {summary?.length ? (
-              summary.map(({ description, value }, i) => (
-                <ProcessDataContainer key={i}>
-                  <ProcessDataInfo>
-                    <ProcessDataDescription>{description}</ProcessDataDescription>
-                  </ProcessDataInfo>
-                  <ProcessDataInfo>
-                    <ProcessDataValue>{value}</ProcessDataValue>
-                  </ProcessDataInfo>
-                </ProcessDataContainer>
-              ))
-            ) : (
-              <LoadingSpinner fullPage={false} />
-            )}
+            <If condition={summary?.length}>
+              <Then>
+                {summary.map(({ description, value }, i) => (
+                  <ProcessDataContainer key={i}>
+                    <ProcessDataInfo>
+                      <ProcessDataDescription>{description}</ProcessDataDescription>
+                    </ProcessDataInfo>
+                    <ProcessDataInfo>
+                      <ProcessDataValue>{value}</ProcessDataValue>
+                    </ProcessDataInfo>
+                  </ProcessDataContainer>
+                ))}
+              </Then>
+              <Else>
+                <LoadingSpinner />
+              </Else>
+            </If>
           </ProcessDataCard>
         </ProcessData>
       </ProcessContainer>
 
       <Questions
-        questions={process?.metadata?.questions}
+        questions={processDetails?.metadata?.questions}
         results={results}
-        choicesSelected={voteState.choices}
+        choicesSelected={voteState?.choices}
         onChoiceSelect={onSelect}
         canSelect={canSelect}
       />
 
-      {isLoading ? (
-        <Loading />
-      ) : !hasStarted ? (
-        <NotStartedBanner />
-      ) : hasEnded ? (
-        <HasFinishedBanner />
-      ) : !isConnected ? (
-        <NotConnected connectMessage="Connect your wallet to vote on this proposal" />
-      ) : !inCensus ? (
-        <NoTokens />
-      ) : hasAlreadyVoted ? (
-        <AlreadyVotedBanner />
-      ) : (
-        <ButtonContainer>
-          <Button disabled={!canVote} mode="strong" onClick={onVoteSubmit}>
-            {voteState.submitting ? <Spinner /> : mainButtonText}
-          </Button>
-        </ButtonContainer>
-      )}
+      <Switch>
+        <Case condition={isLoading}>
+          <Loading />
+        </Case>
+        <Case condition={!hasStarted}>
+          <NotStartedBanner />
+        </Case>
+        <Case condition={hasEnded}>
+          <HasFinishedBanner />
+        </Case>
+        <Case condition={!isConnected}>
+          <NotConnected connectMessage="Connect your wallet to vote on this proposal" />
+        </Case>
+        <Case condition={!inCensus}>
+          <NoTokens />
+        </Case>
+        <Case condition={hasAlreadyVoted}>
+          <AlreadyVotedBanner />
+        </Case>
+        <Default>
+          <ButtonContainer>
+            <Button disabled={!canVote} mode="strong" onClick={onVoteSubmit}>
+              {voteState?.submitting ? <Spinner /> : mainButtonText}
+            </Button>
+          </ButtonContainer>
+        </Default>
+      </Switch>
     </div>
   );
 };
 
-// TODO: Render a better UI
-function renderEmpty() {
-  return <LoadingSpinner fullPage={true} />;
+const renderEmpty = () => {
+  return <LoadingSpinner fullPage />;
 }
 
 export default ProcessPage;

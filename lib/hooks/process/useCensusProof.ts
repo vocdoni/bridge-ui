@@ -16,7 +16,10 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
   const balanceMappingPosition = token?.balanceMappingPosition;
 
   useEffect(() => {
-    if (!account || !tokenAddr || !targetBlock) return;
+    if (!account || !tokenAddr || !targetBlock) {
+      if (loading) setLoading(false);
+      return;
+    }
 
     setLoading(true);
 
