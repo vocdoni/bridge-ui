@@ -64,7 +64,6 @@ type ModalProps = {
 
 export const WalletModal = ({ children, width, isOpen }: ModalProps) => {
   const modalRefWallet = useRef(null);
-  // useOutsideAlerter(modalRefWallet);
   useOutsideHandler(modalRefWallet, ModalType.WALLET);
 
   return (
@@ -76,7 +75,6 @@ export const WalletModal = ({ children, width, isOpen }: ModalProps) => {
 
 export const ProposalModal = ({ children, width, isOpen }: ModalProps) => {
   const modalRefProposal = useRef(null);
-  // useOutsideAlerterProposal(modalRefProposal);
   useOutsideHandler(modalRefProposal, ModalType.PROPOSAL);
 
   return (
