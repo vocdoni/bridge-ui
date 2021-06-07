@@ -65,18 +65,6 @@ const OptionContainer = styled.div`
   margin-top: 10px;
 `;
 
-const ExternalLinkOption = styled.a`
-  display: flex;
-  font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  font-family: "Manrope", sans-serif !important;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 12px;
-  color: #637381;
-`;
-
 const DontHaveAccount = styled.a`
   text-decoration: none;
   font-family: "Manrope", sans-serif !important;
@@ -132,9 +120,6 @@ export const WalletList = () => {
   };
 
   return (
-    /* Reducing the modal container height from 565px to 225px until wallet providers are
-        properly tested. */
-    /* TODO make size dynamic. */
     <WalletModal isOpen={state.walletList.open} width={452}>
       <ModalLayout>
         <ModalHeader>
@@ -155,17 +140,6 @@ export const WalletList = () => {
               </OptionContainer>
             );
           })}
-          {/* <OptionContainer>
-            <ExternalLinkOption
-              rel="noreferrer noopener"
-              target="_blank"
-              href={HARDWARE_WALLETS_METAMASK_ARTICLE}
-            >
-              <WalletOption>
-                <WalletName>Other Wallets</WalletName>
-              </WalletOption>
-            </ExternalLinkOption>
-          </OptionContainer> */}
           <DontHaveAccount
             rel="noreferrer noopener"
             target="_blank"
