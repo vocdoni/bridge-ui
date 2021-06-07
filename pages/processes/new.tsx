@@ -195,7 +195,6 @@ const WidthControlInput = styled(TextInput)`
 
   @media ${({ theme }) => theme.screens.tablet} {
     display: flex;
-    min-width: 100%;
     margin-bottom: 9px;
     width: 100%;
   }
