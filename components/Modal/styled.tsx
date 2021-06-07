@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ModalContainer = styled.div<{
   width: number;
-  open: boolean;
+  isOpen: boolean;
 }>`
   position: fixed;
   top: 50%;
@@ -11,7 +11,7 @@ export const ModalContainer = styled.div<{
   max-height: 100%;
   max-width: 100%;
   width: ${({ width }) => width}px;
-  display: ${({ open }) => (open ? "flex" : "none")};
+  display: ${({ isOpen: isOpen }) => (isOpen ? "flex" : "none")};
   background: white;
   border-radius: 6px;
   filter: drop-shadow(0px 7px 16px rgba(0, 0, 0, 0.25));

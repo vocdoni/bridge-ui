@@ -73,7 +73,7 @@ export const ProposalTypeList = () => {
   }
 
   return (
-    <ProposalModal open={state.proposalList.open} width={468}>
+    <ProposalModal isOpen={state.proposalList.open} width={468}>
       <ModalLayout>
         <ModalHeader>
           <ModalTitle>New proposal</ModalTitle>

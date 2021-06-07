@@ -43,23 +43,29 @@ function useOutsideAlerterProposal(ref) {
   }, [ref]);
 }
 
-export const WalletModal = ({ children, width = 600, open }) => {
+type ModalProps = {
+  children: any;
+  width: number;
+  isOpen: boolean;
+};
+
+export const WalletModal = ({ children, width, isOpen }: ModalProps) => {
   const modalRefWallet = useRef(null);
   useOutsideAlerter(modalRefWallet);
 
   return (
-    <ModalContainer ref={modalRefWallet} width={width} open={open}>
+    <ModalContainer ref={modalRefWallet} width={width} isOpen={isOpen}>
       {children}
     </ModalContainer>
   );
 };
 
-export const ProposalModal = ({ children, width = 600, open }) => {
+export const ProposalModal = ({ children, width, isOpen }: ModalProps) => {
   const modalRefProposal = useRef(null);
   useOutsideAlerterProposal(modalRefProposal);
 
   return (
-    <ModalContainer ref={modalRefProposal} width={width} open={open}>
+    <ModalContainer ref={modalRefProposal} width={width} isOpen={isOpen}>
       {children}
     </ModalContainer>
   );
