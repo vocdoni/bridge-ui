@@ -150,9 +150,9 @@ const ProcessCard = (props: { processId: string, metadata?: ProcessMetadata; tok
       <p>
         <If condition={!!props.metadata}>
           <Then>
-            <strong>{limitedText(props.metadata?.title?.default, 35) || "(No title)"}</strong>
+            <strong>{limitedText(props.metadata?.title?.default, 35) || "(title)"}</strong>
             <br />
-            {limitedText(props.metadata?.description?.default) || "(No description)"}
+            {limitedText(props.metadata?.description?.default) || "(description)"}
           </Then>
           <Else>
             <Spinner />

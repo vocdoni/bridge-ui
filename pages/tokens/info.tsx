@@ -151,7 +151,7 @@ const VoteSection = (params: VotingSectionProps) => {
           <TokenList>
             {processes.map((processId) => {
               const proc = allProcesses.find(proc => proc.id == processId)
-              const title = proc?.metadata?.title?.default || "No title";
+              const title = proc?.metadata?.title?.default || "(title)";
               return <ProcessCard key={processId} id={processId} title={title} token={token} loading={!proc?.metadata} />;
             })}
           </TokenList>

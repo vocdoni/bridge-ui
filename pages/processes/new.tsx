@@ -422,7 +422,7 @@ const NewProcessPage = () => {
     }
   };
 
-  async function submitSignalingVote(pool: GatewayPool, startBlock, blockCount) {
+  async function submitSignalingVote(pool: GatewayPool, startBlock: number, blockCount: number) {
     const oracleClient = new DVoteGateway({
       uri: process.env.SIGNALING_ORACLE_URL,
       supportedApis: ["oracle"],
@@ -450,8 +450,8 @@ const NewProcessPage = () => {
     return VotingOracleApi.newProcessErc20(signalingProcessParams, signer, pool, oracleClient);
   }
 
-  async function submitBindingVote(pool: GatewayPool, startBlock, blockCount) {
-    // NOTE The process and the proof need to be created from the same exact `sourceBlockHeight`
+  async function submitBindingVote(pool: GatewayPool, startBlock: number, blockCount: number) {
+    // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
     // Otherwise, proofs will not match.
     const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
     const proof = await getProof({

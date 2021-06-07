@@ -47,7 +47,7 @@ import {
   AlreadyVotedBanner,
   Loading,
 } from "../../components/Banners/GrayBanners";
-
+import styled from "styled-components";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -137,7 +137,7 @@ const ProcessPage = () => {
     });
   };
 
-  if (!processId || !processDetails) {
+  if (!processDetails) {
     return renderEmpty();
   }
 
@@ -165,9 +165,9 @@ const ProcessPage = () => {
       />
       <ProcessContainer>
         <ProcessInformation>
-          <ProcessTitle>{processDetails?.metadata?.title?.default || "No title"}</ProcessTitle>
+          <ProcessTitle>{processDetails?.metadata?.title?.default || "(proposal title)"}</ProcessTitle>
           <ProcessDescription>
-            {processDetails?.metadata?.description?.default || "No description"}
+            {processDetails?.metadata?.description?.default || "(proposal description)"}
           </ProcessDescription>
         </ProcessInformation>
         <ProcessData>
@@ -186,7 +186,7 @@ const ProcessPage = () => {
                 ))}
               </Then>
               <Else>
-                <LoadingSpinner />
+                <SummaryLoading />
               </Else>
             </If>
           </ProcessDataCard>
@@ -235,5 +235,16 @@ const ProcessPage = () => {
 const renderEmpty = () => {
   return <LoadingSpinner fullPage />;
 }
+
+const SummaryLoading = () => {
+  return <CenterText>
+    <small>Loading summary... &nbsp;<Spinner /></small>
+  </CenterText>
+}
+
+const CenterText = styled.p`
+margin: 0;
+text-align: center;
+`
 
 export default ProcessPage;
