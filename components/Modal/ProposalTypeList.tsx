@@ -82,27 +82,27 @@ export const ProposalTypeList = () => {
           </CloseIcon>
         </ModalHeader>
         <Body>
-          <OptionContainer onClick={() => onChoice("signaling")}>
-            <OptionTitle>{PROPOSAL_TYPES[1].title}</OptionTitle>
-            <OptionDescription>{PROPOSAL_TYPES[1].description}</OptionDescription>
-          </OptionContainer>
-          <OptionContainer onClick={() => onChoice("binding")}>
-            <OptionTitle>{PROPOSAL_TYPES[0].title}</OptionTitle>
-            <OptionDescription>{PROPOSAL_TYPES[0].description}</OptionDescription>
-          </OptionContainer>
+          {PROPOSAL_TYPES_INFO.map((pt) => (
+            <OptionContainer onClick={() => onChoice(pt.type)}>
+              <OptionTitle>{pt.title}</OptionTitle>
+              <OptionDescription>{pt.description}</OptionDescription>
+            </OptionContainer>
+          ))}
         </Body>
       </ModalLayout>
     </ProposalModal>
   );
 };
 
-const PROPOSAL_TYPES = [
+const PROPOSAL_TYPES_INFO = [
   {
-    title: "On-chain proposal",
-    description: "Metadata is stored on Ethereum, increasing decentralization and verifiability",
-  },
-  {
+    type: "signaling",
     title: "Signaling proposal",
     description: "Gasless proposal creation using Vochain layer 2 solution",
+  },
+  {
+    type: "binding",
+    title: "On-chain proposal",
+    description: "Metadata is stored on Ethereum, increasing decentralization and verifiability",
   },
 ];
