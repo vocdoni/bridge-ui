@@ -7,30 +7,7 @@ import { identifyUser } from "../../lib/analytics";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { WALLETS } from "../../lib/wallets";
 import { ActionTypes, useModal } from "./context";
-
-const WalletModalLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #dfe3e8;
-`;
-
-const ModalTitle = styled.div`
-  flex-direction: column;
-  padding-bottom: 10px;
-  box-sizing: border-box;
-  margin-top: 10px;
-  padding-left: 16px;
-  font-family: "Manrope", sans-serif !important;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  color: #637381;
-`;
+import { CloseIcon, ModalHeader, ModalLayout, ModalTitle } from "./styled";
 
 const Body = styled.div`
   height: 100%;
@@ -100,13 +77,6 @@ const ExternalLinkOption = styled.a`
   color: #637381;
 `;
 
-const CloseIcon = styled.div`
-  flex-direction: column;
-  margin-top: 10px;
-  padding-right: 16px;
-  cursor: pointer;
-`;
-
 const DontHaveAccount = styled.a`
   text-decoration: none;
   font-family: "Manrope", sans-serif !important;
@@ -166,13 +136,13 @@ export const WalletList = () => {
         properly tested. */
     /* TODO make size dynamic. */
     <WalletModal open={state.walletList.open} height={235} width={452}>
-      <WalletModalLayout>
-        <Header>
+      <ModalLayout>
+        <ModalHeader>
           <ModalTitle>USE ACCOUNT FROM</ModalTitle>
           <CloseIcon onClick={closeModal}>
             <img src="/media/close.svg" />
           </CloseIcon>
-        </Header>
+        </ModalHeader>
         <Body>
           {Object.keys(WALLETS).map((wallet) => {
             const { connector, name } = WALLETS[wallet];
@@ -204,7 +174,7 @@ export const WalletList = () => {
             {"Don't have an Ethereum account?"}
           </DontHaveAccount>
         </Body>
-      </WalletModalLayout>
+      </ModalLayout>
     </WalletModal>
   );
 };
