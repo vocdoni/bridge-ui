@@ -39,18 +39,26 @@ import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/input";
 import Tooltip, { TooltipType } from "../../components/tooltip";
+import { Unless, When } from "react-if";
 
+/* NOTE The option container does not fit on the right for small laptops. This is why the whole
+layout is changed to a column for devices <= laptop. */
 const FormContainer = styled.div`
   display: flex;
+
   @media ${({ theme }) => theme.screens.laptop} {
     margin-top: 0;
     flex-direction: column;
   }
 `;
 
+/* Contains the text-based input fields (like proposal and question description).
+Again, additional breaks needed for laptop sizes. Size is hard-coded for large desktops,
+flexible for laptops and full-width for tablets. */
 const InformationSection = styled.div`
   width: 680px;
   margin-right: 16px;
+
   & > :first-child {
     margin-top: 0px;
   }
@@ -65,16 +73,23 @@ const InformationSection = styled.div`
   }
 `;
 
+/* Contains input for other settable parameters (like date, proposal types, etc). On
+devices >= small laptop it contains a button labeled either "connect wallet" or "create
+proposal". On devices <= tablets, the button is moved out of the box. If no wallet is
+connected it is not shown (as there is the wallet button at the bottom of the page). If
+the wallet is connected, the button is shown below the white box.*/
 const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   height: 600px;
   width: 480px;
   margin-left: 24px;
   margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
+  margin-bottom: 24px;
   padding: 14px 24px 29px 24px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border-radius: 13px;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   box-sizing: border-box;
+
   @media ${({ theme }) => theme.screens.laptopL} {
     width: 33%;
     margin-left: 0;
@@ -102,7 +117,7 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   }
 `;
 
-const RightSectionTitle = styled.p`
+const OptionSectionTitle = styled.p`
   font-weight: 500;
   margin-bottom: 9px;
   line-height: 150%;
@@ -117,6 +132,7 @@ const RemoveButton = styled.div<{ marginTop: number }>`
   flex: 35%;
   margin-left: 6.5em;
   margin-top: ${({ marginTop }) => marginTop}px;
+
   @media ${({ theme }) => theme.screens.tablet} {
     margin-top: 25px;
   }
@@ -152,6 +168,7 @@ const QuestionText = styled.h5`
   letter-spacing: -0.03em;
   margin-bottom: 85px;
   color: ${({ theme }) => theme.blackAndWhite.b1};
+
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: 30px;
   }
@@ -175,6 +192,7 @@ const dateTimeStyle: CSSProperties = {
 
 const WidthControlInput = styled(TextInput)`
   flex-grow: 2000;
+
   @media ${({ theme }) => theme.screens.tablet} {
     display: flex;
     min-width: 100%;
@@ -220,11 +238,15 @@ enum ProcessTypes {
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
   const { storeTokens } = useStoredTokens();
+
   const signer = useSigner();
   const wallet = useWallet();
+  const isConnected = wallet.connector || wallet.account;
+
   const router = useRouter();
   const tokenAddress = router.query.address as string;
   if (router.isReady && !tokenAddress) {
+    /* TODO eventually push to NOT FOUND [VR 07-06-2021] */
     router.push("/");
   }
   const initProcessType: ProcessTypes =
@@ -260,7 +282,8 @@ const NewProcessPage = () => {
     };
   });
 
-  // Callbacks
+  // CALLBACKS ===========================================================================
+
   const handleChoice = ({ currentQuestion, choices, currentChoice }) => {
     const isDefault = choices[currentChoice].title.default;
     const isLastQuestion = currentChoice === choices.length - 1;
@@ -560,7 +583,7 @@ const NewProcessPage = () => {
       </InformationSection>
 
       <OptionSection marginTop={60} isLarge={isLarge}>
-        <RightSectionTitle>Proposal Type</RightSectionTitle>
+        <OptionSectionTitle>Proposal Type</OptionSectionTitle>
         <div style={{ float: "left" }}>
           <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
             {" "}
@@ -585,7 +608,7 @@ const NewProcessPage = () => {
         </div>
         <Tooltip type={TooltipType.PROCESS} />
         <br style={{ height: "0px" }} />
-        <RightSectionTitle>Results</RightSectionTitle>
+        <OptionSectionTitle>Results</OptionSectionTitle>
         <div style={{ float: "left" }}>
           <RadioChoice onClick={() => setEncryptedVotes(false)}>
             {" "}
@@ -611,7 +634,7 @@ const NewProcessPage = () => {
         {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
         <Tooltip type={TooltipType.RESULTS} />
         <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
-        <RightSectionTitle>Proposal date</RightSectionTitle>
+        <OptionSectionTitle>Proposal date</OptionSectionTitle>
         <Datetime
           value={startDate}
           inputProps={{
@@ -644,18 +667,23 @@ const NewProcessPage = () => {
             width: "100%",
           }}
         >
-          {wallet.status === "connected" ? (
-            <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-          ) : !isMobile ? (
-            <ConnectButton wide />
-          ) : null}
+          <Unless condition={isMobile}>
+            {wallet.status === "connected" ? (
+              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
+            ) : (
+              <ConnectButton wide />
+            )}
+          </Unless>
         </div>
       </OptionSection>
+      <When condition={isMobile && isConnected}>
+        <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
+      </When>
     </FormContainer>
   );
 };
 
-// HELPERS
+// HELPERS =============================================================================
 
 function isValidFutureDate(date: Moment): boolean {
   const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24);
