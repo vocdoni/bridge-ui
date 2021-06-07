@@ -40,6 +40,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
       .catch(err => {
         setLoading(false);
 
+        if (err?.message == "You have no token balance") return
         setError("Could not fetch the census proof");
       });
 
