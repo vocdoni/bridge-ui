@@ -43,23 +43,23 @@ function useOutsideAlerterProposal(ref) {
   }, [ref]);
 }
 
-export const WalletModal = ({ children, height = 400, width = 600, open }) => {
+export const WalletModal = ({ children, width = 600, open }) => {
   const modalRefWallet = useRef(null);
   useOutsideAlerter(modalRefWallet);
 
   return (
-    <ModalContainer ref={modalRefWallet} height={height} width={width} open={open}>
+    <ModalContainer ref={modalRefWallet} width={width} open={open}>
       {children}
     </ModalContainer>
   );
 };
 
-export const ProposalModal = ({ children, height = 400, width = 600, open }) => {
+export const ProposalModal = ({ children, width = 600, open }) => {
   const modalRefProposal = useRef(null);
   useOutsideAlerterProposal(modalRefProposal);
 
   return (
-    <ModalContainer ref={modalRefProposal} height={height} width={width} open={open}>
+    <ModalContainer ref={modalRefProposal} width={width} open={open}>
       {children}
     </ModalContainer>
   );
