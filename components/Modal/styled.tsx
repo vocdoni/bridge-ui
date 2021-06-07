@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const ModalContainer = styled.div<{
-  height: number;
   width: number;
   open: boolean;
 }>`
@@ -11,7 +10,6 @@ export const ModalContainer = styled.div<{
   transform: translate(-50%, -50%);
   max-height: 100%;
   max-width: 100%;
-  height: ${({ height }) => height}px;
   width: ${({ width }) => width}px;
   display: ${({ open }) => (open ? "flex" : "none")};
   background: white;

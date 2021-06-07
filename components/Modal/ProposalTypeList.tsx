@@ -9,28 +9,20 @@ import { ActionTypes, useModal } from "./context";
 import { ModalLayout, ModalHeader, ModalTitle, CloseIcon } from "./styled";
 
 const Body = styled.div`
-  height: 100%;
-  padding: 24px 24px 15px 24px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  & > :last-child {
-    margin-top: 10px;
-  }
-
   @media ${({ theme }) => theme.screens.mobileL} {
     overflow-y: auto;
     justify-content: center;
-    & > div:last-child {
-      padding-bottom: 20px;
-    }
   }
 `;
 
 const OptionContainer = styled.div`
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   padding: 24px 30px 18px 30px;
   items-align: left;
   box-sizing: border-box;
@@ -40,8 +32,8 @@ const OptionContainer = styled.div`
   white-space: normal;
   cursor: pointer;
 
-  @media ${({ theme }) => theme.screens.tablet} {
-    margin-top: 10px;
+  & :last-of-type {
+    margin-bottom: 0px;
   }
 `;
 
@@ -81,7 +73,7 @@ export const ProposalTypeList = () => {
   }
 
   return (
-    <ProposalModal open={state.proposalList.open} height={368} width={468}>
+    <ProposalModal open={state.proposalList.open} width={468}>
       <ModalLayout>
         <ModalHeader>
           <ModalTitle>New proposal</ModalTitle>
