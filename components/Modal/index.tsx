@@ -1,46 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import styled from "styled-components";
+
 import { ActionTypes, useModal } from "./context";
-
-const WalletModalContainer = styled.div<{
-  height: number;
-  width: number;
-  open: boolean;
-}>`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-height: 100%;
-  max-width: 100%;
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
-  display: ${({ open }) => (open ? "flex" : "none")};
-  background: white;
-  border-radius: 6px;
-  filter: drop-shadow(0px 7px 16px rgba(0, 0, 0, 0.25));
-  z-index: 2;
-`;
-
-const ProposalModalContainer = styled.div<{
-  height: number;
-  width: number;
-  open: boolean;
-}>`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-height: 100%;
-  max-width: 100%;
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
-  display: ${({ open }) => (open ? "flex" : "none")};
-  background: white;
-  border-radius: 6px;
-  filter: drop-shadow(0px 7px 16px rgba(0, 0, 0, 0.25));
-  z-index: 2;
-`;
+import { ModalContainer } from "./styled";
 
 function useOutsideAlerter(ref) {
   const { dispatch } = useModal();
@@ -87,9 +48,9 @@ export const WalletModal = ({ children, height = 400, width = 600, open }) => {
   useOutsideAlerter(modalRefWallet);
 
   return (
-    <WalletModalContainer ref={modalRefWallet} height={height} width={width} open={open}>
+    <ModalContainer ref={modalRefWallet} height={height} width={width} open={open}>
       {children}
-    </WalletModalContainer>
+    </ModalContainer>
   );
 };
 
@@ -98,8 +59,8 @@ export const ProposalModal = ({ children, height = 400, width = 600, open }) => 
   useOutsideAlerterProposal(modalRefProposal);
 
   return (
-    <ProposalModalContainer ref={modalRefProposal} height={height} width={width} open={open}>
+    <ModalContainer ref={modalRefProposal} height={height} width={width} open={open}>
       {children}
-    </ProposalModalContainer>
+    </ModalContainer>
   );
 };

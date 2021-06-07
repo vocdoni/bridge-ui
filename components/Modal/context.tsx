@@ -39,7 +39,7 @@ interface ModalContextState {
   };
 }
 
-interface Context {
+interface ModalContext {
   state: ModalContextState;
   dispatch: Dispatch<ModalsContextAction>;
 }
@@ -53,7 +53,7 @@ const INITIAL_STATE: ModalContextState = {
   },
 };
 
-const ModalsContext = createContext<Context>({
+const ModalsContext = createContext<ModalContext>({
   state: INITIAL_STATE,
   dispatch: () => null,
 });

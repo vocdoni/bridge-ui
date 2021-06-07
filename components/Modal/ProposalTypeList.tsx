@@ -6,31 +6,7 @@ import { EventType, trackEvent } from "../../lib/analytics";
 
 import { ProposalModal } from ".";
 import { ActionTypes, useModal } from "./context";
-
-const Layout = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #dfe3e8;
-`;
-
-const ModalTitle = styled.div`
-  flex-direction: column;
-  padding-bottom: 10px;
-  box-sizing: border-box;
-  margin-top: 10px;
-  padding-left: 16px;
-  font-family: "Manrope", sans-serif !important;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  color: #637381;
-`;
+import { ModalLayout, ModalHeader, ModalTitle, CloseIcon } from "./styled";
 
 const Body = styled.div`
   height: 100%;
@@ -87,13 +63,6 @@ const OptionDescription = styled.p`
   line-height: 150%;
 `;
 
-const CloseIcon = styled.div`
-  flex-direction: column;
-  margin-top: 10px;
-  padding-right: 16px;
-  cursor: pointer;
-`;
-
 export const ProposalTypeList = () => {
   const { push, asPath } = useRouter();
   const { state, dispatch } = useModal();
@@ -113,13 +82,13 @@ export const ProposalTypeList = () => {
 
   return (
     <ProposalModal open={state.proposalList.open} height={368} width={468}>
-      <Layout>
-        <Header>
+      <ModalLayout>
+        <ModalHeader>
           <ModalTitle>New proposal</ModalTitle>
           <CloseIcon onClick={closeModal}>
             <img src="/media/close.svg" />
           </CloseIcon>
-        </Header>
+        </ModalHeader>
         <Body>
           <OptionContainer onClick={() => onChoice("signaling")}>
             <OptionTitle>{PROPOSAL_TYPES[1].title}</OptionTitle>
@@ -130,7 +99,7 @@ export const ProposalTypeList = () => {
             <OptionDescription>{PROPOSAL_TYPES[0].description}</OptionDescription>
           </OptionContainer>
         </Body>
-      </Layout>
+      </ModalLayout>
     </ProposalModal>
   );
 };
