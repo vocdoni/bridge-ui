@@ -34,12 +34,12 @@ export const ModalTitle = styled.div`
   flex-direction: column;
   padding-bottom: 10px;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 8px;
   padding-left: 16px;
   font-family: "Manrope", sans-serif !important;
   font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
+  font-weight: 500;
+  font-size: 16px;
   color: #637381;
 `;
 
