@@ -83,7 +83,6 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   width: 480px;
   margin-left: 24px;
   margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
-  margin-bottom: 24px;
   padding: 14px 24px 29px 24px;
   box-shadow: ${({ theme }) => theme.shadows.cardShadow};
   border-radius: 13px;
@@ -110,10 +109,7 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
   }
   @media ${({ theme }) => theme.screens.tablet} {
     height: 520px;
-    width: 100%;
-    margin-top: 25px;
-    margin-right: 13px;
-    margin-left: 0;
+    margin-bottom: 24px;
   }
 `;
 
@@ -177,6 +173,10 @@ const QuestionText = styled.h5`
 const InputBox = styled.div`
   display: flex;
   margin-bottom: 30px;
+
+  @media ${({ theme }) => theme.screens.tablet} {
+    margin-bottom: 8px;
+  }
 `;
 
 const dateTimeStyle: CSSProperties = {
