@@ -28,6 +28,7 @@ import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { abbreviatedTokenAmount } from "../../lib/utils";
+import { VerticalSpace } from "../../components/verticalBuffer";
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -284,24 +285,11 @@ const TokenAddPage = () => {
             onClick={loading || loadingToken ? undefined : checkToken}
             loading={loading || loadingToken}
           />
-
-          <br />
-          <br />
-
-          <When condition={!isMobile && !!tokenInfo}>
-            <TokenContainer {...tokenInfo} />
-            <RegisterButton
-              registeringToken={registeringToken}
-              alreadyRegistered={alreadyRegistered}
-              onSubmit={onSubmit}
-              address={tokenInfo?.address || ""}
-              isConnected={isConnected}
-            />
-          </When>
         </Content>
       </WhiteSection>
-      <br />
-      <When condition={!!tokenInfo && isMobile}>
+      <VerticalSpace repeats={2} />
+
+      <When condition={!!tokenInfo}>
         <WhiteSection>
           <Content>
             <TokenContainer {...tokenInfo} />
