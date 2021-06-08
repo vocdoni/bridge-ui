@@ -27,6 +27,7 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { abbreviatedTokenAmount } from "../../lib/utils";
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -152,7 +153,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
       </Info>
       <Info>
         <TokenAttributeTitle>Total supply</TokenAttributeTitle>
-        <Description>{totalSupplyFormatted}</Description>
+        <Description>{abbreviatedTokenAmount(totalSupplyFormatted)}</Description>
       </Info>
       <Info>
         <TokenAttributeTitle>Token address</TokenAttributeTitle>
@@ -184,7 +185,7 @@ const TokenAddPage = () => {
     (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
   );
 
-  // Callbacks
+  // CALLBACKS ===========================================================================
 
   const checkToken = async () => {
     if (loadingToken || !formTokenAddress || loading) return;
@@ -239,13 +240,17 @@ const TokenAddPage = () => {
     } catch (error) {
       setRegisteringToken(false);
 
-      /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
+      // User cancels tx (e.g., by aborting signing process.) This is not registered as
+      // "failure"
       if ((error?.message as string)?.includes("signature")) {
         trackEvent(EventType.TX_CANCELED, { event_canceled: "adding_token" });
         return setAlertMessage(USER_CANCELED_TX);
       }
 
-      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, { token_address: formTokenAddress.trim(), error: error?.message });
+      trackEvent(EventType.TOKEN_REGISTRATION_FAILED, {
+        token_address: formTokenAddress.trim(),
+        error: error?.message,
+      });
 
       if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
       if (error?.message === TOKEN_ALREADY_REGISTERED)
@@ -256,7 +261,7 @@ const TokenAddPage = () => {
     }
   }, [signer, wallet, tokenInfo]);
 
-  // RENDER
+  // RENDER ==============================================================================
 
   return (
     <>
@@ -264,9 +269,6 @@ const TokenAddPage = () => {
         title="Register a new token"
         subtitle="Enter the details of any ERC-20 token and start submitting new proposals"
       />
-
-      <br />
-
       <WhiteSection>
         <Content>
           <SectionTitle

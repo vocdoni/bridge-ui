@@ -72,8 +72,7 @@ export function tokenIconUrl(address = "") {
 export function abbreviatedTokenAmount(amount: string): string {
   if (!amount) return "N/A";
 
-  const regexp = TOKEN_AMOUNT_REGEX;
-  const regexp_res = amount.match(regexp);
+  const regexp_res = amount.match(TOKEN_AMOUNT_REGEX);
   // discard failed matches
   if (!regexp_res?.length || regexp_res[0].length !== amount.length || regexp_res.length !== 4)
     return "N/A";
