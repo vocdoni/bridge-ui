@@ -8,6 +8,8 @@ import { useToken } from "../../lib/hooks/tokens";
 import { shortAddress } from "../../lib/utils";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
+import { EventType, trackEvent } from "../../lib/analytics";
+
 import SectionTitle from "../../components/sectionTitle";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/button";
@@ -16,7 +18,6 @@ import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
-import { EventType, trackEvent } from "../../lib/analytics";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -97,13 +98,13 @@ const EmptySection = styled.div`
 `;
 
 const Address = styled.h4`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 200px;
   margin: 0;
   font-size: 18px;
   letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const InfoDescription = styled.h4`
@@ -150,9 +151,17 @@ const VoteSection = (params: VotingSectionProps) => {
           <SectionTitle title={title} subtitle={processesMessage} />
           <TokenList>
             {processes.map((processId) => {
-              const proc = allProcesses.find(proc => proc.id == processId)
+              const proc = allProcesses.find((proc) => proc.id == processId);
               const title = proc?.metadata?.title?.default || "(title)";
-              return <ProcessCard key={processId} id={processId} title={title} token={token} loading={!proc?.metadata} />;
+              return (
+                <ProcessCard
+                  key={processId}
+                  id={processId}
+                  title={title}
+                  token={token}
+                  loading={!proc?.metadata}
+                />
+              );
             })}
           </TokenList>
         </Then>
@@ -173,8 +182,8 @@ const VoteSection = (params: VotingSectionProps) => {
   );
 };
 
-const ProcessCard = (props: { id: string, token: TokenInfo, title: string, loading?: boolean }) => {
-  const { id, token, title, loading } = props
+const ProcessCard = (props: { id: string; token: TokenInfo; title: string; loading?: boolean }) => {
+  const { id, token, title, loading } = props;
   // TODO: Show a spinner when `loading` is set
   return (
     <VoteCard
@@ -211,23 +220,25 @@ const TokenPage = () => {
   };
 
   const upcomingProcesses = processIds.filter((id) => {
-    const proc = processes.find(p => p.id == id);
+    const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber < proc?.summary?.startBlock
+    return blockNumber < proc?.summary?.startBlock;
   });
   const activeProcesses = processIds.filter((id) => {
-    const proc = processes.find(p => p.id == id);
+    const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber >= proc?.summary?.startBlock &&
-      blockNumber < (proc?.summary?.startBlock + proc?.summary?.blockCount);
+    return (
+      blockNumber >= proc?.summary?.startBlock &&
+      blockNumber < proc?.summary?.startBlock + proc?.summary?.blockCount
+    );
   });
   const endedProcesses = processIds.filter((id) => {
-    const proc = processes.find(p => p.id == id);
+    const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber >= (proc?.summary?.startBlock + proc?.summary?.blockCount);
+    return blockNumber >= proc?.summary?.startBlock + proc?.summary?.blockCount;
   });
 
   // This exact logic is being done in dashboard/index.tsx

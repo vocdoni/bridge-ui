@@ -5,6 +5,7 @@ import Router from "next/router";
 import styled from "styled-components";
 import { useWallet } from "use-wallet";
 import { usePool } from "@vocdoni/react-hooks";
+
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import {
   NO_TOKEN_BALANCE,
@@ -16,10 +17,10 @@ import { TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { useStoredTokens } from "../../lib/hooks/tokens";
-import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/regex";
+import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 
 import { Spinner } from "../../components/spinner";
 import Button from "../../components/button";
@@ -27,8 +28,9 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { abbreviatedTokenAmount } from "../../lib/utils";
 import { VerticalSpace } from "../../components/verticalBuffer";
+
+/* TODO reorganize and consolidate some of theese components into one file as they also appear on token/info */
 
 const TokenSummary = styled.div`
   margin-top: 2em;
@@ -158,7 +160,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
       </Info>
       <Info>
         <TokenAttributeTitle>Token address</TokenAttributeTitle>
-        <Address>{address}</Address>
+        <Address>{shortAddress(address)}</Address>
       </Info>
     </TokenSummary>
   </>
@@ -170,7 +172,6 @@ const TokenAddPage = () => {
   const wallet = useWallet();
   const signer = useSigner();
 
-  const isMobile = useIsMobile();
   const { dispatch } = useModal();
 
   const { poolPromise } = usePool();
