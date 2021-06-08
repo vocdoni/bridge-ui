@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { FALLBACK_TOKEN_ICON } from "../lib/constants";
 import { shortTokenName } from "../lib/utils";
+import { abbreviatedTokenAmount } from "../lib/utils";
 
 const Container = styled.div`
   background: ${({ theme }) => theme.blackAndWhite.w1};
@@ -68,7 +69,7 @@ const StyledVoteCard = styled(Card)`
 
 const Symbol = styled.div`
   display: block;
-  font-family: 'Manrope', sans-serif !important;
+  font-family: "Manrope", sans-serif !important;
   font-style: normal;
   font-weight: 500;
   font-size: 29px;
@@ -159,16 +160,16 @@ const TokenLogoImg = styled.img`
 `;
 
 export const TokenLogo: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = (props) => {
-  const [src, setSrc] = useState<string>(() => props.src || FALLBACK_TOKEN_ICON)
+  const [src, setSrc] = useState<string>(() => props.src || FALLBACK_TOKEN_ICON);
   useEffect(() => {
-    setSrc(props.src || FALLBACK_TOKEN_ICON)
-  }, [props.src])
+    setSrc(props.src || FALLBACK_TOKEN_ICON);
+  }, [props.src]);
 
   const onError = () => {
-    setSrc(FALLBACK_TOKEN_ICON)
-  }
+    setSrc(FALLBACK_TOKEN_ICON);
+  };
 
-  return <TokenLogoImg {...props} src={src} onError={onError} />
+  return <TokenLogoImg {...props} src={src} onError={onError} />;
 };
 
 // eslint-disable-next-line react/display-name
@@ -193,33 +194,6 @@ const ClickableTokenCard = React.forwardRef<HTMLDivElement, CardProps>(
     );
   }
 );
-
-// This helper-method converts a string of tokens into a abbreviated version.
-// ONLY ACCEPTS NON-EMTPY STRINGS
-function abbreviatedTokenAmount(amount: string): string {
-  const regexp = /(?<lead>\d+)(?<body>[,\d*]*)[.]*[\d]*\s(?<symbol>[A-Za-z]+)/;
-  const regexp_res = amount.match(regexp);
-  // discard failed matches
-  if (!regexp_res?.length || regexp_res[0].length !== amount.length || regexp_res.length !== 4)
-    return "N/A";
-
-  const lead = regexp_res[1];
-  const body = regexp_res[2];
-  const symbol = regexp_res[3];
-
-  if (regexp_res[2].length === 0) return lead + " " + symbol;
-  const magnitude = regexp_res[2].length / 4;
-  const magnitude_letter = ["K", "M", "B"];
-
-  let abbreviation: string;
-  if (magnitude <= 3) {
-    abbreviation = magnitude_letter[magnitude - 1];
-  } else {
-    abbreviation = "*10^" + magnitude * 3;
-  }
-
-  return lead + abbreviation + " " + symbol;
-}
 
 const CardHeader = styled.div`
   display: flex;

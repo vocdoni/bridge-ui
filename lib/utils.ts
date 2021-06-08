@@ -1,6 +1,7 @@
 import { ProcessMetadata } from "dvote-js";
 import { utils } from "ethers";
 import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
+import { TOKEN_AMOUNT_REGEX } from "./regex";
 
 export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
 
@@ -58,6 +59,44 @@ export function tokenIconUrl(address = "") {
     return `${TRUST_WALLET_BASE_URL}/info/logo.png`;
   }
   return `${TRUST_WALLET_BASE_URL}/assets/${address}/logo.png`;
+}
+
+/**
+ * Helper-method converts a string of tokens into a abbreviated version.
+ *
+ * @param amount [string] token amount. May include token symbol.
+ * @returns [string] abbreviated token amount. Any decimal digits get discarded. For
+ * thousands, millions and billions letters are used. E.g. 10'123'456.78 SYM becomes 10M.
+ * Everything greater gets expressed as power of tens.
+ */
+export function abbreviatedTokenAmount(amount: string): string {
+  if (!amount) return "N/A";
+
+  const regexp = TOKEN_AMOUNT_REGEX;
+  const regexp_res = amount.match(regexp);
+  // discard failed matches
+  if (!regexp_res?.length || regexp_res[0].length !== amount.length || regexp_res.length !== 4)
+    return "N/A";
+
+  const lead = regexp_res[1];
+  const body = regexp_res[2];
+  const symbol = regexp_res[3];
+
+  // < 1000
+  if (body?.length === 0) return lead + " " + symbol;
+  const magnitude = body.length / 4;
+  const magnitude_letter = ["K", "M", "B"];
+
+  let abbreviation: string;
+  if (magnitude <= 3) {
+    // < trillion. Use respective letter.
+    abbreviation = magnitude_letter[magnitude - 1];
+  } else {
+    // > trillion. Use power of tens notation.
+    abbreviation = "*10^" + magnitude * 3;
+  }
+
+  return lead + abbreviation + " " + symbol;
 }
 
 function toChecksumAddress(address) {
