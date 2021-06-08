@@ -97,14 +97,6 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
     height: 600px;
     width: 100%;
     margin-top: 25px;
-    margin-right: 13px;
-    margin-left: 0;
-  }
-  @media ${({ theme }) => theme.screens.tabletL} {
-    height: 600px;
-    width: 100%;
-    margin-top: 25px;
-    margin-right: 13px;
     margin-left: 0;
   }
   @media ${({ theme }) => theme.screens.tablet} {
