@@ -5,7 +5,7 @@ import { useUrlHash } from "use-url-hash";
 import styled from "styled-components";
 
 import { useToken } from "../../lib/hooks/tokens";
-import { shortAddress } from "../../lib/utils";
+import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
 import { EventType, trackEvent } from "../../lib/analytics";
@@ -271,6 +271,13 @@ const TokenPage = () => {
     return "-";
   }, [tokenInfo?.address]);
 
+  const amount = useMemo(() => {
+    if (tokenInfo?.totalSupplyFormatted) {
+      return abbreviatedTokenAmount(tokenInfo.totalSupplyFormatted);
+    }
+    return "-";
+  }, [tokenInfo?.totalSupplyFormatted]);
+
   return (
     <>
       <ProposalTypeList />
@@ -298,7 +305,7 @@ const TokenPage = () => {
           </Info>
           <Info>
             <TokenAttribute>Total supply</TokenAttribute>
-            <InfoDescription>{tokenInfo?.totalSupplyFormatted || "-"}</InfoDescription>
+            <InfoDescription>{amount}</InfoDescription>
           </Info>
           <Info>
             <TokenAttribute>Token address</TokenAttribute>
