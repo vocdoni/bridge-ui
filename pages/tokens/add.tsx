@@ -113,6 +113,22 @@ const WhiteSection = styled.div`
   }
 `;
 
+const CompatibleTokenNote = styled.p`
+  background: #ecfaff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
+
+  @media ${({ theme }) => theme.screens.laptop} {
+    text-align: left;
+  }
+`;
+
+const CompatibilityNote = `The token contract must store balances in a mapping between the holder address and the full amount. For example: mapping (address => uint256) balance.
+If you have problems registering your token you can reach us on our `;
+
 const RegisterButton = ({
   registeringToken,
   alreadyRegistered,
@@ -286,6 +302,10 @@ const TokenAddPage = () => {
             onClick={loading || loadingToken ? undefined : checkToken}
             loading={loading || loadingToken}
           />
+          <CompatibleTokenNote>
+            {CompatibilityNote}
+            <a target="_blank" rel="noopener noreferrer" href={"https://discord.gg/XBA56Rmp"}>Discord, on the #voice channel</a>
+          </CompatibleTokenNote>
         </Content>
       </WhiteSection>
       <VerticalSpace repeats={2} />
