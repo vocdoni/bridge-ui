@@ -45,6 +45,7 @@ import { Unless, When } from "react-if";
 layout is changed to a column for devices <= laptop. */
 const FormContainer = styled.div`
   display: flex;
+  width: 100%;
 
   @media ${({ theme }) => theme.screens.laptop} {
     margin-top: 0;
@@ -183,8 +184,6 @@ const dateTimeStyle: CSSProperties = {
 };
 
 const WidthControlInput = styled(TextInput)`
-  flex-grow: 2000;
-
   @media ${({ theme }) => theme.screens.tablet} {
     display: flex;
     margin-bottom: 9px;
@@ -194,7 +193,6 @@ const WidthControlInput = styled(TextInput)`
 
 const QuestionDescription = styled(DescriptionInput)`
   width: 100%;
-  min-width: 100%;
   border: none;
   background-color: ${({ theme }) => theme.blackAndWhite.w1};
   padding: 1em;
@@ -205,7 +203,6 @@ const QuestionDescription = styled(DescriptionInput)`
     margin-top: 10px;
     display: flex;
     width: 100%;
-    min-width: 100%;
   }
 `;
 
