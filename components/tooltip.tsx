@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 const CircleContainer = styled.div`
-  float: left;
   height: 24px;
   margin: 10px 0px 0px 21px;
   width: 24px;
@@ -54,11 +53,11 @@ const TooltipBalloon = styled.div`
   }
 
   @media${({ theme }) => theme.screens.mobileL} {
-    position: relative;
     float: unset;
-    display: inline-block;
-    left: -100px;
-    width: 160px;
+    display: block;
+    left: 50px;
+    width: 200px;
+    margin-top: 24px;
     margin-left: unset;
   }
 `;
