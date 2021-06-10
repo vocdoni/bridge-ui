@@ -79,8 +79,8 @@ proposal". On devices <= tablets, the button is moved out of the box. If no wall
 connected it is not shown (as there is the wallet button at the bottom of the page). If
 the wallet is connected, the button is shown below the white box.*/
 const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
-  height: 600px;
   width: 480px;
+  height: min-content;
   margin-left: 24px;
   margin-top: ${({ marginTop, isLarge }) => (isLarge ? 45 : marginTop)}px;
   padding: 14px 24px 29px 24px;
@@ -94,13 +94,11 @@ const OptionSection = styled.div<{ marginTop: number; isLarge: boolean }>`
     margin-left: 0;
   }
   @media ${({ theme }) => theme.screens.laptop} {
-    height: 600px;
     width: 100%;
     margin-top: 25px;
     margin-left: 0;
   }
   @media ${({ theme }) => theme.screens.tablet} {
-    height: 520px;
     margin-bottom: 24px;
   }
 `;
@@ -114,6 +112,13 @@ const OptionSectionTitle = styled.p`
   @media ${({ theme }) => theme.screens.tablet} {
     font-size: 18px;
   }
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 13px;
+  width: 100%;
 `;
 
 const RemoveButton = styled.div<{ marginTop: number }>`
@@ -632,22 +637,15 @@ const NewProcessPage = () => {
           onChange={(date) => onEndDate(date)}
           strictParsing
         />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "13px",
-            width: "100%",
-          }}
-        >
-          <Unless condition={isMobile}>
+        <Unless condition={isMobile}>
+          <ButtonRow>
             {wallet.status === "connected" ? (
               <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
             ) : (
               <ConnectButton wide />
             )}
-          </Unless>
-        </div>
+          </ButtonRow>
+        </Unless>
       </OptionSection>
       <When condition={isMobile && isConnected}>
         <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
