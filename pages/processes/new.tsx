@@ -34,11 +34,10 @@ import { EventType, trackEvent } from "../../lib/analytics";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
-import RadioChoice from "../../components/radio";
+import { RadioSection } from "../../components/radio";
 import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/input";
-import Tooltip, { TooltipType } from "../../components/tooltip";
 import { Unless, When } from "react-if";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
@@ -219,9 +218,24 @@ const SubmitButton = ({ submitting, onSubmit }) =>
   );
 
 enum ProcessTypes {
-  BINDING,
   SIGNALING,
+  BINDING,
 }
+
+enum ResultTypes {
+  NORMAL,
+  ENCRYPTED,
+}
+
+const resultsTooltips = [
+  "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to.",
+  "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed.",
+];
+
+const proposalsTooltips = [
+  "Gasless proposal creation using Vochain layer 2 solution",
+  "Metadata is stored on Ethereum, increasing decentralization and verifiability",
+];
 
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
@@ -250,12 +264,13 @@ const NewProcessPage = () => {
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const [processType, setProcessType] = useState<ProcessTypes>(initProcessType);
+  const [resultType, setResultType] = useState<ResultTypes>(ResultTypes.NORMAL);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
   const { setAlertMessage } = useMessageAlert();
 
   useEffect(() => {
-    // If the router captures a change from this page to other pages it means that the
+    // NOTE If the router captures a change from this page to other pages it means that the
     // user has abandoned creating a proposal. However, if the next page is the new
     // proposal's page, it means the user has completed the proposal. In this case the
     // event is NOT triggered.
@@ -495,6 +510,13 @@ const NewProcessPage = () => {
 
     return VotingApi.newProcess(processParamsPre, signer, pool);
   }
+  function onResultsTypeChange(index: number) {
+    setResultType(index);
+    if (index === ResultTypes.NORMAL) setEncryptedVotes(false);
+    else setEncryptedVotes(true);
+  }
+  const radioLabelsProposals = ["Signaling proposal", "On-chain proposal"];
+  const radioLabelsResults = ["Real time results", "Encrypted results"];
 
   return (
     <FormContainer>
@@ -572,56 +594,19 @@ const NewProcessPage = () => {
 
       <OptionSection marginTop={60} isLarge={isLarge}>
         <OptionSectionTitle>Proposal Type</OptionSectionTitle>
-        <div style={{ float: "left" }}>
-          <RadioChoice onClick={() => setProcessType(ProcessTypes.SIGNALING)}>
-            {" "}
-            <input
-              type="radio"
-              readOnly
-              checked={processType === ProcessTypes.SIGNALING}
-              name="proposal-type"
-            />
-            <div className="checkmark"></div> Signaling proposal
-          </RadioChoice>
-          <RadioChoice onClick={() => setProcessType(ProcessTypes.BINDING)}>
-            {" "}
-            <input
-              type="radio"
-              readOnly
-              checked={processType === ProcessTypes.BINDING}
-              name="proposal-type"
-            />
-            <div className="checkmark"></div> On-chain proposal
-          </RadioChoice>
-        </div>
-        <Tooltip type={TooltipType.PROCESS} />
-        <br style={{ height: "0px" }} />
-        <OptionSectionTitle>Results</OptionSectionTitle>
-        <div style={{ float: "left" }}>
-          <RadioChoice onClick={() => setEncryptedVotes(false)}>
-            {" "}
-            <input
-              type="radio"
-              readOnly
-              checked={!envelopeType.hasEncryptedVotes}
-              name="vote-encryption"
-            />
-            <div className="checkmark"></div> Real time results
-          </RadioChoice>
-          <RadioChoice onClick={() => setEncryptedVotes(true)}>
-            {" "}
-            <input
-              type="radio"
-              readOnly
-              checked={envelopeType.hasEncryptedVotes}
-              name="vote-encryption"
-            />
-            <div className="checkmark"></div> Encrypted results
-          </RadioChoice>
-        </div>
-        {/* TODO rework the tooltip, s.t. break are not needed and title spacing is even */}
-        <Tooltip type={TooltipType.RESULTS} />
-        <br style={{ height: "0px" }} /> {/* can't get the title to left-align without break */}
+        <RadioSection
+          labels={radioLabelsProposals}
+          tooltips={proposalsTooltips}
+          state={processType}
+          setState={setProcessType}
+        />
+        <OptionSectionTitle>Result Type</OptionSectionTitle>
+        <RadioSection
+          labels={radioLabelsResults}
+          tooltips={resultsTooltips}
+          state={resultType}
+          setState={onResultsTypeChange}
+        />
         <OptionSectionTitle>Proposal date</OptionSectionTitle>
         <Datetime
           value={startDate}
