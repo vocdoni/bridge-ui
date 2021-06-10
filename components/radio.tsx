@@ -1,80 +1,76 @@
 import React from "react";
 import styled from "styled-components";
+import { Radio } from "@aragon/ui";
+import { Tooltip } from "./tooltip";
+import { When } from "react-if";
 
-const Radio = styled.label`
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  padding: 5px 0;
-  font-size: 16px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.blackAndWhite.b1};
-
+const RadioContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
 
-  /* Hide the browser's default radio button */
-  input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  /* Create a custom radio button */
-  .checkmark {
-    height: 24px;
-    width: 24px;
-    box-sizing: border-box;
-    box-shadow: inset ${({ theme }) => theme.shadows.buttonShadow};
-    background-color: ${({ theme }) => theme.blackAndWhite.w1};
-    border-radius: 26px;
-    margin-right: 1em;
-    border: 2px solid ${({ theme }) => theme.grayScale.g2};
-  }
-
-  /* When the radio button is checked, add a blue background */
-  input:checked ~ .checkmark {
-    background-color: ${({ theme }) => theme.blackAndWhite.w1};
-  }
-
-  /* Create the indicator (the dot/circle - hidden when not checked) */
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-  }
-
-  /* Show the indicator (dot/circle) when checked */
-  input:checked ~ .checkmark:after {
-    display: block;
-  }
-
-  /* Style the indicator (dot/circle) */
-  .checkmark:after {
-    border-radius: 50%;
-    box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
-    background: linear-gradient(
-      ${({ theme }) => theme.gradients.primary.mg1.a},
-      ${({ theme }) => theme.gradients.primary.mg1.c1},
-      ${({ theme }) => theme.gradients.primary.mg1.c2}
-    );
-    z-index: 1;
-    height: 14px;
-    width: 14px;
-    margin: 3px;
+  & > label:not(:last-child) {
+    margin-bottom: 8px;
   }
 `;
 
-const RadioChoice = ({
-  onClick,
-  children,
-}: {
-  onClick: (args: unknown) => void;
-  children: React.ReactNode;
-}) => <Radio onClick={onClick}>{children}</Radio>;
+const RadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+`;
 
-RadioChoice.Style = Radio;
-export default RadioChoice;
+const RadioLabelText = styled.p`
+  margin: 0px 0px 0px 8px;
+  font-size: 16px;
+`;
+
+export type RadioProps = {
+  labels: string[];
+  tooltips: string[];
+  state: number;
+  setState: (index: number) => void;
+};
+
+/* NOTE AragonUI provides a RadioGroup that covers the button's state logic. However, it doesn't
+allow to properly insert Tootlips into the group. This is why the Radio section has been
+"reimplemented" here. */
+
+/**
+ * Provides a group of radio buttons. The number of options is dynamic and based on the
+ * number of labels passed in the labels array.The tooltips are only drawn if there are as
+ * many tooltip texts as there are options.
+ *
+ * The state and setState function propagate the Radio section state up to the parent.
+ * I.e., it tells the parent component which option is currently selected. The parent must
+ * therefore provide a state variable and an according setter variable to track this
+ * information. Typically, using the useState hook. Note: this useState hook needs to be a
+ * number (or an enum type).
+ *
+ * @param labels Array of strings that are used to label the radio buttons.
+ * @param tootltips Array of strings that are used as tooltips content.
+ * @param state Number that keeps track of the marked radio button. 0 indexed.
+ * @param setState Function that takes a number as argument and returns nothing. That
+ * number represents the selected option. 0 indexed.
+ */
+export function RadioSection({ labels, tooltips, state, setState }: RadioProps) {
+  const tooltipsEnabled = labels.length === tooltips.length;
+  return (
+    <RadioContainer>
+      {labels.map((l, key) => (
+        <RadioLabel>
+          <Radio
+            checked={key === state}
+            onChange={() => {
+              setState(key);
+            }}
+          />
+          <RadioLabelText>{l}</RadioLabelText>
+          <When condition={tooltipsEnabled}>
+            <Tooltip hoverText={tooltips[key]} />
+          </When>
+        </RadioLabel>
+      ))}
+    </RadioContainer>
+  );
+}
+
+export default RadioSection;
