@@ -57,7 +57,6 @@ Again, additional breaks needed for laptop sizes. Size is hard-coded for large d
 flexible for laptops and full-width for tablets. */
 const InformationSection = styled.div`
   width: 680px;
-  margin-right: 16px;
 
   & > :first-child {
     margin-top: 0px;
@@ -66,7 +65,6 @@ const InformationSection = styled.div`
     width: 65%;
   }
   @media ${({ theme }) => theme.screens.laptop} {
-    margin-right: 13px;
     width: 100%;
     margin-top: 0;
     flex-direction: column;
@@ -241,6 +239,9 @@ const proposalsTooltips = [
   "Gasless proposal creation using Vochain layer 2 solution",
   "Metadata is stored on Ethereum, increasing decentralization and verifiability",
 ];
+
+const radioLabelsProposals = ["Signaling proposal", "On-chain proposal"];
+const radioLabelsResults = ["Real time results", "Encrypted results"];
 
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
@@ -520,8 +521,6 @@ const NewProcessPage = () => {
     if (index === ResultTypes.NORMAL) setEncryptedVotes(false);
     else setEncryptedVotes(true);
   }
-  const radioLabelsProposals = ["Signaling proposal", "On-chain proposal"];
-  const radioLabelsResults = ["Real time results", "Encrypted results"];
 
   return (
     <FormContainer>
