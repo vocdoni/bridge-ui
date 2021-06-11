@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 import { Spinner } from "../components/spinner";
-import { PrimaryButton } from "./button";
-import { TextInput } from "./input";
+import { PrimaryButton } from "./ControlElements/button";
+import { TextInput } from "./ControlElements/input";
 
 const SearchRow = styled.div`
   display: flex;

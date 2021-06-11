@@ -36,7 +36,7 @@ import {
 } from "../../components/Processes/styled";
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
-import Button from "../../components/button";
+import Button from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import {
@@ -63,8 +63,12 @@ const ProcessPage = () => {
   const { dispatch } = useModal();
   const { setAlertMessage } = useMessageAlert();
 
-  const { process: processDetails, loading: processLoading, error: processError } = useProcess(processId);
-  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(processDetails?.state?.entityId);
+  const { process: processDetails, loading: processLoading, error: processError } = useProcess(
+    processId
+  );
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(
+    processDetails?.state?.entityId
+  );
   const {
     hasEnded,
     hasStarted,
@@ -83,7 +87,9 @@ const ProcessPage = () => {
     tokenInfo,
     processDetails?.state?.sourceBlockHeight
   );
-  const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(processDetails);
+  const { voteState, votingStatus, setState, submitVote, refreshVotingStatus } = useVote(
+    processDetails
+  );
 
   useEffect(() => {
     let errorName: string;
@@ -93,7 +99,7 @@ const ProcessPage = () => {
     else if (resultsError) errorName = "results";
     else if (proofError) errorName = "census proof";
     // else if (summaryError) errorName = "summary";
-    if (!errorName) return
+    if (!errorName) return;
 
     const errorMessage =
       "Oops, there was an error loading the " +
@@ -103,7 +109,8 @@ const ProcessPage = () => {
   }, [processError, tokenError, processDatesError, resultsError, proofError]);
 
   const isConnected = !!wallet.account;
-  const allQuestionsSelected = voteState.choices.length === processDetails?.metadata?.questions?.length;
+  const allQuestionsSelected =
+    voteState.choices.length === processDetails?.metadata?.questions?.length;
   const questionsFilled = allQuestionsSelected && areAllNumbers(voteState.choices);
   const inCensus = !!proof;
   const hasAlreadyVoted = votingStatus?.registered || voteState.submitted;
@@ -165,7 +172,9 @@ const ProcessPage = () => {
       />
       <ProcessContainer>
         <ProcessInformation>
-          <ProcessTitle>{processDetails?.metadata?.title?.default || "(proposal title)"}</ProcessTitle>
+          <ProcessTitle>
+            {processDetails?.metadata?.title?.default || "(proposal title)"}
+          </ProcessTitle>
           <ProcessDescription>
             {processDetails?.metadata?.description?.default || "(proposal description)"}
           </ProcessDescription>
@@ -234,17 +243,22 @@ const ProcessPage = () => {
 
 const renderEmpty = () => {
   return <LoadingSpinner fullPage />;
-}
+};
 
 const SummaryLoading = () => {
-  return <CenterText>
-    <small>Loading summary... &nbsp;<Spinner /></small>
-  </CenterText>
-}
+  return (
+    <CenterText>
+      <small>
+        Loading summary... &nbsp;
+        <Spinner />
+      </small>
+    </CenterText>
+  );
+};
 
 const CenterText = styled.p`
-margin: 0;
-text-align: center;
-`
+  margin: 0;
+  text-align: center;
+`;
 
 export default ProcessPage;

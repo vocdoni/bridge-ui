@@ -1,11 +1,12 @@
-import React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
-import { shortAddress } from "../lib/utils";
-import { useModal, ActionTypes } from "./Modal/context";
-import { WALLET_IDENTICON } from "../lib/constants";
+
+import { shortAddress } from "../../lib/utils";
+import { WALLET_IDENTICON } from "../../lib/constants";
+
+import { useModal, ActionTypes } from "../Modal/context";
 
 const ButtonContainer = styled.div`
   display: flex;
