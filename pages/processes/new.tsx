@@ -401,9 +401,6 @@ const NewProcessPage = () => {
       setSubmitting(true);
       const pool = await poolPromise;
 
-      console.log("This is start " + startDate);
-      console.log("This is end " + endDate);
-
       // Estimate start/end blocks
       const [startBlock, endBlock] = await Promise.all([
         VotingApi.estimateBlockAtDateTime(startDate, pool),
