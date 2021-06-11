@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useIsMobile } from "../lib/hooks/useWindowSize";
-import { ConnectButton } from "./connect-button";
+import { ConnectButton } from "./ControlElements/connect-button";
 
 const Head = styled.div`
   display: flex;

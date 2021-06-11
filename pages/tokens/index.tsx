@@ -7,7 +7,7 @@ import { TokenCard } from "../../components/token-card";
 import { useStoredTokens } from "../../lib/hooks/tokens";
 
 import SectionTitle from "../../components/sectionTitle";
-import { SecondaryButton } from "../../components/button";
+import { SecondaryButton } from "../../components/ControlElements/button";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";

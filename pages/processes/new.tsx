@@ -33,12 +33,12 @@ import { useIsWide } from "../../lib/hooks/useWindowSize";
 import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { EventType, trackEvent } from "../../lib/analytics";
 
-import { PrimaryButton, SecondaryButton } from "../../components/button";
+import { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
-import { RadioSectionTooltips, TextContent } from "../../components/radio";
-import { ConnectButton } from "../../components/connect-button";
+import { RadioSectionTooltips, TextContent } from "../../components/ControlElements/radio";
+import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
-import { TextInput, DescriptionInput } from "../../components/input";
+import { TextInput, DescriptionInput } from "../../components/ControlElements/input";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
 layout is changed to a column for devices <= laptop. */
