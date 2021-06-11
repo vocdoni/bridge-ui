@@ -34,7 +34,7 @@ import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { EventType, trackEvent } from "../../lib/analytics";
 
 import { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
-import { PlusBox, MinusContainer } from "../../components/plusBox";
+import { PlusBox, MinusContainer } from "../../components/ControlElements/plusBox";
 import { RadioSectionTooltips, TextContent } from "../../components/ControlElements/radio";
 import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
