@@ -23,9 +23,13 @@ const RadioLabelText = styled.p`
   font-size: 16px;
 `;
 
-export type RadioProps = {
-  labels: string[];
-  tooltips: string[];
+export type TextContent = {
+  label: string;
+  tooltip?: string;
+};
+
+type RadioProps = {
+  texts: TextContent[];
   state: number;
   setState: (index: number) => void;
 };
@@ -51,11 +55,10 @@ allow to properly insert Tootlips into the group. This is why the Radio section 
  * @param setState Function that takes a number as argument and returns nothing. That
  * number represents the selected option. 0 indexed.
  */
-export function RadioSection({ labels, tooltips, state, setState }: RadioProps) {
-  const tooltipsEnabled = labels.length === tooltips.length;
+export function RadioSection({ texts, state, setState }: RadioProps) {
   return (
     <RadioContainer>
-      {labels.map((l, key) => (
+      {texts.map((t, key) => (
         <RadioLabel>
           <Radio
             checked={key === state}
@@ -63,9 +66,9 @@ export function RadioSection({ labels, tooltips, state, setState }: RadioProps) 
               setState(key);
             }}
           />
-          <RadioLabelText>{l}</RadioLabelText>
-          <When condition={tooltipsEnabled}>
-            <Tooltip hoverText={tooltips[key]} />
+          <RadioLabelText>{t.label}</RadioLabelText>
+          <When condition={texts[key].tooltip}>
+            <Tooltip hoverText={texts[key].tooltip} />
           </When>
         </RadioLabel>
       ))}
