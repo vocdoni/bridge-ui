@@ -410,20 +410,7 @@ const NewProcessPage = () => {
           ? await submitBindingVote(pool, startBlock, blockCount)
           : await submitSignalingVote(pool, startBlock, blockCount);
 
-      // Wait until effectively created
-      const ready = await waitUntilProcessCreated(processId, pool);
-      if (!ready) {
-        // If process was created but isn't ready after a while, send the user back to
-        // token information and notify them about the process not being ready.
-        Router.push("/tokens/info#/" + tokenInfo.address);
-        return setAlertMessage(
-          "The process was created, but is not yet available. Please try again later.",
-          "warning"
-        );
-      }
-
-      setSubmitting(false);
-      setAlertMessage("The proposal has been successfully created", "success");
+      // At this point, the proposal is created.
 
       const analytics_properties = {
         entity_id: tokenAddress,
@@ -440,7 +427,21 @@ const NewProcessPage = () => {
       tokenInfo.processes.push(processId);
       storeTokens([tokenInfo]);
 
-      Router.push("/processes#/" + processId);
+      // Wait until effectively ready on entity
+      const ready = await waitUntilProcessCreated(processId, pool);
+      setSubmitting(false);
+      if (!ready) {
+        // If process was created but isn't ready after a while, send the user back to
+        // token information and notify them about the process not being ready.
+        Router.push("/tokens/info#/" + tokenInfo.address);
+        setAlertMessage(
+          "The process was created, but is not yet available. Please try again later.",
+          "warning"
+        );
+      } else {
+        setAlertMessage("The proposal has been successfully created", "success");
+        Router.push("/processes#/" + processId);
+      }
     } catch (error) {
       setSubmitting(false);
 
