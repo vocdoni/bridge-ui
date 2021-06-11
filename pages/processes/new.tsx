@@ -34,7 +34,7 @@ import { EventType, trackEvent } from "../../lib/analytics";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
-import { RadioSection } from "../../components/radio";
+import { RadioSection, TextContent } from "../../components/radio";
 import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/input";
@@ -230,18 +230,29 @@ enum ResultTypes {
   ENCRYPTED,
 }
 
-const resultsTooltips = [
-  "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to.",
-  "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed.",
+const proposalTexts: TextContent[] = [
+  {
+    label: "Signaling proposal",
+    tooltip: "Gasless proposal creation using Vochain layer 2 solution",
+  },
+  {
+    label: "On-chain proposal",
+    tooltip: "Metadata is stored on Ethereum, increasing decentralization and verifiability",
+  },
 ];
 
-const proposalsTooltips = [
-  "Gasless proposal creation using Vochain layer 2 solution",
-  "Metadata is stored on Ethereum, increasing decentralization and verifiability",
+const resultsTexts: TextContent[] = [
+  {
+    label: "Real time results",
+    tooltip:
+      "Results for the proposal are available during the voting process, meaning anyone can see where the voting is leaning to.",
+  },
+  {
+    label: "Encrypted results",
+    tooltip:
+      "Results for the proposal will be available only after voting is finished, meaning no one can see where the voting is leaning to before it is closed.",
+  },
 ];
-
-const radioLabelsProposals = ["Signaling proposal", "On-chain proposal"];
-const radioLabelsResults = ["Real time results", "Encrypted results"];
 
 const NewProcessPage = () => {
   const { poolPromise } = usePool();
@@ -598,19 +609,9 @@ const NewProcessPage = () => {
 
       <OptionSection marginTop={60} isLarge={isLarge}>
         <OptionSectionTitle>Proposal Type</OptionSectionTitle>
-        <RadioSection
-          labels={radioLabelsProposals}
-          tooltips={proposalsTooltips}
-          state={processType}
-          setState={setProcessType}
-        />
+        <RadioSection texts={proposalTexts} state={processType} setState={setProcessType} />
         <OptionSectionTitle>Result Type</OptionSectionTitle>
-        <RadioSection
-          labels={radioLabelsResults}
-          tooltips={resultsTooltips}
-          state={resultType}
-          setState={onResultsTypeChange}
-        />
+        <RadioSection texts={resultsTexts} state={resultType} setState={onResultsTypeChange} />
         <OptionSectionTitle>Proposal date</OptionSectionTitle>
         <Datetime
           value={startDate}
