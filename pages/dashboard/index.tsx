@@ -4,17 +4,18 @@ import styled from "styled-components";
 import { useBlockHeight, useProcesses } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 import { useRouter } from "next/router";
-
-import { TokenCard } from "../../components/token-card";
+import { Else, If, Then } from "react-if";
+import { IProcessSummary, ProcessMetadata } from "dvote-js";
 // import Select from 'react-select'
+
 import { useStoredTokens } from "../../lib/hooks/tokens";
 import { TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/utils";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
-import { TopSection } from "../../components/top-section";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { IProcessSummary, ProcessMetadata } from "dvote-js";
-import { Else, If, Then } from "react-if";
+
+import { TokenCard } from "../../components/token-card";
+import { TopSection } from "../../components/top-section";
 
 export const TokenList = styled.div`
   display: flex;
@@ -41,9 +42,9 @@ const DashboardPage = () => {
   const { account } = useWallet();
   const router = useRouter();
   const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
-  const processIds = storedTokens.filter(token => token?.address).map(token => token.address);
+  const processIds = storedTokens.filter((token) => token?.address).map((token) => token.address);
   const { processes, loading: processesLoading, error: processesError } = useProcesses(processIds);
-  const { blockHeight } = useBlockHeight()
+  const { blockHeight } = useBlockHeight();
 
   useEffect(() => {
     if (!account) {
@@ -53,13 +54,9 @@ const DashboardPage = () => {
 
   const upcomingProcesses = processes.filter((proc) => blockHeight < proc.summary.startBlock);
   const activeProcesses = processes.filter(
-    (proc) =>
-      blockHeight >= proc.summary.startBlock &&
-      blockHeight < (proc.summary.startBlock + proc.summary.blockCount)
+    (proc) => blockHeight >= proc.summary.startBlock && blockHeight < proc.summary.endBlock
   );
-  const endedProcesses = processes.filter(
-    (proc) => blockHeight >= (proc.summary.startBlock + proc.summary.blockCount)
-  );
+  const endedProcesses = processes.filter((proc) => blockHeight >= proc.summary.endBlock);
 
   const VOTING_SECTIONS = [
     {
@@ -102,12 +99,12 @@ const DashboardPage = () => {
 };
 
 export const VoteSection = (props: {
-  processes: { id: string; summary: IProcessSummary; metadata?: ProcessMetadata; }[],
-  tokenInfos: TokenInfo[],
-  loadingProcesses: boolean,
-  title: string,
-  noProcessesMessage: string,
-  processesMessage: string
+  processes: { id: string; summary: IProcessSummary; metadata?: ProcessMetadata }[];
+  tokenInfos: TokenInfo[];
+  loadingProcesses: boolean;
+  title: string;
+  noProcessesMessage: string;
+  processesMessage: string;
 }) => {
   const {
     processes,
@@ -116,15 +113,17 @@ export const VoteSection = (props: {
     title,
     noProcessesMessage,
     processesMessage,
-  } = props
+  } = props;
 
   const Processes = () => {
-    return <>
-      {processes.map((proc) => {
-        const token = tokenInfos.find(token => token.address == proc.summary.entityId);
-        return <ProcessCard processId={proc.id} metadata={proc.metadata} token={token} />;
-      })}
-    </>;
+    return (
+      <>
+        {processes.map((proc) => {
+          const token = tokenInfos.find((token) => token.address == proc.summary.entityId);
+          return <ProcessCard processId={proc.id} metadata={proc.metadata} token={token} />;
+        })}
+      </>
+    );
   };
 
   return (
@@ -136,7 +135,11 @@ export const VoteSection = (props: {
   );
 };
 
-const ProcessCard = (props: { processId: string, metadata?: ProcessMetadata; token?: TokenInfo }) => {
+const ProcessCard = (props: {
+  processId: string;
+  metadata?: ProcessMetadata;
+  token?: TokenInfo;
+}) => {
   const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : props?.token.icon;
 
   return (
