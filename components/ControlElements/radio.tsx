@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Radio } from "@aragon/ui";
 import { When } from "react-if";
 
-import { Tooltip } from "./tooltip";
+import { Tooltip } from "../tooltip";
 
 const RadioContainer = styled.div`
   display: flex;
