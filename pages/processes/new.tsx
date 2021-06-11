@@ -34,7 +34,7 @@ import { EventType, trackEvent } from "../../lib/analytics";
 
 import { PrimaryButton, SecondaryButton } from "../../components/button";
 import { PlusBox, MinusContainer } from "../../components/plusBox";
-import { RadioSection, TextContent } from "../../components/radio";
+import { RadioSectionTooltips, TextContent } from "../../components/radio";
 import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/input";
@@ -609,9 +609,13 @@ const NewProcessPage = () => {
 
       <OptionSection marginTop={60} isLarge={isLarge}>
         <OptionSectionTitle>Proposal Type</OptionSectionTitle>
-        <RadioSection texts={proposalTexts} state={processType} setState={setProcessType} />
+        <RadioSectionTooltips texts={proposalTexts} state={processType} setState={setProcessType} />
         <OptionSectionTitle>Result Type</OptionSectionTitle>
-        <RadioSection texts={resultsTexts} state={resultType} setState={onResultsTypeChange} />
+        <RadioSectionTooltips
+          texts={resultsTexts}
+          state={resultType}
+          setState={onResultsTypeChange}
+        />
         <OptionSectionTitle>Proposal date</OptionSectionTitle>
         <Datetime
           value={startDate}

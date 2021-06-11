@@ -28,7 +28,7 @@ export type TextContent = {
   tooltip?: string;
 };
 
-type RadioProps = {
+type RadioTooltipProps = {
   texts: TextContent[];
   state: number;
   setState: (index: number) => void;
@@ -36,12 +36,11 @@ type RadioProps = {
 
 /* NOTE AragonUI provides a RadioGroup that covers the button's state logic. However, it doesn't
 allow to properly insert Tootlips into the group. This is why the Radio section has been
-"reimplemented" here. */
+"reimplemented" here. To use radio buttons without tooltips refer to AragonUI. */
 
 /**
  * Provides a group of radio buttons. The number of options is dynamic and based on the
- * number of labels passed in the labels array.The tooltips are only drawn if there are as
- * many tooltip texts as there are options.
+ * number of labels passed in the texts array.
  *
  * The state and setState function propagate the Radio section state up to the parent.
  * I.e., it tells the parent component which option is currently selected. The parent must
@@ -49,13 +48,12 @@ allow to properly insert Tootlips into the group. This is why the Radio section 
  * information. Typically, using the useState hook. Note: this useState hook needs to be a
  * number (or an enum type).
  *
- * @param labels Array of strings that are used to label the radio buttons.
- * @param tootltips Array of strings that are used as tooltips content.
+ * @param texts Array of textual information for both labels and tooltips.
  * @param state Number that keeps track of the marked radio button. 0 indexed.
  * @param setState Function that takes a number as argument and returns nothing. That
  * number represents the selected option. 0 indexed.
  */
-export function RadioSection({ texts, state, setState }: RadioProps) {
+export function RadioSectionTooltips({ texts, state, setState }: RadioTooltipProps) {
   return (
     <RadioContainer>
       {texts.map((t, key) => (
@@ -76,4 +74,4 @@ export function RadioSection({ texts, state, setState }: RadioProps) {
   );
 }
 
-export default RadioSection;
+export default RadioSectionTooltips;
