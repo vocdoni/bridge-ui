@@ -18,6 +18,7 @@ import Datetime from "react-datetime";
 import { Moment } from "moment";
 import Router, { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
+import { Unless, When } from "react-if";
 
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
@@ -38,7 +39,6 @@ import { RadioSectionTooltips, TextContent } from "../../components/radio";
 import { ConnectButton } from "../../components/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/input";
-import { Unless, When } from "react-if";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
 layout is changed to a column for devices <= laptop. */
@@ -173,17 +173,6 @@ const InputBox = styled.div`
     margin-bottom: 8px;
   }
 `;
-
-const dateTimeStyle: CSSProperties = {
-  width: "100%",
-  border: "2px solid #EFF1F7",
-  boxSizing: "border-box",
-  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
-  borderRadius: "8px",
-  marginTop: "0px",
-  marginBottom: "14px",
-  padding: "1em",
-};
 
 const WidthControlInput = styled(TextInput)`
   @media ${({ theme }) => theme.screens.tablet} {
@@ -412,6 +401,9 @@ const NewProcessPage = () => {
       setSubmitting(true);
       const pool = await poolPromise;
 
+      console.log("This is start " + startDate);
+      console.log("This is end " + endDate);
+
       // Estimate start/end blocks
       const [startBlock, endBlock] = await Promise.all([
         VotingApi.estimateBlockAtDateTime(startDate, pool),
@@ -538,8 +530,7 @@ const NewProcessPage = () => {
       <InformationSection>
         <SectionTitle
           title="New proposal"
-          subtitle="Enter the details of a new proposal and submit
-                them."
+          subtitle="Enter the details of a new proposal and submit them."
         />
         <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
         <InputBox>
@@ -617,30 +608,8 @@ const NewProcessPage = () => {
           setState={onResultsTypeChange}
         />
         <OptionSectionTitle>Proposal date</OptionSectionTitle>
-        <Datetime
-          value={startDate}
-          inputProps={{
-            placeholder: "Start date (d/m/y h:m)",
-            style: dateTimeStyle,
-          }}
-          isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-          dateFormat="D/MM/YYYY"
-          timeFormat="HH:mm[h]"
-          onChange={(date) => onStartDate(date)}
-          strictParsing
-        />
-        <Datetime
-          value={endDate}
-          inputProps={{
-            placeholder: "End date (d/m/y h:m)",
-            style: dateTimeStyle,
-          }}
-          isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-          dateFormat="D/MM/YYYY"
-          timeFormat="HH:mm[h]"
-          onChange={(date) => onEndDate(date)}
-          strictParsing
-        />
+        <CustomDateTime isStart state={startDate} stateSetter={onStartDate} />
+        <CustomDateTime state={endDate} stateSetter={onEndDate} />
         <Unless condition={isMobile}>
           <ButtonRow>
             {wallet.status === "connected" ? (
@@ -657,6 +626,32 @@ const NewProcessPage = () => {
     </FormContainer>
   );
 };
+
+const dateTimeStyle: CSSProperties = {
+  width: "100%",
+  border: "2px solid #EFF1F7",
+  boxSizing: "border-box",
+  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
+  borderRadius: "8px",
+  marginTop: "0px",
+  marginBottom: "14px",
+  padding: "1em",
+};
+
+const CustomDateTime = ({ isStart = false, state, stateSetter }) => (
+  <Datetime
+    value={state}
+    inputProps={{
+      placeholder: `${isStart ? "Start" : "End"} date (d/m/y h:m)`,
+      style: dateTimeStyle,
+    }}
+    isValidDate={(cur: Moment) => isValidFutureDate(cur)}
+    dateFormat="D/MM/YYYY"
+    timeFormat="HH:mm[h]"
+    onChange={(date) => stateSetter(date)}
+    strictParsing
+  />
+);
 
 // HELPERS =============================================================================
 
