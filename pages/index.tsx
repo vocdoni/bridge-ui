@@ -1,22 +1,21 @@
 import React from "react";
 import { withRouter } from "next/router";
 import styled from "styled-components";
+import Link from "next/link";
+import { useWallet } from "use-wallet";
+import { Else, If, Then, Unless, When } from "react-if";
 
+import { TokenList } from "./dashboard";
 import { featuredTokens } from "../lib/tokens";
 import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
 import { LANDING_PAGE_CTA } from "../lib/constants";
-import { TokenList } from "./dashboard";
-
-import { TokenCard } from "../components/token-card";
-import { SecondaryButton } from "../components/button";
-import SectionTitle from "../components/sectionTitle";
+import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
-import { Else, If, Then, Unless, When } from "react-if";
 
-import Link from "next/link";
-import { useWallet } from "use-wallet";
-import { useScrollTop } from "../lib/hooks/useScrollTop";
+import { TokenCard } from "../components/token-card";
+import { SecondaryButton } from "../components/ControlElements/button";
+import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { LoadingRectangle } from "../components/loading-rectangle";
 import { NotConnected } from "../components/Banners/GrayBanners";

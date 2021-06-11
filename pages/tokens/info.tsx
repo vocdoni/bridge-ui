@@ -12,7 +12,7 @@ import { EventType, trackEvent } from "../../lib/analytics";
 
 import SectionTitle from "../../components/sectionTitle";
 import { TokenLogo, VoteCard } from "../../components/token-card";
-import { PrimaryButton } from "../../components/button";
+import { PrimaryButton } from "../../components/ControlElements/button";
 import { IProcessSummary, ProcessMetadata } from "dvote-js";
 import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";

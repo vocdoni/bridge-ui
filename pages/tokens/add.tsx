@@ -23,10 +23,9 @@ import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 
 import { Spinner } from "../../components/spinner";
-import Button from "../../components/button";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
-import { PrimaryButton, SecondaryButton } from "../../components/button";
+import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { VerticalSpace } from "../../components/verticalBuffer";
 
@@ -304,7 +303,9 @@ const TokenAddPage = () => {
           />
           <CompatibleTokenNote>
             {CompatibilityNote}
-            <a target="_blank" rel="noopener noreferrer" href={"https://discord.gg/XBA56Rmp"}>Discord, on the #voice channel</a>
+            <a target="_blank" rel="noopener noreferrer" href={"https://discord.gg/XBA56Rmp"}>
+              Discord, on the #voice channel
+            </a>
           </CompatibleTokenNote>
         </Content>
       </WhiteSection>
