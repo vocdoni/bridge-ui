@@ -28,7 +28,7 @@ import { findMaxValue } from "../../lib/utils";
 import { useStoredTokens, useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
-import { NO_TOKEN_BALANCE, USER_CANCELED_TX } from "../../lib/errors";
+import { NO_TOKEN_BALANCE, TOKEN_ADDRESS_INVALID, USER_CANCELED_TX } from "../../lib/errors";
 import { useIsWide } from "../../lib/hooks/useWindowSize";
 import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { EventType, trackEvent } from "../../lib/analytics";
@@ -376,6 +376,7 @@ const NewProcessPage = () => {
     setMetadata(Object.assign({}, metadata));
   };
   const onSubmit = async () => {
+    // PRE-SUBMIT CHECKS
     try {
       validateProposal(metadata, startDate, endDate);
     } catch (error) {
@@ -383,20 +384,16 @@ const NewProcessPage = () => {
     }
 
     if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX))
-      return setAlertMessage("The token address is not valid");
+      return setAlertMessage(TOKEN_ADDRESS_INVALID);
 
     if (!wallet?.account)
       return setAlertMessage("In order to continue, you need to use a Web3 provider like MetaMask");
 
     // FINAL CONFIRMATION
-    if (
-      !confirm(
-        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
-      )
-    )
-      return;
+    const confirmationMsg =
+      "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?";
+    if (!confirm(confirmationMsg)) return;
 
-    // Continue
     try {
       setSubmitting(true);
       const pool = await poolPromise;
@@ -415,7 +412,15 @@ const NewProcessPage = () => {
 
       // Wait until effectively created
       const ready = await waitUntilProcessCreated(processId, pool);
-      if (!ready) throw new Error("The proposal is not available after a while");
+      if (!ready) {
+        // If process was created but isn't ready after a while, send the user back to
+        // token information and notify them about the process not being ready.
+        Router.push("/tokens/info#/" + tokenInfo.address);
+        return setAlertMessage(
+          "The process was created, but is not yet available. Please try again later.",
+          "warning"
+        );
+      }
 
       setSubmitting(false);
       setAlertMessage("The proposal has been successfully created", "success");
