@@ -8,7 +8,7 @@ import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vo
 import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
-import { Layout } from "../components/layout";
+import { Layout } from "../components/StructuralElement/layout";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/tokens";

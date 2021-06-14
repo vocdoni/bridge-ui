@@ -27,7 +27,7 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { VerticalSpace } from "../../components/verticalBuffer";
+import { VerticalSpace } from "../../components/StructuralElement/verticalBuffer";
 
 /* TODO reorganize and consolidate some of theese components into one file as they also appear on token/info */
 

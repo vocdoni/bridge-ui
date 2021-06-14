@@ -1,8 +1,8 @@
 import React from "react";
 import NextError from "next/error";
 
-import NotFound from "../components/not-found";
-import GeneralError from "../components/error";
+import NotFound from "../components/StructuralElement/not-found";
+import GeneralError from "../components/StructuralElement/error";
 
 function ErrorPage({ statusCode }) {
   if (statusCode >= 400 && statusCode < 500) return <NotFound />;

@@ -1,5 +1,5 @@
 import React from "react";
-import { main } from "../i18n";
+import { main } from "../../i18n";
 
 const NotFound = () => (
   <div>

@@ -3,9 +3,9 @@ import styled from "styled-components";
 import Link from "next/link";
 
 import { LINKS } from "./header";
-import { ConnectButton } from "./ControlElements/connect-button";
-import { useIsMobile } from "../lib/hooks/useWindowSize";
-import { FOOTER_LOGO } from "../lib/constants";
+import { ConnectButton } from "../ControlElements/connect-button";
+import { useIsMobile } from "../../lib/hooks/useWindowSize";
+import { FOOTER_LOGO } from "../../lib/constants";
 
 const Container = styled.div`
   bottom: 0;
