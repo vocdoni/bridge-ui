@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 import { Header } from "./header";
 import { Footer } from "./footer";
-import { MessageAlert } from "./msg-alert";
-import { LoadingAlert } from "./loading-alert";
+import { MessageAlert } from "../msg-alert";
+import { LoadingAlert } from "../loading-alert";
 
 const MainContent = styled.div`
   flex: 1;

@@ -1,5 +1,5 @@
 import React from "react";
-import { main } from "../i18n";
+import { main } from "../../i18n";
 
 const ErrorPage = (props: { message?: string }) => (
   <div>{(props && props.message) || main.generalErrorMessage}</div>
