@@ -18,6 +18,7 @@ import "react-datetime/css/react-datetime.css";
 import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
 import { trackPage } from "../lib/analytics";
+import { CookiesBanner } from "../components/cookies-banner";
 
 Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
 
@@ -69,6 +70,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                         <Layout>
                           <Component {...pageProps} />
                         </Layout>
+                        <CookiesBanner />
                       </ModalsProvider>
                     </UseTokensWithBalance>
                   </UseWalletProvider>
