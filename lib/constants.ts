@@ -72,3 +72,6 @@ export const WALLET_IDENTICON = "/media/connected_wallet_icon.svg";
 export const MEDITATING_LADY_IMG = "/media/meditating_lady_img.svg";
 export const ISLAND_FLAG_IMG = "/media/island_flag_img.svg";
 export const PEOPLE_IMG = "/media/people_img_transparent.png";
+
+// URI's
+export const COOKIES_URL = "https://aragon.org/cookies";
