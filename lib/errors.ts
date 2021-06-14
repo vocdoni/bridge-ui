@@ -1,18 +1,29 @@
-export const INVALID_CHAIN_ID = "Invalid chain ID";
-export const METAMASK_IS_NOT_AVAILABLE = "Metamask is not available";
-export const YOU_ARE_NOT_CONNECTED = "You are not connected";
 export const NO_TOKEN_BALANCE = "You have no token balance";
-export const TOKEN_ALREADY_REGISTERED = "The token is already registered";
-export const TOKEN_ADDRESS_INVALID = "The token address is not valid";
 export const USER_CANCELED_TX = "The transaction was canceled";
 
-class NoTokenBalanceError extends Error {
-  constructor() {
-    super("You have no token balance");
+// TOKEN ERRORS ==========================================================================
+
+export class NoTokenBalanceError extends Error {
+  constructor(tokenSymbol: string = "") {
+    if (!tokenSymbol) super(`You have no token balance`);
+    else super(`You have no balance for token ${tokenSymbol}`);
   }
 }
 
-// NEW PROPOSAL FORMAT ===================================================================
+export class TokenAlreadyRegisteredError extends Error {
+  constructor(tokenSymbol: string = "") {
+    if (!tokenSymbol) super(`The token is already registered`);
+    else super(`The ${tokenSymbol} token is already registered`);
+  }
+}
+
+export class TokenAddressInvalid extends Error {
+  constructor() {
+    super("The token address is not valid");
+  }
+}
+
+// NEW PROPOSAL FORMAT ERROR =============================================================
 
 export enum InputType {
   TITLE = "title",

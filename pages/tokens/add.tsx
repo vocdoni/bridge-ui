@@ -8,9 +8,9 @@ import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import {
-  NO_TOKEN_BALANCE,
-  TOKEN_ADDRESS_INVALID,
-  TOKEN_ALREADY_REGISTERED,
+  NoTokenBalanceError,
+  TokenAddressInvalid,
+  TokenAlreadyRegisteredError,
   USER_CANCELED_TX,
 } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
@@ -208,7 +208,7 @@ const TokenAddPage = () => {
     if (loadingToken || !formTokenAddress || loading) return;
     try {
       if (!formTokenAddress.trim().match(FORTY_DIGITS_HEX)) {
-        throw new Error(TOKEN_ADDRESS_INVALID);
+        throw new TokenAddressInvalid();
       }
 
       setLoadingToken(true);
@@ -221,7 +221,7 @@ const TokenAddPage = () => {
       setLoadingToken(false);
       trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress.trim() });
 
-      if (error?.message === TOKEN_ADDRESS_INVALID) setAlertMessage(TOKEN_ADDRESS_INVALID);
+      if (error instanceof TokenAddressInvalid) setAlertMessage(error.message);
       else setAlertMessage("Could not fetch the contract details");
     }
   };
@@ -240,9 +240,9 @@ const TokenAddPage = () => {
       const pool = await poolPromise;
 
       const hasBal = await hasBalance(tokenInfo.address, holderAddress, pool);
-      if (!hasBal) throw new Error(NO_TOKEN_BALANCE);
+      if (!hasBal) throw new NoTokenBalanceError(tokenInfo.symbol);
       else if (await CensusErc20Api.isRegistered(tokenInfo.address, pool)) {
-        throw new Error(TOKEN_ALREADY_REGISTERED);
+        throw new TokenAlreadyRegisteredError(tokenInfo.symbol);
       }
 
       // Register
@@ -269,9 +269,8 @@ const TokenAddPage = () => {
         error: error?.message,
       });
 
-      if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
-      if (error?.message === TOKEN_ALREADY_REGISTERED)
-        return setAlertMessage(TOKEN_ALREADY_REGISTERED);
+      if (error instanceof NoTokenBalanceError || error instanceof TokenAlreadyRegisteredError)
+        return setAlertMessage(error.message);
 
       console.error(error?.message); //log unspecified errors.
       setAlertMessage("The token could not be registered");

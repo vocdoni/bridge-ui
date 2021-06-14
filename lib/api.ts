@@ -2,7 +2,7 @@ import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
 import { CensusErc20Api, GatewayPool, IProcessSummary, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
-import { NO_TOKEN_BALANCE } from "./errors";
+import { NoTokenBalanceError, NO_TOKEN_BALANCE } from "./errors";
 import { TokenInfo } from "./types";
 import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants";
 import { Awaited, tokenIconUrl } from "./utils";
@@ -28,7 +28,7 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
-export type CensusProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>["proof"]
+export type CensusProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>["proof"];
 export const getProof = async ({
   account,
   token,
@@ -36,36 +36,32 @@ export const getProof = async ({
   block,
   balanceMappingPosition,
 }: ProofParameters): Promise<CensusProof> => {
-  try {
-    const balance = await balanceOf(token, account, pool);
-    if (balance.isZero()) throw new Error(NO_TOKEN_BALANCE);
+  const balance = await balanceOf(token, account, pool);
+  if (balance.isZero()) throw new NoTokenBalanceError();
 
-    const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, balanceMappingPosition);
-    const result = await CensusErc20Api.generateProof(
-      token,
-      [balanceSlot],
-      block,
-      pool.provider as providers.JsonRpcProvider
-    );
+  const balanceSlot = CensusErc20Api.getHolderBalanceSlot(account, balanceMappingPosition);
+  const result = await CensusErc20Api.generateProof(
+    token,
+    [balanceSlot],
+    block,
+    pool.provider as providers.JsonRpcProvider
+  );
 
-    if (result == null || !result.proof) return undefined;
+  if (result == null || !result.proof) return undefined;
 
-    const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
-    if (onChainBalance.isZero()) throw new Error(NO_TOKEN_BALANCE);
+  const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
+  if (onChainBalance.isZero()) throw new NoTokenBalanceError();
 
-    if (!onChainBalance.eq(balance) || onChainBalance.eq(0)) return undefined;
+  if (!onChainBalance.eq(balance) || onChainBalance.eq(0)) return undefined;
 
-    return result.proof;
-  } catch (error) {
-    throw new Error(error.message);
-  }
+  return result.proof;
 };
 
 export async function registerToken(token: string, pool: GatewayPool, signer: Signer) {
   try {
     await CensusErc20Api.registerTokenAuto(token, signer, pool);
   } catch (err) {
-    if (err && err.message == NO_TOKEN_BALANCE) throw err;
+    if (err && err.message == NO_TOKEN_BALANCE) throw new NoTokenBalanceError();
     throw new Error("The token internal details cannot be checked");
   }
 }
@@ -97,28 +93,39 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
     tokenInstance.decimals(),
     CensusErc20Api.getTokenInfo(address, pool),
     getProcessList(address, pool),
-  ]).then((token: [string, string, BigNumber, number, Awaited<ReturnType<typeof CensusErc20Api.getTokenInfo>>, string[]]) => {
-    if (erc20Helpers.handler) {
-      token = erc20Helpers.handler(token);
+  ]).then(
+    (
+      token: [
+        string,
+        string,
+        BigNumber,
+        number,
+        Awaited<ReturnType<typeof CensusErc20Api.getTokenInfo>>,
+        string[]
+      ]
+    ) => {
+      if (erc20Helpers.handler) {
+        token = erc20Helpers.handler(token);
+      }
+      const [name, symbol, supply, decimals, balMappingPos, pids] = token;
+
+      const totalSupply = new TokenAmount(supply.toString(), decimals, {
+        symbol,
+      });
+
+      return {
+        name,
+        symbol,
+        totalSupply: supply,
+        totalSupplyFormatted: totalSupply.format(),
+        decimals,
+        address,
+        balanceMappingPosition: balMappingPos.balanceMappingPosition,
+        icon: tokenIconUrl(address),
+        processes: pids,
+      } as TokenInfo;
     }
-    const [name, symbol, supply, decimals, balMappingPos, pids] = token;
-
-    const totalSupply = new TokenAmount(supply.toString(), decimals, {
-      symbol,
-    });
-
-    return {
-      name,
-      symbol,
-      totalSupply: supply,
-      totalSupplyFormatted: totalSupply.format(),
-      decimals,
-      address,
-      balanceMappingPosition: balMappingPos.balanceMappingPosition,
-      icon: tokenIconUrl(address),
-      processes: pids,
-    } as TokenInfo;
-  });
+  );
 }
 
 export function balanceOf(
@@ -139,37 +146,41 @@ export function hasBalance(
   return tokenInstance.balanceOf(holderAddress).then((balance) => !balance.isZero());
 }
 
-/** Retrieves the list of registered ERC20 token addresses on the smart contract. 
+/** Retrieves the list of registered ERC20 token addresses on the smart contract.
  * IMPORTANT: If no new tokens are registered, `null` is returned. */
 export function getRegisteredTokenList(
   currentTokenCount: number,
   pool: GatewayPool
 ): Promise<string[]> {
-  return CensusErc20Api.getTokenCount(pool)
-    .then((count) => {
-      // Nothing changed?
-      if (count == currentTokenCount) return Promise.resolve([]);
+  return CensusErc20Api.getTokenCount(pool).then((count) => {
+    // Nothing changed?
+    if (count == currentTokenCount) return Promise.resolve([]);
 
-      return Bluebird.map(
-        Array.from(Array(count).keys()),
-        (idx) => CensusErc20Api.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
-        { concurrency: 50 }
-      );
-    });
+    return Bluebird.map(
+      Array.from(Array(count).keys()),
+      (idx) => CensusErc20Api.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
+      { concurrency: 50 }
+    );
+  });
 }
 
-/** Waits for a while and returns true when the given process is already available for the given entity. 
+/** Waits for a while and returns true when the given process is already available for the given entity.
  * Returns false after 30 failed attempts.
  */
-export async function waitUntilProcessCreated(processId: string, pool: GatewayPool): Promise<boolean> {
+export async function waitUntilProcessCreated(
+  processId: string,
+  pool: GatewayPool
+): Promise<boolean> {
   let retries = 30;
   while (retries >= 0) {
-    const info: IProcessSummary = await VotingApi.getProcessSummary(processId, pool).catch(() => null)
+    const info: IProcessSummary = await VotingApi.getProcessSummary(processId, pool).catch(
+      () => null
+    );
 
     if (!!info) {
       return true;
     }
-    await new Promise(r => setTimeout(r, 4000)) // Wait 4s;
+    await new Promise((r) => setTimeout(r, 4000)); // Wait 4s;
     retries--;
   }
   return false;
