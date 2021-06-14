@@ -33,6 +33,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
   const networkId = process.env.ETH_NETWORK_ID as EthNetworkID;
   const environment = process.env.VOCDONI_ENVIRONMENT as VocdoniEnvironment;
   const appTitle = process.env.APP_TITLE;
+  const commitSHA = process.env.COMMIT_SHA;
 
   const connectors = getConnectors();
 
@@ -70,6 +71,9 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                         <Layout>
                           <Component {...pageProps} />
                         </Layout>
+                        <div id='commit-sha' style={{ display: 'none' }}>
+                          {commitSHA}
+                        </div>
                         <CookiesBanner />
                       </ModalsProvider>
                     </UseTokensWithBalance>
