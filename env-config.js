@@ -3,8 +3,10 @@
 
 const lang = "en";
 const DEVELOPMENT = process.env.NODE_ENV !== "production";
+const COMMIT_SHA = process.env.COMMIT_SHA || 'development'
 
 module.exports = {
+  COMMIT_SHA,
   LANG: lang,
   APP_TITLE:
     "Aragon Voice - the ultimate solution for creating and managing proposals and voting in a decentralized, cost-effective, and secure manner",
