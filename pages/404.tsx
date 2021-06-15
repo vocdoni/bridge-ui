@@ -1,5 +1,5 @@
 import React from "react";
-import NotFoundComponent from "../components/StructuralElement/not-found";
+import NotFoundComponent from "../components/StructuralElements/not-found";
 
 const NotFound = () => <NotFoundComponent />;
 export default NotFound;
