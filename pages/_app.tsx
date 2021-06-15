@@ -8,7 +8,7 @@ import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vo
 import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
-import { Layout } from "../components/StructuralElement/layout";
+import { Layout } from "../components/StructuralElements/layout";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/tokens";
@@ -71,7 +71,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
                         <Layout>
                           <Component {...pageProps} />
                         </Layout>
-                        <div id='commit-sha' style={{ display: 'none' }}>
+                        <div id="commit-sha" style={{ display: "none" }}>
                           {commitSHA}
                         </div>
                         <CookiesBanner />
