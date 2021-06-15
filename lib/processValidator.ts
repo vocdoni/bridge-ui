@@ -16,12 +16,13 @@ const MAX_DESCRIPTION_LENGTH = 4096;
 const MAX_QUESTION_TITLE_LENGHT = 512;
 
 export const validateProposal = (proposal: ProcessMetadata, startDate: Date, endDate: Date) => {
-  if (!proposal.title) throw new MissingInputError(InputType.TITLE);
+  if (!proposal?.title?.default) throw new MissingInputError(InputType.TITLE);
+  console.log(proposal.title);
 
   const trimmedTitle = proposal.title.default.trim();
   if (isShortInput(trimmedTitle)) throw new ShortInputError(InputType.TITLE);
 
-  if (!proposal.description) throw new MissingInputError(InputType.DESCRIPTION);
+  if (!proposal?.description?.default) throw new MissingInputError(InputType.DESCRIPTION);
 
   const trimmedDescription = proposal.description.default.trim();
   if (isShortInput(trimmedDescription)) throw new ShortInputError(InputType.DESCRIPTION);
@@ -58,7 +59,7 @@ export const validateProposal = (proposal: ProcessMetadata, startDate: Date, end
 };
 
 export const validateQuestion = ({ title, description, choices }, index) => {
-  if (!title) throw new MissingInputError(InputType.TITLE, index);
+  if (!title?.default) throw new MissingInputError(InputType.TITLE, index);
 
   const trimmedTitle = title.default.trim();
   if (isShortInput(trimmedTitle)) throw new ShortInputError(InputType.TITLE, index);
@@ -66,7 +67,7 @@ export const validateQuestion = ({ title, description, choices }, index) => {
   const isLongTitle = new Blob([trimmedTitle]).size > MAX_TITLE_LENGHT;
   if (isLongTitle) throw new LongInputError(InputType.TITLE, MAX_TITLE_LENGHT, index);
 
-  if (!description) throw new MissingInputError(InputType.DESCRIPTION, index);
+  if (!description?.default) throw new MissingInputError(InputType.DESCRIPTION, index);
 
   const trimmedDescription = description.default.trim();
   if (isShortInput(trimmedDescription)) throw new ShortInputError(InputType.DESCRIPTION, index);

@@ -445,9 +445,11 @@ const NewProcessPage = () => {
         return setAlertMessage(USER_CANCELED_TX);
       }
 
-      if (error?.message == NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
-      if (error?.message?.indexOf?.("max proposals per address reached"))
+      if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
+      if ((error?.message as string)?.includes("max proposals per address reached"))
         return setAlertMessage("You have hit the temporary limit of proposals");
+      if ((error?.message as string)?.includes("leaf node does not match value"))
+        return setAlertMessage(NO_TOKEN_BALANCE);
 
       console.error(error);
       setAlertMessage("The proposal could not be created");
