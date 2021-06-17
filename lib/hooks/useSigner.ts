@@ -7,5 +7,5 @@ export function useSigner() {
   if (!wallet?.ethereum || !wallet?.account) return null;
 
   const provider = new providers.Web3Provider(wallet.ethereum);
-  return provider.getSigner();
+  return provider.getSigner(wallet.account);
 }

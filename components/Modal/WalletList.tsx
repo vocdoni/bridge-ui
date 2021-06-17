@@ -99,10 +99,18 @@ export const WalletList = () => {
   // connect(...) method. They are extracted into this hook because (for some reason),
   // the errors are not available right after the execution of connect(). [VR 25-05-2021]
   useEffect(() => {
-    if (error?.name === "ConnectionRejectedError")
-      setAlertMessage("You rejected the connection attempt", "warning");
-    if (error?.name === "ChainUnsupportedError")
-      setAlertMessage("This chain is not supported. Please set your wallet to Mainnet");
+    if (!error) return
+    switch (error?.name) {
+      case "ConnectionRejectedError":
+        setAlertMessage("You rejected the connection attempt", "warning");
+        break;
+      case "ChainUnsupportedError":
+        setAlertMessage("This chain is not supported. Please set your wallet to Mainnet");
+        break;
+      default:
+        setAlertMessage("Could not connect to the selected wallet");
+        break;
+    }
   }, [error]);
 
   useEffect(() => {
@@ -113,10 +121,15 @@ export const WalletList = () => {
     }
   }, [status]);
 
-  const handleConnection = async (wallet) => {
-    await connect(wallet);
-    closeModal();
-    reset();
+  const handleConnection = (wallet) => {
+    return connect(wallet)
+      .then(() => {
+        closeModal();
+        reset();
+      })
+      .catch(err => {
+        console.error(err)
+      });
   };
 
   return (
