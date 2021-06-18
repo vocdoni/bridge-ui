@@ -7,17 +7,17 @@ import { UseWalletProvider } from "use-wallet";
 import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
 import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
+import "react-datetime/css/react-datetime.css";
 
-import { Layout } from "../components/StructuralElements/layout";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/tokens";
-
-import { FixedGlobalStyle, theme } from "../theme";
-import "react-datetime/css/react-datetime.css";
-import { ModalsProvider } from "../components/Modal/context";
 import { getConnectors } from "../lib/wallets";
 import { trackPage } from "../lib/analytics";
+
+import { FixedGlobalStyle, theme } from "../theme";
+import { Layout } from "../components/StructuralElements/layout";
+import { ModalsProvider } from "../components/Modal/context";
 import { CookiesBanner } from "../components/cookies-banner";
 
 Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
