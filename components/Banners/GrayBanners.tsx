@@ -38,10 +38,6 @@ export const NoTokens = () => {
     <GrayRectangleTall>
       <ExclamationMark />
       <GreyInfo>You are not a token holder</GreyInfo>
-      {/* TODO add a link that motivates user to buy tokens [VR 21-05-2021] */}
-      {/* <Link href="/tokens/add">
-        <ConnectWalletLink />
-      </Link> */}
     </GrayRectangleTall>
   );
 };

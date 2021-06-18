@@ -17,7 +17,7 @@ export class TokenAlreadyRegisteredError extends Error {
   }
 }
 
-export class TokenAddressInvalid extends Error {
+export class TokenAddressInvalidError extends Error {
   constructor() {
     super("The token address is not valid");
   }
@@ -32,21 +32,27 @@ export enum InputType {
   END_DATE = "end date",
 }
 
-export class MissingInputError extends Error {
+export class ProposalFormatError extends Error {
+  constructor(msg) {
+    super(msg);
+  }
+}
+
+export class MissingInputError extends ProposalFormatError {
   constructor(inputType: InputType, index = -1) {
     if (index < 0) super(`Please enter a ${inputType}`);
     else super(`Please enter a ${inputType} for question #${index + 1}`);
   }
 }
 
-export class ShortInputError extends Error {
+export class ShortInputError extends ProposalFormatError {
   constructor(inputType: InputType, index: number = -1) {
     if (index < 0) super(`Please enter a longer ${inputType}`);
     else super(`Please enter a longer ${inputType} for question #${index + 1}`);
   }
 }
 
-export class LongInputError extends Error {
+export class LongInputError extends ProposalFormatError {
   constructor(inputType: InputType, maxLength: number, index: number = -1) {
     if (index < 0) {
       super(`The ${inputType} is too long. Please keep it shorter than ${maxLength} characters`);
@@ -60,13 +66,13 @@ export class LongInputError extends Error {
   }
 }
 
-export class ShortChoiceError extends Error {
+export class ShortChoiceError extends ProposalFormatError {
   constructor(choiceIndex, questionIndex) {
     super(`Please fill text for choice #${choiceIndex + 1} of question #${questionIndex + 1}`);
   }
 }
 
-export class LongChoiceError extends Error {
+export class LongChoiceError extends ProposalFormatError {
   constructor(choiceIndex, questionIndex, maxLength) {
     super(
       `The text for choice #${choiceIndex + 1} of question #${
@@ -82,7 +88,7 @@ export enum DateErrorType {
   SMALL_INTERVAL,
 }
 
-export class DateError extends Error {
+export class DateError extends ProposalFormatError {
   constructor(errorType: DateErrorType) {
     let errorMsg;
     switch (errorType) {
@@ -100,5 +106,13 @@ export class DateError extends Error {
         break;
     }
     super(errorMsg);
+  }
+}
+
+// MISC ==================================================================================
+
+export class NonExistingCaseError extends Error {
+  constructor() {
+    super("Non existent case reached in switch statement.");
   }
 }
