@@ -130,11 +130,46 @@ function ProgressComponent({
   );
 }
 
-const ButtonsContainer = styled.div`
-  & > :not(:first-child) {
-    margin-left: 24px;
+/* This is the component's top container. It breaks into a column when smaller than tabletL */
+const ProgressContainer = styled.div`
+  display: flex;
+  padding: 40px;
+  background: ${({ theme }) => theme.blackAndWhite.w1};
+  border-radius: 13px;
+
+  @media ${({ theme }) => theme.screens.tabletL} {
+    flex-direction: column;
+    align-items: center;
   }
-  padding-top: 32px;
+  @media ${({ theme }) => theme.screens.mobileL} {
+    padding: 20px;
+  }
+`;
+
+const LadyImage = styled.img`
+  margin-top: 16px;
+  margin-bottom: 8px;
+  width: 355px;
+
+  @media ${({ theme }) => theme.screens.tabletL} {
+    width: 100%;
+    width: 480px;
+  }
+  @media ${({ theme }) => theme.screens.tablet} {
+    max-width: 400px;
+  }
+  @media ${({ theme }) => theme.screens.mobileL} {
+    width: 94%;
+  }
+`;
+
+/* This section holds everything except the image */
+const TextSection = styled.div`
+  padding-left: 40px;
+
+  @media ${({ theme }) => theme.screens.tabletL} {
+    padding-left: unset;
+  }
 `;
 
 const ProgressStatus = styled.div`
@@ -152,33 +187,19 @@ const ProgressStatus = styled.div`
   }
 `;
 
-const ProgressContainer = styled.div`
-  display: flex;
-  padding: 40px;
-  background: ${({ theme }) => theme.blackAndWhite.w1};
+const ButtonsContainer = styled.div`
+  padding-top: 32px;
 
-  @media ${({ theme }) => theme.screens.mobileL} {
-    flex-direction: column;
-    align-itmes: center;
+  & > :not(:first-child) {
+    margin-left: 16px;
   }
-`;
-
-const TextSection = styled.div`
-  padding-left: 40px;
-
-  @media ${({ theme }) => theme.screens.mobileL} {
+  @media ${({ theme }) => theme.screens.laptop} {
+    & > :not(:first-child) {
+      margin-top: 16px;
+      margin-left: unset;
+    }
+    display: flex;
     flex-direction: column;
-    align-itmes: center;
-  }
-`;
-
-const LadyImage = styled.img`
-  margin-top: 16px;
-  margin-bottom: 8px;
-  width: 355px;
-
-  @media ${({ theme }) => theme.screens.mobileL} {
-    width: 200px;
   }
 `;
 
