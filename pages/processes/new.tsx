@@ -16,9 +16,9 @@ import { useWallet } from "use-wallet";
 import { ProcessMetadataTemplate } from "dvote-js";
 import Datetime from "react-datetime";
 import { Moment } from "moment";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
-import { Else, If, Then, Unless, When } from "react-if";
+import { Unless, When } from "react-if";
 
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
@@ -457,7 +457,6 @@ const NewProcessPage = () => {
       storeTokens([tokenInfo]);
 
       setProgress(ProgressState.DONE);
-      // Router.push("/processes#/" + processId);
     } catch (error) {
       setSubmitting(false);
       setProgress(ProgressState.FAILED);
@@ -465,17 +464,16 @@ const NewProcessPage = () => {
       /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
       if ((error?.message as string)?.includes("signature")) {
         trackEvent(EventType.TX_CANCELED, { event_canceled: "creating_proposal" });
-        return setAlertMessage(USER_CANCELED_TX);
+        return setProgressError(USER_CANCELED_TX);
       }
 
-      if (error?.message === NO_TOKEN_BALANCE) return setAlertMessage(NO_TOKEN_BALANCE);
+      if (error?.message === NO_TOKEN_BALANCE) return setProgressError(NO_TOKEN_BALANCE);
       if ((error?.message as string)?.includes("max proposals per address reached"))
-        return setAlertMessage("You have hit the temporary limit of proposals");
+        return setProgressError("You have hit the temporary limit of proposals");
       if ((error?.message as string)?.includes("leaf node does not match value"))
-        return setAlertMessage(NO_TOKEN_BALANCE);
+        return setProgressError(NO_TOKEN_BALANCE);
 
       console.error(error);
-      setAlertMessage("The proposal could not be created");
     }
   }
 
@@ -548,7 +546,7 @@ const NewProcessPage = () => {
     }
   }, [progress]);
 
-  if (progress >= 1) {
+  if (progress != ProgressState.IDLE) {
     return (
       <ProgressComponent
         state={progress}
@@ -558,112 +556,107 @@ const NewProcessPage = () => {
         proposalId={processId}
       />
     );
-  } else {
-    return (
-      <FormContainer>
-        <InformationSection>
-          <SectionTitle
-            title="New proposal"
-            subtitle="Enter the details of a new proposal and submit them."
-          />
-          <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
-          <InputBox>
-            <WidthControlInput
-              placeholder="Title"
-              onChange={(e) => setMainTitle(e.target.value)}
-              value={metadata.title.default}
-            />
-          </InputBox>
-          <SectionTitle
-            title="Description"
-            subtitle="An introduction of about 2-3 lines"
-            smallerTitle
-          />
-          <QuestionDescription
-            placeholder="Description"
-            onChange={(e) => setMainDescription(e.target.value)}
-            value={metadata.description.default}
-          />
-          {metadata.questions.map((question, qIdx) => (
-            <>
-              <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-              <QuestionText>Question</QuestionText>
-              <RemoveButton marginTop={-57}>
-                {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
-              </RemoveButton>
-              <InputBox>
-                <WidthControlInput
-                  placeholder="Title"
-                  value={question.title.default}
-                  onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-                />
-              </InputBox>
-
-              <SectionTitle title="Description" smallerTitle />
-              <InputBox>
-                <QuestionDescription
-                  placeholder="Description"
-                  value={question.description.default}
-                  onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-                />
-              </InputBox>
-              <SectionTitle title="Choices" smallerTitle />
-              {question.choices.map((choice, cIdx) => (
-                <RowQuestions key={cIdx}>
-                  <WidthControlInput
-                    placeholder="Choice"
-                    value={choice.title.default}
-                    onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
-                  />
-                  <ChoiceRightSection>
-                    <PlusBox
-                      onClick={handleChoice}
-                      currentChoice={cIdx}
-                      choices={question.choices}
-                      currentQuestion={qIdx}
-                    />
-                  </ChoiceRightSection>
-                </RowQuestions>
-              ))}
-              {qIdx == metadata.questions.length - 1 ? (
-                <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-              ) : null}
-            </>
-          ))}
-        </InformationSection>
-
-        <OptionSection marginTop={60} isLarge={isLarge}>
-          <OptionSectionTitle>Proposal Type</OptionSectionTitle>
-          <RadioSectionTooltips
-            texts={proposalTexts}
-            state={processType}
-            setState={setProcessType}
-          />
-          <OptionSectionTitle>Result Type</OptionSectionTitle>
-          <RadioSectionTooltips
-            texts={resultsTexts}
-            state={resultType}
-            setState={onResultsTypeChange}
-          />
-          <OptionSectionTitle>Proposal date</OptionSectionTitle>
-          <CustomDateTime isStart state={startDate} stateSetter={onStartDate} />
-          <CustomDateTime state={endDate} stateSetter={onEndDate} />
-          <Unless condition={isMobile}>
-            <ButtonRow>
-              {wallet.status === "connected" ? (
-                <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
-              ) : (
-                <ConnectButton wide />
-              )}
-            </ButtonRow>
-          </Unless>
-        </OptionSection>
-        <When condition={isMobile && isConnected}>
-          <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
-        </When>
-      </FormContainer>
-    );
   }
+  return (
+    <FormContainer>
+      <InformationSection>
+        <SectionTitle
+          title="New proposal"
+          subtitle="Enter the details of a new proposal and submit them."
+        />
+        <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
+        <InputBox>
+          <WidthControlInput
+            placeholder="Title"
+            onChange={(e) => setMainTitle(e.target.value)}
+            value={metadata.title.default}
+          />
+        </InputBox>
+        <SectionTitle
+          title="Description"
+          subtitle="An introduction of about 2-3 lines"
+          smallerTitle
+        />
+        <QuestionDescription
+          placeholder="Description"
+          onChange={(e) => setMainDescription(e.target.value)}
+          value={metadata.description.default}
+        />
+        {metadata.questions.map((question, qIdx) => (
+          <>
+            <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+            <QuestionText>Question</QuestionText>
+            <RemoveButton marginTop={-57}>
+              {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+            </RemoveButton>
+            <InputBox>
+              <WidthControlInput
+                placeholder="Title"
+                value={question.title.default}
+                onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
+              />
+            </InputBox>
+
+            <SectionTitle title="Description" smallerTitle />
+            <InputBox>
+              <QuestionDescription
+                placeholder="Description"
+                value={question.description.default}
+                onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+              />
+            </InputBox>
+            <SectionTitle title="Choices" smallerTitle />
+            {question.choices.map((choice, cIdx) => (
+              <RowQuestions key={cIdx}>
+                <WidthControlInput
+                  placeholder="Choice"
+                  value={choice.title.default}
+                  onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                />
+                <ChoiceRightSection>
+                  <PlusBox
+                    onClick={handleChoice}
+                    currentChoice={cIdx}
+                    choices={question.choices}
+                    currentQuestion={qIdx}
+                  />
+                </ChoiceRightSection>
+              </RowQuestions>
+            ))}
+            {qIdx == metadata.questions.length - 1 ? (
+              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
+            ) : null}
+          </>
+        ))}
+      </InformationSection>
+
+      <OptionSection marginTop={60} isLarge={isLarge}>
+        <OptionSectionTitle>Proposal Type</OptionSectionTitle>
+        <RadioSectionTooltips texts={proposalTexts} state={processType} setState={setProcessType} />
+        <OptionSectionTitle>Result Type</OptionSectionTitle>
+        <RadioSectionTooltips
+          texts={resultsTexts}
+          state={resultType}
+          setState={onResultsTypeChange}
+        />
+        <OptionSectionTitle>Proposal date</OptionSectionTitle>
+        <CustomDateTime isStart state={startDate} stateSetter={onStartDate} />
+        <CustomDateTime state={endDate} stateSetter={onEndDate} />
+        <Unless condition={isMobile}>
+          <ButtonRow>
+            {wallet.status === "connected" ? (
+              <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
+            ) : (
+              <ConnectButton wide />
+            )}
+          </ButtonRow>
+        </Unless>
+      </OptionSection>
+      <When condition={isMobile && isConnected}>
+        <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
+      </When>
+    </FormContainer>
+  );
 };
 
 const dateTimeStyle: CSSProperties = {
