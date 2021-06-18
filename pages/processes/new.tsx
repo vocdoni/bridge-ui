@@ -677,6 +677,8 @@ const dateTimeStyle: CSSProperties = {
   padding: "1em",
 };
 
+// HELPERS =============================================================================
+
 const CustomDateTime = ({ isStart = false, state, stateSetter }) => (
   <Datetime
     value={state}
@@ -691,8 +693,6 @@ const CustomDateTime = ({ isStart = false, state, stateSetter }) => (
     strictParsing
   />
 );
-
-// HELPERS =============================================================================
 
 function isValidFutureDate(date: Moment): boolean {
   const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24);
