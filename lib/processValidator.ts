@@ -14,7 +14,8 @@ import {
 const MAX_TITLE_LENGHT = 2048;
 const MAX_DESCRIPTION_LENGTH = 4096;
 const MAX_QUESTION_TITLE_LENGHT = 512;
-/* TODO Remove forced check for quesiton description */
+const MIN_INPUT_LENGTH = 2;
+
 export const validateProposal = (proposal: ProcessMetadata, startDate: Date, endDate: Date) => {
   if (!proposal?.title?.default) throw new MissingInputError(InputType.TITLE);
 
@@ -65,21 +66,19 @@ export const validateQuestion = ({ title, description, choices }, index) => {
 
   const isLongTitle = new Blob([trimmedTitle]).size > MAX_TITLE_LENGHT;
   if (isLongTitle) throw new LongInputError(InputType.TITLE, MAX_TITLE_LENGHT, index);
+  title.default = trimmedTitle;
 
-  if (!description?.default) throw new MissingInputError(InputType.DESCRIPTION, index);
-
-  const trimmedDescription = description.default.trim();
-  if (isShortInput(trimmedDescription)) throw new ShortInputError(InputType.DESCRIPTION, index);
-
-  const isBigDescription = new Blob([trimmedDescription]).size > MAX_DESCRIPTION_LENGTH;
-  if (isBigDescription) {
-    throw new LongInputError(InputType.DESCRIPTION, MAX_DESCRIPTION_LENGTH, index);
+  if (description?.default) {
+    const trimmedDescription = description.default.trim();
+    const isBigDescription = new Blob([trimmedDescription]).size > MAX_DESCRIPTION_LENGTH;
+    if (isBigDescription) {
+      throw new LongInputError(InputType.DESCRIPTION, MAX_DESCRIPTION_LENGTH, index);
+    }
   }
 
-  title.default = trimmedTitle;
-  description.default = trimmedDescription;
-
-  let faultyChoice = choices.findIndex(({ title }) => title.default.trim().length < 2);
+  let faultyChoice = choices.findIndex(
+    ({ title }) => title.default.trim().length < MIN_INPUT_LENGTH
+  );
   if (faultyChoice >= 0) throw new ShortChoiceError(faultyChoice, index);
 
   faultyChoice = choices.findIndex(
@@ -92,6 +91,8 @@ export const validateQuestion = ({ title, description, choices }, index) => {
   choices = choices.forEach((choice) => {
     choice.title.default = choice.title.default.trim();
   });
+
+  choices = choices.map((c) => c.title.default.trim());
 };
 
-const isShortInput = (input: string) => input.length < 2;
+const isShortInput = (input: string) => input.length < MIN_INPUT_LENGTH;
