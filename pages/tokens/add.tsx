@@ -9,7 +9,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
 import {
   NoTokenBalanceError,
-  TokenAddressInvalid,
+  TokenAddressInvalidError,
   TokenAlreadyRegisteredError,
   USER_CANCELED_TX,
 } from "../../lib/errors";
@@ -208,7 +208,7 @@ const TokenAddPage = () => {
     if (loadingToken || !formTokenAddress || loading) return;
     try {
       if (!formTokenAddress.trim().match(FORTY_DIGITS_HEX)) {
-        throw new TokenAddressInvalid();
+        throw new TokenAddressInvalidError();
       }
 
       setLoadingToken(true);
@@ -221,7 +221,7 @@ const TokenAddPage = () => {
       setLoadingToken(false);
       trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress.trim() });
 
-      if (error instanceof TokenAddressInvalid) setAlertMessage(error.message);
+      if (error instanceof TokenAddressInvalidError) setAlertMessage(error.message);
       else setAlertMessage("Could not fetch the contract details");
     }
   };
