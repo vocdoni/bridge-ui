@@ -14,10 +14,9 @@ import {
 const MAX_TITLE_LENGHT = 2048;
 const MAX_DESCRIPTION_LENGTH = 4096;
 const MAX_QUESTION_TITLE_LENGHT = 512;
-
+/* TODO Remove forced check for quesiton description */
 export const validateProposal = (proposal: ProcessMetadata, startDate: Date, endDate: Date) => {
   if (!proposal?.title?.default) throw new MissingInputError(InputType.TITLE);
-  console.log(proposal.title);
 
   const trimmedTitle = proposal.title.default.trim();
   if (isShortInput(trimmedTitle)) throw new ShortInputError(InputType.TITLE);

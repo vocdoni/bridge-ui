@@ -65,6 +65,8 @@ export const PLUS_ICON = "/media/plus_icon.svg";
 export const MINUS_ICON = "/media/minus_icon.svg";
 export const LIGHTNING_ICON = "/media/lightning_bolt.svg";
 export const WARNING_ICON = "/media/exclamation_icon.png";
+export const BLUE_TICK_ICON = "/media/blue-tick.svg";
+export const RED_CROSS_ICON = "/media/red-cross.svg";
 
 //IMAGES
 export const LANDING_PAGE_CTA = "/media/landing-background.svg";

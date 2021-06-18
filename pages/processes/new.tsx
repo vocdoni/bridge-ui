@@ -18,7 +18,7 @@ import Datetime from "react-datetime";
 import { Moment } from "moment";
 import Router, { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
-import { Unless, When } from "react-if";
+import { Else, If, Then, Unless, When } from "react-if";
 
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
@@ -28,7 +28,12 @@ import { findMaxValue } from "../../lib/utils";
 import { useStoredTokens, useToken } from "../../lib/hooks/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
-import { NO_TOKEN_BALANCE, USER_CANCELED_TX } from "../../lib/errors";
+import {
+  NO_TOKEN_BALANCE,
+  ProposalFormatError,
+  TokenAddressInvalidError,
+  USER_CANCELED_TX,
+} from "../../lib/errors";
 import { useIsWide } from "../../lib/hooks/useWindowSize";
 import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { EventType, trackEvent } from "../../lib/analytics";
@@ -39,6 +44,7 @@ import { RadioSectionTooltips, TextContent } from "../../components/ControlEleme
 import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/ControlElements/input";
+import ProgressComponent, { ProgressState } from "../../components/progress-dialog";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
 layout is changed to a column for devices <= laptop. */
@@ -273,6 +279,9 @@ const NewProcessPage = () => {
   const [resultType, setResultType] = useState<ResultTypes>(ResultTypes.NORMAL);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
   const [submitting, setSubmitting] = useState(false);
+  const [progress, setProgress] = useState<ProgressState>(ProgressState.IDLE);
+  const [progressError, setProgressError] = useState<string>(null);
+  const [processId, setProcessId] = useState<string>(null);
   const { setAlertMessage } = useMessageAlert();
 
   useEffect(() => {
@@ -365,6 +374,7 @@ const NewProcessPage = () => {
     });
     setMetadata(Object.assign({}, metadata));
   };
+
   const onRemoveChoice = (qIdx: number, cIdx: number) => {
     if (!metadata.questions[qIdx]) return;
     else if (metadata.questions[qIdx].choices.length <= 2) return;
@@ -375,28 +385,38 @@ const NewProcessPage = () => {
     }
     setMetadata(Object.assign({}, metadata));
   };
-  const onSubmit = async () => {
+  function onResultsTypeChange(index: number) {
+    setResultType(index);
+    if (index === ResultTypes.NORMAL) setEncryptedVotes(false);
+    else setEncryptedVotes(true);
+  }
+
+  function initiateSubmission() {
+    const proposalOk = preSubmit();
+    if (proposalOk) setProgress(ProgressState.WAITING);
+  }
+  function preSubmit(): boolean {
     try {
       validateProposal(metadata, startDate, endDate);
-    } catch (error) {
-      return setAlertMessage(error?.message);
-    }
+      /* TODO move to the beginning of the page. And immediately send to NotFound if the
+        address is not valid */
+      if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX))
+        throw new TokenAddressInvalidError();
 
-    if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX))
-      return setAlertMessage("The token address is not valid");
-
-    if (!wallet?.account)
-      return setAlertMessage("In order to continue, you need to use a Web3 provider like MetaMask");
-
-    // FINAL CONFIRMATION
-    if (
-      !confirm(
+      // FINAL CONFIRMATION
+      return confirm(
         "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
-      )
-    )
-      return;
+      );
+    } catch (error) {
+      if (error instanceof ProposalFormatError) return setAlertMessage(error.message);
+      if (error instanceof TokenAddressInvalidError) return setAlertMessage(error.message);
 
-    // Continue
+      console.error(error);
+      return setAlertMessage("The proposal could not be created");
+    }
+  }
+
+  async function submitProposal() {
     try {
       setSubmitting(true);
       const pool = await poolPromise;
@@ -418,7 +438,8 @@ const NewProcessPage = () => {
       if (!ready) throw new Error("The proposal is not available after a while");
 
       setSubmitting(false);
-      setAlertMessage("The proposal has been successfully created", "success");
+      setProcessId(processId);
+      // setAlertMessage("The proposal has been successfully created", "success");
 
       const analytics_properties = {
         entity_id: tokenAddress,
@@ -435,9 +456,11 @@ const NewProcessPage = () => {
       tokenInfo.processes.push(processId);
       storeTokens([tokenInfo]);
 
-      Router.push("/processes#/" + processId);
+      setProgress(ProgressState.DONE);
+      // Router.push("/processes#/" + processId);
     } catch (error) {
       setSubmitting(false);
+      setProgress(ProgressState.FAILED);
 
       /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
       if ((error?.message as string)?.includes("signature")) {
@@ -454,7 +477,7 @@ const NewProcessPage = () => {
       console.error(error);
       setAlertMessage("The proposal could not be created");
     }
-  };
+  }
 
   async function submitSignalingVote(pool: GatewayPool, startBlock: number, blockCount: number) {
     const oracleClient = new DVoteGateway({
@@ -518,112 +541,129 @@ const NewProcessPage = () => {
 
     return VotingApi.newProcess(processParamsPre, signer, pool);
   }
-  function onResultsTypeChange(index: number) {
-    setResultType(index);
-    if (index === ResultTypes.NORMAL) setEncryptedVotes(false);
-    else setEncryptedVotes(true);
-  }
 
-  return (
-    <FormContainer>
-      <InformationSection>
-        <SectionTitle
-          title="New proposal"
-          subtitle="Enter the details of a new proposal and submit them."
-        />
-        <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
-        <InputBox>
-          <WidthControlInput
-            placeholder="Title"
-            onChange={(e) => setMainTitle(e.target.value)}
-            value={metadata.title.default}
+  useEffect(() => {
+    if (progress === ProgressState.WAITING) {
+      submitProposal();
+    }
+  }, [progress]);
+
+  if (progress >= 1) {
+    return (
+      <ProgressComponent
+        state={progress}
+        setState={setProgress}
+        errorMessage={progressError}
+        tokenId={tokenAddress}
+        proposalId={processId}
+      />
+    );
+  } else {
+    return (
+      <FormContainer>
+        <InformationSection>
+          <SectionTitle
+            title="New proposal"
+            subtitle="Enter the details of a new proposal and submit them."
           />
-        </InputBox>
-        <SectionTitle
-          title="Description"
-          subtitle="An introduction of about 2-3 lines"
-          smallerTitle
-        />
-        <QuestionDescription
-          placeholder="Description"
-          onChange={(e) => setMainDescription(e.target.value)}
-          value={metadata.description.default}
-        />
-        {metadata.questions.map((question, qIdx) => (
-          <>
-            <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
-            <QuestionText>Question</QuestionText>
-            <RemoveButton marginTop={-57}>
-              {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
-            </RemoveButton>
-            <InputBox>
-              <WidthControlInput
-                placeholder="Title"
-                value={question.title.default}
-                onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
-              />
-            </InputBox>
-
-            <SectionTitle title="Description" smallerTitle />
-            <InputBox>
-              <QuestionDescription
-                placeholder="Description"
-                value={question.description.default}
-                onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
-              />
-            </InputBox>
-            <SectionTitle title="Choices" smallerTitle />
-            {question.choices.map((choice, cIdx) => (
-              <RowQuestions key={cIdx}>
+          <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
+          <InputBox>
+            <WidthControlInput
+              placeholder="Title"
+              onChange={(e) => setMainTitle(e.target.value)}
+              value={metadata.title.default}
+            />
+          </InputBox>
+          <SectionTitle
+            title="Description"
+            subtitle="An introduction of about 2-3 lines"
+            smallerTitle
+          />
+          <QuestionDescription
+            placeholder="Description"
+            onChange={(e) => setMainDescription(e.target.value)}
+            value={metadata.description.default}
+          />
+          {metadata.questions.map((question, qIdx) => (
+            <>
+              <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
+              <QuestionText>Question</QuestionText>
+              <RemoveButton marginTop={-57}>
+                {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+              </RemoveButton>
+              <InputBox>
                 <WidthControlInput
-                  placeholder="Choice"
-                  value={choice.title.default}
-                  onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                  placeholder="Title"
+                  value={question.title.default}
+                  onChange={(ev) => setQuestionTitle(qIdx, ev.target.value)}
                 />
-                <ChoiceRightSection>
-                  <PlusBox
-                    onClick={handleChoice}
-                    currentChoice={cIdx}
-                    choices={question.choices}
-                    currentQuestion={qIdx}
-                  />
-                </ChoiceRightSection>
-              </RowQuestions>
-            ))}
-            {qIdx == metadata.questions.length - 1 ? (
-              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-            ) : null}
-          </>
-        ))}
-      </InformationSection>
+              </InputBox>
 
-      <OptionSection marginTop={60} isLarge={isLarge}>
-        <OptionSectionTitle>Proposal Type</OptionSectionTitle>
-        <RadioSectionTooltips texts={proposalTexts} state={processType} setState={setProcessType} />
-        <OptionSectionTitle>Result Type</OptionSectionTitle>
-        <RadioSectionTooltips
-          texts={resultsTexts}
-          state={resultType}
-          setState={onResultsTypeChange}
-        />
-        <OptionSectionTitle>Proposal date</OptionSectionTitle>
-        <CustomDateTime isStart state={startDate} stateSetter={onStartDate} />
-        <CustomDateTime state={endDate} stateSetter={onEndDate} />
-        <Unless condition={isMobile}>
-          <ButtonRow>
-            {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-            ) : (
-              <ConnectButton wide />
-            )}
-          </ButtonRow>
-        </Unless>
-      </OptionSection>
-      <When condition={isMobile && isConnected}>
-        <SubmitButton submitting={submitting} onSubmit={() => onSubmit()} />
-      </When>
-    </FormContainer>
-  );
+              <SectionTitle title="Description" smallerTitle />
+              <InputBox>
+                <QuestionDescription
+                  placeholder="Description"
+                  value={question.description.default}
+                  onChange={(ev) => setQuestionDescription(qIdx, ev.target.value)}
+                />
+              </InputBox>
+              <SectionTitle title="Choices" smallerTitle />
+              {question.choices.map((choice, cIdx) => (
+                <RowQuestions key={cIdx}>
+                  <WidthControlInput
+                    placeholder="Choice"
+                    value={choice.title.default}
+                    onChange={(ev) => setChoiceText(qIdx, cIdx, ev.target.value)}
+                  />
+                  <ChoiceRightSection>
+                    <PlusBox
+                      onClick={handleChoice}
+                      currentChoice={cIdx}
+                      choices={question.choices}
+                      currentQuestion={qIdx}
+                    />
+                  </ChoiceRightSection>
+                </RowQuestions>
+              ))}
+              {qIdx == metadata.questions.length - 1 ? (
+                <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
+              ) : null}
+            </>
+          ))}
+        </InformationSection>
+
+        <OptionSection marginTop={60} isLarge={isLarge}>
+          <OptionSectionTitle>Proposal Type</OptionSectionTitle>
+          <RadioSectionTooltips
+            texts={proposalTexts}
+            state={processType}
+            setState={setProcessType}
+          />
+          <OptionSectionTitle>Result Type</OptionSectionTitle>
+          <RadioSectionTooltips
+            texts={resultsTexts}
+            state={resultType}
+            setState={onResultsTypeChange}
+          />
+          <OptionSectionTitle>Proposal date</OptionSectionTitle>
+          <CustomDateTime isStart state={startDate} stateSetter={onStartDate} />
+          <CustomDateTime state={endDate} stateSetter={onEndDate} />
+          <Unless condition={isMobile}>
+            <ButtonRow>
+              {wallet.status === "connected" ? (
+                <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
+              ) : (
+                <ConnectButton wide />
+              )}
+            </ButtonRow>
+          </Unless>
+        </OptionSection>
+        <When condition={isMobile && isConnected}>
+          <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
+        </When>
+      </FormContainer>
+    );
+  }
 };
 
 const dateTimeStyle: CSSProperties = {
