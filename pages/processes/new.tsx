@@ -439,7 +439,6 @@ const NewProcessPage = () => {
 
       setSubmitting(false);
       setProcessId(processId);
-      // setAlertMessage("The proposal has been successfully created", "success");
 
       const analytics_properties = {
         entity_id: tokenAddress,
@@ -461,7 +460,8 @@ const NewProcessPage = () => {
       setSubmitting(false);
       setProgress(ProgressState.FAILED);
 
-      /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
+      /* User cancels tx (e.g., by aborting signing process.) This is registered
+          differently from a "failure"*/
       if ((error?.message as string)?.includes("signature")) {
         trackEvent(EventType.TX_CANCELED, { event_canceled: "creating_proposal" });
         return setProgressError(USER_CANCELED_TX);

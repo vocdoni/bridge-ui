@@ -58,7 +58,9 @@ export const validateProposal = (proposal: ProcessMetadata, startDate: Date, end
   }
 };
 
-export const validateQuestion = ({ title, description, choices }, index) => {
+type QuestionMetadata = ProcessMetadata["questions"][number];
+
+export const validateQuestion = ({ title, description, choices }: QuestionMetadata, index) => {
   if (!title?.default) throw new MissingInputError(InputType.TITLE, index);
 
   const trimmedTitle = title.default.trim();
@@ -88,11 +90,9 @@ export const validateQuestion = ({ title, description, choices }, index) => {
     throw new LongChoiceError(faultyChoice, index, MAX_QUESTION_TITLE_LENGHT);
   }
 
-  choices = choices.forEach((choice) => {
+  choices.forEach((choice) => {
     choice.title.default = choice.title.default.trim();
   });
-
-  choices = choices.map((c) => c.title.default.trim());
 };
 
 const isShortInput = (input: string) => input.length < MIN_INPUT_LENGTH;
