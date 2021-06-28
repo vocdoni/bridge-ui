@@ -412,7 +412,7 @@ const NewProcessPage = () => {
       if (error instanceof TokenAddressInvalidError) return setAlertMessage(error.message);
 
       console.error(error);
-      return setAlertMessage("The proposal could not be created");
+      return setAlertMessage("The proposal could not be validated");
     }
   }
 
