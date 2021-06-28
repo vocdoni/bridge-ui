@@ -16,7 +16,7 @@ export enum ProgressState {
   FAILED,
 }
 
-export type ProgressIndicatorProps = {
+export type ProgressComponentProps = {
   state: ProgressState;
   setState: (a: ProgressState) => void;
   errorMessage?: string;
@@ -30,49 +30,9 @@ function ProgressComponent({
   errorMessage,
   tokenId,
   proposalId: processId,
-}: ProgressIndicatorProps) {
+}: ProgressComponentProps) {
   const theme = useTheme();
-  const router = useRouter();
-
-  function getAnnotationText() {
-    switch (state) {
-      case ProgressState.WAITING:
-        return "Your proposal is being created";
-      case ProgressState.DONE:
-        return "Your proposal is ready";
-      case ProgressState.FAILED:
-        if (errorMessage) return "Your proposal could not created, because:\n" + errorMessage;
-        return "Your proposal could not created";
-      default:
-        throw new NonExistingCaseError();
-    }
-  }
-
-  function getTitle() {
-    switch (state) {
-      case ProgressState.WAITING:
-        return "Creating your Proposal";
-      case ProgressState.DONE:
-        return "Your proposal is ready";
-      case ProgressState.FAILED:
-        return "Creation Unsuccessful";
-      default:
-        throw new NonExistingCaseError();
-    }
-  }
-
-  function getSubtitle() {
-    switch (state) {
-      case ProgressState.WAITING:
-        return "Hold tight - your proposal is being created. It will be ready soon";
-      case ProgressState.DONE:
-        return "You can now vote on it and share it with your community";
-      case ProgressState.FAILED:
-        return "Unfortunately, your proposal could not be created";
-      default:
-        throw new NonExistingCaseError();
-    }
-  }
+  const { title, subtitle, body } = getTexts(state, errorMessage);
 
   function ProgressIcon() {
     switch (state) {
@@ -87,48 +47,59 @@ function ProgressComponent({
     }
   }
 
-  function Buttons() {
-    const toCreatedProcess = () => router.push("/processes#/" + processId);
-    const toTokenPage = () => router.push("/tokens/info#/" + tokenId);
-    const toNewProposal = () => router.reload();
-
-    const hideComponent = () => setState(ProgressState.IDLE);
-    switch (state) {
-      case ProgressState.WAITING:
-        return <></>;
-      case ProgressState.DONE:
-        return (
-          <ButtonsContainer>
-            <PrimaryButton onClick={toCreatedProcess}>Take me to the Proposal</PrimaryButton>
-            <SecondaryButton onClick={toNewProposal}>Create another proposal</SecondaryButton>
-          </ButtonsContainer>
-        );
-      case ProgressState.FAILED:
-        return (
-          <ButtonsContainer>
-            <PrimaryButton onClick={toTokenPage}>To the token page</PrimaryButton>
-            <SecondaryButton onClick={hideComponent}>Back to the creation page</SecondaryButton>
-          </ButtonsContainer>
-        );
-      default:
-        throw new NonExistingCaseError();
-    }
-  }
-
   return (
     <ProgressContainer>
       <LadyImage src={MEDITATING_LADY_IMG} />
       <TextSection>
-        <SectionTitle title={getTitle()} subtitle={getSubtitle()} />
+        <SectionTitle title={title} subtitle={subtitle} />
         <ProgressStatus>
           <ProgressIcon />
-          <p>{getAnnotationText()}</p>
+          <p>{body}</p>
         </ProgressStatus>
-        <Buttons />
+        <ButtonsRow state={state} setState={setState} tokenId={tokenId} proposalId={processId} />
       </TextSection>
     </ProgressContainer>
   );
 }
+
+export type ButtonsRowProps = {
+  state: ProgressState;
+  setState: (a: ProgressState) => void;
+  tokenId: string;
+  proposalId?: string;
+};
+
+function ButtonsRow({ state, setState, tokenId, proposalId }: ButtonsRowProps) {
+  const router = useRouter();
+
+  const toCreatedProcess = () => router.push("/processes#/" + proposalId);
+  const toTokenPage = () => router.push("/tokens/info#/" + tokenId);
+  const toNewProposal = () => router.reload();
+  const hideComponent = () => setState(ProgressState.IDLE);
+
+  switch (state) {
+    case ProgressState.WAITING:
+      return null;
+    case ProgressState.DONE:
+      return (
+        <ButtonsContainer>
+          <PrimaryButton onClick={toCreatedProcess}>Take me to the proposal</PrimaryButton>
+          <SecondaryButton onClick={toNewProposal}>Create another proposal</SecondaryButton>
+        </ButtonsContainer>
+      );
+    case ProgressState.FAILED:
+      return (
+        <ButtonsContainer>
+          <PrimaryButton onClick={toTokenPage}>To the token page</PrimaryButton>
+          <SecondaryButton onClick={hideComponent}>Back to the creation page</SecondaryButton>
+        </ButtonsContainer>
+      );
+    default:
+      throw new NonExistingCaseError();
+  }
+}
+
+// STYLES =============================================================================
 
 /* This is the component's top container. It breaks into a column when smaller than tabletL */
 const ProgressContainer = styled.div`
@@ -202,5 +173,41 @@ const ButtonsContainer = styled.div`
     flex-direction: column;
   }
 `;
+
+// HELPERS =============================================================================
+
+type TextInfo = {
+  title: string;
+  subtitle: string;
+  body: string;
+};
+
+function getTexts(state: ProgressState, errorMessage: string): TextInfo {
+  switch (state) {
+    case ProgressState.WAITING:
+      return {
+        title: "Creating your proposal",
+        subtitle: "Hold tight - your proposal is being created. It will be ready soon",
+        body: "Your proposal is being created",
+      };
+    case ProgressState.DONE:
+      return {
+        title: "Your proposal is ready",
+        subtitle: "You can now vote on it and share it with your community",
+        body: "Your proposal is ready",
+      };
+    case ProgressState.FAILED:
+      const errorBody = errorMessage
+        ? "Your proposal could not be created, because:\n" + errorMessage
+        : "Your proposal could not created";
+      return {
+        title: "Creation Unsuccessful",
+        subtitle: "Unfortunately, your proposal could not be created",
+        body: errorBody,
+      };
+    default:
+      throw new NonExistingCaseError();
+  }
+}
 
 export default ProgressComponent;
