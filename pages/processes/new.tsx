@@ -393,7 +393,7 @@ const NewProcessPage = () => {
 
   function initiateSubmission() {
     const proposalOk = preSubmit();
-    if (proposalOk) setProgress(ProgressState.WAITING);
+    if (proposalOk) setProgress(ProgressState.CREATING);
   }
   function preSubmit(): boolean {
     try {
@@ -541,7 +541,7 @@ const NewProcessPage = () => {
   }
 
   useEffect(() => {
-    if (progress === ProgressState.WAITING) {
+    if (progress === ProgressState.CREATING) {
       submitProposal();
     }
   }, [progress]);

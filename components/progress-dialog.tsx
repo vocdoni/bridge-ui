@@ -11,9 +11,10 @@ import { Spinner } from "./spinner";
 
 export enum ProgressState {
   IDLE,
-  WAITING,
+  CREATING,
   DONE,
   FAILED,
+  NOT_READY,
 }
 
 export type ProgressComponentProps = {
@@ -36,12 +37,14 @@ function ProgressComponent({
 
   function ProgressIcon() {
     switch (state) {
-      case ProgressState.WAITING:
+      case ProgressState.CREATING:
         return <Spinner color={theme.primary.p1} size={20} thickness={4} />;
       case ProgressState.DONE:
         return <img src={BLUE_TICK_ICON} />;
       case ProgressState.FAILED:
         return <img width={20} height={20} src={RED_CROSS_ICON} />;
+      case ProgressState.NOT_READY:
+        return <img src={BLUE_TICK_ICON} />;
       default:
         throw new NonExistingCaseError();
     }
@@ -54,7 +57,7 @@ function ProgressComponent({
         <SectionTitle title={title} subtitle={subtitle} />
         <ProgressStatus>
           <ProgressIcon />
-          <p>{body}</p>
+          <ProgressText>{body}</ProgressText>
         </ProgressStatus>
         <ButtonsRow state={state} setState={setState} tokenId={tokenId} proposalId={processId} />
       </TextSection>
@@ -78,7 +81,7 @@ function ButtonsRow({ state, setState, tokenId, proposalId }: ButtonsRowProps) {
   const hideComponent = () => setState(ProgressState.IDLE);
 
   switch (state) {
-    case ProgressState.WAITING:
+    case ProgressState.CREATING:
       return null;
     case ProgressState.DONE:
       return (
@@ -92,6 +95,13 @@ function ButtonsRow({ state, setState, tokenId, proposalId }: ButtonsRowProps) {
         <ButtonsContainer>
           <PrimaryButton onClick={toTokenPage}>To the token page</PrimaryButton>
           <SecondaryButton onClick={hideComponent}>Back to the creation page</SecondaryButton>
+        </ButtonsContainer>
+      );
+    case ProgressState.NOT_READY:
+      return (
+        <ButtonsContainer>
+          <PrimaryButton onClick={toTokenPage}>To the token page</PrimaryButton>
+          <SecondaryButton onClick={toNewProposal}>Create another proposal</SecondaryButton>
         </ButtonsContainer>
       );
     default:
@@ -148,13 +158,17 @@ const ProgressStatus = styled.div`
   flex-direction: row;
   line-height: 25px;
   padding-top: 16px;
+`;
 
-  p {
-    margin: 0 10px;
-    font-size: 18px;
-    line-height: 20px;
-    font-weight: 500;
-    color: ${({ theme }) => theme.primary.p1};
+const ProgressText = styled.p`
+  margin: 0 10px;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.primary.p1};
+
+  @media ${({ theme }) => theme.screens.desktop} {
+    max-width: 380px;
   }
 `;
 
@@ -184,7 +198,7 @@ type TextInfo = {
 
 function getTexts(state: ProgressState, errorMessage: string): TextInfo {
   switch (state) {
-    case ProgressState.WAITING:
+    case ProgressState.CREATING:
       return {
         title: "Creating your proposal",
         subtitle: "Hold tight - your proposal is being created. It will be ready soon",
@@ -204,6 +218,13 @@ function getTexts(state: ProgressState, errorMessage: string): TextInfo {
         title: "Creation Unsuccessful",
         subtitle: "Unfortunately, your proposal could not be created",
         body: errorBody,
+      };
+    case ProgressState.NOT_READY:
+      return {
+        title: "Your proposal is created",
+        subtitle: "However, it is not yet ready to be interacted with.",
+        body: `Your proposal was created, but it is not yet ready to be displayed or voted on.
+        It will eventually be shown on your token's page, once ready`,
       };
     default:
       throw new NonExistingCaseError();
