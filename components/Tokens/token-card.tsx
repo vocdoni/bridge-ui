@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { FALLBACK_TOKEN_ICON } from "../lib/constants";
-import { shortTokenName } from "../lib/utils";
-import { abbreviatedTokenAmount } from "../lib/utils";
+import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
+import { shortTokenName } from "../../lib/utils";
+import { abbreviatedTokenAmount } from "../../lib/utils";
 
 const Container = styled.div`
   background: ${({ theme }) => theme.blackAndWhite.w1};

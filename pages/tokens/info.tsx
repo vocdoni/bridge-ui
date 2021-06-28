@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Else, If, Then, Unless, When } from "react-if";
-import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
+import { Processes, useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import styled from "styled-components";
 
@@ -11,13 +11,12 @@ import { TokenInfo } from "../../lib/types";
 import { EventType, trackEvent } from "../../lib/analytics";
 
 import SectionTitle from "../../components/sectionTitle";
-import { TokenLogo, VoteCard } from "../../components/token-card";
+import { TokenLogo, VoteCard } from "../../components/Tokens/token-card";
 import { PrimaryButton } from "../../components/ControlElements/button";
-import { IProcessSummary, ProcessMetadata } from "dvote-js";
 import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
+import { TokenList } from "../../components/Tokens/token-list";
 
 const HeaderContainer = styled.div`
   margin-bottom: 45px;
@@ -120,11 +119,7 @@ const TokenLogoContainer = styled.div`
 `;
 
 type VotingSectionProps = {
-  allProcesses: {
-    id: string;
-    summary: IProcessSummary;
-    metadata?: ProcessMetadata;
-  }[];
+  allProcesses: Processes;
   processes: string[];
   token: TokenInfo;
   loadingProcesses: boolean;
@@ -322,5 +317,14 @@ const TokenPage = () => {
     </>
   );
 };
+
+const VoteSectionContainer = styled.div`
+  margin-bottom: 60px;
+`;
+
+const LightText = styled.p`
+  color: ${({ theme }) => theme.grayScale.g5};
+  font-size: 18px;
+`;
 
 export default TokenPage;

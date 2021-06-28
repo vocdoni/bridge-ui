@@ -8,10 +8,10 @@ import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
-import { TokenCard } from "../../components/token-card";
+import { TokenCard } from "../../components/Tokens/token-card";
+import { TokenList } from "../../components/Tokens/token-list";
 import SectionTitle from "../../components/sectionTitle";
 import { SecondaryButton } from "../../components/ControlElements/button";
-import { TokenList } from "../dashboard";
 
 const ButtonContainer = styled.div`
   display: flex;

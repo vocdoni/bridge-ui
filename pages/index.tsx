@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useWallet } from "use-wallet";
 import { Else, If, Then, Unless, When } from "react-if";
 
-import { TokenList } from "./dashboard";
 import { featuredTokens } from "../lib/tokens";
 import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
 import { LANDING_PAGE_CTA } from "../lib/constants";
@@ -13,7 +12,8 @@ import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
 
-import { TokenCard } from "../components/token-card";
+import { TokenList } from "../components/Tokens/token-list";
+import { TokenCard } from "../components/Tokens/token-card";
 import { SecondaryButton } from "../components/ControlElements/button";
 import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
