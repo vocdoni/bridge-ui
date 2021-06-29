@@ -60,7 +60,10 @@ export const validateProposal = (proposal: ProcessMetadata, startDate: Date, end
 
 type QuestionMetadata = ProcessMetadata["questions"][number];
 
-export const validateQuestion = ({ title, description, choices }: QuestionMetadata, index) => {
+export const validateQuestion = (
+  { title, description, choices }: QuestionMetadata,
+  index: number
+) => {
   if (!title?.default) throw new MissingInputError(InputType.TITLE, index);
 
   const trimmedTitle = title.default.trim();
@@ -78,16 +81,14 @@ export const validateQuestion = ({ title, description, choices }: QuestionMetada
     }
   }
 
-  let faultyChoice = choices.findIndex(
-    ({ title }) => title.default.trim().length < MIN_INPUT_LENGTH
-  );
-  if (faultyChoice >= 0) throw new ShortChoiceError(faultyChoice, index);
+  let hasFaultyChoice = choices.some(({ title }) => title.default.trim().length < MIN_INPUT_LENGTH);
+  if (hasFaultyChoice) throw new ShortChoiceError(hasFaultyChoice, index);
 
-  faultyChoice = choices.findIndex(
+  hasFaultyChoice = choices.some(
     ({ title }) => new Blob([title.default]).size > MAX_QUESTION_TITLE_LENGHT
   );
-  if (faultyChoice >= 0) {
-    throw new LongChoiceError(faultyChoice, index, MAX_QUESTION_TITLE_LENGHT);
+  if (hasFaultyChoice) {
+    throw new LongChoiceError(hasFaultyChoice, index, MAX_QUESTION_TITLE_LENGHT);
   }
 
   choices.forEach((choice) => {

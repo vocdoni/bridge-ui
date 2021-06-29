@@ -387,26 +387,22 @@ const NewProcessPage = () => {
   };
   function onResultsTypeChange(index: number) {
     setResultType(index);
-    if (index === ResultTypes.NORMAL) setEncryptedVotes(false);
-    else setEncryptedVotes(true);
+    setEncryptedVotes(!ResultTypes.NORMAL);
   }
 
-  function initiateSubmission() {
-    const proposalOk = preSubmit();
-    if (proposalOk) setProgress(ProgressState.CREATING);
-  }
-  function preSubmit(): boolean {
+  function preSubmit() {
     try {
       validateProposal(metadata, startDate, endDate);
       /* TODO move to the beginning of the page. And immediately send to NotFound if the
-        address is not valid */
+      address is not valid */
       if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX))
         throw new TokenAddressInvalidError();
 
       // FINAL CONFIRMATION
-      return confirm(
+      const proposalOk = confirm(
         "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
       );
+      if (proposalOk) setProgress(ProgressState.CREATING);
     } catch (error) {
       if (error instanceof ProposalFormatError) return setAlertMessage(error.message);
       if (error instanceof TokenAddressInvalidError) return setAlertMessage(error.message);
@@ -645,7 +641,7 @@ const NewProcessPage = () => {
         <Unless condition={isMobile}>
           <ButtonRow>
             {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
+              <SubmitButton submitting={submitting} onSubmit={preSubmit} />
             ) : (
               <ConnectButton wide />
             )}
@@ -653,7 +649,7 @@ const NewProcessPage = () => {
         </Unless>
       </OptionSection>
       <When condition={isMobile && isConnected}>
-        <SubmitButton submitting={submitting} onSubmit={initiateSubmission} />
+        <SubmitButton submitting={submitting} onSubmit={preSubmit} />
       </When>
     </FormContainer>
   );
