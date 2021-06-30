@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Else, If, Then, When } from "react-if";
+import React, { forwardRef, useCallback, useState } from "react";
+import { Case, Default, Else, If, Switch, Then, When } from "react-if";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
@@ -28,12 +28,16 @@ import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 
-/* TODO reorganize and consolidate some of theese components into one file as they also appear on token/info */
-
 const TokenSummary = styled.div`
-  margin-top: 2em;
+  margin-top: 16px;
   display: flex;
   justify-content: space-between;
+  background: ${({ theme }) => theme.grayScale.g1};
+  padding-top: 8px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: 13px;
+
   @media ${({ theme }) => theme.screens.tablet} {
     flex-direction: column;
     align-items: center;
@@ -42,6 +46,7 @@ const TokenSummary = styled.div`
 
 const Info = styled.div`
   max-width: 25%;
+
   @media ${({ theme }) => theme.screens.tablet} {
     max-width: 100%;
     flex-direction: row;
@@ -53,21 +58,22 @@ const Info = styled.div`
 `;
 
 const TokenAttributeTitle = styled.p`
-  height: 60px;
   margin-top: 9px;
   margin-bottom: 0;
   line-height: 27px;
-  color: ${({ theme }) => theme.primary.p1};
+  color: ${({ theme }) => theme.grayScale.g5};
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
+
   @media ${({ theme }) => theme.screens.tablet} {
     height: unset;
   }
 `;
 
-const Description = styled.h4`
+const TokenAttributeDescription = styled.h4`
   font-size: 18px;
+  font-weight: 600;
   letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -83,14 +89,21 @@ const Address = styled.h4`
   text-overflow: ellipsis;
 `;
 
-const ButtonRow = styled.div`
-  margin-top: 5em;
-
+const ButtonsContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  margin-top: 40px;
 
-  & > * {
-    margin-top: -3em;
+  & > :not(:last-child) {
+    margin-right: 16px;
+  }
+  @media ${({ theme }) => theme.screens.tablet} {
+    flex-direction: column;
+
+    & > :not(:last-child) {
+      margin-right: unset;
+      margin-bottom: 8px;
+    }
   }
 `;
 
@@ -122,28 +135,35 @@ const CompatibleTokenNote = styled.p`
 const CompatibilityNote = `The token contract must store balances in a mapping between the holder address and the full amount. For example: mapping (address => uint256) balance.
 If you have problems registering your token you can reach us on our `;
 
-const RegisterButton = ({
+const ButtonsRow = ({
   registeringToken,
   alreadyRegistered,
   address,
   onSubmit,
   isConnected,
+  onRevalidate,
 }) => (
-  <ButtonRow>
-    {registeringToken ? (
-      <Button>
-        <Spinner />
-      </Button>
-    ) : alreadyRegistered ? (
-      <SecondaryButton href={address ? "/tokens/info#/" + address : ""}>
-        Token is already registered
-      </SecondaryButton>
-    ) : (
-      <PrimaryButton onClick={onSubmit}>
-        {!isConnected ? "Connect wallet" : "Register token"}
-      </PrimaryButton>
-    )}
-  </ButtonRow>
+  <ButtonsContainer>
+    <Switch>
+      <Case condition={registeringToken}>
+        <Button>
+          <Spinner />
+        </Button>
+      </Case>
+      <Case condition={alreadyRegistered}>
+        <PrimaryButton href={address ? "/tokens/info#/" + address : ""}>
+          Token is already registered
+        </PrimaryButton>
+        <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
+      </Case>
+      <Default>
+        <PrimaryButton onClick={onSubmit}>
+          {!isConnected ? "Connect wallet" : "Register token"}
+        </PrimaryButton>
+        <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
+      </Default>
+    </Switch>
+  </ButtonsContainer>
 );
 
 const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
@@ -156,16 +176,17 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
     <TokenSummary>
       <Info>
         <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
-        <Description>{symbol}</Description>
+        <TokenAttributeDescription>{symbol}</TokenAttributeDescription>
       </Info>
       <Info>
         <TokenAttributeTitle>Token name</TokenAttributeTitle>
-
-        <Description>{name}</Description>
+        <TokenAttributeDescription>{name}</TokenAttributeDescription>
       </Info>
       <Info>
         <TokenAttributeTitle>Total supply</TokenAttributeTitle>
-        <Description>{abbreviatedTokenAmount(totalSupplyFormatted)}</Description>
+        <TokenAttributeDescription>
+          {abbreviatedTokenAmount(totalSupplyFormatted)}
+        </TokenAttributeDescription>
       </Info>
       <Info>
         <TokenAttributeTitle>Token address</TokenAttributeTitle>
@@ -306,17 +327,16 @@ const TokenAddPage = () => {
         <Else>
           <WhiteSection>
             <TokenContainer {...tokenInfo} />
-            <RegisterButton
+            <ButtonsRow
               registeringToken={registeringToken}
               alreadyRegistered={alreadyRegistered}
               onSubmit={onSubmit}
               address={tokenInfo?.address || ""}
               isConnected={isConnected}
+              onRevalidate={() => setTokenInfo(null)}
             />
           </WhiteSection>
         </Else>
-
-        <When condition={!!tokenInfo}></When>
       </If>
     </>
   );
