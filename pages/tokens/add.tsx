@@ -28,6 +28,7 @@ import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
 import { theme } from "../../theme";
+import { ETHERSCAN_RINKEBY } from "../../lib/constants";
 
 const TokenSummary = styled.div`
   margin-top: 16px;
@@ -79,7 +80,6 @@ const TokenAttributeDescription = styled.h4`
 
 const Address = styled(TokenAttributeDescription)`
   max-width: 200px;
-  color: ${({ theme }) => theme.primary.p1};
 `;
 
 const ButtonsContainer = styled.div`
@@ -183,7 +183,10 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
       </Info>
       <Info>
         <TokenAttributeTitle>Token address</TokenAttributeTitle>
-        <Address>{shortAddress(address)}</Address>
+        {/* TODO insert copy icon (and use the same links as in header?) [VR 30-06-2021] */}
+        <a target="_blank" rel="noopener noreferrer" href={`${ETHERSCAN_RINKEBY}${address}`}>
+          <Address>{shortAddress(address)}</Address>
+        </a>
       </Info>
     </TokenSummary>
   </>
