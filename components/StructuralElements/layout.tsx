@@ -10,14 +10,13 @@ const MainContent = styled.div`
   flex: 1;
   margin-top: 100px;
   margin-bottom: 50px;
-  box-sizing: border-box;
-  padding: 0 11%;
+  width: 78%;
+  max-width: 1256px;
 
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: 110px;
     margin-top: 50px;
-    box-sizing: border-box;
-    padding: 0 ${({ theme }) => theme.margins.mobile.horizontal};
+    width: calc(100% - 2 * ${({ theme }) => theme.margins.mobile.horizontal});
   }
 `;
 
@@ -25,6 +24,7 @@ const Wrapper = styled.div`
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+  align-items: center;
 `;
 
 export const Layout = ({ children }) => (
