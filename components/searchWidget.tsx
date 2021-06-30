@@ -13,7 +13,7 @@ const SearchRow = styled.div`
 `;
 
 const Box = styled.div`
-  width: 80%;
+  width: 100%;
   display: flex;
   margin-right: 10px;
   @media ${({ theme }) => theme.screens.tablet} {
