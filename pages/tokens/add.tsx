@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { When } from "react-if";
+import { Else, If, Then, When } from "react-if";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
@@ -27,7 +27,6 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { VerticalSpace } from "../../components/StructuralElements/verticalBuffer";
 
 /* TODO reorganize and consolidate some of theese components into one file as they also appear on token/info */
 
@@ -95,20 +94,15 @@ const ButtonRow = styled.div`
   }
 `;
 
-const Content = styled.div`
-  max-width: 844px;
-  width: 100%;
-`;
-
 const WhiteSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 18%;
+  padding: ${({ theme }) => theme.margins.desktop.horizontal};
+  padding-top: 0;
   background: ${({ theme }) => theme.blackAndWhite.w1};
   border-radius: 13px;
+
   @media ${({ theme }) => theme.screens.tablet} {
-    box-sizing: border-box;
+    padding: ${({ theme }) => theme.margins.desktop.horizontal};
+    padding-top: 0;
   }
 `;
 
@@ -285,34 +279,32 @@ const TokenAddPage = () => {
         title="Register a new token"
         subtitle="Enter the details of any ERC-20 token and start submitting new proposals"
       />
-      <WhiteSection>
-        <Content>
-          <SectionTitle
-            smallerTitle={true}
-            title="Token contract address"
-            subtitle="Enter the address of the ERC-20 contract that you would like to register"
-          />
-          <SearchWidget
-            onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
-            onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-              setFormTokenAddress(ev.target.value)
-            }
-            onClick={loading || loadingToken ? undefined : checkToken}
-            loading={loading || loadingToken}
-          />
-          <CompatibleTokenNote>
-            {CompatibilityNote}
-            <a target="_blank" rel="noopener noreferrer" href={"https://discord.gg/XBA56Rmp"}>
-              Discord, on the #voice channel
-            </a>
-          </CompatibleTokenNote>
-        </Content>
-      </WhiteSection>
-      <VerticalSpace repeats={2} />
-
-      <When condition={!!tokenInfo}>
-        <WhiteSection>
-          <Content>
+      <If condition={!tokenInfo}>
+        <Then>
+          <WhiteSection>
+            <SectionTitle
+              smallerTitle={true}
+              title="Token contract address"
+              subtitle="Enter the address of the ERC-20 contract that you would like to register"
+            />
+            <SearchWidget
+              onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
+              onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+                setFormTokenAddress(ev.target.value)
+              }
+              onClick={loading || loadingToken ? undefined : checkToken}
+              loading={loading || loadingToken}
+            />
+            <CompatibleTokenNote>
+              {CompatibilityNote}
+              <a target="_blank" rel="noopener noreferrer" href={"https://discord.gg/XBA56Rmp"}>
+                Discord, on the #voice channel
+              </a>
+            </CompatibleTokenNote>
+          </WhiteSection>
+        </Then>
+        <Else>
+          <WhiteSection>
             <TokenContainer {...tokenInfo} />
             <RegisterButton
               registeringToken={registeringToken}
@@ -321,9 +313,11 @@ const TokenAddPage = () => {
               address={tokenInfo?.address || ""}
               isConnected={isConnected}
             />
-          </Content>
-        </WhiteSection>
-      </When>
+          </WhiteSection>
+        </Else>
+
+        <When condition={!!tokenInfo}></When>
+      </If>
     </>
   );
 };
