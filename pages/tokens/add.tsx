@@ -27,15 +27,14 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { theme } from "../../theme";
 
 const TokenSummary = styled.div`
   margin-top: 16px;
   display: flex;
   justify-content: space-between;
   background: ${({ theme }) => theme.grayScale.g1};
-  padding-top: 8px;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding: 24px;
   border-radius: 13px;
 
   @media ${({ theme }) => theme.screens.tablet} {
@@ -58,20 +57,18 @@ const Info = styled.div`
 `;
 
 const TokenAttributeTitle = styled.p`
-  margin-top: 9px;
+  margin-top: 0;
   margin-bottom: 0;
   line-height: 27px;
   color: ${({ theme }) => theme.grayScale.g5};
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    height: unset;
-  }
 `;
 
 const TokenAttributeDescription = styled.h4`
+  margin-top: 8px;
+  margin-bottom: 0;
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0;
@@ -80,13 +77,9 @@ const TokenAttributeDescription = styled.h4`
   text-overflow: ellipsis;
 `;
 
-const Address = styled.h4`
+const Address = styled(TokenAttributeDescription)`
   max-width: 200px;
-  font-size: 18px;
-  letter-spacing: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: ${({ theme }) => theme.primary.p1};
 `;
 
 const ButtonsContainer = styled.div`
