@@ -387,10 +387,10 @@ const NewProcessPage = () => {
   };
   function onResultsTypeChange(index: number) {
     setResultType(index);
-    setEncryptedVotes(!ResultTypes.NORMAL);
+    setEncryptedVotes(index === ResultTypes.ENCRYPTED);
   }
 
-  function preSubmit() {
+  function submit() {
     try {
       validateProposal(metadata, startDate, endDate);
       /* TODO move to the beginning of the page. And immediately send to NotFound if the
@@ -641,7 +641,7 @@ const NewProcessPage = () => {
         <Unless condition={isMobile}>
           <ButtonRow>
             {wallet.status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={preSubmit} />
+              <SubmitButton submitting={submitting} onSubmit={submit} />
             ) : (
               <ConnectButton wide />
             )}
@@ -649,7 +649,7 @@ const NewProcessPage = () => {
         </Unless>
       </OptionSection>
       <When condition={isMobile && isConnected}>
-        <SubmitButton submitting={submitting} onSubmit={preSubmit} />
+        <SubmitButton submitting={submitting} onSubmit={submit} />
       </When>
     </FormContainer>
   );
