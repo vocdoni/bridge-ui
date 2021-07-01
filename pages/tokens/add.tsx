@@ -21,7 +21,7 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
-import { ETHERSCAN_RINKEBY } from "../../lib/constants";
+import { ETHERSCAN_ADDRESS_PREFIX } from "../../lib/constants";
 
 import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";
@@ -183,7 +183,11 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
       <Info>
         <TokenAttributeTitle>Token address</TokenAttributeTitle>
         {/* TODO insert copy icon (and use the same links as in header?) [VR 30-06-2021] */}
-        <a target="_blank" rel="noopener noreferrer" href={`${ETHERSCAN_RINKEBY}${address}`}>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${ETHERSCAN_ADDRESS_PREFIX}/${address}`}
+        >
           <Address>{shortAddress(address)}</Address>
         </a>
       </Info>
