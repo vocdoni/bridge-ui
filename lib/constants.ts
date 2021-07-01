@@ -77,4 +77,4 @@ export const PEOPLE_IMG = "/media/people_img_transparent.png";
 
 // URI's
 export const COOKIES_URL = "https://aragon.org/cookies";
-export const ETHERSCAN_RINKEBY = "https://rinkeby.etherscan.io/address/";
+export const ETHERSCAN_ADDRESS_PREFIX = process.env.ETHERSCAN_PREFIX + "/address";
