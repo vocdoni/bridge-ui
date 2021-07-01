@@ -1,5 +1,5 @@
-import React, { forwardRef, useCallback, useState } from "react";
-import { Case, Default, Else, If, Switch, Then, When } from "react-if";
+import React, { useCallback, useState } from "react";
+import { Case, Default, Else, If, Switch, Then } from "react-if";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
@@ -21,14 +21,13 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
+import { ETHERSCAN_RINKEBY } from "../../lib/constants";
 
 import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { theme } from "../../theme";
-import { ETHERSCAN_RINKEBY } from "../../lib/constants";
 
 const TokenSummary = styled.div`
   margin-top: 16px;
