@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { flex_mixin } from "../../lib/mixins";
+import { flex_row_large_column_small_mixin } from "../../lib/mixins";
 
 export const ProcessTitle = styled.h5`
   font-size: 32px;
@@ -26,7 +26,7 @@ export const ProcessInformation = styled.div`
 `;
 
 export const ProcessContainer = styled.div`
-  ${flex_mixin};
+  ${flex_row_large_column_small_mixin};
   margin-top: 50px;
   max-width: 1266px;
   margin-bottom: 60px;
