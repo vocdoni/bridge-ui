@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { When } from "react-if";
 import Spinner from "react-svg-spinner";
 
-import { useStoredTokens } from "../../lib/hooks/tokens";
+import { useFilteredTokens } from "../../lib/hooks/tokens/useStoredTokens";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
@@ -35,8 +35,10 @@ const VariableWidthDiv = styled.div`
 // MAIN COMPONENT
 const TokensPage = () => {
   useScrollTop();
-  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
-  // const [tokenAddrs, setTokenAddrs] = useState(storedTokens)  // TODO: Allow filtering => setTokenAddrs( [myTokenAddr] )
+  const [term, setTerm] = useState("");
+  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useFilteredTokens(
+    term
+  );
 
   storedTokens?.sort?.((a, b) => {
     if (a?.symbol > b?.symbol) return 1;
@@ -44,7 +46,7 @@ const TokensPage = () => {
     return 0;
   });
 
-  const f = () => console.log("hi");
+  const doNothing = () => {};
 
   return (
     <>
@@ -53,8 +55,8 @@ const TokensPage = () => {
         <VariableWidthDiv>
           <SearchBar
             placeholder={"Search token symbol, name, or address"}
-            onChange={f}
-            onKeyDown={f}
+            onChange={(e) => setTerm(e.target.value)}
+            onKeyDown={doNothing}
           />
         </VariableWidthDiv>
         <PrimaryButton href="/tokens/add">Register a token</PrimaryButton>
