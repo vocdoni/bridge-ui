@@ -116,3 +116,11 @@ export class NonExistingCaseError extends Error {
     super("Non existent case reached in switch statement.");
   }
 }
+
+export class OutsideProviderError extends Error {
+  constructor(hookName: string, providerTag: string) {
+    super(
+      `${hookName} can only be used inside of ${providerTag}. Please declare it at a higher level.`
+    );
+  }
+}
