@@ -28,7 +28,7 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
-import { flex_mixin, spacer_mixin } from "../../lib/mixins";
+import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
 import { VerticalSpace } from "../../components/StructuralElements/verticalBuffer";
 
 const TokenSummary = styled.div`
@@ -84,8 +84,8 @@ const Address = styled(TokenAttributeDescription)`
 `;
 
 const ButtonsContainer = styled.div`
-  ${flex_mixin};
-  ${spacer_mixin};
+  ${flex_row_large_column_small_mixin};
+  ${space_between_children_mixin};
   margin-top: 40px;
 `;
 

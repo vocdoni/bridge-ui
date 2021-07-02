@@ -1,6 +1,6 @@
 import { css } from "styled-components";
 
-export const flex_mixin = css`
+export const flex_row_large_column_small_mixin = css`
   display: flex;
 
   @media ${({ theme }) => theme.screens.tablet} {
@@ -8,7 +8,8 @@ export const flex_mixin = css`
   }
 `;
 
-export const spacer_mixin = css`
+/* TODO make this take variable margins. */
+export const space_between_children_mixin = css`
   & > :not(:last-child) {
     margin-right: 16px;
   }

@@ -9,13 +9,13 @@ import { GatewayPool } from "dvote-js";
 import { BigNumber } from "@ethersproject/bignumber";
 import { OutsideProviderError } from "../../errors";
 
-type FilteredTkoens = {
+type FilteredTokens = {
   storedTokens: TokenInfo[];
   error?: string;
   loading: boolean;
 };
 
-export const useFilteredTokens = (filter: string): FilteredTkoens => {
+export const useFilteredTokens = (filter: string): FilteredTokens => {
   const { storedTokens, error, loading } = useStoredTokens();
 
   if (loading) return { storedTokens, error, loading };

@@ -2,12 +2,12 @@ import React from "react";
 import styled from "styled-components";
 
 import { Spinner } from "../components/spinner";
-import { flex_mixin } from "../lib/mixins";
+import { flex_row_large_column_small_mixin } from "../lib/mixins";
 import { PrimaryButton } from "./ControlElements/button";
 import { TextInput } from "./ControlElements/input";
 
 const SearchRow = styled.div`
-  ${flex_mixin};
+  ${flex_row_large_column_small_mixin};
 `;
 
 const Box = styled.div`
