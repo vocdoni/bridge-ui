@@ -7,3 +7,15 @@ export const flex_mixin = css`
     flex-direction: column;
   }
 `;
+
+export const spacer_mixin = css`
+  & > :not(:last-child) {
+    margin-right: 16px;
+  }
+  @media ${({ theme }) => theme.screens.tablet} {
+    & > :not(:last-child) {
+      margin-right: unset;
+      margin-bottom: 8px;
+    }
+  }
+`;

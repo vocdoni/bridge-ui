@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Case, Default, Else, If, Switch, Then } from "react-if";
+import { Case, Default, Else, If, Switch, Then, When } from "react-if";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
@@ -28,6 +28,8 @@ import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { flex_mixin, spacer_mixin } from "../../lib/mixins";
+import { VerticalSpace } from "../../components/StructuralElements/verticalBuffer";
 
 const TokenSummary = styled.div`
   margin-top: 16px;
@@ -82,21 +84,9 @@ const Address = styled(TokenAttributeDescription)`
 `;
 
 const ButtonsContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  ${flex_mixin};
+  ${spacer_mixin};
   margin-top: 40px;
-
-  & > :not(:last-child) {
-    margin-right: 16px;
-  }
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-
-    & > :not(:last-child) {
-      margin-right: unset;
-      margin-bottom: 8px;
-    }
-  }
 `;
 
 const WhiteSection = styled.div`
@@ -135,27 +125,33 @@ const ButtonsRow = ({
   isConnected,
   onRevalidate,
 }) => (
-  <ButtonsContainer>
-    <Switch>
-      <Case condition={registeringToken}>
-        <Button>
-          <Spinner />
-        </Button>
-      </Case>
-      <Case condition={alreadyRegistered}>
-        <PrimaryButton href={address ? "/tokens/info#/" + address : ""}>
-          Token is already registered
-        </PrimaryButton>
-        <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
-      </Case>
-      <Default>
-        <PrimaryButton onClick={onSubmit}>
-          {!isConnected ? "Connect wallet" : "Register token"}
-        </PrimaryButton>
-        <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
-      </Default>
-    </Switch>
-  </ButtonsContainer>
+  <>
+    <When condition={alreadyRegistered}>
+      <VerticalSpace repeats={2} />
+      <TokenAttributeTitle>Token is already registered</TokenAttributeTitle>
+    </When>
+    <ButtonsContainer>
+      <Switch>
+        <Case condition={registeringToken}>
+          <Button>
+            <Spinner />
+          </Button>
+        </Case>
+        <Case condition={alreadyRegistered}>
+          <PrimaryButton href={address ? "/tokens/info#/" + address : ""}>
+            Visit token page
+          </PrimaryButton>
+          <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
+        </Case>
+        <Default>
+          <PrimaryButton onClick={onSubmit}>
+            {!isConnected ? "Connect wallet" : "Register token"}
+          </PrimaryButton>
+          <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
+        </Default>
+      </Switch>
+    </ButtonsContainer>
+  </>
 );
 
 const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
