@@ -10,28 +10,25 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 import { TokenCard } from "../../components/token-card";
 import SectionTitle from "../../components/sectionTitle";
-import { SecondaryButton } from "../../components/ControlElements/button";
+import { PrimaryButton } from "../../components/ControlElements/button";
 import { TokenList } from "../dashboard";
+import { SearchBar } from "../../components/searchWidget";
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 25px;
+
   @media ${({ theme }) => theme.screens.tablet} {
     margin-bottom: unset;
   }
 `;
 
-const Top = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  box-sizing: border-box;
+const VariableWidthDiv = styled.div`
+  width: 50%;
 
   @media ${({ theme }) => theme.screens.tablet} {
-    margin-bottom: unset;
-    display: unset;
-    justify-content: unset;
+    width: 100%;
   }
 `;
 
@@ -47,20 +44,24 @@ const TokensPage = () => {
     return 0;
   });
 
+  const f = () => console.log("hi");
+
   return (
-    <div>
-      <Top>
-        <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
-        <ButtonContainer>
-          {/* NOTE temporarily removed search bar, as it is not part of the page's must 
-    haves. VR 23-04-2021 */}
-          {/* <SearchWidget /> */}
-          <SecondaryButton href="/tokens/add">Register a token</SecondaryButton>
-        </ButtonContainer>
-      </Top>
+    <>
+      <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
+      <ButtonContainer>
+        <VariableWidthDiv>
+          <SearchBar
+            placeholder={"Search token symbol, name, or address"}
+            onChange={f}
+            onKeyDown={f}
+          />
+        </VariableWidthDiv>
+        <PrimaryButton href="/tokens/add">Register a token</PrimaryButton>
+      </ButtonContainer>
       <TokenList>
         <When condition={!storedTokens?.length && tokenListLoading}>
-          <div>{renderEmpty()}</div>
+          <RenderEmpty />
         </When>
 
         {storedTokens.map(
@@ -78,19 +79,19 @@ const TokensPage = () => {
           )
         )}
       </TokenList>
-    </div>
+    </>
   );
 };
 
 // TODO: Render a better UI
-function renderEmpty() {
+function RenderEmpty() {
   return (
-    <div>
+    <>
       <br />
       <p>
         Loading tokens... <Spinner />
       </p>
-    </div>
+    </>
   );
 }
 
