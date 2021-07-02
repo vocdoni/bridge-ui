@@ -7,6 +7,7 @@ import { useStoredTokens } from "./useStoredTokens";
 import { ERC20_ABI } from "../../constants";
 import { TokenInfo } from "../../types";
 import { usePool } from "@vocdoni/react-hooks";
+import { OutsideProviderError } from "../../errors";
 
 interface UserTokenInfo {
   tokens: TokenInfo[];
@@ -22,10 +23,7 @@ export function useTokensWithBalance() {
   const userTokenContext = useContext(UseTokensWithBalanceContext);
 
   if (userTokenContext === null) {
-    throw new Error(
-      "useTokensWithBalance() can only be used inside of <UseTokensWithBalance />, " +
-      "please declare it at a higher level."
-    );
+    throw new OutsideProviderError("useTokensWithBalance()", "<UseTokensWithBalance />");
   }
   return userTokenContext;
 }
@@ -40,8 +38,8 @@ export function UseTokensWithBalance({ children }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchUserTokens()
-  }, [wallet?.account, storedTokens])
+    fetchUserTokens();
+  }, [wallet?.account, storedTokens]);
 
   const fetchUserTokens = async (): Promise<TokenInfo[]> => {
     if (!wallet?.ethereum || !wallet?.account || !storedTokens) return;
@@ -56,14 +54,14 @@ export function UseTokensWithBalance({ children }) {
       );
 
       const balances = await ethcallProvider.all(tokenBalanceCalls);
-      const tokensWithBalance = storedTokens
-        .filter((_, idx) => !BigNumber.from(balances[idx]).isZero());
+      const tokensWithBalance = storedTokens.filter(
+        (_, idx) => !BigNumber.from(balances[idx]).isZero()
+      );
 
       setLoading(false);
       setTokenInfoList(tokensWithBalance);
       setError("");
-    }
-    catch (err) {
+    } catch (err) {
       setLoading(false);
       setError(err?.message);
     }
@@ -79,7 +77,7 @@ export function UseTokensWithBalance({ children }) {
         tokens: tokenInfoList,
         refresh: fetchUserTokens,
         error: error || tokenListError,
-        loading: loading || tokenListLoading
+        loading: loading || tokenListLoading,
       }}
     >
       {children}
