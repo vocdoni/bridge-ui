@@ -7,6 +7,7 @@ import { VoiceStorage } from "../../storage";
 import { TokenInfo } from "../../types";
 import { GatewayPool } from "dvote-js";
 import { BigNumber } from "@ethersproject/bignumber";
+import { OutsideProviderError } from "../../errors";
 
 type FilteredTkoens = {
   storedTokens: TokenInfo[];
@@ -52,10 +53,7 @@ export function useStoredTokens() {
   const tokenContext = useContext(UseStoredTokensContext);
 
   if (tokenContext === null) {
-    throw new Error(
-      "useStoredTokens() can only be used inside of <UseStoredTokensProvider />, " +
-        "please declare it at a higher level."
-    );
+    throw new OutsideProviderError("useStoredTokens()", "<UseStoredTokensProvider />");
   }
   return tokenContext;
 }
