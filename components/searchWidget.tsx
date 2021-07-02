@@ -2,14 +2,12 @@ import React from "react";
 import styled from "styled-components";
 
 import { Spinner } from "../components/spinner";
+import { flex_mixin } from "../lib/mixins";
 import { PrimaryButton } from "./ControlElements/button";
 import { TextInput } from "./ControlElements/input";
 
 const SearchRow = styled.div`
-  display: flex;
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-  }
+  ${flex_mixin};
 `;
 
 const Box = styled.div`
@@ -17,24 +15,39 @@ const Box = styled.div`
   display: flex;
   margin-right: 10px;
   @media ${({ theme }) => theme.screens.tablet} {
-    width: 100%;
     margin-bottom: 8px;
   }
 `;
 
-type SearchWidgetProps = {
+type SearchBarProps = {
+  placeholder?: string;
   onChange: (ev: any) => void;
   onKeyDown: (ev: any) => void;
+};
+
+type SearchWidgetProps = SearchBarProps & {
   onClick: () => void;
   loading: boolean;
 };
 
-const SearchWidget = ({ onChange, onKeyDown, onClick, loading }: SearchWidgetProps) => {
+export const SearchBar = ({ placeholder, onChange, onKeyDown }: SearchBarProps) => {
+  return (
+    <Box>
+      <TextInput placeholder={placeholder} onKeyDown={onKeyDown} onChange={onChange} />
+    </Box>
+  );
+};
+
+const SearchWidget = ({
+  placeholder = "ERC Token address...",
+  onChange,
+  onKeyDown,
+  onClick,
+  loading,
+}: SearchWidgetProps) => {
   return (
     <SearchRow>
-      <Box>
-        <TextInput placeholder="ERC Token address..." onKeyDown={onKeyDown} onChange={onChange} />
-      </Box>
+      <SearchBar placeholder={placeholder} onKeyDown={onKeyDown} onChange={onChange} />
       <PrimaryButton onClick={loading ? null : onClick}>
         {loading ? <Spinner /> : "Validate contract"}
       </PrimaryButton>

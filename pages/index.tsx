@@ -19,6 +19,7 @@ import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { LoadingRectangle } from "../components/loading-rectangle";
 import { NotConnected } from "../components/Banners/GrayBanners";
+import { flex_mixin } from "../lib/mixins";
 
 // MAIN COMPONENT
 
@@ -237,15 +238,9 @@ const HeaderAdviceText = styled.p`
 `;
 
 const Row = styled.div`
-  display: flex;
-  justify-content: center};
+  ${flex_mixin};
+  justify-content: center;
   margin-top: 40px;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
 `;
 
 const TokenSection = styled.div`
