@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { flex_mixin } from "../../lib/mixins";
 
 export const ProcessTitle = styled.h5`
   font-size: 32px;
@@ -25,14 +26,10 @@ export const ProcessInformation = styled.div`
 `;
 
 export const ProcessContainer = styled.div`
-  display: flex;
+  ${flex_mixin};
   margin-top: 50px;
   max-width: 1266px;
   margin-bottom: 60px;
-
-  @media ${({ theme }) => theme.screens.tablet} {
-    flex-direction: column;
-  }
 `;
 
 export const ProcessData = styled.div`
@@ -59,7 +56,6 @@ export const ProcessDataInfo = styled.div`
 
 export const ProcessDataContainer = styled.div`
   align-items: center;
-  flex-direction: row;
   margin: 0;
   justify-content: space-between;
   width: 100%;
