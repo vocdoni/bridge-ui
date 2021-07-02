@@ -45,6 +45,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
             bootnodeUri={bootnodeUri}
             networkId={networkId}
             environment={environment}
+            minNumGateways={1}
           >
             <UseBlockStatusProvider>
               <UseStoredTokensProvider>
