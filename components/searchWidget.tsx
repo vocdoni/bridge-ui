@@ -22,20 +22,22 @@ const Box = styled.div`
 type SearchBarProps = {
   placeholder?: string;
   onChange: (ev: any) => void;
-  onKeyDown: (ev: any) => void;
+  onKeyDown?: (ev: any) => void;
 };
 
-type SearchWidgetProps = SearchBarProps & {
-  onClick: () => void;
-  loading: boolean;
-};
+const doNothing = () => {};
 
-export const SearchBar = ({ placeholder, onChange, onKeyDown }: SearchBarProps) => {
+export const SearchBar = ({ placeholder, onChange, onKeyDown = doNothing }: SearchBarProps) => {
   return (
     <Box>
       <TextInput placeholder={placeholder} onKeyDown={onKeyDown} onChange={onChange} />
     </Box>
   );
+};
+
+type SearchWidgetProps = SearchBarProps & {
+  onClick: () => void;
+  loading: boolean;
 };
 
 const SearchWidget = ({

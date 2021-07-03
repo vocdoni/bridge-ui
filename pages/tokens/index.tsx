@@ -46,8 +46,6 @@ const TokensPage = () => {
     return 0;
   });
 
-  const doNothing = () => {};
-
   return (
     <>
       <SectionTitle title="All Tokens" subtitle="All the tokens on the platform" />
@@ -56,7 +54,6 @@ const TokensPage = () => {
           <SearchBar
             placeholder={"Search token symbol, name, or address"}
             onChange={(e) => setTerm(e.target.value)}
-            onKeyDown={doNothing}
           />
         </VariableWidthDiv>
         <PrimaryButton href="/tokens/add">Register a token</PrimaryButton>
