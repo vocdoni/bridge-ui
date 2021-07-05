@@ -64,6 +64,7 @@ export const LANDING_PAGE_CTA = "/media/images/landing_cta_background_img.svg";
 export const MEDITATING_LADY_IMG = "/media/images/meditating_lady_img.svg";
 export const ISLAND_FLAG_IMG = "/media/images/island_flag_img.svg";
 export const PEOPLE_IMG = "/media/images/people_img_transparent.png";
+export const LOOKING_GLASS_IMG = "/media/images/looking_glass_lady_img.svg";
 
 // URI's
 export const COOKIES_URL = "https://aragon.org/cookies";
