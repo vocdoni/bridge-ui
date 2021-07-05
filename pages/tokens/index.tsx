@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { When } from "react-if";
+import { Case, Default, Else, If, Switch, Then, When } from "react-if";
 import Spinner from "react-svg-spinner";
 
 import { useFilteredTokens } from "../../lib/hooks/tokens/useStoredTokens";
@@ -13,6 +13,7 @@ import SectionTitle from "../../components/sectionTitle";
 import { PrimaryButton } from "../../components/ControlElements/button";
 import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
+import { LoadingRectangle } from "../../components/loading-rectangle";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -36,9 +37,8 @@ const VariableWidthDiv = styled.div`
 const TokensPage = () => {
   useScrollTop();
   const [term, setTerm] = useState("");
-  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useFilteredTokens(
-    term
-  );
+  const { storedTokens, error, loading } = useFilteredTokens(term);
+  const areTokensEmpty = !storedTokens?.length;
 
   storedTokens?.sort?.((a, b) => {
     if (a?.symbol > b?.symbol) return 1;
@@ -58,40 +58,32 @@ const TokensPage = () => {
         </VariableWidthDiv>
         <PrimaryButton href="/tokens/add">Register a token</PrimaryButton>
       </ButtonContainer>
-      <TokenList>
-        <When condition={!storedTokens?.length && tokenListLoading}>
-          <RenderEmpty />
-        </When>
-
-        {storedTokens.map(
-          ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
-            <TokenCard
-              key={address}
-              name={symbol}
-              icon={icon}
-              rightText=""
-              href={address ? "/tokens/info#/" + address : ""}
-              tokenCap={totalSupplyFormatted}
-            >
-              <p>{shortTokenName(name) || "Loading..."}</p>
-            </TokenCard>
-          )
-        )}
-      </TokenList>
+      <Switch>
+        <Case condition={areTokensEmpty && loading}>
+          <LoadingRectangle message="Loading tokens" />
+        </Case>
+        <Case condition={areTokensEmpty}>{/* TODO add not token CTA */}</Case>
+        <Default>
+          <TokenList>
+            {storedTokens.map(
+              ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
+                <TokenCard
+                  key={address}
+                  name={symbol}
+                  icon={icon}
+                  rightText=""
+                  href={address ? "/tokens/info#/" + address : ""}
+                  tokenCap={totalSupplyFormatted}
+                >
+                  <p>{shortTokenName(name) || "Loading..."}</p>
+                </TokenCard>
+              )
+            )}
+          </TokenList>
+        </Default>
+      </Switch>
     </>
   );
 };
-
-// TODO: Render a better UI
-function RenderEmpty() {
-  return (
-    <>
-      <br />
-      <p>
-        Loading tokens... <Spinner />
-      </p>
-    </>
-  );
-}
 
 export default TokensPage;
