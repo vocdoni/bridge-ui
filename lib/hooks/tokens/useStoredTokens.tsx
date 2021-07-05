@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
+import { GatewayPool } from "dvote-js";
+import { BigNumber } from "@ethersproject/bignumber";
 
 import { getRegisteredTokenList, getTokenInfo } from "../../api";
 import { useMessageAlert } from "../message-alert";
 import { VoiceStorage } from "../../storage";
 import { TokenInfo } from "../../types";
-import { GatewayPool } from "dvote-js";
-import { BigNumber } from "@ethersproject/bignumber";
 import { OutsideProviderError } from "../../errors";
 
 type FilteredTokens = {
@@ -15,19 +15,25 @@ type FilteredTokens = {
   loading: boolean;
 };
 
-export const useFilteredTokens = (filter: string): FilteredTokens => {
+function doesTokenInfocontainTerm(token: TokenInfo, term: string) {
+  const lowercaseTerm = term.toLocaleLowerCase();
+  const lowercaseSymbol = token.symbol.toLocaleLowerCase();
+  const lowercaseAddress = token.address.toLocaleLowerCase();
+  const lowercaseName = token.name.toLocaleLowerCase();
+  return (
+    lowercaseSymbol.indexOf(lowercaseTerm) >= 0 ||
+    lowercaseName.indexOf(lowercaseTerm) >= 0 ||
+    lowercaseAddress.indexOf(lowercaseTerm) >= 0
+  );
+}
+export const useFilteredTokens = (searchTerm: string): FilteredTokens => {
   const { storedTokens, error, loading } = useStoredTokens();
 
   if (loading) return { storedTokens, error, loading };
 
-  const filteredTokens = !filter
+  const filteredTokens = !searchTerm
     ? storedTokens
-    : storedTokens.filter(
-        (t) =>
-          t.symbol.indexOf(filter) >= 0 ||
-          t.address.indexOf(filter) >= 0 ||
-          t.name.indexOf(filter) >= 0
-      );
+    : storedTokens.filter((t) => doesTokenInfocontainTerm(t, searchTerm));
 
   return { storedTokens: filteredTokens, error, loading };
 };
