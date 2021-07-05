@@ -105,7 +105,7 @@ function NoTokensCta({ searchTerm }: NoTokenCtaProps) {
     <CenterAlign>
       <img src={LOOKING_GLASS_IMG} />
       <SectionTitle title="Token not found" subtitle={subtitle} />
-      <PrimaryButton>Register token now</PrimaryButton>
+      <PrimaryButton href="/tokens/add">Register token now</PrimaryButton>
     </CenterAlign>
   );
 }
