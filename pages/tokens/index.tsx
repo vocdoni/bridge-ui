@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Case, Default, Else, If, Switch, Then, When } from "react-if";
-import Spinner from "react-svg-spinner";
+import { Case, Default, Switch } from "react-if";
 
 import { useFilteredTokens } from "../../lib/hooks/tokens/useStoredTokens";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { LOOKING_GLASS_IMG } from "../../lib/constants";
 
 import { TokenCard } from "../../components/token-card";
 import SectionTitle from "../../components/sectionTitle";
@@ -14,9 +14,10 @@ import { PrimaryButton } from "../../components/ControlElements/button";
 import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
 import { LoadingRectangle } from "../../components/loading-rectangle";
+import { flex_row_large_column_small_mixin } from "../../lib/mixins";
 
 const ButtonContainer = styled.div`
-  display: flex;
+  ${flex_row_large_column_small_mixin}
   justify-content: space-between;
   margin-bottom: 25px;
 
@@ -62,7 +63,9 @@ const TokensPage = () => {
         <Case condition={areTokensEmpty && loading}>
           <LoadingRectangle message="Loading tokens" />
         </Case>
-        <Case condition={areTokensEmpty}>{/* TODO add not token CTA */}</Case>
+        <Case condition={areTokensEmpty}>
+          <NoTokensCta searchTerm={term} />
+        </Case>
         <Default>
           <TokenList>
             {storedTokens.map(
@@ -85,5 +88,26 @@ const TokensPage = () => {
     </>
   );
 };
+
+const CenterAlign = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 40px;
+`;
+
+type NoTokenCtaProps = { searchTerm: string };
+
+function NoTokensCta({ searchTerm }: NoTokenCtaProps) {
+  const subtitle = `The token '${searchTerm}' is not yet registered on Voice`;
+  return (
+    <CenterAlign>
+      <img src={LOOKING_GLASS_IMG} />
+      <SectionTitle title="Token not found" subtitle={subtitle} />
+      <PrimaryButton>Register token now</PrimaryButton>
+    </CenterAlign>
+  );
+}
 
 export default TokensPage;
