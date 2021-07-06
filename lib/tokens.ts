@@ -1,3 +1,5 @@
+import { TokenInfo } from "./types";
+
 export const featuredTokens = {
   mainnet: [
     "0xa117000000f279d81a1d3cc75430faa017fa5a2e", // ANT
@@ -26,3 +28,21 @@ export const featuredTokens = {
     "0xf0f8d83cdab2f9514bef0319f1b434267be36b5c", // ANTv2
   ],
 };
+
+/**
+ * This method compares two token infos in order to determine their lexical order. The
+ * comparison is done w.r.t. the *symbol* field of the TokenInfo passed. Furthermore, the
+ * comparison is case *insensitive*.
+ *
+ * @param a token info holding a string to compare
+ * @param b token info holding a string to compare
+ * @returns -1 | 0 | 1
+ */
+export function tokenSorter(a: TokenInfo, b: TokenInfo) {
+  const lowerCaseA = a?.symbol.toLocaleLowerCase();
+  const lowerCaseB = b?.symbol.toLocaleLowerCase();
+
+  if (lowerCaseA > lowerCaseB) return 1;
+  else if (lowerCaseA < lowerCaseB) return -1;
+  return 0;
+}
