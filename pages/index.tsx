@@ -6,7 +6,7 @@ import { useWallet } from "use-wallet";
 import { Case, Else, If, Switch, Then } from "react-if";
 
 import { TokenList } from "./dashboard";
-import { featuredTokens } from "../lib/tokens";
+import { featuredTokens, tokenSorter } from "../lib/tokens";
 import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
 import { LANDING_PAGE_CTA } from "../lib/constants";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
@@ -138,12 +138,6 @@ const IndexPage = () => {
     </>
   );
 };
-
-function tokenSorter(a: TokenInfo, b: TokenInfo) {
-  if (a?.symbol > b?.symbol) return 1;
-  else if (a?.symbol < b?.symbol) return -1;
-  return 0;
-}
 
 const Head = styled.div`
   display: flex;

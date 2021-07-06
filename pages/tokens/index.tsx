@@ -15,6 +15,7 @@ import { PrimaryButton } from "../../components/ControlElements/button";
 import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
 import { Loading } from "../../components/Banners/GrayBanners";
+import { tokenSorter } from "../../lib/tokens";
 
 const ButtonContainer = styled.div`
   ${flex_row_large_column_small_mixin}
@@ -41,11 +42,7 @@ const TokensPage = () => {
   const { storedTokens, error, loading } = useFilteredTokens(term);
   const areTokensEmpty = !storedTokens?.length;
 
-  storedTokens?.sort?.((a, b) => {
-    if (a?.symbol > b?.symbol) return 1;
-    else if (a?.symbol < b?.symbol) return -1;
-    return 0;
-  });
+  storedTokens?.sort?.(tokenSorter);
 
   return (
     <>
