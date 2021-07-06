@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
-import { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { useProcess } from "@vocdoni/react-hooks";
-import { useUrlHash } from "use-url-hash";
 
-import { HEX_REGEX } from "../../lib/regex";
 import { useToken } from "../../lib/hooks/tokens";
 import {
   useProcessResults,
@@ -48,20 +45,15 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 import styled from "styled-components";
+import { useProcessIdFromUrl } from "../../lib/hooks/useProcessIdFromUrl";
 
 const ProcessPage = () => {
   useScrollTop();
-  const router = useRouter();
-  const processId = useUrlHash().substr(1);
+  const processId = useProcessIdFromUrl();
 
-  if (typeof window != "undefined" && !processId.match(HEX_REGEX)) {
-    console.error("Invalid process ID", processId);
-    router.replace("/tokens");
-  }
-
+  const { setAlertMessage } = useMessageAlert();
   const wallet = useWallet();
   const { dispatch } = useModal();
-  const { setAlertMessage } = useMessageAlert();
 
   const { process: processDetails, loading: processLoading, error: processError } = useProcess(
     processId
