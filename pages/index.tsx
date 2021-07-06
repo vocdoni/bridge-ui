@@ -3,7 +3,7 @@ import { withRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
 import { useWallet } from "use-wallet";
-import { Else, If, Then, Unless, When } from "react-if";
+import { Case, Else, If, Switch, Then } from "react-if";
 
 import { TokenList } from "./dashboard";
 import { featuredTokens } from "../lib/tokens";
@@ -12,37 +12,32 @@ import { LANDING_PAGE_CTA } from "../lib/constants";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
+import { flex_row_large_column_small_mixin } from "../lib/mixins";
 
 import { TokenCard } from "../components/token-card";
 import { SecondaryButton } from "../components/ControlElements/button";
 import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { Loading, NotConnected } from "../components/Banners/GrayBanners";
-import { flex_row_large_column_small_mixin } from "../lib/mixins";
 
 // MAIN COMPONENT
 
 const IndexPage = () => {
   useScrollTop();
-  const { storedTokens, loading: tokenListLoading, error: tokenListError } = useStoredTokens();
+  const { storedTokens, loading: tokenListLoading, error } = useStoredTokens();
   const featuredTokenList: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
   const featuredTokenInfos = featuredTokenList
     .map((addr) => storedTokens.find((t) => t?.address == addr))
     .filter((tok) => !!tok);
   const { tokens: tokensWithBalance, loading: tokensWithBalanceLoading } = useTokensWithBalance();
+  const hasTokenWithBalance = tokensWithBalance?.length;
+
   const wallet = useWallet();
+  const isWalletConnected = wallet?.ethereum && wallet?.account;
 
-  tokensWithBalance?.sort?.((a, b) => {
-    if (a?.symbol > b?.symbol) return 1;
-    else if (a?.symbol < b?.symbol) return -1;
-    return 0;
-  });
+  tokensWithBalance?.sort?.(tokenSorter);
 
-  featuredTokenInfos.sort((a, b) => {
-    if (a?.symbol > b?.symbol) return 1;
-    else if (a?.symbol < b?.symbol) return -1;
-    return 0;
-  });
+  featuredTokenInfos.sort(tokenSorter);
 
   return (
     <>
@@ -105,54 +100,50 @@ const IndexPage = () => {
       {/* YOUR TOKENS */}
       <TokenSection>
         <SectionTitle title="Tokens you hold" subtitle="Compatible tokens in your wallet" />
-
-        <If condition={!wallet?.ethereum || !wallet?.account}>
-          <Then>
+        <Switch>
+          <Case condition={!isWalletConnected}>
             <NotConnected connectMessage="Connect your account and discover the proposals related to your tokens" />
-          </Then>
-          <Else>
-            <If condition={tokensWithBalance?.length}>
-              <Then>
-                {/* Tokens available */}
-                <TokenList>
-                  {tokensWithBalance.map(
-                    ({ symbol, address, name, totalSupplyFormatted, icon }: Partial<TokenInfo>) => (
-                      <TokenCard
-                        key={address}
-                        name={symbol}
-                        icon={icon}
-                        rightText=""
-                        href={address ? "/tokens/info#/" + address : ""}
-                        tokenCap={totalSupplyFormatted}
-                      >
-                        <p>{shortTokenName(name) || "Loading..."}</p>
-                      </TokenCard>
-                    )
-                  )}
-                </TokenList>
-              </Then>
-              <Else>
-                {/* No tokens with balance */}
-                <When condition={tokensWithBalanceLoading}>
-                  <Loading message="Loading tokens..." />
-                </When>
-                <Unless condition={tokensWithBalanceLoading}>
-                  <GrayRectangle>
-                    <GreyInfo>No tokens found</GreyInfo>
-                    <Link href="/tokens/add">
-                      <NotListedLink>Register a token</NotListedLink>
-                    </Link>
-                  </GrayRectangle>
-                </Unless>
-              </Else>
-            </If>
-          </Else>
-        </If>
-        <br />
+          </Case>
+          <Case condition={hasTokenWithBalance}>
+            <TokenList>
+              {tokensWithBalance.map(
+                ({ symbol, address, name, totalSupplyFormatted, icon }: Partial<TokenInfo>) => (
+                  <TokenCard
+                    key={address}
+                    name={symbol}
+                    icon={icon}
+                    rightText=""
+                    href={address ? "/tokens/info#/" + address : ""}
+                    tokenCap={totalSupplyFormatted}
+                  >
+                    <p>{shortTokenName(name) || "Loading..."}</p>
+                  </TokenCard>
+                )
+              )}
+            </TokenList>
+          </Case>
+          <Case condition={tokensWithBalanceLoading}>
+            <Loading message="Loading tokens..." />
+          </Case>
+          <Case condition={!tokensWithBalanceLoading}>
+            <GrayRectangle>
+              <GreyInfo>No tokens found</GreyInfo>
+              <Link href="/tokens/add">
+                <NotListedLink>Register a token</NotListedLink>
+              </Link>
+            </GrayRectangle>
+          </Case>
+        </Switch>
       </TokenSection>
     </>
   );
 };
+
+function tokenSorter(a: TokenInfo, b: TokenInfo) {
+  if (a?.symbol > b?.symbol) return 1;
+  else if (a?.symbol < b?.symbol) return -1;
+  return 0;
+}
 
 const Head = styled.div`
   display: flex;
@@ -227,7 +218,6 @@ const HeaderAdviceText = styled.p`
     font-size: 14px;
     width: 100%;
     height: 100%;
-    text-align: center;
   }
 `;
 
@@ -249,7 +239,6 @@ const GreyInfo = styled.p`
     font-size: 16px;
     width: 100%;
     height: 100%;
-    text-align: center;
   }
 `;
 
