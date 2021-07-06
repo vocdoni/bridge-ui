@@ -169,8 +169,6 @@ const Head = styled.div`
   min-height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
-  font-family: "Manrope", sans-serif !important;
-  @media ${({ theme }) => theme.screens.tablet} {
     width: calc(100% + 30px);
     border-radius: 0;
     margin: 0 -15px;
@@ -180,8 +178,6 @@ const Head = styled.div`
 `;
 
 const HeaderTitle = styled.h4`
-  font-family: "Manrope", sans-serif !important;
-  font-style: normal;
   font-weight: 600;
   margin: 0;
   text-align: center;
@@ -199,8 +195,6 @@ const HeaderTitle = styled.h4`
 `;
 
 const HeaderSubtitle = styled.p`
-  font-family: "Manrope", sans-serif !important;
-  font-style: normal;
   font-weight: 500;
   font-size: 18px;
   line-height: 150%;
