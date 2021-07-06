@@ -7,14 +7,14 @@ import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { LOOKING_GLASS_IMG } from "../../lib/constants";
+import { flex_row_large_column_small_mixin } from "../../lib/mixins";
 
 import { TokenCard } from "../../components/token-card";
 import SectionTitle from "../../components/sectionTitle";
 import { PrimaryButton } from "../../components/ControlElements/button";
 import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
-import { LoadingRectangle } from "../../components/loading-rectangle";
-import { flex_row_large_column_small_mixin } from "../../lib/mixins";
+import { Loading } from "../../components/Banners/GrayBanners";
 
 const ButtonContainer = styled.div`
   ${flex_row_large_column_small_mixin}
@@ -61,7 +61,7 @@ const TokensPage = () => {
       </ButtonContainer>
       <Switch>
         <Case condition={areTokensEmpty && loading}>
-          <LoadingRectangle message="Loading tokens" />
+          <Loading message="Loading tokens..." />
         </Case>
         <Case condition={areTokensEmpty}>
           <NoTokensCta searchTerm={term} />
