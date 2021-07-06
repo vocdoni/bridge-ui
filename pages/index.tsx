@@ -17,8 +17,7 @@ import { TokenCard } from "../components/token-card";
 import { SecondaryButton } from "../components/ControlElements/button";
 import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
-import { LoadingRectangle } from "../components/loading-rectangle";
-import { NotConnected } from "../components/Banners/GrayBanners";
+import { Loading, NotConnected } from "../components/Banners/GrayBanners";
 import { flex_row_large_column_small_mixin } from "../lib/mixins";
 
 // MAIN COMPONENT
@@ -76,7 +75,7 @@ const IndexPage = () => {
         />
         <If condition={tokenListLoading && !featuredTokenInfos?.length}>
           <Then>
-            <LoadingRectangle message="Loading tokens" />
+            <Loading message="Loading tokens..." />
           </Then>
           <Else>
             <TokenList>
@@ -135,7 +134,7 @@ const IndexPage = () => {
               <Else>
                 {/* No tokens with balance */}
                 <When condition={tokensWithBalanceLoading}>
-                  <LoadingRectangle message="Loading tokens" />
+                  <Loading message="Loading tokens..." />
                 </When>
                 <Unless condition={tokensWithBalanceLoading}>
                   <GrayRectangle>
@@ -169,6 +168,7 @@ const Head = styled.div`
   min-height: 335px;
   border-radius: 16px;
   color: ${({ theme }) => theme.blackAndWhite.w1};
+  @media ${({ theme }) => theme.screens.tablet} {
     width: calc(100% + 30px);
     border-radius: 0;
     margin: 0 -15px;

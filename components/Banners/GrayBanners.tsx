@@ -13,10 +13,10 @@ import {
   GrayRectangleLoading,
 } from "./styled";
 
-export const Loading = () => {
+export const Loading = ({ message = "Loading..." }: { message?: string }) => {
   return (
     <GrayRectangleLoading>
-      <GreyInfo>Loading...</GreyInfo>
+      <GreyInfo>{message}</GreyInfo>
     </GrayRectangleLoading>
   );
 };

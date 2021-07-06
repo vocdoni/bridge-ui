@@ -14,9 +14,9 @@ import SectionTitle from "../../components/sectionTitle";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/ControlElements/button";
 import { IProcessSummary, ProcessMetadata } from "dvote-js";
-import { LoadingRectangle } from "../../components/loading-rectangle";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 import { ActionTypes, useModal } from "../../components/Modal/context";
+import { Loading } from "../../components/Banners/GrayBanners";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 
 const HeaderContainer = styled.div`
@@ -169,7 +169,7 @@ const VoteSection = (params: VotingSectionProps) => {
           <SectionTitle title={title} subtitle={processesMessage} />
 
           <When condition={loadingProcesses}>
-            <LoadingRectangle message="Loading" />
+            <Loading />
           </When>
           <Unless condition={loadingProcesses}>
             <EmptySection>
