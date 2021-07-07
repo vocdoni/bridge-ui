@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import Spinner from "react-svg-spinner";
 import { useProcess } from "@vocdoni/react-hooks";
+import { Case, Default, Else, If, Switch, Then } from "react-if";
+import styled from "styled-components";
 
 import { useToken } from "../../lib/hooks/tokens";
 import {
@@ -16,7 +18,7 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { USER_CANCELED_TX } from "../../lib/errors";
-import { Case, Default, Else, If, Switch, Then } from "react-if";
+import { useProcessIdFromUrl } from "../../lib/hooks/useProcessIdFromUrl";
 
 import {
   ProcessTitle,
@@ -38,14 +40,13 @@ import { ActionTypes, useModal } from "../../components/Modal/context";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import {
   NotConnected,
-  NoTokens,
+  NoTokensAtCreation,
   HasFinishedBanner,
   NotStartedBanner,
   AlreadyVotedBanner,
   Loading,
 } from "../../components/Banners/GrayBanners";
-import styled from "styled-components";
-import { useProcessIdFromUrl } from "../../lib/hooks/useProcessIdFromUrl";
+import { useUserHoldsToken } from "../../lib/hooks/tokens/useUserHoldsToken";
 
 const ProcessPage = () => {
   useScrollTop();
@@ -83,6 +84,12 @@ const ProcessPage = () => {
     processDetails
   );
 
+  const {
+    holdsBalance: hasBalance,
+    error: holdsBalanceError,
+    loading: holdsBalanceLoading,
+  } = useUserHoldsToken(wallet?.account, tokenInfo?.address);
+
   useEffect(() => {
     let errorName: string;
     if (processError) errorName = "proposal details";
@@ -90,6 +97,7 @@ const ProcessPage = () => {
     else if (processDatesError) errorName = "dates";
     else if (resultsError) errorName = "results";
     else if (proofError) errorName = "census proof";
+    else if (holdsBalanceError) errorName = "user balance";
     // else if (summaryError) errorName = "summary";
     if (!errorName) return;
 
@@ -98,7 +106,7 @@ const ProcessPage = () => {
       errorName +
       ". Please refresh the page or try again later.";
     setAlertMessage(errorMessage);
-  }, [processError, tokenError, processDatesError, resultsError, proofError]);
+  }, [processError, tokenError, processDatesError, resultsError, proofError, holdsBalanceError]);
 
   const isConnected = !!wallet.account;
   const allQuestionsSelected =
@@ -140,24 +148,11 @@ const ProcessPage = () => {
     return renderEmpty();
   }
 
-  let mainButtonText: string;
-  {
-    if (!isConnected) mainButtonText = "Connect wallet";
-    else if (!inCensus) {
-      if (proofLoading) mainButtonText = "Please wait";
-      else mainButtonText = "You are not a token holder";
-    } else if (hasAlreadyVoted) mainButtonText = "You already voted";
-    else if (!hasStarted) mainButtonText = "Voting has not started yet";
-    else if (hasEnded) mainButtonText = "Voting has ended";
-    else if (!questionsFilled) mainButtonText = "Fill all the choices";
-    else if (!canVote) mainButtonText = "You cannot vote";
-    // catch-all
-    else mainButtonText = "Submit your vote";
-  }
-  const isLoading = processLoading || tokenLoading || processDatesLoading || proofLoading;
+  let buttonText: string = questionsFilled ? "Submit your vote" : "Fill all the choices";
+  const isLoading = processLoading || tokenLoading || proofLoading;
 
   return (
-    <div>
+    <>
       <SectionTitle
         title={`${tokenInfo?.symbol || "Token"} proposal`}
         subtitle={"Cast your vote and view results as they come in."}
@@ -215,8 +210,11 @@ const ProcessPage = () => {
         <Case condition={!isConnected}>
           <NotConnected connectMessage="Connect your wallet to vote on this proposal" />
         </Case>
+        <Case condition={!inCensus && hasBalance}>
+          <NoTokensAtCreation tokenSymbol={tokenInfo.symbol} />
+        </Case>
         <Case condition={!inCensus}>
-          <NoTokens />
+          <NoTokensAtCreation stillNoTokens tokenSymbol={tokenInfo.symbol} />
         </Case>
         <Case condition={hasAlreadyVoted}>
           <AlreadyVotedBanner />
@@ -224,12 +222,12 @@ const ProcessPage = () => {
         <Default>
           <ButtonContainer>
             <Button disabled={!canVote} mode="strong" onClick={onVoteSubmit}>
-              {voteState?.submitting ? <Spinner /> : mainButtonText}
+              {voteState?.submitting ? <Spinner /> : buttonText}
             </Button>
           </ButtonContainer>
         </Default>
       </Switch>
-    </div>
+    </>
   );
 };
 

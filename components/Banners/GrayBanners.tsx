@@ -33,11 +33,14 @@ export const NotConnected = ({ connectMessage = "" }: { connectMessage?: string 
   );
 };
 
-export const NoTokens = () => {
+export const NoTokensAtCreation = ({ stillNoTokens = false, tokenSymbol }) => {
+  const message = stillNoTokens
+    ? `You can't vote because you don't hold any ${tokenSymbol}`
+    : `You can't vote because you didn't hold ${tokenSymbol} when the proposal was created`;
   return (
     <GrayRectangleTall>
       <ExclamationMark />
-      <GreyInfo>You are not a token holder</GreyInfo>
+      <GreyInfo>{message}</GreyInfo>
     </GrayRectangleTall>
   );
 };
