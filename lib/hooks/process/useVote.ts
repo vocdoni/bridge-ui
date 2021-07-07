@@ -64,14 +64,13 @@ export const useVote = (processDetails: IProcessDetails) => {
   // Auto refresh vote status
   useEffect(() => {
     const interval = setInterval(() => refreshVotingStatus(), 1000 * 20);
-    refreshVotingStatus()
-      .then(votingStatus => {
-        // No need to keep updating if already voted
-        if (votingStatus?.registered) clearInterval(interval);
-      })
+    refreshVotingStatus().then((votingStatus) => {
+      // No need to keep updating if already voted
+      if (votingStatus?.registered) clearInterval(interval);
+    });
 
     return clearInterval(interval);
-  }, [processId, voterAddress])
+  }, [processId, voterAddress]);
 
   // Clear choices on dependency change
   useEffect(() => {
@@ -84,11 +83,11 @@ export const useVote = (processDetails: IProcessDetails) => {
     if (!nullifier) return Promise.resolve(null);
 
     return poolPromise
-      .then(pool => VotingApi.getEnvelopeStatus(processId, nullifier, pool))
-      .then(votingStatus => {
+      .then((pool) => VotingApi.getEnvelopeStatus(processId, nullifier, pool))
+      .then((votingStatus) => {
         setVotingStatus(votingStatus);
         return votingStatus;
-      })
+      });
   };
 
   const submitVote = async (processDetails: IProcessDetails, proof: CensusProof): Promise<void> => {
@@ -132,7 +131,7 @@ export const useVote = (processDetails: IProcessDetails) => {
       dispatch({ type: "SET_STATE", state: { submitted: true } });
       setAlertMessage("Vote successful :-)", "success");
     } catch (err) {
-      console.log("Error in hook useVotes function submitVote: ", err.message);
+      console.error("Error in hook useVotes function submitVote: ", err.message);
       throw err;
     } finally {
       dispatch({ type: "SET_STATE", state: { submitting: false } });
