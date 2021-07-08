@@ -211,10 +211,10 @@ const ProcessPage = () => {
           <NotConnected connectMessage="Connect your wallet to vote on this proposal" />
         </Case>
         <Case condition={!inCensus && hasBalance}>
-          <NoTokensAtCreation tokenSymbol={tokenInfo.symbol} />
+          <NoTokensAtCreation tokenSymbol={tokenInfo?.symbol} />
         </Case>
         <Case condition={!inCensus}>
-          <NoTokensAtCreation stillNoTokens tokenSymbol={tokenInfo.symbol} />
+          <NoTokensAtCreation stillNoTokens tokenSymbol={tokenInfo?.symbol} />
         </Case>
         <Case condition={hasAlreadyVoted}>
           <AlreadyVotedBanner />
