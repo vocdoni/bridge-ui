@@ -34,9 +34,10 @@ export const NotConnected = ({ connectMessage = "" }: { connectMessage?: string 
 };
 
 export const NoTokensAtCreation = ({ stillNoTokens = false, tokenSymbol }) => {
+  const token = !tokenSymbol ? "tokens" : tokenSymbol;
   const message = stillNoTokens
-    ? `You can't vote because you don't hold any ${tokenSymbol}`
-    : `You can't vote because you didn't hold ${tokenSymbol} when the proposal was created`;
+    ? `You can't vote because you don't hold any ${token}`
+    : `You can't vote because you didn't hold ${token} when the proposal was created`;
   return (
     <GrayRectangleTall>
       <ExclamationMark />
