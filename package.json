@@ -45,7 +45,7 @@
     "token-amount": "^0.3.0",
     "typescript": "^4.3.5",
     "use-url-hash": "^0.1.0",
-    "use-wallet": "^0.9.0"
+    "use-wallet": "git+https://github.com/aragon/use-wallet.git#multichain"
   },
   "devDependencies": {
     "@types/node": "^16.3.1",

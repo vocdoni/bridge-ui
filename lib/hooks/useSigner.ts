@@ -2,7 +2,7 @@ import { providers } from "ethers";
 import { useWallet } from "use-wallet";
 
 export function useSigner() {
-  const wallet = useWallet<providers.JsonRpcFetchFunc>();
+  const wallet = useWallet();
 
   if (!wallet?.ethereum || !wallet?.account) return null;
 
