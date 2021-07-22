@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG, PEOPLE_IMG } from "../../lib/constants";
+import { ISLAND_FLAG_IMG, MEDITATING_LADY_IMG, PEOPLE_IMG } from "../../lib/constants/url";
 import { ConnectWalletLink } from "../ControlElements/connect-button";
 import {
   LightningBolt,

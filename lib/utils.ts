@@ -1,7 +1,9 @@
 import { ProcessMetadata } from "dvote-js";
 import { utils } from "ethers";
-import { FALLBACK_TOKEN_ICON, EMPTY_ADDRESS, TRUST_WALLET_BASE_URL } from "./constants";
-import { TOKEN_AMOUNT_REGEX } from "./regex";
+
+import { FALLBACK_TOKEN_ICON, TRUST_WALLET_BASE_URL } from "./constants/url";
+import { EMPTY_ADDRESS } from "./constants/env";
+import { TOKEN_AMOUNT_REGEX } from "./constants/regex";
 
 export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
 
