@@ -50,7 +50,7 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
             <UseBlockStatusProvider>
               <UseStoredTokensProvider>
                 <UseProcessProvider>
-                  <UseWalletProvider chainId={chainId} connectors={connectors || {}}>
+                  <UseWalletProvider connectors={connectors || {}}>
                     <UseTokensWithBalance>
                       <ModalsProvider>
                         <FixedGlobalStyle />

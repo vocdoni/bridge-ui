@@ -32,7 +32,7 @@ export function UseTokensWithBalance({ children }) {
   const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
   const { setAlertMessage } = useMessageAlert();
   const { poolPromise } = usePool();
-  const wallet = useWallet<providers.JsonRpcFetchFunc>();
+  const wallet = useWallet();
   const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
