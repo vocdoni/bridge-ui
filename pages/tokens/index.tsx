@@ -6,7 +6,7 @@ import { useFilteredTokens } from "../../lib/hooks/tokens/useStoredTokens";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { LOOKING_GLASS_IMG } from "../../lib/constants";
+import { LOOKING_GLASS_IMG } from "../../lib/constants/url";
 import { flex_row_large_column_small_mixin } from "../../lib/mixins";
 
 import { TokenCard } from "../../components/token-card";

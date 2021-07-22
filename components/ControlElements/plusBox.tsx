@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { MultiLanguage } from "dvote-js";
 
-import { PLUS_ICON, MINUS_ICON } from "../../lib/constants";
+import { PLUS_ICON, MINUS_ICON } from "../../lib/constants/url";
 
 const PlusBoxContainer = styled.div<{ remove?: boolean; add?: boolean }>`
   display: flex;

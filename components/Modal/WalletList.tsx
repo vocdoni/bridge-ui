@@ -5,7 +5,7 @@ import { useWallet } from "use-wallet";
 import { WalletModal } from ".";
 import { identifyUser } from "../../lib/analytics";
 import { useMessageAlert } from "../../lib/hooks/message-alert";
-import { WALLETS } from "../../lib/wallets";
+import { WALLETS } from "../../lib/constants/wallets";
 import { ActionTypes, useModal } from "./context";
 import { CloseIcon, ModalHeader, ModalLayout, ModalTitle } from "./styled";
 
@@ -99,7 +99,7 @@ export const WalletList = () => {
   // connect(...) method. They are extracted into this hook because (for some reason),
   // the errors are not available right after the execution of connect(). [VR 25-05-2021]
   useEffect(() => {
-    if (!error) return
+    if (!error) return;
     switch (error?.name) {
       case "ConnectionRejectedError":
         setAlertMessage("You rejected the connection attempt", "warning");
@@ -121,15 +121,22 @@ export const WalletList = () => {
     }
   }, [status]);
 
-  const handleConnection = (wallet) => {
-    return connect(wallet)
-      .then(() => {
-        closeModal();
-        reset();
-      })
-      .catch(err => {
-        console.error(err)
-      });
+  const handleConnection = async (wallet) => {
+    try {
+      await connect(wallet);
+      closeModal();
+      reset();
+    } catch (error) {
+      console.error(error);
+    }
+    // return connect(wallet)
+    //   .then(() => {
+    //     closeModal();
+    //     reset();
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
   };
 
   return (

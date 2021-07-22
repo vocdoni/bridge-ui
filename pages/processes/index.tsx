@@ -6,13 +6,13 @@ import styled from "styled-components";
 
 import { useToken } from "../../lib/hooks/tokens";
 import {
+  useCensusProof,
   useProcessResults,
   useProcessDates,
   useProcessSummary,
   useVote,
 } from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
-import { useCensusProof } from "../../lib/hooks/process/useCensusProof";
 import { useWallet } from "use-wallet";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { useMessageAlert } from "../../lib/hooks/message-alert";

@@ -8,7 +8,7 @@ import { Case, Else, If, Switch, Then } from "react-if";
 import { TokenList } from "./dashboard";
 import { featuredTokens, tokenSorter } from "../lib/tokens";
 import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
-import { LANDING_PAGE_CTA } from "../lib/constants";
+import { LANDING_PAGE_CTA } from "../lib/constants/url";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";

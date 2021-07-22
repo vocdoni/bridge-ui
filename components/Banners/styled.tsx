@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { LIGHTNING_ICON, WARNING_ICON } from "../../lib/constants";
+import { LIGHTNING_ICON, WARNING_ICON } from "../../lib/constants/url";
 
 export const GrayRectangle = styled.div`
   display: flex;
@@ -27,7 +27,6 @@ export const skeletonKeyframes = keyframes`
     background-position: calc(400px + 100%) 0;
   }
 `;
-
 
 export const GrayRectangleLoading = styled(GrayRectangleTall)`
   animation: ${skeletonKeyframes} 2s linear infinite;

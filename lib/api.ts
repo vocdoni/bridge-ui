@@ -4,7 +4,7 @@ import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NoTokenBalanceError, NO_TOKEN_BALANCE } from "./errors";
 import { TokenInfo } from "./types";
-import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants";
+import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants/abi";
 import { Awaited, tokenIconUrl } from "./utils";
 
 export interface ProofParameters {

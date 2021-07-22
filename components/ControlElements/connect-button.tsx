@@ -4,7 +4,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 
 import { shortAddress } from "../../lib/utils";
-import { WALLET_IDENTICON } from "../../lib/constants";
+import { WALLET_IDENTICON } from "../../lib/constants/url";
 
 import { useModal, ActionTypes } from "../Modal/context";
 

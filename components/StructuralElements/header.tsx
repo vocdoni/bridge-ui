@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import Hamburger from "hamburger-react";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
-import { HEADER_LOGO } from "../../lib/constants";
+import { HEADER_LOGO } from "../../lib/constants/url";
 import { ConnectButton } from "../ControlElements/connect-button";
 
 const HeaderContainer = styled.div`
