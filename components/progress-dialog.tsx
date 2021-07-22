@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import styled, { useTheme } from "styled-components";
 
-import { BLUE_TICK_ICON, MEDITATING_LADY_IMG, RED_CROSS_ICON } from "../lib/constants";
+import { BLUE_TICK_ICON, MEDITATING_LADY_IMG, RED_CROSS_ICON } from "../lib/constants/url";
 import { NonExistingCaseError } from "../lib/errors";
 import { PrimaryButton, SecondaryButton } from "./ControlElements/button";
 

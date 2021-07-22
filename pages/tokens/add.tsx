@@ -19,9 +19,9 @@ import { useSigner } from "../../lib/hooks/useSigner";
 import { useStoredTokens } from "../../lib/hooks/tokens";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
-import { FORTY_DIGITS_HEX } from "../../lib/regex";
+import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
-import { ETHERSCAN_ADDRESS_PREFIX } from "../../lib/constants";
+import { ETHERSCAN_ADDRESS_PREFIX } from "../../lib/constants/url";
 
 import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";

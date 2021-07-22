@@ -26,7 +26,7 @@ import { validateProposal } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { findMaxValue } from "../../lib/utils";
 import { useStoredTokens, useToken } from "../../lib/hooks/tokens";
-import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants";
+import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants/env";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import {
   NO_TOKEN_BALANCE,
@@ -35,7 +35,7 @@ import {
   USER_CANCELED_TX,
 } from "../../lib/errors";
 import { useIsWide } from "../../lib/hooks/useWindowSize";
-import { FORTY_DIGITS_HEX } from "../../lib/regex";
+import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";
 import { EventType, trackEvent } from "../../lib/analytics";
 
 import { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";

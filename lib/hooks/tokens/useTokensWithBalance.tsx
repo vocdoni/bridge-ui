@@ -4,7 +4,7 @@ import { useWallet } from "use-wallet";
 import { BigNumber, providers } from "ethers";
 import { useMessageAlert } from "../message-alert";
 import { useStoredTokens } from "./useStoredTokens";
-import { ERC20_ABI } from "../../constants";
+import { ERC20_ABI } from "../../constants/abi";
 import { TokenInfo } from "../../types";
 import { usePool } from "@vocdoni/react-hooks";
 import { OutsideProviderError } from "../../errors";

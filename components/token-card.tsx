@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { FALLBACK_TOKEN_ICON } from "../lib/constants";
+import { FALLBACK_TOKEN_ICON } from "../lib/constants/url";
 import { shortTokenName } from "../lib/utils";
 import { abbreviatedTokenAmount } from "../lib/utils";
 

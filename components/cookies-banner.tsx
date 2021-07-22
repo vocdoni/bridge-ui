@@ -2,7 +2,7 @@ import React from "react";
 import { If } from "react-if";
 import styled from "styled-components";
 
-import { COOKIES_URL } from "../lib/constants";
+import { COOKIES_URL } from "../lib/constants/url";
 import { useCookies } from "../lib/hooks/cookies";
 
 import { size } from "../theme/index";

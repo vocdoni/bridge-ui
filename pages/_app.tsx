@@ -12,7 +12,7 @@ import "react-datetime/css/react-datetime.css";
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
 import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/tokens";
-import { getConnectors } from "../lib/wallets";
+import { getConnectors } from "../lib/constants/wallets";
 import { trackPage } from "../lib/analytics";
 
 import { FixedGlobalStyle, theme } from "../theme";
@@ -27,7 +27,7 @@ type NextAppProps = AppInitialProps & {
   router: Router;
 };
 
-const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
+const VoiceApp: FC<NextAppProps> = ({ Component, pageProps }) => {
   const chainId = parseInt(process.env.ETH_CHAIN_ID);
   const bootnodeUri = process.env.BOOTNODES_URL;
   const networkId = process.env.ETH_NETWORK_ID as EthNetworkID;
@@ -89,4 +89,4 @@ const BridgeApp: FC<NextAppProps> = ({ Component, pageProps }) => {
   );
 };
 
-export default BridgeApp;
+export default VoiceApp;

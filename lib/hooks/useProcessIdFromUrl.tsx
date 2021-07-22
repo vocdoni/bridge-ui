@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useUrlHash } from "use-url-hash";
 
-import { HEX_REGEX } from "../regex";
+import { HEX_REGEX } from "../constants/regex";
 import { useMessageAlert } from "./message-alert";
 
 /**

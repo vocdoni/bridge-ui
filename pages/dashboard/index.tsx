@@ -11,7 +11,7 @@ import { IProcessSummary, ProcessMetadata } from "dvote-js";
 import { useStoredTokens } from "../../lib/hooks/tokens";
 import { TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/utils";
-import { FALLBACK_TOKEN_ICON } from "../../lib/constants";
+import { FALLBACK_TOKEN_ICON } from "../../lib/constants/url";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 
 import { TokenCard } from "../../components/token-card";
