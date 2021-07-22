@@ -1,7 +1,7 @@
 export interface ConnectorData {
   name: string;
   connector: string;
-  properties?: Record<string, string | number>;
+  properties?: Record<string, string | number | number[]>;
 }
 
 export type SUPPORTED_CONNECTORS =
@@ -16,12 +16,16 @@ export const WALLETS: ConnectorData[] = [
   {
     name: "Metamask",
     connector: "injected",
+    properties: {
+      chainId: [1, 4],
+    },
   },
   {
     name: "Fortmatic",
     connector: "fortmatic",
     properties: {
       apiKey: process.env.FORTMATIC_API_KEY,
+      chainId: 1, // mainnet only
     },
   },
   // {
