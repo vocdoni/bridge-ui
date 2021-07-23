@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
@@ -19,17 +19,39 @@ import { SecondaryButton } from "../components/ControlElements/button";
 import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { Loading, NotConnected } from "../components/Banners/GrayBanners";
+import { getNetworkVars } from "../lib/constants/env";
+import { usePool } from "@vocdoni/react-hooks";
 
 // MAIN COMPONENT
 
 const IndexPage = () => {
   useScrollTop();
+  const { chainId } = useWallet();
+  const { networkName } = getNetworkVars(chainId);
+  const { pool, loading: poolLoading, error: poolError } = usePool();
+
+  useEffect(() => {
+    console.log("POOL LOADING: " + poolLoading);
+    console.log("POOL ERROR " + poolError);
+  }, [poolError, poolLoading]);
+
+  if (pool) console.log("POOL IN INDEX");
+  else console.log("NO POOL IN INDEX");
+
   const { storedTokens, loading: tokenListLoading, error } = useStoredTokens();
-  const featuredTokenList: string[] = featuredTokens[process.env.ETH_NETWORK_ID] || [];
+  console.log(networkName);
+  const featuredTokenList: string[] = featuredTokens[networkName] || [];
+
   const featuredTokenInfos = featuredTokenList
     .map((addr) => storedTokens.find((t) => t?.address == addr))
     .filter((tok) => !!tok);
-  const { tokens: tokensWithBalance, loading: tokensWithBalanceLoading } = useTokensWithBalance();
+  const {
+    tokens: tokensWithBalance,
+    loading: tokensWithBalanceLoading,
+    error: tokensWithBalanceError,
+    refresh,
+  } = useTokensWithBalance();
+  console.log("FROM INDEX " + tokensWithBalanceError);
   const hasTokenWithBalance = tokensWithBalance?.length;
 
   const wallet = useWallet();

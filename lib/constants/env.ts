@@ -1,11 +1,11 @@
+import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
+
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 export const GOERLI_MULTICALL = "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 interface BuildVariables {
-  development: string;
   isDevelopment: boolean;
-  vocdoniEnvironment: string;
   commitSha: string;
   appTitle: string;
   analyticsKey: string;
@@ -14,9 +14,7 @@ interface BuildVariables {
 
 /*  Maybe have singleton objects with fields derived from env directly */
 export const BUILD: BuildVariables = {
-  isDevelopment: process.env.DEVELOPMENT,
-  vocdoniEnvironment: "dev",
-  // vocdoniEnv: process.env.VOCDONI_ENVIRONMENT,
+  isDevelopment: false,
   commitSha: process.env.COMMIT_SHA,
   appTitle: process.env.APP_TITLE,
   analyticsKey: process.env.ANALYTICS_KEY,
@@ -25,11 +23,12 @@ export const BUILD: BuildVariables = {
 
 interface NetworkVariables {
   chainId: number;
-  networkName: string;
+  networkName: EthNetworkID;
   etherscanPrefix: string;
   blockTime: number;
   bootnodesUrl: string;
   singalingOracleUrl: string;
+  vocdoniEnvironment: VocdoniEnvironment;
 }
 
 const ENVIRONMENTS: NetworkVariables[] = [
@@ -40,6 +39,7 @@ const ENVIRONMENTS: NetworkVariables[] = [
     blockTime: 10,
     bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.json",
     singalingOracleUrl: "https://signaling-oracle.vocdoni.net/dvote",
+    vocdoniEnvironment: "prod",
   },
   {
     chainId: 4,
@@ -48,6 +48,7 @@ const ENVIRONMENTS: NetworkVariables[] = [
     blockTime: 12,
     bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.dev.json",
     singalingOracleUrl: "https://signaling-oracle.dev.vocdoni.net/dvote",
+    vocdoniEnvironment: "dev",
   },
 ];
 
