@@ -134,6 +134,9 @@ export function UseStoredTokensProvider({ children }) {
       })
       .catch((err) => {
         setLoading(false);
+        /* Errors can get too large and specific to display as toast to users. Use
+abbreviated message i toast and explicit message in console */
+        console.error("Could not update the list of tokens because: " + err);
         setError("Could not update the list of tokens");
       });
   };
