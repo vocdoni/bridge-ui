@@ -21,7 +21,6 @@ export const LOOKING_GLASS_IMG = "/media/images/looking_glass_lady_img.svg";
 
 // URI's
 export const COOKIES_URL = "https://aragon.org/cookies";
-export const ETHERSCAN_ADDRESS_PREFIX = process.env.ETHERSCAN_PREFIX + "/address";
 // from aragon/use-wallet
 export const TRUST_WALLET_BASE_URL =
   "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";

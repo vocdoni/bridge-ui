@@ -5,7 +5,6 @@ import Head from "next/head";
 import { Router } from "next/router";
 import { UseWalletProvider, useWallet } from "use-wallet";
 import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
-import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 import { ThemeProvider } from "styled-components";
 
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
@@ -46,15 +45,14 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 
 const AppWithWallet = ({ Component, pageProps }: NextAppProps) => {
   const { chainId } = useWallet();
-  const { networkName, bootnodesUrl } = getNetworkVars(chainId);
-  console.log("ENVIRONMENT " + JSON.stringify(getNetworkVars(chainId), null, 2));
-
+  const { networkName, bootnodesUrl, vocdoniEnvironment } = getNetworkVars(chainId);
   return (
     <UsePoolProvider
       bootnodeUri={bootnodesUrl}
-      networkId={networkName as EthNetworkID}
-      environment={BUILD.vocdoniEnvironment as VocdoniEnvironment}
+      networkId={networkName}
+      environment={vocdoniEnvironment}
       minNumGateways={1}
+      discoveryTimeout={2000}
     >
       <UseBlockStatusProvider>
         <UseStoredTokensProvider>
