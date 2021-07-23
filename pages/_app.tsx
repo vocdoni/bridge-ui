@@ -6,6 +6,7 @@ import { Router } from "next/router";
 import { UseWalletProvider, useWallet } from "use-wallet";
 import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
 import { ThemeProvider } from "styled-components";
+import "react-datetime/css/react-datetime.css";
 
 import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
 import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
@@ -31,15 +32,15 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
   console.log("BUILT WITH " + JSON.stringify(BUILD, null, 2));
 
   return (
-    <ThemeProvider theme={theme}>
-      <UseMessageAlertProvider>
+    <UseMessageAlertProvider>
+      <ThemeProvider theme={theme}>
         <UseLoadingAlertProvider>
           <UseWalletProvider connectors={connectors || {}}>
             <AppWithWallet Component={Component} router={router} pageProps={pageProps} />
           </UseWalletProvider>
         </UseLoadingAlertProvider>
-      </UseMessageAlertProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </UseMessageAlertProvider>
   );
 };
 

@@ -14,7 +14,7 @@ interface BuildVariables {
 
 /*  Maybe have singleton objects with fields derived from env directly */
 export const BUILD: BuildVariables = {
-  isDevelopment: false,
+  isDevelopment: true,
   commitSha: process.env.COMMIT_SHA,
   appTitle: process.env.APP_TITLE,
   analyticsKey: process.env.ANALYTICS_KEY,
@@ -52,7 +52,7 @@ const ENVIRONMENTS: NetworkVariables[] = [
   },
 ];
 
-export function getNetworkVars(chainId: number = 1): NetworkVariables {
+export function getNetworkVars(chainId: number = 4): NetworkVariables {
   console.log(chainId);
   return ENVIRONMENTS.find((env) => env.chainId === chainId);
 }
