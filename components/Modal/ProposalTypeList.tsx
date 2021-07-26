@@ -83,7 +83,10 @@ export const ProposalTypeList = () => {
         </ModalHeader>
         <Body>
           {PROPOSAL_TYPES_INFO.map((pt) => (
-            <OptionContainer onClick={() => onChoice(pt.type)}>
+            <OptionContainer
+              key={`${pt.title}_${pt.description}`}
+              onClick={() => onChoice(pt.type)}
+            >
               <OptionTitle>{pt.title}</OptionTitle>
               <OptionDescription>{pt.description}</OptionDescription>
             </OptionContainer>
