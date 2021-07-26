@@ -4,7 +4,6 @@ import { GatewayPool } from "dvote-js";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import { getRegisteredTokenList, getTokenInfo } from "../../api";
-import { useMessageAlert } from "../message-alert";
 import { VoiceStorage } from "../../storage";
 import { TokenInfo } from "../../types";
 import { OutsideProviderError } from "../../errors";
@@ -68,7 +67,6 @@ export function useStoredTokens() {
 // Convert this to an array of tokens
 export function UseStoredTokensProvider({ children }) {
   const { poolPromise } = usePool();
-  const { setAlertMessage } = useMessageAlert();
   const [storedTokens, setStoredTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -100,16 +98,21 @@ export function UseStoredTokensProvider({ children }) {
     return storage.writeTokens(tokens);
   };
 
+  /**
+   * Fetches *newly* registered tokens (as in, registered on the chain, but not yet stored
+   * locally). It then gets the token information associated to these new tokens and
+   * writes them to the local storage.
+   *
+   * @returns void
+   */
   const fetchNewStoredTokens = () => {
-    let pool: GatewayPool;
     setLoading(true);
 
     return poolPromise
-      .then((gwPool) => {
-        pool = gwPool;
-        return getRegisteredTokenList(storedTokens?.length || 0, pool);
+      .then((gwPool: GatewayPool) => {
+        return Promise.all([getRegisteredTokenList(storedTokens?.length || 0, gwPool), gwPool]);
       })
-      .then((tokenList) => {
+      .then(([tokenList, gwp]) => {
         // Fetches the details of the non-stored tokens
         const newTokens: string[] = [];
         for (let i = 0; i < tokenList.length; i++) {
@@ -120,7 +123,7 @@ export function UseStoredTokensProvider({ children }) {
 
           newTokens.push(tokenList[i]);
         }
-        return Promise.all(newTokens.map((addr) => getTokenInfo(addr, pool)));
+        return Promise.all(newTokens.map((addr) => getTokenInfo(addr, gwp)));
       })
       .then((newTokenListInfo) => {
         setLoading(false);
@@ -136,7 +139,7 @@ export function UseStoredTokensProvider({ children }) {
   };
 
   useEffect(() => {
-    if (error) setAlertMessage(error);
+    if (error) console.error(error);
   }, [error]);
 
   return (
