@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, Fragment, useEffect, useState } from "react";
 import {
   DVoteGateway,
   GatewayPool,
@@ -579,7 +579,7 @@ const NewProcessPage = () => {
           value={metadata.description.default}
         />
         {metadata.questions.map((question, qIdx) => (
-          <>
+          <Fragment key={qIdx}>
             <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
             <QuestionText>Question</QuestionText>
             <RemoveButton marginTop={-57}>
@@ -622,7 +622,7 @@ const NewProcessPage = () => {
             {qIdx == metadata.questions.length - 1 ? (
               <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
             ) : null}
-          </>
+          </Fragment>
         ))}
       </InformationSection>
 
