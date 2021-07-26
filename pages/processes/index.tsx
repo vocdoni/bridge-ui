@@ -96,9 +96,12 @@ const ProcessPage = () => {
     else if (tokenError) errorName = "token details";
     else if (processDatesError) errorName = "dates";
     else if (resultsError) errorName = "results";
-    else if (proofError) errorName = "census proof";
-    else if (holdsBalanceError) errorName = "user balance";
-    // else if (summaryError) errorName = "summary";
+    else if (summaryError) errorName = "summary";
+    else if (proofError) {
+      if (proofError === "You are not a token holder") return;
+      errorName = "census proof";
+    } else if (holdsBalanceError) errorName = "user balance";
+
     if (!errorName) return;
 
     const errorMessage =

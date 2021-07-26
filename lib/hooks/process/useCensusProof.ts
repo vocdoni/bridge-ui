@@ -23,28 +23,30 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
 
     setLoading(true);
 
+    /* TODO should not have "no balance" as an error, but as an additional state. */
     poolPromise
-      .then(pool => getProof({
-        account,
-        token: tokenAddr,
-        block: targetBlock,
-        balanceMappingPosition,
-        pool,
-      }))
-      .then(data => {
+      .then((pool) =>
+        getProof({
+          account,
+          token: tokenAddr,
+          block: targetBlock,
+          balanceMappingPosition,
+          pool,
+        })
+      )
+      .then((data) => {
         setLoading(false);
 
         if (data?.storageProof) setProof(data as any);
         else setError("You are not a token holder");
       })
-      .catch(err => {
+      .catch((err) => {
         setLoading(false);
 
-        if (err?.message == "You have no token balance") return
+        if (err?.message == "You have no token balance") return;
         setError("Could not fetch the census proof");
       });
-
-  }, [account, tokenAddr, balanceMappingPosition, poolPromise, targetBlock])
+  }, [account, tokenAddr, balanceMappingPosition, poolPromise, targetBlock]);
 
   return { proof, error, loading };
 };
