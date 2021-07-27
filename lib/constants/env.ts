@@ -21,7 +21,7 @@ export const BUILD: BuildVariables = {
   fortmaticKey: process.env.FORTMATIC_API_KEY,
 };
 
-interface NetworkVariables {
+export interface NetworkVariables {
   chainId: number;
   networkName: EthNetworkID;
   etherscanPrefix: string;

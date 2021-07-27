@@ -19,6 +19,7 @@ import { Layout } from "../components/StructuralElements/layout";
 import { ModalsProvider } from "../components/Modal/context";
 import { CookiesBanner } from "../components/cookies-banner";
 import { BUILD, getNetworkVars } from "../lib/constants/env";
+import { useEnvironment, UseEnvironmentProvider } from "../lib/hooks/context/useEnvironment";
 
 Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
 
@@ -36,7 +37,9 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
       <UseMessageAlertProvider>
         <UseLoadingAlertProvider>
           <UseWalletProvider connectors={connectors || {}}>
-            <AppWithWallet Component={Component} router={router} pageProps={pageProps} />
+            <UseEnvironmentProvider>
+              <AppWithWallet Component={Component} router={router} pageProps={pageProps} />
+            </UseEnvironmentProvider>
           </UseWalletProvider>
         </UseLoadingAlertProvider>
       </UseMessageAlertProvider>
@@ -45,9 +48,9 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 };
 
 const AppWithWallet = ({ Component, pageProps }: NextAppProps) => {
-  const { chainId } = useWallet();
-  console.log("rerender with " + chainId);
-  const { networkName, bootnodesUrl, vocdoniEnvironment } = getNetworkVars(chainId);
+  // const { chainId } = useWallet();
+  const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
+  // console.log("rerender with " + chainId);
 
   return (
     <UsePoolProvider

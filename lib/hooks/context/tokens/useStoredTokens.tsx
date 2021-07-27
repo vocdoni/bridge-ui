@@ -14,7 +14,7 @@ type FilteredTokens = {
   loading: boolean;
 };
 
-function doesTokenInfocontainTerm(token: TokenInfo, term: string) {
+function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
   const lowercaseTerm = term.toLocaleLowerCase();
   const lowercaseSymbol = token.symbol.toLocaleLowerCase();
   const lowercaseAddress = token.address.toLocaleLowerCase();
@@ -25,6 +25,7 @@ function doesTokenInfocontainTerm(token: TokenInfo, term: string) {
     lowercaseAddress.indexOf(lowercaseTerm) >= 0
   );
 }
+
 export const useFilteredTokens = (searchTerm: string): FilteredTokens => {
   const { storedTokens, error, loading } = useStoredTokens();
 
@@ -32,7 +33,7 @@ export const useFilteredTokens = (searchTerm: string): FilteredTokens => {
 
   const filteredTokens = !searchTerm
     ? storedTokens
-    : storedTokens.filter((t) => doesTokenInfocontainTerm(t, searchTerm));
+    : storedTokens.filter((t) => doesTokenInfoContainTerm(t, searchTerm));
 
   return { storedTokens: filteredTokens, error, loading };
 };
