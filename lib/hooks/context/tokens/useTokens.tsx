@@ -70,9 +70,12 @@ export function useTokens(tokenAddresses: string[]) {
       uncachedTokens.push(addr);
     }
 
+    let pool: GatewayPool;
     poolPromise
       .then((gwPool) => {
-        return Promise.all(uncachedTokens.map((tokenAddr) => getTokenInfo(tokenAddr, gwPool)));
+        pool = gwPool;
+
+        return Promise.all(uncachedTokens.map((tokenAddr) => getTokenInfo(tokenAddr, pool)));
       })
       .then((newTokenInfos) => {
         setLoading(false);

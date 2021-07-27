@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUrlHash } from "use-url-hash";
 
 import { HEX_REGEX } from "../constants/regex";
-import { useMessageAlert } from "./message-alert";
+import { useMessageAlert } from "../hooks/context/message-alert";
 
 /**
  * This hook retrieves a valid processID from the URL or redirects the User to the

@@ -4,7 +4,7 @@ import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import styled from "styled-components";
 
-import { useToken } from "../../lib/hooks/tokens";
+import { useToken } from "../../lib/hooks/context/tokens";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";

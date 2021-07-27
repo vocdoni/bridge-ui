@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Case, Default, Switch } from "react-if";
 
-import { useFilteredTokens } from "../../lib/hooks/tokens/useStoredTokens";
+import { useFilteredTokens } from "../../lib/hooks/context/tokens/useStoredTokens";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
