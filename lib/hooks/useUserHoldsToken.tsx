@@ -1,6 +1,6 @@
 import { usePool } from "@vocdoni/react-hooks";
 import { useState, useEffect } from "react";
-import { hasBalance } from "../../api";
+import { hasBalance } from "../api";
 
 /**
  * Hook that determines whether or not a user holds a particular token.

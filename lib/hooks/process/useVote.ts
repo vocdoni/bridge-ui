@@ -2,8 +2,9 @@ import { usePool } from "@vocdoni/react-hooks";
 import { IProcessDetails, SignedEnvelopeParams, VotingApi } from "dvote-js";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useWallet } from "use-wallet";
+
 import { CensusProof } from "../../api";
-import { useMessageAlert } from "../message-alert";
+import { useMessageAlert } from "../context/message-alert";
 import { useSigner } from "../useSigner";
 
 export interface VoteState {

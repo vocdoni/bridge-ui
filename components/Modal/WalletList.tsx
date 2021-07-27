@@ -4,7 +4,7 @@ import { useWallet } from "use-wallet";
 
 import { WalletModal } from ".";
 import { identifyUser } from "../../lib/analytics";
-import { useMessageAlert } from "../../lib/hooks/message-alert";
+import { useMessageAlert } from "../../lib/hooks/context/message-alert";
 import { WALLETS } from "../../lib/constants/wallets";
 import { ActionTypes, useModal } from "./context";
 import { CloseIcon, ModalHeader, ModalLayout, ModalTitle } from "./styled";

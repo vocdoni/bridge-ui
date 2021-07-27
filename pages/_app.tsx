@@ -6,10 +6,11 @@ import { Router } from "next/router";
 import { UseWalletProvider, useWallet } from "use-wallet";
 import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
 import { ThemeProvider } from "styled-components";
+import "react-datetime/css/react-datetime.css";
 
-import { UseMessageAlertProvider } from "../lib/hooks/message-alert";
-import { UseLoadingAlertProvider } from "../lib/hooks/loading-alert";
-import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/tokens";
+import { UseMessageAlertProvider } from "../lib/hooks/context/message-alert";
+import { UseLoadingAlertProvider } from "../lib/hooks/context/loading-alert";
+import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/context/tokens";
 import { getConnectors } from "../lib/constants/wallets";
 import { trackPage } from "../lib/analytics";
 
@@ -45,7 +46,9 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 
 const AppWithWallet = ({ Component, pageProps }: NextAppProps) => {
   const { chainId } = useWallet();
+  console.log("rerender with " + chainId);
   const { networkName, bootnodesUrl, vocdoniEnvironment } = getNetworkVars(chainId);
+
   return (
     <UsePoolProvider
       bootnodeUri={bootnodesUrl}

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useMessageAlert } from "../lib/hooks/message-alert";
+import { useMessageAlert } from "../lib/hooks/context/message-alert";
 import { MsgType } from "../lib/types";
 
 export const MessageAlert = () => {

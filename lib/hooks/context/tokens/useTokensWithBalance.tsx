@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Contract, ContractCall, Provider } from "ethers-multicall";
 import { useWallet } from "use-wallet";
-import { BigNumber, providers } from "ethers";
+import { BigNumber } from "ethers";
+import { usePool } from "@vocdoni/react-hooks";
+
 import { useMessageAlert } from "../message-alert";
 import { useStoredTokens } from "./useStoredTokens";
-import { ERC20_ABI } from "../../constants/abi";
-import { TokenInfo } from "../../types";
-import { usePool } from "@vocdoni/react-hooks";
-import { OutsideProviderError } from "../../errors";
+import { ERC20_ABI } from "../../../constants/abi";
+import { TokenInfo } from "../../../types";
+import { OutsideProviderError } from "../../../errors";
 
 interface UserTokenInfo {
   tokens: TokenInfo[];

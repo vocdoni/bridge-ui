@@ -7,7 +7,7 @@ import { Case, Else, If, Switch, Then } from "react-if";
 
 import { TokenList } from "./dashboard";
 import { featuredTokens, tokenSorter } from "../lib/tokens";
-import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/tokens";
+import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/context/tokens";
 import { LANDING_PAGE_CTA } from "../lib/constants/url";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
@@ -39,7 +39,7 @@ const IndexPage = () => {
   else console.log("NO POOL IN INDEX");
 
   const { storedTokens, loading: tokenListLoading, error } = useStoredTokens();
-  console.log(networkName);
+  console.log("STORED TOKENS ON " + networkName + " : " + storedTokens.forEach(console.log));
   const featuredTokenList: string[] = featuredTokens[networkName] || [];
 
   const featuredTokenInfos = featuredTokenList
