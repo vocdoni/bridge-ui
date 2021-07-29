@@ -185,6 +185,7 @@ export const ButtonContainer = styled.div`
 export const ChoiceInfo = styled.div`
   width: 58px;
   height: 58px;
+  min-width: 58px;
   border-radius: 50px;
   align-items: center;
   display: flex;

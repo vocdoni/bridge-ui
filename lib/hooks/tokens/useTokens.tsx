@@ -4,7 +4,6 @@ import { usePool } from "@vocdoni/react-hooks";
 import { getTokenInfo } from "../../api";
 import { TokenInfo } from "../../types";
 import { useStoredTokens } from "./useStoredTokens";
-import { GatewayPool } from "dvote-js";
 
 /** Frontend of the cached token list */
 export function useToken(address: string) {
