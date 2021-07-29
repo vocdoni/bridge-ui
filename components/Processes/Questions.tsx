@@ -31,6 +31,15 @@ function readablePercent(percent: string): string {
   else return percent + "%";
 }
 
+type OptionProps = {
+  choice: PChoice;
+  choiceResult: PResult;
+  onChoiceSelect: (qIdx: number, value: number) => void;
+  questionIdx: number;
+  checked: boolean;
+  canSelect: boolean;
+};
+
 const Option = ({
   choice,
   choiceResult,
@@ -38,14 +47,7 @@ const Option = ({
   questionIdx,
   checked,
   canSelect,
-}: {
-  choice: PChoice;
-  choiceResult: PResult;
-  onChoiceSelect: (qIdx: number, value: number) => void;
-  questionIdx: number;
-  checked: boolean;
-  canSelect: boolean;
-}) => (
+}: OptionProps) => (
   <OptionLabel>
     {canSelect ? (
       <Checkbox checked={checked} onChange={() => onChoiceSelect(questionIdx, choice.value)} />
@@ -61,19 +63,21 @@ const Option = ({
   </OptionLabel>
 );
 
+type QuestionProps = {
+  questions: PQuestion[];
+  results: ProcessResults;
+  onChoiceSelect: (qIdx: number, value: number) => void;
+  choicesSelected: number[];
+  canSelect: boolean;
+};
+
 export const Questions = ({
   questions,
   results,
   onChoiceSelect,
   choicesSelected,
   canSelect,
-}: {
-  questions: PQuestion[];
-  results: ProcessResults;
-  onChoiceSelect: (qIdx: number, value: number) => void;
-  choicesSelected: number[];
-  canSelect: boolean;
-}) => {
+}: QuestionProps) => {
   if (!questions) return <div />;
 
   return (
