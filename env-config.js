@@ -27,7 +27,7 @@ module.exports = {
     process.env.SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
 
   // ANALYTICS
-  ANALYTICS_KEY: process.env.ANALYTICS_KEY || "4ohZSOqAi2Wy0pDuzFPB7fDN5XirRjsq",
+  ANALYTICS_KEY: process.env.ANALYTICS_KEY || "1w2W1aAJRMbVRAgHVOIRVVIh1Nc",
 
   FORTMATIC_API_KEY: process.env.FORTMATIC_API_KEY || "pk_test_A5D318B08D001541",
 };
