@@ -115,7 +115,7 @@ jobs:
             SIGNALING_ORACLE_URL=https://signaling-oracle.vocdoni.net/dvote
             BLOCK_TIME=10
             ETHERSCAN_PREFIX=https://etherscan.io
-            ANALYTICS_KEY=gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
+            ANALYTICS_KEY=1w2aWkXE1ukrJJAGi29Gbw3Yi0X
             FORTMATIC_API_KEY=pk_live_A08FE109CFF97C4F
           push: true
           tags: |
@@ -173,7 +173,7 @@ jobs:
           SIGNALING_ORACLE_URL: https://signaling-oracle.vocdoni.net/dvote
           BLOCK_TIME: 10
           ETHERSCAN_PREFIX: https://etherscan.io
-          ANALYTICS_KEY: gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
+          ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
       - name: Upload static site to GCS
         run: |
@@ -191,7 +191,7 @@ jobs:
           SIGNALING_ORACLE_URL: https://signaling-oracle-xdai.vocdoni.net/dvote
           BLOCK_TIME: 10
           ETHERSCAN_PREFIX: https://etherscan.io
-          ANALYTICS_KEY: gd9ATNZG1WZ3wOqaXXE5Cl2tXzCtNeoa
+          ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
       - name: Upload static site to GCS
         run: |

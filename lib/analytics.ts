@@ -23,9 +23,9 @@ export enum EventType {
  * @returns the corresponding analytics method
  */
 function getAnalyticsMethod(methodType: MethodType) {
-  const windowAnalytics = (window as any).analytics;
+  const windowAnalytics = (window as any).rudderanalytics;
   if (!windowAnalytics) {
-    console.warn("Analytics could not be laoded.");
+    console.warn("Analytics could not be loaded.");
     return null;
   }
   if (methodType === MethodType.PAGE) return windowAnalytics.page;
