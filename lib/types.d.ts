@@ -16,3 +16,9 @@ export type TokenInfo = {
 export type TokenEntry = Omit<TokenInfo, "processes">;
 
 export type MsgType = "error" | "success" | "warning" | "info";
+
+export type UseData<T> = {
+  data: T;
+  isLoading: boolean;
+  error: Error;
+};
