@@ -52,7 +52,7 @@ const ENVIRONMENTS: NetworkVariables[] = [
   },
 ];
 
-export function getNetworkVars(chainId: number = 1): NetworkVariables {
-  console.log(chainId);
+export function getNetworkVars(chainId: number, called: string): NetworkVariables {
+  console.log("GETTING ENV FOR ID " + chainId + " FROM " + called);
   return ENVIRONMENTS.find((env) => env.chainId === chainId);
 }

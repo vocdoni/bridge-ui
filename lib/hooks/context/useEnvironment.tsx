@@ -18,13 +18,25 @@ export function useEnvironment() {
 
 export function UseEnvironmentProvider({ children }) {
   const { chainId } = useWallet();
-  const [environment, setEnvironment] = useState<NetworkVariables>(getNetworkVars());
+  const env = getNetworkVars(1, "env provider init");
+  const [environment, setEnvironment] = useState<NetworkVariables>(env);
 
   useEffect(() => {
-    const newEnvironment = getNetworkVars(chainId);
+    console.log("// ==== PROVIDER EFFECT START ====");
+
+    let newEnvironment;
+    if (!chainId) {
+      console.log("UseWallet has no chainId");
+      newEnvironment = getNetworkVars(1, "env provider effect");
+    } else {
+      console.log("UseWallet has chainId: " + chainId);
+      newEnvironment = getNetworkVars(chainId, "env provider effect");
+    }
     setEnvironment(newEnvironment);
+    console.log("\\\\ ==== PROVIDER EFFECT END ====");
   }, [chainId]);
 
+  console.log("RETURNING FROM PROVIDER: " + JSON.stringify(environment, null, 2));
   return (
     <UseEnvironmentContext.Provider value={environment}>{children}</UseEnvironmentContext.Provider>
   );

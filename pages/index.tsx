@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { withRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
 import { useWallet } from "use-wallet";
-import { Case, Else, If, Switch, Then } from "react-if";
+import { Case, Default, Switch } from "react-if";
 
-import { TokenList } from "./dashboard";
-import { featuredTokens, tokenSorter } from "../lib/tokens";
-import { useStoredTokens, useTokensWithBalance } from "../lib/hooks/context/tokens";
+import { tokenSorter } from "../lib/tokens";
+import { useTokensWithBalance } from "../lib/hooks/context/tokens";
 import { LANDING_PAGE_CTA } from "../lib/constants/url";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
@@ -19,47 +18,28 @@ import { SecondaryButton } from "../components/ControlElements/button";
 import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { Loading, NotConnected } from "../components/Banners/GrayBanners";
-import { getNetworkVars } from "../lib/constants/env";
-import { usePool } from "@vocdoni/react-hooks";
+import { useFeaturedTokens } from "../lib/hooks/useFeaturedTokens";
+import { TokenList } from "./dashboard";
 
 // MAIN COMPONENT
 
 const IndexPage = () => {
   useScrollTop();
-  const { chainId } = useWallet();
-  const { networkName } = getNetworkVars(chainId);
-  const { pool, loading: poolLoading, error: poolError } = usePool();
-
-  useEffect(() => {
-    console.log("POOL LOADING: " + poolLoading);
-    console.log("POOL ERROR " + poolError);
-  }, [poolError, poolLoading]);
-
-  if (pool) console.log("POOL IN INDEX");
-  else console.log("NO POOL IN INDEX");
-
-  const { storedTokens, loading: tokenListLoading, error } = useStoredTokens();
-  console.log("STORED TOKENS ON " + networkName + " : " + storedTokens.forEach(console.log));
-  const featuredTokenList: string[] = featuredTokens[networkName] || [];
-
-  const featuredTokenInfos = featuredTokenList
-    .map((addr) => storedTokens.find((t) => t?.address == addr))
-    .filter((tok) => !!tok);
+  const { status } = useWallet();
   const {
-    tokens: tokensWithBalance,
-    loading: tokensWithBalanceLoading,
-    error: tokensWithBalanceError,
-    refresh,
-  } = useTokensWithBalance();
-  console.log("FROM INDEX " + tokensWithBalanceError);
-  const hasTokenWithBalance = tokensWithBalance?.length;
+    data: featuredTokens,
+    isLoading: featuredTokensLoading,
+    error: featuredTokensError,
+  } = useFeaturedTokens(true);
 
-  const wallet = useWallet();
-  const isWalletConnected = wallet?.ethereum && wallet?.account;
+  const tokensWithBalance = useTokensWithBalance();
 
-  tokensWithBalance?.sort?.(tokenSorter);
+  const isWalletConnected = status === "connected";
+  const hasTokenWithBalance = tokensWithBalance?.data?.length;
 
-  featuredTokenInfos.sort(tokenSorter);
+  if (hasTokenWithBalance) {
+    tokensWithBalance.data.sort(tokenSorter);
+  }
 
   return (
     <>
@@ -76,7 +56,7 @@ const IndexPage = () => {
             protocol.
           </HeaderAdviceText>
         </HeaderAdvice>
-        {/* NOTE temporarily removed this section, as it is not part of landing page's must 
+        {/* NOTE temporarily removed this section, as it is not part of landing page's must
         haves. VR 23-04-2021 */}
         {/* <SearchRow>
           <SearchField placeholder="ERC Token address..."/>
@@ -84,19 +64,22 @@ const IndexPage = () => {
         </SearchRow> */}
       </Head>
 
-      {/* TOP TOKENS */}
+      {/* FEATURED TOKENS */}
       <TokenSection>
         <SectionTitle
           title="Top Tokens"
           subtitle="Some of the most relevant tokens on Aragon Voice"
         />
-        <If condition={tokenListLoading && !featuredTokenInfos?.length}>
-          <Then>
+        <Switch>
+          <Case condition={featuredTokensLoading}>
             <Loading message="Loading tokens..." />
-          </Then>
-          <Else>
+          </Case>
+          <Case condition={!featuredTokens || !!featuredTokensError}>
+            <Loading message="No tokens found..." />
+          </Case>
+          <Default>
             <TokenList>
-              {featuredTokenInfos.map(
+              {featuredTokens.map(
                 ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
                   <TokenCard
                     key={address}
@@ -111,9 +94,8 @@ const IndexPage = () => {
                 )
               )}
             </TokenList>
-          </Else>
-        </If>
-
+          </Default>
+        </Switch>
         <Row>
           <SecondaryButton href="/tokens">View all tokens</SecondaryButton>
         </Row>
@@ -126,9 +108,12 @@ const IndexPage = () => {
           <Case condition={!isWalletConnected}>
             <NotConnected connectMessage="Connect your account and discover the proposals related to your tokens" />
           </Case>
+          <Case condition={tokensWithBalance.isLoading}>
+            <Loading message="Loading tokens..." />
+          </Case>
           <Case condition={hasTokenWithBalance}>
             <TokenList>
-              {tokensWithBalance.map(
+              {tokensWithBalance.data.map(
                 ({ symbol, address, name, totalSupplyFormatted, icon }: Partial<TokenInfo>) => (
                   <TokenCard
                     key={address}
@@ -144,17 +129,14 @@ const IndexPage = () => {
               )}
             </TokenList>
           </Case>
-          <Case condition={tokensWithBalanceLoading}>
-            <Loading message="Loading tokens..." />
-          </Case>
-          <Case condition={!tokensWithBalanceLoading}>
+          <Default>
             <GrayRectangle>
               <GreyInfo>No tokens found</GreyInfo>
               <Link href="/tokens/add">
                 <NotListedLink>Register a token</NotListedLink>
               </Link>
             </GrayRectangle>
-          </Case>
+          </Default>
         </Switch>
       </TokenSection>
     </>

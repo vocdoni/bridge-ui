@@ -132,3 +132,19 @@ export function findMaxValue(metadata: ProcessMetadata) {
 export async function waitUntilTrue(time: number, condition: boolean) {
   await new Promise((resolve) => setTimeout(resolve, time));
 }
+
+/**
+ * Returns the first and second arg to use in array.slice() to get a slice of a particular
+ * size, starting from any of the array's index. Note that if the lower index is closer
+ * the end of the array than the desired slice size, the result will be the last slice.
+ *
+ * @param curr array index that will be used as first arg for slice()
+ * @param step size of the slice
+ * @param max array length
+ * @returns two indexes used to get an array slice
+ */
+export const getSlice = (curr, step, max) => {
+  const next = curr + step;
+  if (next > max) return [curr, max];
+  else return [curr, next];
+};

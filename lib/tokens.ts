@@ -1,6 +1,7 @@
-import { TokenInfo } from "./types";
+import { EthNetworkID } from "dvote-js";
+import { TokenAddress, TokenInfo } from "./types";
 
-export const featuredTokens = {
+const featuredTokens: Record<EthNetworkID, TokenAddress[]> = {
   mainnet: [
     "0xa117000000f279d81a1d3cc75430faa017fa5a2e", // ANT
     "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", // UNI
@@ -16,10 +17,6 @@ export const featuredTokens = {
     "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828", // UMA
     "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
   ],
-  goerli: [
-    "0x2b7222146a805bba0dbb61869c4b3a03209dffba", // VOCB
-    "0xf7a702d8f197e6d510eaf740998c2029744078b5", // AVT
-  ],
   rinkeby: [
     "0x7d8abd67a201b289bd64b438c701b39f4c2ef476", // PPT
     "0xc778417e063141139fce010982780140aa0cd5ab", // WETH uniswap
@@ -27,7 +24,24 @@ export const featuredTokens = {
     "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", // UNI
     "0xf0f8d83cdab2f9514bef0319f1b434267be36b5c", // ANTv2
   ],
+  goerli: [
+    "0x2b7222146a805bba0dbb61869c4b3a03209dffba", // VOCB
+    "0xf7a702d8f197e6d510eaf740998c2029744078b5", // AVT
+  ],
+  xdai: [],
+  sokol: [],
 };
+
+/**
+ * This method returns the list of featured tokens for a given network. These tokens are
+ * displayed on Voice's main page.
+ *
+ * @param networkName
+ * @returns curated list of featured tokens addresses
+ */
+export function getFeaturedTokens(networkName: EthNetworkID): TokenAddress[] {
+  return featuredTokens[networkName];
+}
 
 /**
  * This method compares two token infos in order to determine their lexical order. The

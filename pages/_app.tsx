@@ -3,7 +3,7 @@ import { NextComponentType, NextPageContext } from "next";
 import { AppInitialProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
-import { UseWalletProvider, useWallet } from "use-wallet";
+import { UseWalletProvider } from "use-wallet";
 import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
 import { ThemeProvider } from "styled-components";
 import "react-datetime/css/react-datetime.css";
@@ -18,7 +18,7 @@ import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
 import { ModalsProvider } from "../components/Modal/context";
 import { CookiesBanner } from "../components/cookies-banner";
-import { BUILD, getNetworkVars } from "../lib/constants/env";
+import { BUILD } from "../lib/constants/env";
 import { useEnvironment, UseEnvironmentProvider } from "../lib/hooks/context/useEnvironment";
 
 Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
@@ -30,8 +30,7 @@ type NextAppProps = AppInitialProps & {
 
 const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
   const connectors = getConnectors();
-  console.log("BUILT WITH " + JSON.stringify(BUILD, null, 2));
-
+  // console.log("BUILT WITH " + JSON.stringify(BUILD, null, 2));
   return (
     <ThemeProvider theme={theme}>
       <UseMessageAlertProvider>
@@ -47,10 +46,9 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
   );
 };
 
-const AppWithWallet = ({ Component, pageProps }: NextAppProps) => {
-  // const { chainId } = useWallet();
+const AppWithWallet = ({ Component, router, pageProps }: NextAppProps) => {
   const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
-  // console.log("rerender with " + chainId);
+  console.log("rerender with " + networkName);
 
   return (
     <UsePoolProvider
@@ -62,21 +60,21 @@ const AppWithWallet = ({ Component, pageProps }: NextAppProps) => {
     >
       <UseBlockStatusProvider>
         <UseStoredTokensProvider>
-          <UseProcessProvider>
-            <UseTokensWithBalance>
-              <ModalsProvider>
-                <FixedGlobalStyle />
-                <HtmlHead appTitle={BUILD.appTitle} />
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-                <div id="commit-sha" style={{ display: "none" }}>
-                  {BUILD.commitSha}
-                </div>
-                <CookiesBanner />
-              </ModalsProvider>
-            </UseTokensWithBalance>
-          </UseProcessProvider>
+          {/* <UseProcessProvider> */}
+          <UseTokensWithBalance>
+            <ModalsProvider>
+              <FixedGlobalStyle />
+              <HtmlHead appTitle={BUILD.appTitle} />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+              <div id="commit-sha" style={{ display: "none" }}>
+                {BUILD.commitSha}
+              </div>
+              <CookiesBanner />
+            </ModalsProvider>
+          </UseTokensWithBalance>
+          {/* </UseProcessProvider> */}
         </UseStoredTokensProvider>
       </UseBlockStatusProvider>
     </UsePoolProvider>

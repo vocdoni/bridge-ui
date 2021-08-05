@@ -23,6 +23,20 @@ export class TokenAddressInvalidError extends Error {
   }
 }
 
+export class FetchRegisteredTokensError extends Error {
+  constructor(fetchingError: string = "") {
+    if (!fetchingError) super(`There was an error when fetching registered tokens`);
+    else super(`There following error occurred when fetching registered tokens: ${fetchingError}`);
+  }
+}
+
+export class FetchTokensInfosError extends Error {
+  constructor(fetchingError: string = "") {
+    if (!fetchingError) super(`There was an error when fetching tokens infos`);
+    else super(`There following error occurred when fetching token infos: ${fetchingError}`);
+  }
+}
+
 // NEW PROPOSAL FORMAT ERROR =============================================================
 
 export enum InputType {
