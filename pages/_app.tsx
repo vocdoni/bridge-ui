@@ -8,9 +8,9 @@ import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vo
 import { ThemeProvider } from "styled-components";
 import "react-datetime/css/react-datetime.css";
 
-import { UseMessageAlertProvider } from "../lib/hooks/context/message-alert";
-import { UseLoadingAlertProvider } from "../lib/hooks/context/loading-alert";
-import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/hooks/context/tokens";
+import { UseMessageAlertProvider } from "../lib/contexts/message-alert";
+import { UseLoadingAlertProvider } from "../lib/contexts/loading-alert";
+import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/contexts/tokens";
 import { getConnectors } from "../lib/constants/wallets";
 import { trackPage } from "../lib/analytics";
 
@@ -19,7 +19,7 @@ import { Layout } from "../components/StructuralElements/layout";
 import { ModalsProvider } from "../components/Modal/context";
 import { CookiesBanner } from "../components/cookies-banner";
 import { BUILD } from "../lib/constants/env";
-import { useEnvironment, UseEnvironmentProvider } from "../lib/hooks/context/useEnvironment";
+import { useEnvironment, UseEnvironmentProvider } from "../lib/contexts/useEnvironment";
 
 Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
 

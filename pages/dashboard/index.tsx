@@ -8,7 +8,7 @@ import { Else, If, Then } from "react-if";
 import { IProcessSummary, ProcessMetadata } from "dvote-js";
 // import Select from 'react-select'
 
-import { useStoredTokens } from "../../lib/hooks/context/tokens";
+import { useStoredTokens } from "../../lib/contexts/tokens";
 import { TokenInfo } from "../../lib/types";
 import { limitedText } from "../../lib/utils";
 import { FALLBACK_TOKEN_ICON } from "../../lib/constants/url";

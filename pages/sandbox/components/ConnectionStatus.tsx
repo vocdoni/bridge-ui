@@ -3,7 +3,7 @@ import { Switch, Case } from "react-if";
 import { useWallet } from "use-wallet";
 
 import SectionTitle from "../../../components/sectionTitle";
-import { useEnvironment } from "../../../lib/hooks/context/useEnvironment";
+import { useEnvironment } from "../../../lib/contexts/useEnvironment";
 
 const ConnectionStatus = () => {
   const { chainId: walletChainId, status } = useWallet();

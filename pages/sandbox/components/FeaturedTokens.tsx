@@ -3,7 +3,7 @@
 
 import React from "react";
 import { Else, If, Then } from "react-if";
-import { useEnvironment } from "../../../lib/hooks/context/useEnvironment";
+import { useEnvironment } from "../../../lib/contexts/useEnvironment";
 import { useFeaturedTokens } from "../../../lib/hooks/useFeaturedTokens";
 
 const FeaturedTokensSection = () => {

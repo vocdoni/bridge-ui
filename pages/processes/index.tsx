@@ -4,7 +4,7 @@ import { useProcess } from "@vocdoni/react-hooks";
 import { Case, Default, Else, If, Switch, Then } from "react-if";
 import styled from "styled-components";
 
-import { useToken } from "../../lib/hooks/context/tokens";
+import { useToken } from "../../lib/contexts/tokens";
 import {
   useCensusProof,
   useProcessResults,
@@ -15,7 +15,7 @@ import {
 import { areAllNumbers } from "../../lib/utils";
 import { useWallet } from "use-wallet";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { useMessageAlert } from "../../lib/hooks/context/message-alert";
+import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { USER_CANCELED_TX } from "../../lib/errors";
 import { useProcessIdFromUrl } from "../../lib/hooks/useProcessIdFromUrl";

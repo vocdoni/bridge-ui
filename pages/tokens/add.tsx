@@ -14,9 +14,9 @@ import {
   USER_CANCELED_TX,
 } from "../../lib/errors";
 import { TokenInfo } from "../../lib/types";
-import { useMessageAlert } from "../../lib/hooks/context/message-alert";
+import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
-import { useStoredTokens } from "../../lib/hooks/context/tokens";
+import { useStoredTokens } from "../../lib/contexts/tokens";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";

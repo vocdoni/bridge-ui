@@ -20,12 +20,12 @@ import { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { Unless, When } from "react-if";
 
-import { useMessageAlert } from "../../lib/hooks/context/message-alert";
+import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { useIsMobile } from "../../lib/hooks/useWindowSize";
 import { validateProposal } from "../../lib/processValidator";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { findMaxValue } from "../../lib/utils";
-import { useStoredTokens, useToken } from "../../lib/hooks/context/tokens";
+import { useStoredTokens, useToken } from "../../lib/contexts/tokens";
 import { ETH_BLOCK_HEIGHT_PADDING } from "../../lib/constants/env";
 import { getProof, waitUntilProcessCreated } from "../../lib/api";
 import {

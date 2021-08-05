@@ -3,8 +3,8 @@
 
 import React from "react";
 import { Case, Default, Switch } from "react-if";
-import { useTokensWithBalance } from "../../../lib/hooks/context/tokens";
-import { useEnvironment } from "../../../lib/hooks/context/useEnvironment";
+import { useTokensWithBalance } from "../../../lib/contexts/tokens";
+import { useEnvironment } from "../../../lib/contexts/useEnvironment";
 
 const UserHeldTokenSection = () => {
   const e = useEnvironment();

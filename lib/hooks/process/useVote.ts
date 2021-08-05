@@ -4,7 +4,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import { useWallet } from "use-wallet";
 
 import { CensusProof } from "../../api";
-import { useMessageAlert } from "../context/message-alert";
+import { useMessageAlert } from "../../contexts/message-alert";
 import { useSigner } from "../useSigner";
 
 export interface VoteState {
