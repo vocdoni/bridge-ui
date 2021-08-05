@@ -6,7 +6,7 @@ import { If, Then, Else } from "react-if";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo } from "../../../lib/api";
-import { useMessageAlert } from "../../../lib/hooks/context/message-alert";
+import { useMessageAlert } from "../../../lib/contexts/message-alert";
 import { useRegisteredTokens } from "../../../lib/hooks/useRegisteredTokens";
 
 function getSlices(inc, curr, max): [number, number] {

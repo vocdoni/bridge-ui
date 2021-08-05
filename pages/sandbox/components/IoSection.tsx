@@ -4,7 +4,7 @@
 import React from "react";
 import { If, Then, Else } from "react-if";
 
-import { useStoredTokens } from "../../../lib/hooks/context/tokens";
+import { useStoredTokens } from "../../../lib/contexts/tokens";
 
 const StoredTokenTesting = () => {
   const { data, isLoading } = useStoredTokens();

@@ -5,8 +5,8 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useEffect } from "react";
 import { getRegisteredTokenList } from "../api";
 import { VoiceStorage } from "../storage";
-import { useMessageAlert } from "./context/message-alert";
-import { useEnvironment } from "./context/useEnvironment";
+import { useMessageAlert } from "./../contexts/message-alert";
+import { useEnvironment } from "./../contexts/useEnvironment";
 
 /**
  *

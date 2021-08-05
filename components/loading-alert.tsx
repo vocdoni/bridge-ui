@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Spinner from "react-svg-spinner";
-import { useLoadingAlert } from "../lib/hooks/context/loading-alert";
+import { useLoadingAlert } from "../lib/contexts/loading-alert";
 
 export const LoadingAlert = () => {
   const { message } = useLoadingAlert();

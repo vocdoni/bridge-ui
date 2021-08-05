@@ -6,7 +6,7 @@ import { useWallet } from "use-wallet";
 import { Case, Default, Switch } from "react-if";
 
 import { tokenSorter } from "../lib/tokens";
-import { useTokensWithBalance } from "../lib/hooks/context/tokens";
+import { useTokensWithBalance } from "../lib/contexts/tokens";
 import { LANDING_PAGE_CTA } from "../lib/constants/url";
 import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";

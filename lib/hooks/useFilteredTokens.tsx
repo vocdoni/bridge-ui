@@ -1,5 +1,5 @@
 import { TokenInfo, UseData } from "../types";
-import { useStoredTokens } from "./context/tokens";
+import { useStoredTokens } from "./../contexts/tokens";
 
 function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
   const lowercaseTerm = term.toLocaleLowerCase();

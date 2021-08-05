@@ -4,9 +4,9 @@ import { useWallet } from "use-wallet";
 
 import { WalletModal } from ".";
 import { identifyUser } from "../../lib/analytics";
-import { useMessageAlert } from "../../lib/hooks/context/message-alert";
+import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { WALLETS } from "../../lib/constants/wallets";
-import { ActionTypes, useModal } from "./context";
+import { ActionTypes, useModal } from "./../contexts";
 import { CloseIcon, ModalHeader, ModalLayout, ModalTitle } from "./styled";
 
 const Body = styled.div`
