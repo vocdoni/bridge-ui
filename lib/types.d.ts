@@ -2,6 +2,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js";
 import { Awaited } from "./utils";
 
+export type TokenAddress = string;
+
 export type TokenInfo = {
   name: string;
   symbol: string;
@@ -16,3 +18,9 @@ export type TokenInfo = {
 export type TokenEntry = Omit<TokenInfo, "processes">;
 
 export type MsgType = "error" | "success" | "warning" | "info";
+
+export type UseData<T> = {
+  data: T;
+  isLoading: boolean;
+  error: Error;
+};

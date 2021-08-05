@@ -156,6 +156,8 @@ export function getRegisteredTokenList(
     // Nothing changed?
     if (count == currentTokenCount) return Promise.resolve([]);
 
+    /* TODO can this not be offset to currentTokenCount? S.t. only tokens in
+[currentCount, count] are fetched, instead of [0, count]? [VR 02-08-2021] */
     return Bluebird.map(
       Array.from(Array(count).keys()),
       (idx) => CensusErc20Api.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
