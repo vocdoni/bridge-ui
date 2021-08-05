@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Case, Default, Switch } from "react-if";
 
-import { useFilteredTokens } from "../../lib/hooks/context/tokens/useStoredTokens";
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
@@ -16,6 +15,7 @@ import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
 import { Loading } from "../../components/Banners/GrayBanners";
 import { tokenSorter } from "../../lib/tokens";
+import { useFilteredTokens } from "../../lib/hooks/useFilteredTokens";
 
 const ButtonContainer = styled.div`
   ${flex_row_large_column_small_mixin}
@@ -39,10 +39,10 @@ const VariableWidthDiv = styled.div`
 const TokensPage = () => {
   useScrollTop();
   const [term, setTerm] = useState("");
-  const { storedTokens, error, loading } = useFilteredTokens(term);
-  const areTokensEmpty = !storedTokens?.length;
+  const { data: filteredTokens, isLoading } = useFilteredTokens(term);
+  const areTokensEmpty = !filteredTokens?.length;
 
-  storedTokens?.sort?.(tokenSorter);
+  filteredTokens?.sort?.(tokenSorter);
 
   return (
     <>
@@ -57,7 +57,7 @@ const TokensPage = () => {
         <PrimaryButton href="/tokens/add">Register a token</PrimaryButton>
       </ButtonContainer>
       <Switch>
-        <Case condition={areTokensEmpty && loading}>
+        <Case condition={areTokensEmpty && isLoading}>
           <Loading message="Loading tokens..." />
         </Case>
         <Case condition={areTokensEmpty}>
@@ -65,7 +65,7 @@ const TokensPage = () => {
         </Case>
         <Default>
           <TokenList>
-            {storedTokens.map(
+            {filteredTokens.map(
               ({ icon, symbol, address, name, totalSupplyFormatted }: Partial<TokenInfo>) => (
                 <TokenCard
                   key={address}
