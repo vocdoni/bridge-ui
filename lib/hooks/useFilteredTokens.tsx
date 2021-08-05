@@ -1,11 +1,5 @@
-import { TokenInfo } from "../types";
+import { TokenInfo, UseData } from "../types";
 import { useStoredTokens } from "./context/tokens";
-
-type FilteredTokens = {
-  storedTokens: TokenInfo[];
-  error?: string;
-  loading: boolean;
-};
 
 function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
   const lowercaseTerm = term.toLocaleLowerCase();
@@ -19,14 +13,14 @@ function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
   );
 }
 
-export const useFilteredTokens = (searchTerm: string): FilteredTokens => {
-  const { storedTokens, error, loading } = useStoredTokens();
+export const useFilteredTokens = (searchTerm: string): UseData<TokenInfo[]> => {
+  const storedTokens = useStoredTokens();
 
-  if (loading) return { storedTokens, error, loading };
+  if (storedTokens.isLoading) return storedTokens;
 
   const filteredTokens = !searchTerm
-    ? storedTokens
-    : storedTokens.filter((t) => doesTokenInfoContainTerm(t, searchTerm));
+    ? storedTokens.data
+    : storedTokens.data.filter((t) => doesTokenInfoContainTerm(t, searchTerm));
 
-  return { storedTokens: filteredTokens, error, loading };
+  return { data: filteredTokens, isLoading: false, error: storedTokens.error };
 };
