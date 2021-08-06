@@ -1,5 +1,5 @@
 import React, { createContext, Dispatch, useContext, useReducer } from "react";
-import { WalletList } from "./WalletList";
+import { WalletList } from "../../components/Modal/WalletList";
 
 export enum ActionTypes {
   OPEN_WALLET_LIST = "OPEN_WALLET_LIST",

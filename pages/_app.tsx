@@ -16,7 +16,7 @@ import { trackPage } from "../lib/analytics";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
-import { ModalsProvider } from "../components/Modal/context";
+import { ModalsProvider } from "../lib/contexts/modal";
 import { CookiesBanner } from "../components/cookies-banner";
 import { BUILD } from "../lib/constants/env";
 import { useEnvironment, UseEnvironmentProvider } from "../lib/contexts/useEnvironment";

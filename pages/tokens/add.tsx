@@ -26,7 +26,7 @@ import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
-import { ActionTypes, useModal } from "../../components/Modal/context";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
 import { VerticalSpace } from "../../components/StructuralElements/verticalBuffer";
 
@@ -200,7 +200,11 @@ const TokenAddPage = () => {
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const { storedTokens, refresh: refreshStoredTokens, loading } = useStoredTokens();
+  const {
+    data: storedTokens,
+    refresh: refreshStoredTokens,
+    isLoading: loading,
+  } = useStoredTokens();
 
   const isConnected = wallet.connector || wallet.account;
   const alreadyRegistered = storedTokens.some(
@@ -294,7 +298,7 @@ const TokenAddPage = () => {
         <Then>
           <WhiteSection>
             <SectionTitle
-              smallerTitle={true}
+              smallerTitle
               title="Token contract address"
               subtitle="Enter the address of the ERC-20 contract that you would like to register"
             />

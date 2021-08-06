@@ -41,7 +41,11 @@ const DashboardPage = () => {
   useScrollTop();
   const { account } = useWallet();
   const router = useRouter();
-  const { storedTokens, error: tokenListError, loading: tokenListLoading } = useStoredTokens();
+  const {
+    data: storedTokens,
+    error: tokenListError,
+    isLoading: tokenListLoading,
+  } = useStoredTokens();
   const processIds = storedTokens.filter((token) => token?.address).map((token) => token.address);
   const { processes, loading: processesLoading, error: processesError } = useProcesses(processIds);
   const { blockHeight } = useBlockHeight();

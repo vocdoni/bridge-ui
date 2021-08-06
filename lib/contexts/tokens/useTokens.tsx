@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { GatewayPool } from "dvote-js";
 import { usePool } from "@vocdoni/react-hooks";
 
-import { getTokenInfo } from "../../../api";
-import { TokenInfo, UseData } from "../../../types";
-import { FetchTokensInfosError } from "../../../errors";
+import { getTokenInfo } from "../../api";
+import { TokenInfo, UseData } from "../../types";
+import { FetchTokensInfosError } from "../../errors";
 import { useStoredTokens } from "./useStoredTokens";
 
 /** Frontend of the cached token list */

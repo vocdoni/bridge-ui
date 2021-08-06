@@ -6,7 +6,7 @@ import { useWallet } from "use-wallet";
 import { shortAddress } from "../../lib/utils";
 import { WALLET_IDENTICON } from "../../lib/constants/url";
 
-import { useModal, ActionTypes } from "../Modal/context";
+import { useModal, ActionTypes } from "../../lib/contexts/modal";
 
 const ButtonContainer = styled.div`
   display: flex;

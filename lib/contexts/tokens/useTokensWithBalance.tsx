@@ -6,9 +6,9 @@ import { usePool } from "@vocdoni/react-hooks";
 
 import { useMessageAlert } from "../message-alert";
 import { useStoredTokens } from "./useStoredTokens";
-import { ERC20_ABI } from "../../../constants/abi";
-import { TokenInfo, UseData } from "../../../types";
-import { OutsideProviderError } from "../../../errors";
+import { ERC20_ABI } from "../../constants/abi";
+import { TokenInfo, UseData } from "../../types";
+import { OutsideProviderError } from "../../errors";
 import { useEnvironment } from "../useEnvironment";
 
 /* TODO Investigate whether this should really be implementented as a context, or if a

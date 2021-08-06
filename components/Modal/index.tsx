@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { ActionTypes, useModal } from "./context";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { ModalContainer } from "./styled";
 
 enum ModalType {
