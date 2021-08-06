@@ -6,7 +6,7 @@ import { WalletModal } from ".";
 import { identifyUser } from "../../lib/analytics";
 import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { WALLETS } from "../../lib/constants/wallets";
-import { ActionTypes, useModal } from "./../contexts";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { CloseIcon, ModalHeader, ModalLayout, ModalTitle } from "./styled";
 
 const Body = styled.div`

@@ -15,7 +15,7 @@ import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/ControlElements/button";
 import { IProcessSummary, ProcessMetadata } from "dvote-js";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
-import { ActionTypes, useModal } from "../../components/Modal/context";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { Loading } from "../../components/Banners/GrayBanners";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 

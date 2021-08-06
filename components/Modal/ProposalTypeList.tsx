@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { EventType, trackEvent } from "../../lib/analytics";
 
 import { ProposalModal } from ".";
-import { ActionTypes, useModal } from "./../contexts";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { ModalLayout, ModalHeader, ModalTitle, CloseIcon } from "./styled";
 
 const Body = styled.div`

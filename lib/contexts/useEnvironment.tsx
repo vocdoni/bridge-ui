@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useWallet } from "use-wallet";
 
-import { getNetworkVars, NetworkVariables } from "../../constants/env";
-import { OutsideProviderError } from "../../errors";
+import { getNetworkVars, NetworkVariables } from "../constants/env";
+import { OutsideProviderError } from "../errors";
 
 const UseEnvironmentContext = createContext<NetworkVariables>(null);
 

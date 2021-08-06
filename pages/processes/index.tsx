@@ -36,7 +36,7 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/ControlElements/button";
-import { ActionTypes, useModal } from "../../components/Modal/context";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import {
   NotConnected,

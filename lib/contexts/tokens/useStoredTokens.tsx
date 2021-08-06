@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { getRegisteredTokenList, getTokenInfo } from "../../../api";
+import { getRegisteredTokenList, getTokenInfo } from "../../api";
 import { useMessageAlert } from "../message-alert";
-import { VoiceStorage } from "../../../storage";
-import { TokenInfo, UseData } from "../../../types";
-import { OutsideProviderError } from "../../../errors";
+import { VoiceStorage } from "../../storage";
+import { TokenInfo, UseData } from "../../types";
+import { OutsideProviderError } from "../../errors";
 import { useEnvironment } from "../useEnvironment";
-import { getSlice } from "../../../utils";
+import { getSlice } from "../../utils";
 
 export type StoredTokens = UseData<TokenInfo[]> & {
   /** Cache the given tokens into IndexDB */
