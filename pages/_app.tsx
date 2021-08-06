@@ -60,21 +60,21 @@ const AppWithWallet = ({ Component, router, pageProps }: NextAppProps) => {
     >
       <UseBlockStatusProvider>
         <UseStoredTokensProvider>
-          {/* <UseProcessProvider> */}
-          <UseTokensWithBalance>
-            <ModalsProvider>
-              <FixedGlobalStyle />
-              <HtmlHead appTitle={BUILD.appTitle} />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-              <div id="commit-sha" style={{ display: "none" }}>
-                {BUILD.commitSha}
-              </div>
-              <CookiesBanner />
-            </ModalsProvider>
-          </UseTokensWithBalance>
-          {/* </UseProcessProvider> */}
+          <UseProcessProvider>
+            <UseTokensWithBalance>
+              <ModalsProvider>
+                <FixedGlobalStyle />
+                <HtmlHead appTitle={BUILD.appTitle} />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+                <div id="commit-sha" style={{ display: "none" }}>
+                  {BUILD.commitSha}
+                </div>
+                <CookiesBanner />
+              </ModalsProvider>
+            </UseTokensWithBalance>
+          </UseProcessProvider>
         </UseStoredTokensProvider>
       </UseBlockStatusProvider>
     </UsePoolProvider>

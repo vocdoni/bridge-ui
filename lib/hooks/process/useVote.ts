@@ -71,7 +71,7 @@ export const useVote = (processDetails: IProcessDetails) => {
     });
 
     return clearInterval(interval);
-  }, [processId, voterAddress]);
+  }, [processId, voterAddress, poolPromise]);
 
   // Clear choices on dependency change
   useEffect(() => {
@@ -112,6 +112,7 @@ export const useVote = (processDetails: IProcessDetails) => {
       const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
       await VotingApi.submitEnvelope(envelope, signer, pool);
 
+      /* TODO @brickpop what's up with this? */
       // // loop until the vote is registered
       // let voted = false
       // for (let i = 0; i < 60; i++) {
