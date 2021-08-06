@@ -13,7 +13,7 @@ import {
   TokenAlreadyRegisteredError,
   USER_CANCELED_TX,
 } from "../../lib/errors";
-import { TokenInfo } from "../../lib/types";
+import { TokenAddress, TokenInfo } from "../../lib/types";
 import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { useSigner } from "../../lib/hooks/useSigner";
 import { useStoredTokens } from "../../lib/contexts/tokens";
@@ -21,13 +21,15 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
+import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
+import { VOICE_DISCORD } from "../../lib/constants/url";
+import { useEnvironment } from "../../lib/contexts/useEnvironment";
 
 import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
 import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
-import { ActionTypes, useModal } from "../../lib/contexts/modal";
-import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
 import { VerticalSpace } from "../../components/StructuralElements/verticalBuffer";
 
 const TokenSummary = styled.div`
@@ -153,38 +155,42 @@ const ButtonsRow = ({
   </>
 );
 
-const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => (
-  <>
-    <SectionTitle
-      smallerTitle={true}
-      title="Token contract details"
-      subtitle="The following token will be registered. All token holders will be able to submit new proposals."
-    />
-    <TokenSummary>
-      <Info>
-        <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
-        <TokenAttributeDescription>{symbol}</TokenAttributeDescription>
-      </Info>
-      <Info>
-        <TokenAttributeTitle>Token name</TokenAttributeTitle>
-        <TokenAttributeDescription>{name}</TokenAttributeDescription>
-      </Info>
-      <Info>
-        <TokenAttributeTitle>Total supply</TokenAttributeTitle>
-        <TokenAttributeDescription>
-          {abbreviatedTokenAmount(totalSupplyFormatted)}
-        </TokenAttributeDescription>
-      </Info>
-      <Info>
-        <TokenAttributeTitle>Token address</TokenAttributeTitle>
-        {/* TODO insert copy icon (and use the same links as in header?) [VR 30-06-2021] */}
-        <a target="_blank" rel="noopener noreferrer" href={`https://etherscan.io/${address}`}>
-          <Address>{shortAddress(address)}</Address>
-        </a>
-      </Info>
-    </TokenSummary>
-  </>
-);
+const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
+  const { etherscanPrefix } = useEnvironment();
+
+  return (
+    <>
+      <SectionTitle
+        smallerTitle={true}
+        title="Token contract details"
+        subtitle="The following token will be registered. All token holders will be able to submit new proposals."
+      />
+      <TokenSummary>
+        <Info>
+          <TokenAttributeTitle>Token symbol</TokenAttributeTitle>
+          <TokenAttributeDescription>{symbol}</TokenAttributeDescription>
+        </Info>
+        <Info>
+          <TokenAttributeTitle>Token name</TokenAttributeTitle>
+          <TokenAttributeDescription>{name}</TokenAttributeDescription>
+        </Info>
+        <Info>
+          <TokenAttributeTitle>Total supply</TokenAttributeTitle>
+          <TokenAttributeDescription>
+            {abbreviatedTokenAmount(totalSupplyFormatted)}
+          </TokenAttributeDescription>
+        </Info>
+        <Info>
+          <TokenAttributeTitle>Token address</TokenAttributeTitle>
+          {/* TODO insert copy icon (and use the same links as in header?) [VR 30-06-2021] */}
+          <a target="_blank" rel="noopener noreferrer" href={`${etherscanPrefix}/token/${address}`}>
+            <Address>{shortAddress(address)}</Address>
+          </a>
+        </Info>
+      </TokenSummary>
+    </>
+  );
+};
 
 // MAIN COMPONENT
 const TokenAddPage = () => {
@@ -195,43 +201,42 @@ const TokenAddPage = () => {
   const { dispatch } = useModal();
 
   const { poolPromise } = usePool();
-  const [formTokenAddress, setFormTokenAddress] = useState<string>("");
+  const [formTokenAddress, setFormTokenAddress] = useState<TokenAddress>("");
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [registeringToken, setRegisteringToken] = useState(false);
   const { setAlertMessage } = useMessageAlert();
-  const {
-    data: storedTokens,
-    refresh: refreshStoredTokens,
-    isLoading: loading,
-  } = useStoredTokens();
+  const storedTokens = useStoredTokens();
 
   const isConnected = wallet.connector || wallet.account;
-  const alreadyRegistered = storedTokens.some(
+  const alreadyRegistered = storedTokens.data.some(
     (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
   );
 
   // CALLBACKS ===========================================================================
 
   const checkToken = async () => {
-    if (loadingToken || !formTokenAddress || loading) return;
+    if (loadingToken || !formTokenAddress || storedTokens.isLoading) return;
+    setLoadingToken(true);
     try {
       if (!formTokenAddress.trim().match(FORTY_DIGITS_HEX)) {
         throw new TokenAddressInvalidError();
       }
 
-      setLoadingToken(true);
       const pool = await poolPromise;
       const newTokenInfo = await getTokenInfo(formTokenAddress.trim(), pool);
 
-      setLoadingToken(false);
       setTokenInfo(newTokenInfo);
     } catch (error) {
-      setLoadingToken(false);
       trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress.trim() });
 
       if (error instanceof TokenAddressInvalidError) setAlertMessage(error.message);
-      else setAlertMessage("Could not fetch the contract details");
+      else
+        setAlertMessage(
+          "Could not fetch the token details. Make sure you are on the right network"
+        );
+    } finally {
+      setLoadingToken(false);
     }
   };
 
@@ -256,16 +261,13 @@ const TokenAddPage = () => {
 
       // Register
       await registerToken(tokenInfo.address, pool, signer);
-      await refreshStoredTokens();
+      await storedTokens.refresh();
 
-      setRegisteringToken(false);
       setAlertMessage("The token has been successfully registered", "success");
       trackEvent(EventType.TOKEN_REGISTERED, { token_address: tokenInfo.address });
 
       Router.push("/tokens/info#/" + tokenInfo.address);
     } catch (error) {
-      setRegisteringToken(false);
-
       // User cancels tx (e.g., by aborting signing process.) This is not registered as
       // "failure"
       if ((error?.message as string)?.includes("signature")) {
@@ -283,8 +285,10 @@ const TokenAddPage = () => {
 
       console.error(error?.message); //log unspecified errors.
       setAlertMessage("The token could not be registered");
+    } finally {
+      setRegisteringToken(false);
     }
-  }, [signer, wallet, tokenInfo]);
+  }, [signer, wallet, tokenInfo, poolPromise]);
 
   // RENDER ==============================================================================
 
@@ -294,9 +298,9 @@ const TokenAddPage = () => {
         title="Register a new token"
         subtitle="Enter the details of any ERC-20 token and start submitting new proposals"
       />
-      <If condition={!tokenInfo}>
-        <Then>
-          <WhiteSection>
+      <WhiteSection>
+        <If condition={!tokenInfo}>
+          <Then>
             <SectionTitle
               smallerTitle
               title="Token contract address"
@@ -307,19 +311,17 @@ const TokenAddPage = () => {
               onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
                 setFormTokenAddress(ev.target.value)
               }
-              onClick={loading || loadingToken ? undefined : checkToken}
-              loading={loading || loadingToken}
+              onClick={storedTokens.isLoading || loadingToken ? undefined : checkToken}
+              loading={storedTokens.isLoading || loadingToken}
             />
             <CompatibleTokenNote>
               {CompatibilityNote}
-              <a target="_blank" rel="noopener noreferrer" href={"https://discord.gg/XBA56Rmp"}>
+              <a target="_blank" rel="noopener noreferrer" href={VOICE_DISCORD}>
                 Discord, on the #voice channel
               </a>
             </CompatibleTokenNote>
-          </WhiteSection>
-        </Then>
-        <Else>
-          <WhiteSection>
+          </Then>
+          <Else>
             <TokenContainer {...tokenInfo} />
             <ButtonsRow
               registeringToken={registeringToken}
@@ -329,9 +331,9 @@ const TokenAddPage = () => {
               isConnected={isConnected}
               onRevalidate={() => setTokenInfo(null)}
             />
-          </WhiteSection>
-        </Else>
-      </If>
+          </Else>
+        </If>
+      </WhiteSection>
     </>
   );
 };

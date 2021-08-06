@@ -26,3 +26,4 @@ export const TRUST_WALLET_BASE_URL =
   "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum";
 export const HARDWARE_WALLETS_METAMASK_ARTICLE =
   "https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet";
+export const VOICE_DISCORD = "https://discord.gg/XBA56Rmp";
