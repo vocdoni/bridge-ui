@@ -45,7 +45,7 @@
     "token-amount": "^0.3.0",
     "typescript": "^4.3.5",
     "use-url-hash": "^0.1.0",
-    "use-wallet": "git+https://github.com/aragon/use-wallet.git#multichain"
+    "use-wallet": "git+https://github.com/aragon/use-wallet.git#358d609e812a37c4fce1c5b53a410e5f79b5f3e3"
   },
   "devDependencies": {
     "@types/node": "^16.3.1",
@@ -57,6 +57,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "4.2.0",
+    "file-loader": "^6.2.0",
     "husky": "6.0.0",
     "lint-staged": "10.5.4",
     "prettier": "2.2.1",
