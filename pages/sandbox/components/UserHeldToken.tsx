@@ -20,7 +20,7 @@ const UserHeldTokenSection = () => {
       </Case>
       <Default>
         <p>
-          There are currently {x.data.length} featured tokens on network {e.networkName}.
+          There are currently {x.data.length} featured tokens on network {e.variables.networkName}.
         </p>
         <p>Their infos are</p>
         {x.data.map((t, i) => (

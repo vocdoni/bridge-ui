@@ -39,7 +39,7 @@ export function UseTokensWithBalance({ children }) {
   const { status, account } = useWallet();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
-  const { chainId } = useEnvironment();
+  const { variables } = useEnvironment();
   const {
     data: storedTokens,
     error: storedTokenError,
@@ -61,7 +61,7 @@ export function UseTokensWithBalance({ children }) {
     try {
       const pool = await poolPromise;
 
-      const ethcallProvider = new Provider(pool.provider, chainId);
+      const ethcallProvider = new Provider(pool.provider, variables.chainId);
       const tokenBalanceCalls: ContractCall[] = storedTokens.map((tokenInfo) =>
         new Contract(tokenInfo?.address, ERC20_ABI).balanceOf(account)
       );

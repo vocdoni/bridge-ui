@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { MsgType } from "../../types";
+import { MsgType } from "../types";
 
 const UseMessageAlertContext = createContext({
   msgType: "error" as MsgType,
