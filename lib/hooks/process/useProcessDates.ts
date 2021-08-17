@@ -1,28 +1,28 @@
-import { useBlockStatus } from "@vocdoni/react-hooks";
+import { useBlockStatus } from "../../contexts/blockStatus";
 import { IProcessState, VotingApi } from "dvote-js";
 import { useEffect, useState } from "react";
 
 export const useProcessDates = (processState: IProcessState) => {
-  const { blockStatus, loading, error } = useBlockStatus()
-  const [startDate, setStartDate] = useState<Date>(null)
-  const [endDate, setEndDate] = useState<Date>(null)
+  const { blockStatus, loading, error } = useBlockStatus();
+  const [startDate, setStartDate] = useState<Date>(null);
+  const [endDate, setEndDate] = useState<Date>(null);
 
-  const blockHeight = blockStatus?.blockNumber || 0
-  const startBlock = processState?.startBlock || 0
-  const endBlock = processState?.endBlock || 0
+  const blockHeight = blockStatus?.blockNumber || 0;
+  const startBlock = processState?.startBlock || 0;
+  const endBlock = processState?.endBlock || 0;
 
   // Lazy auto refresh
   useEffect(() => {
-    if (!blockHeight) return
-    const startDate = VotingApi.estimateDateAtBlockSync(startBlock, blockStatus)
-    const endDate = VotingApi.estimateDateAtBlockSync(endBlock, blockStatus)
+    if (!blockHeight) return;
+    const startDate = VotingApi.estimateDateAtBlockSync(startBlock, blockStatus);
+    const endDate = VotingApi.estimateDateAtBlockSync(endBlock, blockStatus);
 
-    setStartDate(startDate)
-    setEndDate(endDate)
-  }, [blockHeight, startBlock, endBlock])
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }, [blockHeight, startBlock, endBlock]);
 
-  const hasStarted = startDate && Date.now() >= startDate.getTime()
-  const hasEnded = endDate && Date.now() >= endDate.getTime()
+  const hasStarted = startDate && Date.now() >= startDate.getTime();
+  const hasEnded = endDate && Date.now() >= endDate.getTime();
 
   return {
     startDate,
@@ -30,6 +30,6 @@ export const useProcessDates = (processState: IProcessState) => {
     hasEnded,
     hasStarted,
     loading,
-    error
+    error,
   };
 };

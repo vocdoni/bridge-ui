@@ -26,7 +26,7 @@ export const useProcessSummary = ({
     updateProcessSummary();
 
     return () => clearInterval(interval);
-  }, [processDetails?.id, hasStarted]);
+  }, [processDetails?.id, hasStarted, poolPromise]);
 
   // Loader
 

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Else, If, Then, Unless, When } from "react-if";
-import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
+import { useProcesses } from "@vocdoni/react-hooks";
+import { useBlockStatus } from "../../lib/contexts/blockStatus";
 import { useUrlHash } from "use-url-hash";
 import styled from "styled-components";
 
@@ -207,6 +208,7 @@ const TokenPage = () => {
   const { processes, loading: proposalsLoading, error: proposalsError } = useProcesses(processIds);
   const { blockStatus } = useBlockStatus();
 
+  console.log("BLOCK INFO (DEV) " + JSON.stringify(blockStatus, null, 2));
   const blockNumber = blockStatus?.blockNumber || 0;
   const loading = tokenLoading || proposalsLoading;
   const { dispatch } = useModal();

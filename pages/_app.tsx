@@ -4,7 +4,8 @@ import { AppInitialProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
 import { UseWalletProvider } from "use-wallet";
-import { UsePoolProvider, UseProcessProvider, UseBlockStatusProvider } from "@vocdoni/react-hooks";
+import { UsePoolProvider, UseProcessProvider } from "@vocdoni/react-hooks";
+import { UseBlockStatusProvider } from "../lib/contexts/blockStatus";
 import { ThemeProvider } from "styled-components";
 import "react-datetime/css/react-datetime.css";
 

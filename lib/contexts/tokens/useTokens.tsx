@@ -41,11 +41,12 @@ export function useToken(address: string) {
         setLoading(false);
         setError(err?.message);
       });
-  }, [address]);
+  }, [address, poolPromise]);
 
   return { tokenInfo, error: error || tokenListError, loading: loading || tokenListLoading };
 }
 
+/*  NOTE NOT CURRENTLY USED */
 /** Frontend of the cached token list */
 export function useTokens(tokenAddresses: string[]) {
   const { poolPromise } = usePool();
@@ -102,6 +103,7 @@ export function useTokens(tokenAddresses: string[]) {
   return { tokenInfoList, error: error || tokenListError, loading: loading || tokenListLoading };
 }
 
+/*  NOTE NOT CURRENTLY USED */
 export function useTokensWeb3Only(tokenAddresses: string[]): UseData<TokenInfo[]> {
   const { poolPromise } = usePool();
   const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>([]);
