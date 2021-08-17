@@ -1,10 +1,17 @@
+import React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useWallet } from "use-wallet";
 
+import { useMessageAlert } from "../contexts/message-alert";
 import { getNetworkVars, NetworkVariables } from "../constants/env";
 import { OutsideProviderError } from "../errors";
 
-const UseEnvironmentContext = createContext<NetworkVariables>(null);
+type EnvironmentInformation = {
+  variables: NetworkVariables;
+  unsupportedNetwork: boolean;
+};
+
+const UseEnvironmentContext = createContext<EnvironmentInformation>(null);
 
 export function useEnvironment() {
   const environmentContext = useContext(UseEnvironmentContext);
@@ -18,26 +25,36 @@ export function useEnvironment() {
 
 export function UseEnvironmentProvider({ children }) {
   const { chainId } = useWallet();
+  const { setAlertMessage } = useMessageAlert();
+
   const env = getNetworkVars(1);
-  const [environment, setEnvironment] = useState<NetworkVariables>(env);
+  const [variables, setVariables] = useState<NetworkVariables>(env);
+  const [isNetworkSupported, setIsNetworkSupported] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("// ==== PROVIDER EFFECT START ====");
-
-    let newEnvironment;
+    let newEnvironment: NetworkVariables;
     if (!chainId) {
-      console.log("UseWallet has no chainId");
+      // This case covers unconnected wallets
       newEnvironment = getNetworkVars(1);
+      setIsNetworkSupported(true);
     } else {
-      console.log("UseWallet has chainId: " + chainId);
       newEnvironment = getNetworkVars(chainId);
+      if (newEnvironment.chainId !== chainId) {
+        setIsNetworkSupported(false);
+        setAlertMessage("The currently selected network is not supported", "warning");
+      } else {
+        setIsNetworkSupported(true);
+      }
     }
-    setEnvironment(newEnvironment);
-    console.log("\\\\ ==== PROVIDER EFFECT END ====");
+
+    setVariables(newEnvironment);
   }, [chainId]);
 
-  console.log("RETURNING FROM PROVIDER: " + JSON.stringify(environment, null, 2));
   return (
-    <UseEnvironmentContext.Provider value={environment}>{children}</UseEnvironmentContext.Provider>
+    <UseEnvironmentContext.Provider
+      value={{ variables: variables, unsupportedNetwork: isNetworkSupported }}
+    >
+      {children}
+    </UseEnvironmentContext.Provider>
   );
 }

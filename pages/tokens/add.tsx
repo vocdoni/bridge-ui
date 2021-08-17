@@ -156,7 +156,7 @@ const ButtonsRow = ({
 );
 
 const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
-  const { etherscanPrefix } = useEnvironment();
+  const { variables } = useEnvironment();
 
   return (
     <>
@@ -183,7 +183,11 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
         <Info>
           <TokenAttributeTitle>Token address</TokenAttributeTitle>
           {/* TODO insert copy icon (and use the same links as in header?) [VR 30-06-2021] */}
-          <a target="_blank" rel="noopener noreferrer" href={`${etherscanPrefix}/token/${address}`}>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`${variables.etherscanPrefix}/token/${address}`}
+          >
             <Address>{shortAddress(address)}</Address>
           </a>
         </Info>

@@ -20,12 +20,14 @@ import { GrayRectangle } from "../components/Banners/styled";
 import { Loading, NotConnected } from "../components/Banners/GrayBanners";
 import { useFeaturedTokens } from "../lib/hooks/useFeaturedTokens";
 import { TokenList } from "./dashboard";
+import { useEnvironment } from "../lib/contexts/useEnvironment";
 
 // MAIN COMPONENT
 
 const IndexPage = () => {
   useScrollTop();
   const { status } = useWallet();
+  const { unsupportedNetwork } = useEnvironment();
   const {
     data: featuredTokens,
     isLoading: featuredTokensLoading,

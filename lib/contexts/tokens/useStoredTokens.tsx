@@ -42,7 +42,7 @@ export function useStoredTokens(): StoredTokens {
  * @returns useStoredTokens Provider
  */
 export function UseStoredTokensProvider({ children }) {
-  const { networkName } = useEnvironment();
+  const { variables } = useEnvironment();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
@@ -63,18 +63,6 @@ export function UseStoredTokensProvider({ children }) {
         setIsLoading(false);
       }
     };
-    // ===============================
-    // setIsLoading(true);
-    // readFromStorage() // IndexDB
-    //   .then(() => fetchNewRegisteredTokens()) // Web3
-    //   .catch((error) => {
-    //     // Errors can get too large and specific to display as toast to users. Use
-    //     // abbreviated message in toast and explicit message in console
-    //     console.error("Could not update the list of tokens because: " + error);
-    //     setError(new Error("Could not update the list of tokens"));
-    //   })
-    //   .finally(() => setIsLoading(false));
-    // ===============================
     asyncEffect();
   }, [poolPromise]);
 
@@ -87,7 +75,7 @@ export function UseStoredTokensProvider({ children }) {
   const readFromStorage = () => {
     const storage = new VoiceStorage();
 
-    return storage.readAllTokens(networkName).then((storedTokens) => {
+    return storage.readAllTokens(variables.networkName).then((storedTokens) => {
       const result: TokenInfo[] = (storedTokens || []).map((item) => {
         return {
           totalSupply: BigNumber.from(item.totalSupply?._hex || item.totalSupply),
@@ -107,7 +95,7 @@ export function UseStoredTokensProvider({ children }) {
   const readFromStorageAsync = async () => {
     const storage = new VoiceStorage();
 
-    const storedTokenInfo = await storage.readAllTokens(networkName);
+    const storedTokenInfo = await storage.readAllTokens(variables.networkName);
     return (storedTokenInfo || []).map((item) => {
       return {
         totalSupply: BigNumber.from(item.totalSupply?._hex || item.totalSupply),
@@ -219,7 +207,7 @@ export function UseStoredTokensProvider({ children }) {
    */
   const writeToStorage = (tokens: TokenInfo[]) => {
     const storage = new VoiceStorage();
-    return storage.writeTokens(tokens, networkName);
+    return storage.writeTokens(tokens, variables.networkName);
   };
 
   useEffect(() => {

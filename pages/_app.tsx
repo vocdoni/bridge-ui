@@ -14,13 +14,13 @@ import { UseLoadingAlertProvider } from "../lib/contexts/loading-alert";
 import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/contexts/tokens";
 import { getConnectors } from "../lib/constants/wallets";
 import { trackPage } from "../lib/analytics";
+import { ModalsProvider } from "../lib/contexts/modal";
+import { BUILD } from "../lib/constants/env";
+import { useEnvironment, UseEnvironmentProvider } from "../lib/contexts/useEnvironment";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
-import { ModalsProvider } from "../lib/contexts/modal";
 import { CookiesBanner } from "../components/cookies-banner";
-import { BUILD } from "../lib/constants/env";
-import { useEnvironment, UseEnvironmentProvider } from "../lib/contexts/useEnvironment";
 
 Router.events.on("routeChangeComplete", (url: string) => trackPage(url));
 
@@ -48,7 +48,9 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 };
 
 const AppWithWallet = ({ Component, router, pageProps }: NextAppProps) => {
-  const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
+  const {
+    variables: { networkName, bootnodesUrl, vocdoniEnvironment },
+  } = useEnvironment();
   console.log("rerender with " + networkName);
 
   return (

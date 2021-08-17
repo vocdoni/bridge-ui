@@ -16,16 +16,16 @@ import { useEnvironment } from "./../contexts/useEnvironment";
 export function useTokenUpdater() {
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
-  const { networkName } = useEnvironment();
+  const { variables } = useEnvironment();
 
   useEffect(() => {
     async function getTokenList() {
-      console.log("UPDATING FOR " + networkName);
+      console.log("UPDATING FOR " + variables.networkName);
       try {
         const db = new VoiceStorage();
         const [pool, tokensInDbCount] = await Promise.all([
           poolPromise,
-          db.getNumberOfTokens(networkName),
+          db.getNumberOfTokens(variables.networkName),
         ]);
         const tokens = await getRegisteredTokenList(tokensInDbCount, pool);
         console.log("NUMBER OF TOKENS IN MEM " + tokensInDbCount);

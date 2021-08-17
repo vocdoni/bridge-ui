@@ -13,7 +13,7 @@ import { useEnvironment } from "./../contexts/useEnvironment";
  * @returns Aray containing token information for curated featured tokens
  */
 export function useFeaturedTokens(sorted = false): UseData<TokenInfo[]> {
-  const { networkName } = useEnvironment();
+  const { variables } = useEnvironment();
   const {
     data: storedTokens,
     isLoading: storedTokensLoading,
@@ -27,7 +27,7 @@ export function useFeaturedTokens(sorted = false): UseData<TokenInfo[]> {
     setIsLoading(true);
 
     //get list of featured tokens
-    const featuredTokenAddresses: TokenAddress[] = getFeaturedTokens(networkName);
+    const featuredTokenAddresses: TokenAddress[] = getFeaturedTokens(variables.networkName);
 
     //filter stored tokens for featured tokens
     const isFeatured = (ti: TokenInfo) => featuredTokenAddresses.includes(ti.address.toLowerCase());

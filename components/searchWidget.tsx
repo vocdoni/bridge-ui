@@ -25,9 +25,7 @@ type SearchBarProps = {
   onKeyDown?: (ev: any) => void;
 };
 
-const doNothing = () => {};
-
-export const SearchBar = ({ placeholder, onChange, onKeyDown = doNothing }: SearchBarProps) => {
+export const SearchBar = ({ placeholder, onChange, onKeyDown }: SearchBarProps) => {
   return (
     <Box>
       <TextInput placeholder={placeholder} onKeyDown={onKeyDown} onChange={onChange} />

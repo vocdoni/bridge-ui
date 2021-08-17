@@ -41,11 +41,11 @@ export function useTokenSrc(address: TokenAddress): UseData<TokenInfo> {
 }
 
 /*  TODO implement */
-export function useTokensSrc(addresses: string[]) {
-  const { poolPromise } = usePool();
-  const [tokensInfo, setTokensInfo] = useState<TokenInfo[]>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+// export function useTokensSrc(addresses: string[]) {
+//   const { poolPromise } = usePool();
+//   const [tokensInfo, setTokensInfo] = useState<TokenInfo[]>();
+//   const [loading, setLoading] = useState<boolean>(false);
+//   const [error, setError] = useState<string>("");
 
-  useEffect(() => {});
-}
+//   useEffect(() => {});
+// }
