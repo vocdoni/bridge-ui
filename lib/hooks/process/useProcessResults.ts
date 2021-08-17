@@ -1,4 +1,5 @@
-import { useBlockStatus, usePool } from "@vocdoni/react-hooks";
+import { useBlockStatus } from "../../contexts/blockStatus";
+import { usePool } from "@vocdoni/react-hooks";
 import { IProcessDetails, VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
@@ -14,7 +15,10 @@ export type ProcessResults = {
   }[];
 }[];
 
-export const useProcessResults = (processDetails: IProcessDetails, tokenInfo: Partial<TokenInfo>) => {
+export const useProcessResults = (
+  processDetails: IProcessDetails,
+  tokenInfo: Partial<TokenInfo>
+) => {
   const { poolPromise } = usePool();
   const { blockStatus } = useBlockStatus();
   const [results, setResults] = useState<ProcessResults>([]);
@@ -45,17 +49,18 @@ export const useProcessResults = (processDetails: IProcessDetails, tokenInfo: Pa
       if (blockStatus.blockNumber < endBlock) {
         // Return empty results
 
-        const results = processDetails?.metadata?.questions?.map?.(({ title, choices }) => {
-          const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
-            title: choiceTitle.default,
-            votes: "",
-            percentage: "N/A",
-          }));
-          return {
-            title: title.default,
-            choices: choicesFormatted,
-          };
-        }) || [];
+        const results =
+          processDetails?.metadata?.questions?.map?.(({ title, choices }) => {
+            const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
+              title: choiceTitle.default,
+              votes: "",
+              percentage: "N/A",
+            }));
+            return {
+              title: title.default,
+              choices: choicesFormatted,
+            };
+          }) || [];
         setLoading(false);
         setResults(results);
         setError("");
@@ -120,17 +125,20 @@ export const useProcessResults = (processDetails: IProcessDetails, tokenInfo: Pa
       setLoading(false);
 
       if (e?.message == "The results are not available") {
-        const results: ProcessResults = processDetails?.metadata?.questions?.map?.(({ title, choices }) => {
-          const choicesFormatted = choices.map(({ title: choiceTitle }) => ({
-            title: choiceTitle.default,
-            votes: hasEncryptedVotes ? "" : "0 " + tokenInfo.symbol,
-            percentage: "Error",
-          })) || [];
-          return {
-            title: title.default,
-            choices: choicesFormatted,
-          };
-        });
+        const results: ProcessResults = processDetails?.metadata?.questions?.map?.(
+          ({ title, choices }) => {
+            const choicesFormatted =
+              choices.map(({ title: choiceTitle }) => ({
+                title: choiceTitle.default,
+                votes: hasEncryptedVotes ? "" : "0 " + tokenInfo.symbol,
+                percentage: "Error",
+              })) || [];
+            return {
+              title: title.default,
+              choices: choicesFormatted,
+            };
+          }
+        );
         setResults(results);
         setError("The results are not available");
         return;
