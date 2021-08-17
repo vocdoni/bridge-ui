@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { NetworkVariables, getNetworkVars } from "../../constants/env";
+
+import { NetworkVariables, getNetworkVars } from "../constants/env";
 
 /* NOTE NOT CURRENTLY USED */
 // export function UseSimpleEnv(chainId) {

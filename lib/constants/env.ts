@@ -52,7 +52,24 @@ const ENVIRONMENTS: NetworkVariables[] = [
   },
 ];
 
-export function getNetworkVars(chainId: number, called: string): NetworkVariables {
+/**
+ * Depending on the environment (set by the user via their wallet), the app must display
+ * different information that relies on the Network variables. If the network changes,
+ * this function will look for and return the right variables. In the case where a chainId
+ * is passed that is not supported, the app defaults back to mainnet.
+ *
+ * @param chainId chain number as specified by
+ * @returns Environment variables for requested chain. Returns values for mainnet if
+ * chainId is unsupported.
+ */
+export function getNetworkVars(chainId: number): NetworkVariables {
+  const newEnv = ENVIRONMENTS.find((env) => env.chainId === chainId);
+  if (!newEnv) return ENVIRONMENTS[0];
+
+  return newEnv;
+}
+
+export function getNetworkVarsWithCaller(chainId: number, called: string): NetworkVariables {
   console.log("GETTING ENV FOR ID " + chainId + " FROM " + called);
   return ENVIRONMENTS.find((env) => env.chainId === chainId);
 }
