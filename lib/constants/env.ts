@@ -69,6 +69,8 @@ export function getNetworkVars(chainId: number): NetworkVariables {
   return newEnv;
 }
 
+/* THIS CODE IS FOR SANDBOXING ONLY. */
+/* TODO delete before merging PR */
 export function getNetworkVarsWithCaller(chainId: number, called: string): NetworkVariables {
   console.log("GETTING ENV FOR ID " + chainId + " FROM " + called);
   return ENVIRONMENTS.find((env) => env.chainId === chainId);

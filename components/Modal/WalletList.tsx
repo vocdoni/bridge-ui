@@ -105,7 +105,9 @@ export const WalletList = () => {
         setAlertMessage("You rejected the connection attempt", "warning");
         break;
       case "ChainUnsupportedError":
-        setAlertMessage("This chain is not supported. Please set your wallet to Mainnet");
+        setAlertMessage(
+          "This chain is not supported. Please set your wallet to Mainnet or Rinkeby"
+        );
         break;
       default:
         setAlertMessage("Could not connect to the selected wallet");
@@ -129,14 +131,6 @@ export const WalletList = () => {
     } catch (error) {
       console.error(error);
     }
-    // return connect(wallet)
-    //   .then(() => {
-    //     closeModal();
-    //     reset();
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
   };
 
   return (

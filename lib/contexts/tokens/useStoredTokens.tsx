@@ -42,7 +42,7 @@ export function useStoredTokens(): StoredTokens {
  * @returns useStoredTokens Provider
  */
 export function UseStoredTokensProvider({ children }) {
-  const { variables } = useEnvironment();
+  const { networkName } = useEnvironment();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
@@ -67,27 +67,6 @@ export function UseStoredTokensProvider({ children }) {
   }, [poolPromise]);
 
   /**
-   * Reads the info of tokens stored in IndexedDB and stores them in this component's
-   * state.
-   *
-   * @returns Promise<void>
-   */
-  const readFromStorage = () => {
-    const storage = new VoiceStorage();
-
-    return storage.readAllTokens(variables.networkName).then((storedTokens) => {
-      const result: TokenInfo[] = (storedTokens || []).map((item) => {
-        return {
-          totalSupply: BigNumber.from(item.totalSupply?._hex || item.totalSupply),
-          ...item,
-        };
-      });
-      console.log("TOKENINFO COUNT IN DB " + result.length);
-      setStoredTokens(result);
-    });
-  };
-
-  /**
    * Async version of readFromStorage().
    *
    * @returns Promise<TokenInfo[]>
@@ -95,7 +74,7 @@ export function UseStoredTokensProvider({ children }) {
   const readFromStorageAsync = async () => {
     const storage = new VoiceStorage();
 
-    const storedTokenInfo = await storage.readAllTokens(variables.networkName);
+    const storedTokenInfo = await storage.readAllTokens(networkName);
     return (storedTokenInfo || []).map((item) => {
       return {
         totalSupply: BigNumber.from(item.totalSupply?._hex || item.totalSupply),
@@ -104,6 +83,7 @@ export function UseStoredTokensProvider({ children }) {
     });
   };
 
+  //TODO change hook signature and replace this with async version
   /**
    * Fetches the info of tokens that are newly registered (and therefore not yet stored in
    * indexedDB) from the web3 endpoints. The info is then added to both IndexedDB and this
@@ -117,8 +97,6 @@ export function UseStoredTokensProvider({ children }) {
         return Promise.all([getRegisteredTokenList(0, gwp), gwp]);
       })
       .then(([registeredTokens, gwp]) => {
-        console.log("TOKENADDR COUNT IN Web3 " + registeredTokens.length);
-
         // filter out registered tokens we already store.
         const alreadyStored = (token: string) => {
           return storedTokens.some((st) => st.address.toLowerCase() == token.toLowerCase());
@@ -142,8 +120,6 @@ export function UseStoredTokensProvider({ children }) {
         }
       })
       .then((newTokenListInfo) => {
-        console.log("TOKENINFO COUNT IN Web3 " + newTokenListInfo.length);
-
         setError(null);
         setStoredTokens(storedTokens.concat(newTokenListInfo));
         writeToStorage(newTokenListInfo);
@@ -207,7 +183,7 @@ export function UseStoredTokensProvider({ children }) {
    */
   const writeToStorage = (tokens: TokenInfo[]) => {
     const storage = new VoiceStorage();
-    return storage.writeTokens(tokens, variables.networkName);
+    return storage.writeTokens(tokens, networkName);
   };
 
   useEffect(() => {

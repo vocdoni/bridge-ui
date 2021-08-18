@@ -38,6 +38,8 @@ export function useRegisteredTokens(): UseData<TokenAddress[]> {
   return { data: tokenAddresses, isLoading: isLoading || loading, error };
 }
 
+/* NOTE This is currently not used. */
+
 // export function useRegisteredTokenAddresses(networkId) {
 //   const { poolPromise, loading } = usePool();
 //   const [tokenAddresses, setTokenList] = useState<string[]>([]);
