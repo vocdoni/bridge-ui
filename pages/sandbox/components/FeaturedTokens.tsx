@@ -17,7 +17,7 @@ const FeaturedTokensSection = () => {
       </Then>
       <Else>
         <p>
-          There are currently {x.data.length} featured tokens on network {e.variables.networkName}.
+          There are currently {x.data.length} featured tokens on network {e.networkName}.
         </p>
         <p>Their infos are</p>
         {x.data.map((t, i) => (

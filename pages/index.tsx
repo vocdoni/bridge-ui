@@ -12,22 +12,20 @@ import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
 import { flex_row_large_column_small_mixin } from "../lib/mixins";
+import { useFeaturedTokens } from "../lib/hooks/useFeaturedTokens";
 
 import { TokenCard } from "../components/token-card";
 import { SecondaryButton } from "../components/ControlElements/button";
 import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { Loading, NotConnected } from "../components/Banners/GrayBanners";
-import { useFeaturedTokens } from "../lib/hooks/useFeaturedTokens";
 import { TokenList } from "./dashboard";
-import { useEnvironment } from "../lib/contexts/useEnvironment";
 
 // MAIN COMPONENT
 
 const IndexPage = () => {
   useScrollTop();
   const { status } = useWallet();
-  const { unsupportedNetwork } = useEnvironment();
   const {
     data: featuredTokens,
     isLoading: featuredTokensLoading,

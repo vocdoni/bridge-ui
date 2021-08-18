@@ -31,7 +31,7 @@ type NextAppProps = AppInitialProps & {
 
 const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
   const connectors = getConnectors();
-  // console.log("BUILT WITH " + JSON.stringify(BUILD, null, 2));
+
   return (
     <ThemeProvider theme={theme}>
       <UseMessageAlertProvider>
@@ -48,10 +48,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 };
 
 const AppWithWallet = ({ Component, router, pageProps }: NextAppProps) => {
-  const {
-    variables: { networkName, bootnodesUrl, vocdoniEnvironment },
-  } = useEnvironment();
-  console.log("rerender with " + networkName);
+  const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
 
   return (
     <UsePoolProvider

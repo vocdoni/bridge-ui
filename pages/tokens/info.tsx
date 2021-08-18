@@ -10,13 +10,14 @@ import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
 import { EventType, trackEvent } from "../../lib/analytics";
+import { useNetworkChange } from "../../lib/hooks/useNetworkChange";
+import { ActionTypes, useModal } from "../../lib/contexts/modal";
 
 import SectionTitle from "../../components/sectionTitle";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/ControlElements/button";
 import { IProcessSummary, ProcessMetadata } from "dvote-js";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
-import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { Loading } from "../../components/Banners/GrayBanners";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
 
@@ -201,6 +202,7 @@ const ProcessCard = (props: { id: string; token: TokenInfo; title: string; loadi
 
 // MAIN COMPONENT
 const TokenPage = () => {
+  useNetworkChange();
   useScrollTop();
   const tokenAddress = useUrlHash().substr(1);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
@@ -208,7 +210,6 @@ const TokenPage = () => {
   const { processes, loading: proposalsLoading, error: proposalsError } = useProcesses(processIds);
   const { blockStatus } = useBlockStatus();
 
-  console.log("BLOCK INFO (DEV) " + JSON.stringify(blockStatus, null, 2));
   const blockNumber = blockStatus?.blockNumber || 0;
   const loading = tokenLoading || proposalsLoading;
   const { dispatch } = useModal();
