@@ -7,6 +7,7 @@ type RegTokenSectionSectionProps = {
 };
 
 const RegTokenSection = ({ tokens, network }: RegTokenSectionSectionProps) => {
+  if (!tokens) return null;
   return (
     <>
       <p>
