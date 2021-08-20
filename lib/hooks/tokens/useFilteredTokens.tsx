@@ -1,5 +1,5 @@
-import { TokenInfo, UseData } from "../types";
-import { useStoredTokens } from "./../contexts/tokens";
+import { TokenInfo, UseData } from "../../types";
+import { useStoredTokens } from "../../contexts/tokens";
 
 function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
   const lowercaseTerm = term.toLocaleLowerCase();
@@ -13,6 +13,14 @@ function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
   );
 }
 
+/**
+ * This hook filters all the locally stored token w.r.t a given search term.
+ *
+ * The hook checks if the term is a substring of the NAME, SYMBOL or ADDRESS of the token.
+ *
+ * @param searchTerm string to search in token infos
+ * @returns A list of token information containing the searchTerm
+ */
 export const useFilteredTokens = (searchTerm: string): UseData<TokenInfo[]> => {
   const storedTokens = useStoredTokens();
 

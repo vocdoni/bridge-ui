@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getFeaturedTokens, tokenSorter } from "../tokens";
-import { UseData, TokenInfo, TokenAddress } from "../types";
-import { useStoredTokens } from "./../contexts/tokens";
-import { useEnvironment } from "./../contexts/useEnvironment";
+import { getFeaturedTokens, tokenSorter } from "../../tokens";
+import { UseData, TokenInfo, TokenAddress } from "../../types";
+import { useStoredTokens } from "../../contexts/tokens";
+import { useEnvironment } from "../../contexts/useEnvironment";
 
 /**
  * This hook gets the list of curated featred tokens addresses for the current network. It
