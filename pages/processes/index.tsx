@@ -47,9 +47,11 @@ import {
   Loading,
 } from "../../components/Banners/GrayBanners";
 import { useUserHoldsToken } from "../../lib/hooks/useUserHoldsToken";
+import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 
 const ProcessPage = () => {
   useScrollTop();
+  useOnNetworkChange();
   const processId = useProcessIdFromUrl();
 
   const { setAlertMessage } = useMessageAlert();

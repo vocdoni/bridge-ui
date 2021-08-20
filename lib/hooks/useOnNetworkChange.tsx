@@ -23,7 +23,7 @@ export function useOnNetworkChange() {
     if (currNetwork !== newNetwork) {
       setCurrNetwork(newNetwork);
       setAlertMessage(`This page does not exist on ${networkName}. Sending you back to Home.`);
-      router.push("/");
+      router.replace("/");
     }
   }, [newNetwork]);
 }
