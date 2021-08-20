@@ -12,7 +12,7 @@ import { useScrollTop } from "../lib/hooks/useScrollTop";
 import { shortTokenName } from "../lib/utils";
 import { TokenInfo } from "../lib/types";
 import { flex_row_large_column_small_mixin } from "../lib/mixins";
-import { useFeaturedTokens } from "../lib/hooks/useFeaturedTokens";
+import { useFeaturedTokens } from "../lib/hooks/tokens";
 
 import { TokenCard } from "../components/token-card";
 import { SecondaryButton } from "../components/ControlElements/button";

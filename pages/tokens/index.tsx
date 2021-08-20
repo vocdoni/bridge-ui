@@ -4,9 +4,11 @@ import { Case, Default, Switch } from "react-if";
 
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
-import { useScrollTop } from "../../lib/hooks/useScrollTop";
-import { LOOKING_GLASS_IMG } from "../../lib/constants/url";
+import { tokenSorter } from "../../lib/tokens";
 import { flex_row_large_column_small_mixin } from "../../lib/mixins";
+import { useScrollTop } from "../../lib/hooks/useScrollTop";
+import { useFilteredTokens } from "../../lib/hooks/tokens";
+import { LOOKING_GLASS_IMG } from "../../lib/constants/url";
 
 import { TokenCard } from "../../components/token-card";
 import SectionTitle from "../../components/sectionTitle";
@@ -14,8 +16,6 @@ import { PrimaryButton } from "../../components/ControlElements/button";
 import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
 import { Loading } from "../../components/Banners/GrayBanners";
-import { tokenSorter } from "../../lib/tokens";
-import { useFilteredTokens } from "../../lib/hooks/tokens/useFilteredTokens";
 
 const ButtonContainer = styled.div`
   ${flex_row_large_column_small_mixin}
