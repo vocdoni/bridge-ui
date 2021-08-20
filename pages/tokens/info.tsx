@@ -10,7 +10,7 @@ import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { TokenInfo } from "../../lib/types";
 import { EventType, trackEvent } from "../../lib/analytics";
-import { useNetworkChange } from "../../lib/hooks/useNetworkChange";
+import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 import { ActionTypes, useModal } from "../../lib/contexts/modal";
 
 import SectionTitle from "../../components/sectionTitle";
@@ -202,7 +202,7 @@ const ProcessCard = (props: { id: string; token: TokenInfo; title: string; loadi
 
 // MAIN COMPONENT
 const TokenPage = () => {
-  useNetworkChange();
+  useOnNetworkChange();
   useScrollTop();
   const tokenAddress = useUrlHash().substr(1);
   const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);

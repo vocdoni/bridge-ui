@@ -15,7 +15,7 @@ import { TokenList } from "../dashboard";
 import { SearchBar } from "../../components/searchWidget";
 import { Loading } from "../../components/Banners/GrayBanners";
 import { tokenSorter } from "../../lib/tokens";
-import { useFilteredTokens } from "../../lib/hooks/useFilteredTokens";
+import { useFilteredTokens } from "../../lib/hooks/tokens/useFilteredTokens";
 
 const ButtonContainer = styled.div`
   ${flex_row_large_column_small_mixin}

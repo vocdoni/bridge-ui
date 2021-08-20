@@ -54,7 +54,7 @@ export function UseStoredTokensProvider({ children }) {
     const asyncEffect = async () => {
       setIsLoading(true);
       try {
-        const dbTokensInfo = await readFromStorageAsync();
+        const dbTokensInfo = await readFromStorage();
         await fetchNewRegisteredTokensAsync(dbTokensInfo);
       } catch (error) {
         console.error("Could not update the list of tokens because: " + error);
@@ -67,11 +67,12 @@ export function UseStoredTokensProvider({ children }) {
   }, [poolPromise]);
 
   /**
-   * Async version of readFromStorage().
+   * Reads the info of tokens stored in IndexedDB and stores them in this component's
+   * state.
    *
    * @returns Promise<TokenInfo[]>
    */
-  const readFromStorageAsync = async () => {
+  const readFromStorage = async () => {
     const storage = new VoiceStorage();
 
     const storedTokenInfo = await storage.readAllTokens(networkName);
@@ -127,7 +128,8 @@ export function UseStoredTokensProvider({ children }) {
   };
 
   /**
-   * Async version of fetchRegisteredToken()
+   * Reads the info of tokens stored in IndexedDB and stores them in this component's
+   * state.
    *
    * @returns Promise<void>
    */

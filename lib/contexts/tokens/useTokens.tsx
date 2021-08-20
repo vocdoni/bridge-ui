@@ -3,12 +3,19 @@ import { GatewayPool } from "dvote-js";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo } from "../../api";
-import { TokenInfo, UseData } from "../../types";
+import { TokenAddress, TokenInfo, UseData } from "../../types";
 import { FetchTokensInfosError } from "../../errors";
 import { useStoredTokens } from "./useStoredTokens";
 
-/** Frontend of the cached token list */
-export function useToken(address: string) {
+/**
+ * This hook returns information about a specific token. If the info is found in cache, it
+ * will immediately return that information. Otherwise, it will first fetch it from the
+ * web and store it in cache, before returning it.
+ *
+ * @param address Address of token for which information should be returned
+ * @returns Information about the token
+ */
+export function useToken(address: TokenAddress) {
   const { poolPromise } = usePool();
   const {
     data: storedTokens,
@@ -47,8 +54,15 @@ export function useToken(address: string) {
 }
 
 /*  NOTE NOT CURRENTLY USED */
-/** Frontend of the cached token list */
-export function useTokens(tokenAddresses: string[]) {
+/**
+ * This hook returns information about a list of tokens. If the infos are found in cache, it
+ * will immediately return the information. Otherwise, it will first fetch it from the
+ * web and store it in cache, before returning it.
+ *
+ * @param addresses List of addresses of token for which information should be returned
+ * @returns Information about the tokens
+ */
+export function useTokens(addresses: TokenAddress[]) {
   const { poolPromise } = usePool();
   const {
     data: storedTokens,
@@ -57,7 +71,7 @@ export function useTokens(tokenAddresses: string[]) {
     isLoading: tokenListLoading,
   } = useStoredTokens();
   const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>(() =>
-    tokenAddresses.map((addr) => storedTokens.find((item) => item.address == addr))
+    addresses.map((addr) => storedTokens.find((item) => item.address == addr))
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -66,19 +80,16 @@ export function useTokens(tokenAddresses: string[]) {
   useEffect(() => {
     const uncachedTokens: string[] = [];
 
-    for (let addr of tokenAddresses) {
+    for (let addr of addresses) {
       const included = storedTokens.some((t) => t.address.toLowerCase() == addr?.toLowerCase?.());
       if (included) continue;
 
       uncachedTokens.push(addr);
     }
 
-    let pool: GatewayPool;
     poolPromise
       .then((gwPool) => {
-        pool = gwPool;
-
-        return Promise.all(uncachedTokens.map((tokenAddr) => getTokenInfo(tokenAddr, pool)));
+        return Promise.all(uncachedTokens.map((tokenAddr) => getTokenInfo(tokenAddr, gwPool)));
       })
       .then((newTokenInfos) => {
         setLoading(false);
@@ -86,7 +97,7 @@ export function useTokens(tokenAddresses: string[]) {
 
         // Set the full list following the original token address order
         const combinedTokenList = [].concat(storedTokens).concat(newTokenInfos) as TokenInfo[];
-        const result = tokenAddresses.map((addr) =>
+        const result = addresses.map((addr) =>
           combinedTokenList.find((item) => item.address == addr)
         );
 
@@ -98,14 +109,22 @@ export function useTokens(tokenAddresses: string[]) {
         setLoading(false);
         setError(err?.message);
       });
-  }, [tokenAddresses]);
+  }, [addresses, poolPromise]);
 
   return { tokenInfoList, error: error || tokenListError, loading: loading || tokenListLoading };
 }
 
 /*  NOTE NOT CURRENTLY USED */
-export function useTokensWeb3Only(tokenAddresses: string[]): UseData<TokenInfo[]> {
+/**
+ * This hook returns information about a list of tokens. The infos are fetched solely from the
+ * web. I.e., no information is read/stored to/from local storage.
+ *
+ * @param addresses List of addresses of token for which information should be returned
+ * @returns Information about the tokens
+ */
+export function useTokensWeb3Only(addresses: TokenAddress[]): UseData<TokenInfo[]> {
   const { poolPromise } = usePool();
+
   const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>(null);
@@ -113,10 +132,7 @@ export function useTokensWeb3Only(tokenAddresses: string[]): UseData<TokenInfo[]
   // Load from IndexDB or resolve it (if new)
   useEffect(() => {
     async function fetchTokenInfos() {
-      console.log("USETOKENS NEW ");
-      console.log(tokenAddresses);
-
-      if (!tokenAddresses) {
+      if (!addresses) {
         setTokenInfoList([]);
         return;
       }
@@ -124,7 +140,7 @@ export function useTokensWeb3Only(tokenAddresses: string[]): UseData<TokenInfo[]
       setIsLoading(true);
       try {
         const pool = await poolPromise;
-        const tokenInfos = await Promise.all(tokenAddresses.map((ta) => getTokenInfo(ta, pool)));
+        const tokenInfos = await Promise.all(addresses.map((ta) => getTokenInfo(ta, pool)));
         setTokenInfoList(tokenInfos);
       } catch (err) {
         setError(new FetchTokensInfosError(err));
@@ -134,7 +150,7 @@ export function useTokensWeb3Only(tokenAddresses: string[]): UseData<TokenInfo[]
     }
 
     fetchTokenInfos();
-  }, [tokenAddresses]);
+  }, [addresses, poolPromise]);
 
   return { data: tokenInfoList, isLoading, error: error };
 }
