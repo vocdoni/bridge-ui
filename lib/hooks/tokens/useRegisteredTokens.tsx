@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
 
-import { getRegisteredTokenList } from "../../lib/api";
-import { FetchRegisteredTokensError } from "../errors";
-import { TokenAddress, UseData } from "../types";
+import { getRegisteredTokenList } from "../../../lib/api";
+import { FetchRegisteredTokensError } from "../../errors";
+import { TokenAddress, UseData } from "../../types";
 
 /* NOTE This is currently not used. */
 
