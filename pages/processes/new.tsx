@@ -45,6 +45,7 @@ import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/ControlElements/input";
 import ProgressComponent, { ProgressState } from "../../components/progress-dialog";
+import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
 layout is changed to a column for devices <= laptop. */
@@ -250,6 +251,7 @@ const resultsTexts: TextContent[] = [
 ];
 
 const NewProcessPage = () => {
+  useOnNetworkChange();
   const { poolPromise } = usePool();
   const { storeTokens } = useStoredTokens();
 
