@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo } from "../../api";
-import { TokenAddress, TokenInfo, UseData } from "../../types";
-import { FetchTokensInfosError } from "../../errors";
+import { TokenAddress, TokenInfo } from "../../types";
 import { useStoredTokens } from "./useStoredTokens";
 
 /**
@@ -113,45 +112,4 @@ export function useTokens(addresses: TokenAddress[]) {
   }, [addresses, poolPromise]);
 
   return { tokenInfoList, error: error || tokenListError, loading: loading || tokenListLoading };
-}
-
-/*  NOTE NOT CURRENTLY USED */
-/**
- * This hook returns information about a list of tokens. The infos are fetched solely from the
- * web. I.e., no information is read/stored to/from local storage.
- *
- * @param addresses List of addresses of token for which information should be returned
- * @returns Information about the tokens
- */
-export function useTokensWeb3Only(addresses: TokenAddress[]): UseData<TokenInfo[]> {
-  const { poolPromise } = usePool();
-
-  const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error>(null);
-
-  // Load from IndexDB or resolve it (if new)
-  useEffect(() => {
-    async function fetchTokenInfos() {
-      if (!addresses) {
-        setTokenInfoList([]);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const pool = await poolPromise;
-        const tokenInfos = await Promise.all(addresses.map((ta) => getTokenInfo(ta, pool)));
-        setTokenInfoList(tokenInfos);
-      } catch (err) {
-        setError(new FetchTokensInfosError(err));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchTokenInfos();
-  }, [addresses, poolPromise]);
-
-  return { data: tokenInfoList, isLoading, error: error };
 }

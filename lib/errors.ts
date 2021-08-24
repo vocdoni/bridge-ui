@@ -25,15 +25,15 @@ export class TokenAddressInvalidError extends Error {
 
 export class FetchRegisteredTokensError extends Error {
   constructor(fetchingError: string = "") {
-    if (!fetchingError) super(`There was an error when fetching registered tokens`);
-    else super(`There following error occurred when fetching registered tokens: ${fetchingError}`);
+    if (!fetchingError) super(`Could not fetch the registered tokens`);
+    else super(`Could not fetch the registered tokens: ${fetchingError}`);
   }
 }
 
 export class FetchTokensInfosError extends Error {
   constructor(fetchingError: string = "") {
-    if (!fetchingError) super(`There was an error when fetching tokens infos`);
-    else super(`There following error occurred when fetching token infos: ${fetchingError}`);
+    if (!fetchingError) super(`Could not fetch the token details`);
+    else super(`Could not fetch the token details: ${fetchingError}`);
   }
 }
 

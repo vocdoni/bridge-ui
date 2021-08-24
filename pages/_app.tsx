@@ -38,7 +38,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
         <UseLoadingAlertProvider>
           <UseWalletProvider connectors={connectors || {}}>
             <UseEnvironmentProvider>
-              <AppWithWallet Component={Component} router={router} pageProps={pageProps} />
+              <AppWithEnvironment Component={Component} router={router} pageProps={pageProps} />
             </UseEnvironmentProvider>
           </UseWalletProvider>
         </UseLoadingAlertProvider>
@@ -47,7 +47,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
   );
 };
 
-const AppWithWallet = ({ Component, router, pageProps }: NextAppProps) => {
+const AppWithEnvironment = ({ Component, router, pageProps }: NextAppProps) => {
   const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
 
   return (

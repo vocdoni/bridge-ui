@@ -7,7 +7,7 @@ import { usePool } from "@vocdoni/react-hooks";
 import { useMessageAlert } from "../message-alert";
 import { useStoredTokens } from "./useStoredTokens";
 import { ERC20_ABI } from "../../constants/abi";
-import { TokenInfo, UseData } from "../../types";
+import { TokenInfo, HookData } from "../../types";
 import { OutsideProviderError } from "../../errors";
 import { useEnvironment } from "../useEnvironment";
 
@@ -19,7 +19,7 @@ accomodate for satus indicators across all custom hooks. [VR 05-08-2021] */
 
 type HookStatus = "not connected" | "no tokens" | "ready";
 
-type UserHeldTokens = UseData<TokenInfo[]> & {
+type UserHeldTokens = HookData<TokenInfo[]> & {
   refresh: () => Promise<TokenInfo[]>;
 };
 
@@ -59,7 +59,7 @@ export function UseTokensWithBalance({ children }) {
       status !== "connected" ||
       !storedTokens ||
       storedTokenLoading ||
-      storedTokens.network !== chainId
+      storedTokens.chainId !== chainId
     )
       return;
     setLoading(true);

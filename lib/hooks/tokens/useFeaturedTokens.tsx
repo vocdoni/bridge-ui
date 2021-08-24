@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+
 import { getFeaturedTokens, tokenSorter } from "../../tokens";
-import { UseData, TokenInfo, TokenAddress } from "../../types";
+import { HookData, TokenInfo, TokenAddress } from "../../types";
 import { useStoredTokens } from "../../contexts/tokens";
 import { useEnvironment } from "../../contexts/useEnvironment";
 
@@ -12,7 +13,7 @@ import { useEnvironment } from "../../contexts/useEnvironment";
  * @param sorted Indicates whether or not the output should be sorted. Defaults to unsorted.
  * @returns Aray containing token information for curated featured tokens
  */
-export function useFeaturedTokens(sorted = false): UseData<TokenInfo[]> {
+export function useFeaturedTokens(sorted = false): HookData<TokenInfo[]> {
   const { networkName } = useEnvironment();
   const {
     data: storedTokens,
