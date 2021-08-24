@@ -3,7 +3,7 @@ import { usePool } from "@vocdoni/react-hooks";
 
 import { getRegisteredTokenList } from "../../../lib/api";
 import { FetchRegisteredTokensError } from "../../errors";
-import { TokenAddress, UseData } from "../../types";
+import { TokenAddress, HookData } from "../../types";
 
 /* NOTE This is currently not used. */
 
@@ -11,9 +11,9 @@ import { TokenAddress, UseData } from "../../types";
  * Returns a list of all the token addresses that currently registered on the Voice's
  * smart contract.
  *
- * @returns UseData, where the data is a list of token addresses.
+ * @returns HookData, where the data is a list of token addresses.
  */
-export function useRegisteredTokens(): UseData<TokenAddress[]> {
+export function useRegisteredTokens(): HookData<TokenAddress[]> {
   const { poolPromise, loading } = usePool();
 
   const [tokenAddresses, setTokenList] = useState<string[]>([]);

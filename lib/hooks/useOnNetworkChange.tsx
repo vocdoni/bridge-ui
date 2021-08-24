@@ -22,7 +22,7 @@ export function useOnNetworkChange() {
   useEffect(() => {
     if (currNetwork !== newNetwork) {
       setCurrNetwork(newNetwork);
-      setAlertMessage(`This page does not exist on ${networkName}. Sending you back to Home.`);
+      setAlertMessage(`This page does not exist on ${networkName}.`);
       router.replace("/");
     }
   }, [newNetwork]);

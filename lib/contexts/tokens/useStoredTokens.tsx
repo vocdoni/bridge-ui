@@ -5,21 +5,20 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { getRegisteredTokenList, getTokenInfo } from "../../api";
 import { useMessageAlert } from "../message-alert";
 import { VoiceStorage } from "../../storage";
-import { TokenInfo, UseData } from "../../types";
+import { TokenInfo, HookData } from "../../types";
 import { OutsideProviderError } from "../../errors";
 import { useEnvironment } from "../useEnvironment";
-import { getSlice } from "../../utils";
 
 export type TokenInfos = {
   tokens: TokenInfo[];
-  network: number;
+  chainId: number;
 };
 
-export type StoredTokens = UseData<TokenInfos> & {
+export type StoredTokens = HookData<TokenInfos> & {
   /** Cache the given tokens into IndexDB */
   storeTokens: (newTokenList: TokenInfo[]) => Promise<any>;
   /** Refresh the list of registered tokens and cache any new ones */
-  refresh: () => Promise<void>;
+  refresh: (cachedTokens?: TokenInfo[]) => Promise<void>;
 };
 
 const UseStoredTokensContext = React.createContext<StoredTokens>(null);
@@ -51,7 +50,7 @@ export function UseStoredTokensProvider({ children }) {
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
-  const [storedTokens, setStoredTokens] = useState<TokenInfos>({ tokens: [], network: 1 });
+  const [storedTokens, setStoredTokens] = useState<TokenInfos>({ tokens: [], chainId: 1 });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>(null);
 
@@ -60,7 +59,7 @@ export function UseStoredTokensProvider({ children }) {
     const asyncEffect = async () => {
       try {
         const dbTokensInfo = await readFromStorage();
-        await fetchNewRegisteredTokensAsync(dbTokensInfo);
+        await fetchNewRegisteredTokens(dbTokensInfo);
       } catch (error) {
         console.error("Could not update the list of tokens because: " + error);
         setError(new Error("Could not update the list of tokens"));
@@ -88,8 +87,6 @@ export function UseStoredTokensProvider({ children }) {
       };
     });
   };
-
-  //TODO change hook signature and replace this with async version
   /**
    * Fetches the info of tokens that are newly registered (and therefore not yet stored in
    * indexedDB) from the web3 endpoints. The info is then added to both IndexedDB and this
@@ -97,48 +94,9 @@ export function UseStoredTokensProvider({ children }) {
    *
    * @returns void
    */
-  const fetchNewRegisteredTokens = () => {
-    return poolPromise
-      .then((gwp) => {
-        return Promise.all([getRegisteredTokenList(0, gwp), gwp]);
-      })
-      .then(([registeredTokens, gwp]) => {
-        // filter out registered tokens we already store.
-        const alreadyStored = (token: string) => {
-          return storedTokens.tokens.some((st) => st.address.toLowerCase() == token.toLowerCase());
-        };
-        const newTokenAddresses: string[] = registeredTokens.filter((rt) => !alreadyStored(rt));
+  const fetchNewRegisteredTokens = async (cachedTokens?: TokenInfo[]) => {
+    if (!cachedTokens) cachedTokens = storedTokens.tokens;
 
-        const getSlice = (curr, step, max) => {
-          const next = curr + step;
-          if (next > max) return [curr, max];
-          else return [curr, next];
-        };
-
-        //fetch token infos in small chunk, untill there are no new token addresses
-        const inc = 10;
-        for (let i = 0; i < newTokenAddresses.length; i += inc) {
-          const [lo, hi] = getSlice(i, inc, newTokenAddresses.length);
-          const addressesChunk = newTokenAddresses.slice(lo, hi);
-
-          // Fetch token info of the registered tokens we do not yet store.
-          return Promise.all(newTokenAddresses.map((addr) => getTokenInfo(addr, gwp)));
-        }
-      })
-      .then((newTokenListInfo) => {
-        setError(null);
-        setStoredTokens({ tokens: storedTokens.tokens.concat(newTokenListInfo), network: chainId });
-        writeToStorage(newTokenListInfo);
-      });
-  };
-
-  /**
-   * Reads the info of tokens stored in IndexedDB and stores them in this component's
-   * state.
-   *
-   * @returns Promise<void>
-   */
-  const fetchNewRegisteredTokensAsync = async (cachedTokens: TokenInfo[]) => {
     try {
       const pool = await poolPromise;
       const registeredTokens = await getRegisteredTokenList(0, pool);
@@ -152,11 +110,7 @@ export function UseStoredTokensProvider({ children }) {
       //fetch token infos in small chunk, untill there are no new token addresses
       const inc = 10;
       for (let i = 0; i < newTokenAddresses.length; i += inc) {
-        // get chunk
-        const [lo, hi] = getSlice(i, inc, newTokenAddresses.length);
-        const addressesChunk = newTokenAddresses.slice(lo, hi);
-
-        // Fetch token info of the registered tokens we do not yet store.
+        const addressesChunk = newTokenAddresses.slice(i, i + inc);
         const tokenInfoChunk = await Promise.all(
           addressesChunk.map((addr) => getTokenInfo(addr, pool))
         );
@@ -173,7 +127,7 @@ export function UseStoredTokensProvider({ children }) {
        * (provide data in chunks) and loading indicator.
        * */
 
-      setStoredTokens({ tokens: cachedTokens, network: chainId });
+      setStoredTokens({ tokens: cachedTokens, chainId: chainId });
       writeToStorage(cachedTokens);
       setError(null);
     } catch (error) {

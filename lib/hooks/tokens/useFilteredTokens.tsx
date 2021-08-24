@@ -1,7 +1,7 @@
-import { TokenInfo, UseData } from "../../types";
+import { TokenInfo, HookData } from "../../types";
 import { useStoredTokens } from "../../contexts/tokens";
 
-function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
+function tokenInfoMatches(token: TokenInfo, term: string) {
   const lowercaseTerm = term.toLocaleLowerCase();
   const lowercaseSymbol = token.symbol.toLocaleLowerCase();
   const lowercaseAddress = token.address.toLocaleLowerCase();
@@ -21,7 +21,7 @@ function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
  * @param searchTerm string to search in token infos
  * @returns A list of token information containing the searchTerm
  */
-export const useFilteredTokens = (searchTerm: string): UseData<TokenInfo[]> => {
+export const useFilteredTokens = (searchTerm: string): HookData<TokenInfo[]> => {
   const storedTokens = useStoredTokens();
 
   if (storedTokens.isLoading)
@@ -33,7 +33,7 @@ export const useFilteredTokens = (searchTerm: string): UseData<TokenInfo[]> => {
 
   const filteredTokens = !searchTerm
     ? storedTokens.data.tokens
-    : storedTokens.data.tokens.filter((t) => doesTokenInfoContainTerm(t, searchTerm));
+    : storedTokens.data.tokens.filter((t) => tokenInfoMatches(t, searchTerm));
 
   return { data: filteredTokens, isLoading: false, error: storedTokens.error };
 };
