@@ -52,23 +52,28 @@ export function UseTokensWithBalance({ children }) {
 
   useEffect(() => {
     fetchUserTokens();
-  }, [account, storedTokens, poolPromise]);
+  }, [account, storedTokens, poolPromise, storedTokenLoading]);
 
   const fetchUserTokens = async (): Promise<TokenInfo[]> => {
-    if (status !== "connected" || !storedTokens) return;
+    if (
+      status !== "connected" ||
+      !storedTokens ||
+      storedTokenLoading ||
+      storedTokens.network !== chainId
+    )
+      return;
     setLoading(true);
 
     try {
       const pool = await poolPromise;
-
       const ethcallProvider = new Provider(pool.provider, chainId);
-      const tokenBalanceCalls: ContractCall[] = storedTokens.map((tokenInfo) =>
+      const tokenBalanceCalls: ContractCall[] = storedTokens.tokens.map((tokenInfo) =>
         new Contract(tokenInfo?.address, ERC20_ABI).balanceOf(account)
       );
 
       /* TODO @brickpop extract this to something like hasBalance() in lib/api.ts? [VR 05-08-2021] */
       const balances = await ethcallProvider.all(tokenBalanceCalls);
-      const tokensWithBalance = storedTokens.filter(
+      const tokensWithBalance = storedTokens.tokens.filter(
         (_, idx) => !BigNumber.from(balances[idx]).isZero()
       );
 

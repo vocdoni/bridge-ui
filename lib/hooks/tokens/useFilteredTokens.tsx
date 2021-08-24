@@ -24,11 +24,16 @@ function doesTokenInfoContainTerm(token: TokenInfo, term: string) {
 export const useFilteredTokens = (searchTerm: string): UseData<TokenInfo[]> => {
   const storedTokens = useStoredTokens();
 
-  if (storedTokens.isLoading) return storedTokens;
+  if (storedTokens.isLoading)
+    return {
+      data: storedTokens.data.tokens,
+      isLoading: storedTokens.isLoading,
+      error: storedTokens.error,
+    };
 
   const filteredTokens = !searchTerm
-    ? storedTokens.data
-    : storedTokens.data.filter((t) => doesTokenInfoContainTerm(t, searchTerm));
+    ? storedTokens.data.tokens
+    : storedTokens.data.tokens.filter((t) => doesTokenInfoContainTerm(t, searchTerm));
 
   return { data: filteredTokens, isLoading: false, error: storedTokens.error };
 };
