@@ -31,7 +31,7 @@ export function useFeaturedTokens(sorted = false): UseData<TokenInfo[]> {
 
     //filter stored tokens for featured tokens
     const isFeatured = (ti: TokenInfo) => featuredTokenAddresses.includes(ti.address.toLowerCase());
-    const featuredTokenInfo = storedTokens.filter(isFeatured);
+    const featuredTokenInfo = storedTokens.tokens.filter(isFeatured);
 
     if (sorted) featuredTokenInfo.sort(tokenSorter);
 

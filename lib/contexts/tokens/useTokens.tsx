@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { GatewayPool } from "dvote-js";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo } from "../../api";
@@ -24,7 +23,7 @@ export function useToken(address: TokenAddress) {
     isLoading: tokenListLoading,
   } = useStoredTokens();
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(() =>
-    storedTokens.find((t) => t.address?.toLowerCase?.() == address?.toLowerCase?.())
+    storedTokens.tokens.find((t) => t.address?.toLowerCase?.() == address?.toLowerCase?.())
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -71,7 +70,7 @@ export function useTokens(addresses: TokenAddress[]) {
     isLoading: tokenListLoading,
   } = useStoredTokens();
   const [tokenInfoList, setTokenInfoList] = useState<TokenInfo[]>(() =>
-    addresses.map((addr) => storedTokens.find((item) => item.address == addr))
+    addresses.map((addr) => storedTokens.tokens.find((item) => item.address == addr))
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -81,7 +80,9 @@ export function useTokens(addresses: TokenAddress[]) {
     const uncachedTokens: string[] = [];
 
     for (let addr of addresses) {
-      const included = storedTokens.some((t) => t.address.toLowerCase() == addr?.toLowerCase?.());
+      const included = storedTokens.tokens.some(
+        (t) => t.address.toLowerCase() == addr?.toLowerCase?.()
+      );
       if (included) continue;
 
       uncachedTokens.push(addr);

@@ -47,7 +47,9 @@ const DashboardPage = () => {
     error: tokenListError,
     isLoading: tokenListLoading,
   } = useStoredTokens();
-  const processIds = storedTokens.filter((token) => token?.address).map((token) => token.address);
+  const processIds = storedTokens.tokens
+    .filter((token) => token?.address)
+    .map((token) => token.address);
   const { processes, loading: processesLoading, error: processesError } = useProcesses(processIds);
   const { blockHeight } = useBlockHeight();
 
@@ -96,7 +98,7 @@ const DashboardPage = () => {
           {...section}
           key={section.title}
           loadingProcesses={tokenListLoading || processesLoading}
-          tokenInfos={storedTokens || []}
+          tokenInfos={storedTokens.tokens || []}
         />
       ))}
     </div>

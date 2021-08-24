@@ -10,7 +10,12 @@ import { OutsideProviderError } from "../../errors";
 import { useEnvironment } from "../useEnvironment";
 import { getSlice } from "../../utils";
 
-export type StoredTokens = UseData<TokenInfo[]> & {
+export type TokenInfos = {
+  tokens: TokenInfo[];
+  network: number;
+};
+
+export type StoredTokens = UseData<TokenInfos> & {
   /** Cache the given tokens into IndexDB */
   storeTokens: (newTokenList: TokenInfo[]) => Promise<any>;
   /** Refresh the list of registered tokens and cache any new ones */
@@ -42,17 +47,17 @@ export function useStoredTokens(): StoredTokens {
  * @returns useStoredTokens Provider
  */
 export function UseStoredTokensProvider({ children }) {
-  const { networkName } = useEnvironment();
+  const { networkName, chainId } = useEnvironment();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
-  const [storedTokens, setStoredTokens] = useState<TokenInfo[]>([]);
+  const [storedTokens, setStoredTokens] = useState<TokenInfos>({ tokens: [], network: 1 });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>(null);
 
   useEffect(() => {
+    setIsLoading(true);
     const asyncEffect = async () => {
-      setIsLoading(true);
       try {
         const dbTokensInfo = await readFromStorage();
         await fetchNewRegisteredTokensAsync(dbTokensInfo);
@@ -100,7 +105,7 @@ export function UseStoredTokensProvider({ children }) {
       .then(([registeredTokens, gwp]) => {
         // filter out registered tokens we already store.
         const alreadyStored = (token: string) => {
-          return storedTokens.some((st) => st.address.toLowerCase() == token.toLowerCase());
+          return storedTokens.tokens.some((st) => st.address.toLowerCase() == token.toLowerCase());
         };
         const newTokenAddresses: string[] = registeredTokens.filter((rt) => !alreadyStored(rt));
 
@@ -122,7 +127,7 @@ export function UseStoredTokensProvider({ children }) {
       })
       .then((newTokenListInfo) => {
         setError(null);
-        setStoredTokens(storedTokens.concat(newTokenListInfo));
+        setStoredTokens({ tokens: storedTokens.tokens.concat(newTokenListInfo), network: chainId });
         writeToStorage(newTokenListInfo);
       });
   };
@@ -168,7 +173,7 @@ export function UseStoredTokensProvider({ children }) {
        * (provide data in chunks) and loading indicator.
        * */
 
-      setStoredTokens(cachedTokens);
+      setStoredTokens({ tokens: cachedTokens, network: chainId });
       writeToStorage(cachedTokens);
       setError(null);
     } catch (error) {

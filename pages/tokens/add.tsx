@@ -209,7 +209,7 @@ const TokenAddPage = () => {
   const storedTokens = useStoredTokens();
 
   const isConnected = wallet.connector || wallet.account;
-  const alreadyRegistered = storedTokens.data.some(
+  const alreadyRegistered = storedTokens.data.tokens.some(
     (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
   );
 
