@@ -178,7 +178,7 @@ const ButtonsContainer = styled.div`
   & > :not(:first-child) {
     margin-left: 16px;
   }
-  @media ${({ theme }) => theme.screens.laptop} {
+  @media (max-width: 1160px) {
     & > :not(:first-child) {
       margin-top: 16px;
       margin-left: unset;
