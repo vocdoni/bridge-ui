@@ -9,7 +9,7 @@ export const MINUS_ICON = "/media/icons/minus_icon.svg";
 export const LIGHTNING_ICON = "/media/lightning_bolt.svg";
 export const WARNING_ICON = "/media/icons/exclamation_icon.png";
 export const BLUE_TICK_ICON = "/media/icons/blue_tick_icon.svg";
-export const RED_CROSS_ICON = "/media/icons/red-cross.svg";
+export const RED_CROSS_ICON = "/media/icons/red_cross.svg";
 export const WALLET_IDENTICON = "/media/icons/connected_wallet_icon.svg";
 
 //IMAGES
