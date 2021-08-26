@@ -38,14 +38,10 @@ export class VoiceStorage extends Dexie {
   }
 
   readToken(address: string, environment: EthNetworkID): Promise<TokenInfo[]> {
-    const t = this.getTable(environment);
-    return t
+    return this.getTable(environment)
+      .where("address")
+      .equalsIgnoreCase(address)
       .toArray()
-      .then((tokenInfos) => {
-        const token = tokenInfos.find((ti) => ti.address === address);
-        if (!token) return [];
-        else return [token];
-      })
       .catch((err) => {
         console.error("Incognito mode might be on", err);
         return [];

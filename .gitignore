@@ -4,6 +4,7 @@ node_modules
 .vscode
 .env
 .DS_Store
+pages/sandbox/
 
 # Lockfiles
 yarn.lock
