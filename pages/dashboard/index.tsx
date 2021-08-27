@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
-import { useProcesses } from "@vocdoni/react-hooks";
-import { useBlockHeight } from "../../lib/contexts/blockStatus";
+import { useBlockHeight, useProcesses } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 import { useRouter } from "next/router";
 import { Else, If, Then } from "react-if";

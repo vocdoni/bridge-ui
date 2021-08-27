@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { Else, If, Then, Unless, When } from "react-if";
-import { useProcesses } from "@vocdoni/react-hooks";
-import { useBlockStatus } from "../../lib/contexts/blockStatus";
+import { useBlockStatus, useProcesses } from "@vocdoni/react-hooks";
 import { useUrlHash } from "use-url-hash";
 import styled from "styled-components";
 

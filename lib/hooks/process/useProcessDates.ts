@@ -1,4 +1,4 @@
-import { useBlockStatus } from "../../contexts/blockStatus";
+import { useBlockStatus } from "@vocdoni/react-hooks";
 import { IProcessState, VotingApi } from "dvote-js";
 import { useEffect, useState } from "react";
 
