@@ -124,7 +124,7 @@ const TokenLogoContainer = styled.div`
 type VotingSectionProps = {
   allProcesses: {
     id: string;
-    summary: IProcessSummary;
+    summary?: IProcessSummary;
     metadata?: ProcessMetadata;
   }[];
   processes: string[];
