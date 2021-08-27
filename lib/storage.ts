@@ -1,8 +1,8 @@
 import Dexie from "dexie";
 import { EthNetworkID } from "dvote-js";
-import { NonExistingCaseError } from "./errors";
 
-import { TokenInfo } from "./types";
+import { NonExistingCaseError } from "./errors";
+import { TokenAddress, TokenInfo } from "./types";
 import { throwIfNotBrowser } from "./utils";
 
 export class VoiceStorage extends Dexie {
@@ -24,6 +24,7 @@ export class VoiceStorage extends Dexie {
     this.tokensRinkeby = this.table("tokensRinkeby");
   }
 
+  /** Persists the given tokens into IndexedDB. If it already exist, it overwrites its values. */
   writeToken(token: TokenInfo, environment: EthNetworkID): Promise<any> {
     const t = this.getTable(environment);
     return t.put(token).catch((err) => console.error("Incognito mode might be on", err));
@@ -37,7 +38,18 @@ export class VoiceStorage extends Dexie {
     );
   }
 
-  readToken(address: string, environment: EthNetworkID): Promise<TokenInfo[]> {
+  /**
+   * Retrieve information about a token from indexedDB for the given token address
+   *
+   * Note: To simplify typing, this method returns an array of TokenInformation containing
+   * a single element.
+   *
+   * @param  {TokenAddress} address
+   * @param  {EthNetworkID} environment
+   * @returns {Promise<TokenInfo[]>} A promise resolving to a list of token information
+   * containing one element.
+   */
+  readToken(address: TokenAddress, environment: EthNetworkID): Promise<TokenInfo[]> {
     return this.getTable(environment)
       .where("address")
       .equalsIgnoreCase(address)
@@ -48,7 +60,14 @@ export class VoiceStorage extends Dexie {
       });
   }
 
-  readTokens(addresses: string[], environment: EthNetworkID): Promise<TokenInfo[]> {
+  /**
+   * Retrieve information about tokens from indexedDB for a given list of token addresses (for a specific network).
+   *
+   * @param  {TokenAddress[]} address
+   * @param  {EthNetworkID} environment
+   * @returns {Promise<TokenInfo[]>} A promise resolving to a list of token information.
+   */
+  readTokens(addresses: TokenAddress[], environment: EthNetworkID): Promise<TokenInfo[]> {
     const t = this.getTable(environment);
     return t
       .toArray()
@@ -63,6 +82,12 @@ export class VoiceStorage extends Dexie {
       });
   }
 
+  /**
+   * Retrieve information about all tokens currently stored on indexedDB (for a specific network).
+   *
+   * @param  {EthNetworkID} environment
+   * @returns {Promise<TokenInfo[]>}
+   */
   readAllTokens(environment: EthNetworkID): Promise<TokenInfo[]> {
     const t = this.getTable(environment);
     return t.toArray().catch((err) => {
@@ -71,6 +96,12 @@ export class VoiceStorage extends Dexie {
     });
   }
 
+  /**
+   * Counts how many tokens are currently stored on indexedDB (for a specific network).
+   *
+   * @param  {EthNetworkID} environment
+   * @returns {Promise<TokenInfo[]>}
+   */
   getNumberOfTokens(environment: EthNetworkID): Promise<number> {
     const t = this.getTable(environment);
     return t.count();
