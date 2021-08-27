@@ -15,7 +15,7 @@ export const useProcessSummary = ({
   tokenInfo: Partial<TokenInfo>;
 }) => {
   const { poolPromise } = usePool();
-  const { startDate, endDate, hasStarted } = useProcessDates(processDetails.state);
+  const { startDate, endDate, hasStarted } = useProcessDates(processDetails?.state);
   const [voteCount, setVoteCount] = useState(0);
   const [resultsWeight, setResultsWeight] = useState(BigNumber.from(0));
   const [loading, setLoading] = useState(true);

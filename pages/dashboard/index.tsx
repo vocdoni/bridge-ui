@@ -106,7 +106,7 @@ const DashboardPage = () => {
 };
 
 export const VoteSection = (props: {
-  processes: { id: string; summary: IProcessSummary; metadata?: ProcessMetadata }[];
+  processes: { id: string; summary?: IProcessSummary; metadata?: ProcessMetadata }[];
   tokenInfos: TokenInfo[];
   loadingProcesses: boolean;
   title: string;
