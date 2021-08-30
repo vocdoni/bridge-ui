@@ -46,7 +46,7 @@ import {
   AlreadyVotedBanner,
   Loading,
 } from "../../components/Banners/GrayBanners";
-import { useUserHoldsToken } from "../../lib/hooks/useUserHoldsToken";
+import { useUserHoldsToken } from "../../lib/hooks/tokens";
 import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 
 const ProcessPage = () => {
