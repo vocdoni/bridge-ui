@@ -1,7 +1,6 @@
 import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
-export const GOERLI_MULTICALL = "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 interface BuildVariables {
@@ -48,7 +47,7 @@ const ENVIRONMENTS: NetworkVariables[] = [
     blockTime: 12,
     bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.dev.json",
     singalingOracleUrl: "https://signaling-oracle.dev.vocdoni.net/dvote",
-    vocdoniEnvironment: "dev",
+    vocdoniEnvironment: "stg",
   },
 ];
 
