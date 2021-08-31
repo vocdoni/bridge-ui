@@ -11,7 +11,7 @@ interface BuildVariables {
   fortmaticKey: string;
 }
 
-/*  Maybe have singleton objects with fields derived from env directly */
+/*  Maybe have singleton objects with fields derived from env directly. */
 export const BUILD: BuildVariables = {
   isDevelopment: false,
   commitSha: process.env.COMMIT_SHA,
