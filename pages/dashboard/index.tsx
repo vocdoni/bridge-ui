@@ -5,7 +5,7 @@ import { useBlockHeight, useProcesses } from "@vocdoni/react-hooks";
 import { useWallet } from "use-wallet";
 import { useRouter } from "next/router";
 import { Else, If, Then } from "react-if";
-import { IProcessSummary, ProcessMetadata } from "dvote-js";
+import { ProcessSummary, ProcessMetadata } from "dvote-js";
 // import Select from 'react-select'
 
 import { useStoredTokens } from "../../lib/contexts/tokens";
@@ -105,7 +105,7 @@ const DashboardPage = () => {
 };
 
 export const VoteSection = (props: {
-  processes: { id: string; summary?: IProcessSummary; metadata?: ProcessMetadata }[];
+  processes: { id: string; summary?: ProcessSummary; metadata?: ProcessMetadata }[];
   tokenInfos: TokenInfo[];
   loadingProcesses: boolean;
   title: string;
