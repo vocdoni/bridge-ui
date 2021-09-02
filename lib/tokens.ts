@@ -1,7 +1,7 @@
 import { EthNetworkID } from "dvote-js";
 import { TokenAddress, TokenInfo } from "./types";
 
-const featuredTokens: Record<EthNetworkID, TokenAddress[]> = {
+const featuredTokens: Omit<Record<EthNetworkID, TokenAddress[]>, "homestead"> = {
   mainnet: [
     "0xa117000000f279d81a1d3cc75430faa017fa5a2e", // ANT
     "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984", // UNI

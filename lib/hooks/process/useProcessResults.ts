@@ -1,5 +1,5 @@
 import { useBlockStatus, usePool } from "@vocdoni/react-hooks";
-import { IProcessDetails, VotingApi } from "dvote-js";
+import { ProcessDetails, VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -15,7 +15,7 @@ export type ProcessResults = {
 }[];
 
 export const useProcessResults = (
-  processDetails: IProcessDetails,
+  processDetails: ProcessDetails,
   tokenInfo: Partial<TokenInfo>
 ) => {
   const { poolPromise } = usePool();
