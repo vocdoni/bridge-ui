@@ -6,7 +6,6 @@ export const GOERLI_MULTICALL = "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 interface BuildVariables {
-  isDevelopment: boolean;
   commitSha: string;
   appTitle: string;
   analyticsKey: string;
@@ -15,7 +14,6 @@ interface BuildVariables {
 
 /*  Maybe have singleton objects with fields derived from env directly */
 export const BUILD: BuildVariables = {
-  isDevelopment: false,
   commitSha: process.env.COMMIT_SHA,
   appTitle: process.env.APP_TITLE,
   analyticsKey: process.env.ANALYTICS_KEY,

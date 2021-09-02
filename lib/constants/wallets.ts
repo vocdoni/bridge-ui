@@ -12,6 +12,7 @@ export type SUPPORTED_CONNECTORS =
 // consistently. HD wallets seem to cause problems, even when used through Metamask. The
 // same is true for WalletConnect. They probably
 
+/* TODO: We need to figure out a way to determine ETH_CHAIN_ID and ETH_NETWORK_ID in run time */
 export const WALLETS: ConnectorData[] = [
   {
     name: "Metamask",
