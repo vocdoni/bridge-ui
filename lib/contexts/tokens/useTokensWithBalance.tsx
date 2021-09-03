@@ -9,7 +9,7 @@ import { useStoredTokens } from "./useStoredTokens";
 import { ERC20_ABI } from "../../constants/abi";
 import { TokenInfo, HookData } from "../../types";
 import { OutsideProviderError } from "../../errors";
-import { useEnvironment } from "../useEnvironment";
+import { useEnvironment } from "../../hooks/useEnvironment";
 
 /* TODO Investigate whether this should really be implementented as a context, or if a
 simple custom hook is more appropriate. [VR 05-08-2021] */

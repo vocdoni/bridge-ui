@@ -1,7 +1,7 @@
 import router from "next/router";
 import { useEffect, useState } from "react";
 import { useMessageAlert } from "../contexts/message-alert";
-import { useEnvironment } from "../contexts/useEnvironment";
+import { useEnvironment } from "./useEnvironment";
 
 /**
  * USE THIS HOOK ON NETWORK-SPECIFIC PAGES.

@@ -1,5 +1,6 @@
 import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
 
+export const DEFAULT_CHAIN_ID = 1
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 export const GOERLI_MULTICALL = "0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";

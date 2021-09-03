@@ -24,7 +24,7 @@ import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
 import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
 import { VOICE_DISCORD } from "../../lib/constants/url";
-import { useEnvironment } from "../../lib/contexts/useEnvironment";
+import { useEnvironment } from "../../lib/hooks/useEnvironment";
 
 import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";

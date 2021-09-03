@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getFeaturedTokens, tokenSorter } from "../../tokens";
 import { HookData, TokenInfo, TokenAddress } from "../../types";
 import { useStoredTokens } from "../../contexts/tokens";
-import { useEnvironment } from "../../contexts/useEnvironment";
+import { useEnvironment } from "../useEnvironment";
 
 /**
  * This hook gets the list of curated featred tokens addresses for the current network. It

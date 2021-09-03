@@ -7,7 +7,7 @@ import { useMessageAlert } from "../message-alert";
 import { VoiceStorage } from "../../storage";
 import { TokenInfo, HookData } from "../../types";
 import { OutsideProviderError } from "../../errors";
-import { useEnvironment } from "../useEnvironment";
+import { useEnvironment } from "../../hooks/useEnvironment";
 
 export type TokenInfos = {
   tokens: TokenInfo[];

@@ -15,7 +15,7 @@ import { getConnectors } from "../lib/constants/wallets";
 import { trackPage } from "../lib/analytics";
 import { ModalsProvider } from "../lib/contexts/modal";
 import { BUILD } from "../lib/constants/env";
-import { useEnvironment, UseEnvironmentProvider } from "../lib/contexts/useEnvironment";
+import { useEnvironment } from "../lib/hooks/useEnvironment";
 
 import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
@@ -36,9 +36,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
       <UseMessageAlertProvider>
         <UseLoadingAlertProvider>
           <UseWalletProvider connectors={connectors || {}}>
-            <UseEnvironmentProvider>
               <AppWithEnvironment Component={Component} router={router} pageProps={pageProps} />
-            </UseEnvironmentProvider>
           </UseWalletProvider>
         </UseLoadingAlertProvider>
       </UseMessageAlertProvider>
