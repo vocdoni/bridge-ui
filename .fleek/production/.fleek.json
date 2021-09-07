@@ -1,0 +1,14 @@
+{
+  "site": {
+    "id": "6807436e-ca82-4fba-98a2-1a6f1e11cdfe",
+    "team": "aragonone-team",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "noisy-forest-4440"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "build",
+    "rootDir": ""
+  }
+}

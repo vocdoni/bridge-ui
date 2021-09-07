@@ -1,0 +1,14 @@
+{
+  "site": {
+    "id": "bcfe6247-d29c-4650-81af-e40e9452b7d4",
+    "team": "aragonone-team",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "snowy-sky-9063"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "build",
+    "rootDir": ""
+  }
+}

@@ -13,16 +13,14 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-
-      - name: Ensure yarn is installed on self-hosted
-        run: npm install -g yarn
+          node-version: 16.x
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm test
+      # No tests implemented
+      # - name: Run tests
+      #   run: npm test
 
   docker-release:
     runs-on: self-hosted
@@ -197,3 +195,79 @@ jobs:
       - name: Upload static site to GCS
         run: |
           gsutil -m cp -r build/* gs://voice-xdai.aragon.org
+
+  fleek-deploy:
+    runs-on: self-hosted
+    container: fleek/create-react-app:node-16
+    strategy:
+      matrix:
+        environment: ["production", "production-xdai"]
+        include:
+          - environment: "production"
+            fleekfile: ".fleek/production/.fleek.json"
+            vocdoniEnv: "prod"
+            networkId: "mainnet"
+            chainId: 1
+            bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.json"
+            signalingOracleUrl: "https://signaling-oracle.vocdoni.net/dvote"
+            blockTime: 10
+            etherscanPrefix: https://etherscan.io
+            analyticsKey: "1w2aWkXE1ukrJJAGi29Gbw3Yi0X"
+            fortmaticApiKey: "pk_live_A08FE109CFF97C4F"
+          - environment: "production-xdai"
+            fleekfile: ".fleek/production-xdai/.fleek.json"
+            vocdoniEnv: "prod"
+            networkId: "xdai"
+            chainId: 100
+            bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.json"
+            signalingOracleUrl: "https://signaling-oracle-xdai.vocdoni.net/dvote"
+            blockTime: 10
+            etherscanPrefix: https://etherscan.io
+            analyticsKey: "1w2aWkXE1ukrJJAGi29Gbw3Yi0X"
+            fortmaticApiKey: "pk_live_A08FE109CFF97C4F"
+    #if: startsWith(github.ref, 'refs/heads/release')
+    # environment: ${{ matrix.environment }}
+    name: Fleek deploy
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get short branch name and sha
+        id: var
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Clean any existing build
+        run: |
+          rm -rf build/*
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run export
+        env:
+          # COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
+          COMMIT_SHA: ${{ matrix.networkId }} #test
+          VOCDONI_ENVIRONMENT: ${{ matrix.vocdoniEnv }}
+          ETH_NETWORK_ID: ${{ matrix.networkId }}
+          ETH_CHAIN_ID: ${{ matrix.chainId }}
+          BOOTNODES_URL: ${{ matrix.bootnodesUrl }}
+          SIGNALING_ORACLE_URL: ${{ matrix.signalingOracleUrl }}
+          BLOCK_TIME: ${{ matrix.blockTime }}
+          ETHERSCAN_PREFIX: ${{ matrix.etherscanPrefix }}
+          ANALYTICS_KEY: ${{ matrix.analyticsKey }}
+          FORTMATIC_API_KEY: ${{ matrix.fortmaticApiKey }}
+      - name: Activate production fleek file
+        run: mv ${{ matrix.fleekfile }} .
+      - name: Deploy site
+        id: deploy
+        uses: fleekhq/action-deploy@v1
+        with:
+          apiKey: ${{ secrets.FLEEK_API_KEY }}
+      - name: Get the output url
+        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
