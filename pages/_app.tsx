@@ -36,7 +36,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
       <UseMessageAlertProvider>
         <UseLoadingAlertProvider>
           <UseWalletProvider connectors={connectors || {}}>
-              <AppWithEnvironment Component={Component} router={router} pageProps={pageProps} />
+            <AppWithEnvironment Component={Component} router={router} pageProps={pageProps} />
           </UseWalletProvider>
         </UseLoadingAlertProvider>
       </UseMessageAlertProvider>
