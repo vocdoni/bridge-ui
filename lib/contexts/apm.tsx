@@ -11,7 +11,7 @@ function ApmProvider({ children }) {
       serviceName: "Voice",
       serverUrl: "https://apm-monitoring.aragon.org",
       serviceVersion: BUILD.commitSha,
-      environment: "dev", // TODO set this dynamically.
+      environment: BUILD.environment,
     })
   );
 
