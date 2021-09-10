@@ -1,3 +1,5 @@
+import { BUILD } from "./env";
+
 export interface ConnectorData {
   name: string;
   connector: string;
@@ -24,7 +26,7 @@ export const WALLETS: ConnectorData[] = [
     name: "Fortmatic",
     connector: "fortmatic",
     properties: {
-      apiKey: process.env.FORTMATIC_API_KEY,
+      apiKey: BUILD.fortmaticKey,
       chainId: 1, // mainnet only
     },
   },

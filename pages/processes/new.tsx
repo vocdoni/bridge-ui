@@ -37,6 +37,8 @@ import {
 import { useIsWide } from "../../lib/hooks/useWindowSize";
 import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";
 import { EventType, trackEvent } from "../../lib/analytics";
+import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
+import { useEnvironment } from "../../lib/hooks/useEnvironment";
 
 import { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
 import { PlusBox, MinusContainer } from "../../components/ControlElements/plusBox";
@@ -45,7 +47,6 @@ import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
 import { TextInput, DescriptionInput } from "../../components/ControlElements/input";
 import ProgressComponent, { ProgressState } from "../../components/progress-dialog";
-import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
 layout is changed to a column for devices <= laptop. */
@@ -258,6 +259,7 @@ const NewProcessPage = () => {
   const signer = useSigner();
   const wallet = useWallet();
   const isConnected = wallet.connector || wallet.account;
+  const env = useEnvironment();
 
   const router = useRouter();
   const tokenAddress = router.query.address as string;
@@ -477,7 +479,7 @@ const NewProcessPage = () => {
 
   async function submitSignalingVote(pool: GatewayPool, startBlock: number, blockCount: number) {
     const oracleClient = new DVoteGateway({
-      uri: process.env.SIGNALING_ORACLE_URL,
+      uri: env.singalingOracleUrl,
       supportedApis: ["oracle"],
     });
     const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
