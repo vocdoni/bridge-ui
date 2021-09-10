@@ -146,7 +146,7 @@ const ProcessCard = (props: {
   metadata?: ProcessMetadata;
   token?: TokenInfo;
 }) => {
-  const icon = process.env.ETH_NETWORK_ID == "goerli" ? FALLBACK_TOKEN_ICON : props?.token.icon;
+  const icon = !props?.token?.icon ? FALLBACK_TOKEN_ICON : props?.token.icon;
 
   return (
     <TokenCard

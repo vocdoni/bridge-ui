@@ -50,7 +50,6 @@ export function shortTokenName(tokenName: string, slashIndex = 22): string {
 }
 
 export function tokenIconUrl(address = "") {
-  if (process.env.ETH_NETWORK_ID == "goerli") return FALLBACK_TOKEN_ICON;
   try {
     address = utils.getAddress(address);
   } catch (err) {
