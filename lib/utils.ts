@@ -1,7 +1,7 @@
 import { ProcessMetadata } from "dvote-js";
 import { utils } from "ethers";
 
-import { FALLBACK_TOKEN_ICON, TRUST_WALLET_BASE_URL } from "./constants/url";
+import { TRUST_WALLET_BASE_URL } from "./constants/url";
 import { TOKEN_AMOUNT_REGEX } from "./constants/regex";
 import { constants } from "ethers/lib/index";
 

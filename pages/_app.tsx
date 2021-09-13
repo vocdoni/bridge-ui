@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NextComponentType, NextPageContext } from "next";
 import { AppInitialProps } from "next/app";
 import Head from "next/head";
-import { Router, useRouter } from "next/router";
+import { Router } from "next/router";
 import { UseWalletProvider } from "use-wallet";
 import { UseBlockStatusProvider, UsePoolProvider, UseProcessProvider } from "@vocdoni/react-hooks";
 import { ThemeProvider } from "styled-components";
@@ -21,6 +21,10 @@ import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
 import { CookiesBanner } from "../components/cookies-banner";
 import { ApmProvider, instrumentApmRoutes, updateApmContext, useApm } from "../lib/contexts/apm";
+
+Router.events.on("routeChangeComplete", (url: string) => {
+  trackPage(url);
+});
 
 type NextAppProps = AppInitialProps & {
   Component: NextComponentType<NextPageContext, any, any>;
@@ -48,14 +52,13 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 const AppWithEnvironment = ({ Component, router, pageProps }: NextAppProps) => {
   const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
   const { apm } = useApm();
-  const nextRouter = useRouter();
-  updateApmContext(apm, networkName);
 
-  // NOTE: moved here, since eventHandler depends on hook, which has to be called within
-  // functional component.
-  Router.events.on("routeChangeComplete", (url: string) => {
+  useEffect(() => {
+    updateApmContext(apm, networkName);
+  }, [apm, networkName]);
+
+  Router.events.on("routeChangeStart", (url: string) => {
     instrumentApmRoutes(apm, url);
-    trackPage(url);
   });
 
   return (
