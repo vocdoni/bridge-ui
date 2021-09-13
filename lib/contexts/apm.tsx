@@ -5,7 +5,7 @@ import { BUILD } from "../constants/env";
 
 const UseAPMContext = React.createContext(null);
 
-function ApmProvider({ children }) {
+export function ApmProvider({ children }) {
   const [apm, setApm] = useState<ApmBase>(() =>
     initApm({
       serviceName: "Voice",
@@ -22,11 +22,11 @@ function ApmProvider({ children }) {
   return <UseAPMContext.Provider value={contextValue}>{children}</UseAPMContext.Provider>;
 }
 
-function useApm() {
+export function useApm() {
   return useContext(UseAPMContext);
 }
 
-function updateApmContext(apm: ApmBase, networkType: string) {
+export function updateApmContext(apm: ApmBase, networkType: string) {
   if (apm && networkType) {
     const context = { networkType: networkType };
     apm.addLabels(context);
@@ -34,7 +34,7 @@ function updateApmContext(apm: ApmBase, networkType: string) {
   }
 }
 
-function instrumentApmRoutes(apm: ApmBase, url: string) {
+export function instrumentApmRoutes(apm: ApmBase, url: string) {
   if (apm) {
     const tx: Transaction = apm.startTransaction(url, "route-change", {
       managed: false,
@@ -42,9 +42,7 @@ function instrumentApmRoutes(apm: ApmBase, url: string) {
     });
 
     afterFrame(() => {
-      tx && tx.isFinished();
+      tx && tx.end();
     });
   }
 }
-
-export { useApm, ApmProvider, updateApmContext, instrumentApmRoutes };
