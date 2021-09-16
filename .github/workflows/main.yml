@@ -125,6 +125,7 @@ jobs:
             ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
 
       - name: extract build files from image
+        id: extract
         uses: shrink/actions-docker-extract@v1
         with:
           image: ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
