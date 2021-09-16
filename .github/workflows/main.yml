@@ -124,6 +124,22 @@ jobs:
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
             ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
 
+      - name: extract build files from image
+        uses: shrink/actions-docker-extract@v1
+        with:
+          image: ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+          path: /app/build/
+
+      - name: upload sourcemap to apm
+        env:
+          COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
+          DIR: ${{ steps.extract.outputs.destination }}
+        run: |
+          for f in $DIR/**/*.js.map ; do 
+            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/_next/static/chunks/$f" -F sourcemap=@$f
+          done
+
+
   gcp-release:
     runs-on: self-hosted
     if: startsWith(github.ref, 'refs/heads/release')
