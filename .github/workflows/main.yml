@@ -130,8 +130,6 @@ jobs:
           image: ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
           path: /app/build/
 
-          ${{ steps.extract.outputs.destination }}
-
       - name: upload sourcemap to apm
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
