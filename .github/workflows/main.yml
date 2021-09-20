@@ -137,7 +137,8 @@ jobs:
           DIR: ${{ steps.extract.outputs.destination }}
         run: |
           for f in $(find "./$DIR/.next/static" -name "*.js.map") ; do 
-            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/_next${f#./$DIR/.next}" -F sourcemap=@$f
+            export filename=${f%.*}
+            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#"./$DIR/.next"}" -F sourcemap=@$f
           done
 
 
