@@ -138,7 +138,7 @@ jobs:
         run: |
           for f in $(find "./$DIR/.next/static" -name "*.js.map") ; do 
             export filename=${f%.*}
-            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="client" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#"./$DIR/.next"}" -F sourcemap=@$f
+            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#"./$DIR/.next"}" -F sourcemap=@$f
           done
 
 
