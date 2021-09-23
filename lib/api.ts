@@ -28,7 +28,7 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   }
 }
 
-export type CensusProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>["proof"];
+export type CensusProof = Awaited<ReturnType<typeof CensusErc20Api.generateProof>>;
 export const getProof = async ({
   account,
   token,
@@ -44,12 +44,12 @@ export const getProof = async ({
     pool.provider as providers.JsonRpcProvider
   );
 
-  if (result == null || !result.proof) return undefined;
+  if (!result) return undefined;
 
-  const onChainBalance = BigNumber.from(result.proof.storageProof[0].value);
+  const onChainBalance = BigNumber.from(result.storageProof[0].value);
   if (onChainBalance.isZero()) throw new NoTokenBalanceError();
 
-  return result.proof;
+  return result;
 };
 
 export async function registerToken(token: string, pool: GatewayPool, signer: Signer) {
