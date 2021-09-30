@@ -1,5 +1,5 @@
-import { useBlockStatus, usePool } from "@vocdoni/react-hooks";
-import { ProcessDetails, VotingApi } from "dvote-js";
+import { useBlockStatus, usePool, useProcess } from "@vocdoni/react-hooks";
+import { ProcessDetails, Voting, VotingApi } from "dvote-js";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -26,6 +26,7 @@ export const useProcessResults = (
 
   const processId = processDetails?.id;
   const tokenAddress = tokenInfo?.address;
+  const { process } = useProcess(processId)
 
   useEffect(() => {
     const interval = setInterval(() => fetchCurrentResults(), 1000 * 30);
@@ -71,13 +72,14 @@ export const useProcessResults = (
     const pool = await poolPromise;
 
     try {
-      const response = await VotingApi.getResultsDigest(processDetails?.id, pool);
+      const rawResults = await VotingApi.getResults(processDetails?.id, pool);
+      const { questions } = Voting.digestSingleChoiceResults(rawResults, process.metadata);
 
       // Note: This is supported for single choice multiquestion voting
       // we will need to add more complex logic to parse results
       // for different type of voting
 
-      const results = response.questions.map(({ title, voteResults }) => {
+      const results = questions.map(({ title, voteResults }) => {
         const totalVoteAmountBn = voteResults.reduce((prev: BigNumber, { title, votes }) => {
           return prev.add(votes);
         }, BigNumber.from(0));

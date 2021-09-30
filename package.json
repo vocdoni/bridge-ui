@@ -28,7 +28,7 @@
     "@vocdoni/react-hooks": "^0.10.1",
     "bluebird": "^3.7.2",
     "dexie": "^3.0.3",
-    "dvote-js": "^1.11.4",
+    "dvote-js": "^1.13.1",
     "eslint": "^7.14.0",
     "ethers": "^5.4.1",
     "ethers-multicall": "^0.2.0",
