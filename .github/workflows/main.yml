@@ -90,16 +90,14 @@ jobs:
           context: .
           file: ./Dockerfile.static
           platforms: linux/amd64
+          push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            VOCDONI_ENVIRONMENT=stg
-            ETH_NETWORK_ID=goerli
             BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.stg.json
-            SIGNALING_ORACLE_URL=https://signaling-oracle.dev.vocdoni.net/dvote
-          push: true
           tags: |
-            vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
-            ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+            vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
+
 
       - name: Push to Docker Hub and ghcr.io (release)
         uses: docker/build-push-action@v2
