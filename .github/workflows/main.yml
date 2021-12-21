@@ -126,21 +126,22 @@ jobs:
 
       - name: extract build files from image
         id: extract
+        if: github.ref == 'refs/heads/main'
         uses: shrink/actions-docker-extract@v1
         with:
           image: ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
           path: /app/build/
 
       - name: upload sourcemap to apm
+        if: github.ref == 'refs/heads/main'
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
           DIR: ${{ steps.extract.outputs.destination }}
         run: |
-          for f in $(find "./$DIR/.next/static" -name "*.js.map") ; do 
+          for f in $(find "./$DIR/.next/static" -name "*.js.map") ; do
             export filename=${f%.*}
             curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#"./$DIR/.next"}" -F sourcemap=@$f
           done
-
 
   gcp-release:
     runs-on: self-hosted
