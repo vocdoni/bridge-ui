@@ -59,7 +59,7 @@ export function UseStoredTokensProvider({ children }) {
     const asyncEffect = async () => {
       try {
         const dbTokensInfo = await readFromStorage();
-        await fetchNewRegisteredTokens(dbTokensInfo);
+        await fetchNewRegisteredTokens(dbTokensInfo, document.location.pathname !== "/");
       } catch (error) {
         console.error("Could not update the list of tokens because: " + error);
         setError(new Error("Could not update the list of tokens"));
@@ -94,12 +94,17 @@ export function UseStoredTokensProvider({ children }) {
    *
    * @returns void
    */
-  const fetchNewRegisteredTokens = async (cachedTokens?: TokenInfo[]) => {
+  const fetchNewRegisteredTokens = async (cachedTokens?: TokenInfo[], fetchAll = true) => {
     if (!cachedTokens) cachedTokens = storedTokens.tokens;
 
     try {
       const pool = await poolPromise;
-      const registeredTokens = await getRegisteredTokenList(0, pool);
+      const registeredTokens = await getRegisteredTokenList(
+        cachedTokens.length,
+        fetchAll,
+        networkName,
+        pool
+      );
 
       // filter out registered tokens we already store.
       const alreadyStored = (token: string) => {

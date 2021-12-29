@@ -40,7 +40,7 @@ export const WALLETS: ConnectorData[] = [
     connector: "walletconnect",
     properties: {
       rpcUrl: `https://${process.env.ETH_NETWORK_ID}.infura.io/v3/b76cba91dc954ceebff27244923224b1`,
-      chainId: [1, 4],
+      chainId: 1,
     },
   },
   // {

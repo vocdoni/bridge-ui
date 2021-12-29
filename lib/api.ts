@@ -1,11 +1,12 @@
 import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
-import { CensusErc20Api, GatewayPool, ProcessSummary, VotingApi } from "dvote-js";
+import { CensusErc20Api, EthNetworkID, GatewayPool, ProcessSummary, VotingApi } from "dvote-js";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NoTokenBalanceError, NO_TOKEN_BALANCE } from "./errors";
 import { TokenInfo } from "./types";
 import { ERC20_ABI, ERC20_ABI_MAKER } from "./constants/abi";
 import { Awaited, tokenIconUrl } from "./utils";
+import { getFeaturedTokensByIndex } from "./tokens";
 
 export interface ProofParameters {
   account: string;
@@ -145,6 +146,8 @@ export function hasBalance(
  * IMPORTANT: If no new tokens are registered, `null` is returned. */
 export function getRegisteredTokenList(
   currentTokenCount: number,
+  fetchAll: boolean,
+  networkName: string,
   pool: GatewayPool
 ): Promise<string[]> {
   return CensusErc20Api.getTokenCount(pool).then((count) => {
@@ -153,8 +156,10 @@ export function getRegisteredTokenList(
 
     /* TODO can this not be offset to currentTokenCount? S.t. only tokens in
 [currentCount, count] are fetched, instead of [0, count]? [VR 02-08-2021] */
+    const idxs = Array.from(Array(count).keys());
+
     return Bluebird.map(
-      Array.from(Array(count).keys()),
+      fetchAll ? idxs : getFeaturedTokensByIndex(networkName as EthNetworkID),
       (idx) => CensusErc20Api.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
       { concurrency: 50 }
     );
