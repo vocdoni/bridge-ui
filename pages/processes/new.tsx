@@ -12,7 +12,6 @@ import {
 } from "dvote-js";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
-import { useWallet } from "use-wallet";
 import { ProcessMetadataTemplate } from "dvote-js";
 import Datetime from "react-datetime";
 import { Moment } from "moment";
@@ -256,9 +255,8 @@ const NewProcessPage = () => {
   const { poolPromise } = usePool();
   const { storeTokens } = useStoredTokens();
 
-  const signer = useSigner();
-  const wallet = useWallet();
-  const isConnected = wallet.connector || wallet.account;
+  const { status, signer, address: holderAddress } = useSigner();
+  const isConnected = status === "connected";
   const env = useEnvironment();
 
   const router = useRouter();
@@ -502,6 +500,18 @@ const NewProcessPage = () => {
       sourceBlockHeight,
       paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
     };
+    // const proof = await getProof({
+    //   account: holderAddress,
+    //   token: tokenInfo.address,
+    //   block: sourceBlockHeight,
+    //   balanceMappingPosition: tokenInfo.balanceMappingPosition,
+    //   pool,
+    // });
+    // const tokenDetails = {
+    //   balanceMappingPosition: tokenInfo.balanceMappingPosition,
+    //   storageHash: proof.storageHash,
+    //   storageProof: proof.storageProof[0]
+    // }
     return VotingOracleApi.newProcessErc20(signalingProcessParams, signer, pool, oracleClient);
   }
 
@@ -510,7 +520,7 @@ const NewProcessPage = () => {
     // Otherwise, proofs will not match.
     const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
     const proof = await getProof({
-      account: wallet.account,
+      account: holderAddress,
       token: tokenInfo.address,
       block: sourceBlockHeight,
       balanceMappingPosition: tokenInfo.balanceMappingPosition,
@@ -644,7 +654,7 @@ const NewProcessPage = () => {
         <CustomDateTime state={endDate} stateSetter={onEndDate} />
         <Unless condition={isMobile}>
           <ButtonRow>
-            {wallet.status === "connected" ? (
+            {status === "connected" ? (
               <SubmitButton submitting={submitting} onSubmit={submit} />
             ) : (
               <ConnectButton wide />

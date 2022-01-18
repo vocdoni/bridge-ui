@@ -1,5 +1,5 @@
 import React, { useMemo, useContext, useState } from "react";
-import { ApmBase, init as initApm } from "@elastic/apm-rum";
+import { ApmBase, init as initApm, Transaction } from "@elastic/apm-rum";
 import { afterFrame } from "@elastic/apm-rum-core";
 import { BUILD } from "../constants/env";
 

@@ -2,11 +2,10 @@ import React, { useEffect } from "react";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
 import { useBlockHeight, useProcesses } from "@vocdoni/react-hooks";
-import { useWallet } from "use-wallet";
+import { useSigner } from "../../lib/hooks/useSigner";
 import { useRouter } from "next/router";
 import { Else, If, Then } from "react-if";
 import { ProcessSummary, ProcessMetadata } from "dvote-js";
-// import Select from 'react-select'
 
 import { useStoredTokens } from "../../lib/contexts/tokens";
 import { TokenInfo } from "../../lib/types";
@@ -39,7 +38,7 @@ export const VoteSectionContainer = styled.div`
 // MAIN COMPONENT
 const DashboardPage = () => {
   useScrollTop();
-  const { account } = useWallet();
+  const { address: holderAddress } = useSigner();
   const router = useRouter();
   const {
     data: storedTokens,
@@ -53,10 +52,10 @@ const DashboardPage = () => {
   const { blockHeight } = useBlockHeight();
 
   useEffect(() => {
-    if (!account) {
+    if (!holderAddress) {
       router.replace("/");
     }
-  }, [account]);
+  }, [holderAddress]);
 
   const upcomingProcesses = processes.filter((proc) => blockHeight < proc.summary.startBlock);
   const activeProcesses = processes.filter(

@@ -93,7 +93,6 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.stg.json
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
@@ -108,15 +107,10 @@ jobs:
           platforms: linux/amd64
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            VOCDONI_ENVIRONMENT=prod
-            ETH_NETWORK_ID=mainnet
-            ETH_CHAIN_ID=1
-            BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.json
-            SIGNALING_ORACLE_URL=https://signaling-oracle.vocdoni.net/dvote
-            BLOCK_TIME=10
-            ETHERSCAN_PREFIX=https://etherscan.io
+            # VOCDONI_ENVIRONMENT=prod
             ANALYTICS_KEY=1w2aWkXE1ukrJJAGi29Gbw3Yi0X
             FORTMATIC_API_KEY=pk_live_A08FE109CFF97C4F
+            WALLET_CONNECT_ID=b76cba91dc954ceebff27244923224b1
           push: true
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
@@ -184,15 +178,10 @@ jobs:
           npm run export
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
-          VOCDONI_ENVIRONMENT: prod
-          ETH_NETWORK_ID: mainnet
-          ETH_CHAIN_ID: 1
-          BOOTNODES_URL: https://bootnodes.vocdoni.net/gateways.json
-          SIGNALING_ORACLE_URL: https://signaling-oracle.vocdoni.net/dvote
-          BLOCK_TIME: 10
-          ETHERSCAN_PREFIX: https://etherscan.io
+          # VOCDONI_ENVIRONMENT: prod
           ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
+          WALLET_CONNECT_ID: b76cba91dc954ceebff27244923224b1
       - name: Upload static site to GCS
         run: |
           gsutil -m cp -r build/* gs://voice.aragon.org
@@ -202,15 +191,11 @@ jobs:
           npm install
           npm run export
         env:
-          VOCDONI_ENVIRONMENT: prod
-          ETH_NETWORK_ID: xdai
-          ETH_CHAIN_ID: 100
-          BOOTNODES_URL: https://bootnodes.vocdoni.net/gateways.json
-          SIGNALING_ORACLE_URL: https://signaling-oracle-xdai.vocdoni.net/dvote
-          BLOCK_TIME: 10
-          ETHERSCAN_PREFIX: https://etherscan.io
+          COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
+          # VOCDONI_ENVIRONMENT: prod
           ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
+          WALLET_CONNECT_ID: b76cba91dc954ceebff27244923224b1
       - name: Upload static site to GCS
         run: |
           gsutil -m cp -r build/* gs://voice-xdai.aragon.org

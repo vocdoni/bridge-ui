@@ -3,15 +3,21 @@ import { NextComponentType, NextPageContext } from "next";
 import { AppInitialProps } from "next/app";
 import Head from "next/head";
 import { Router } from "next/router";
-import { UseWalletProvider } from "use-wallet";
-import { UseBlockStatusProvider, UsePoolProvider, UseProcessProvider } from "@vocdoni/react-hooks";
+import { UseSignerProvider } from "../lib/hooks/useSigner";
+import {
+  UseBlockStatusProvider,
+  UsePoolProvider,
+  UseProcessProvider,
+} from "@vocdoni/react-hooks";
 import { ThemeProvider } from "styled-components";
 import "react-datetime/css/react-datetime.css";
 
 import { UseMessageAlertProvider } from "../lib/contexts/message-alert";
 import { UseLoadingAlertProvider } from "../lib/contexts/loading-alert";
-import { UseStoredTokensProvider, UseTokensWithBalance } from "../lib/contexts/tokens";
-import { getConnectors } from "../lib/constants/wallets";
+import {
+  UseStoredTokensProvider,
+  UseTokensWithBalance,
+} from "../lib/contexts/tokens";
 import { trackPage } from "../lib/analytics";
 import { ModalsProvider } from "../lib/contexts/modal";
 import { BUILD } from "../lib/constants/env";
@@ -20,7 +26,12 @@ import { useEnvironment } from "../lib/hooks/useEnvironment";
 import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
 import { CookiesBanner } from "../components/cookies-banner";
-import { ApmProvider, instrumentApmRoutes, updateApmContext, useApm } from "../lib/contexts/apm";
+import {
+  ApmProvider,
+  instrumentApmRoutes,
+  updateApmContext,
+  useApm,
+} from "../lib/contexts/apm";
 
 Router.events.on("routeChangeComplete", (url: string) => {
   trackPage(url);
@@ -32,16 +43,18 @@ type NextAppProps = AppInitialProps & {
 };
 
 const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
-  const connectors = getConnectors();
-
   return (
     <ApmProvider>
       <ThemeProvider theme={theme}>
         <UseMessageAlertProvider>
           <UseLoadingAlertProvider>
-            <UseWalletProvider connectors={connectors || {}}>
-              <AppWithEnvironment Component={Component} router={router} pageProps={pageProps} />
-            </UseWalletProvider>
+            <UseSignerProvider>
+              <AppWithEnvironment
+                Component={Component}
+                router={router}
+                pageProps={pageProps}
+              />
+            </UseSignerProvider>
           </UseLoadingAlertProvider>
         </UseMessageAlertProvider>
       </ThemeProvider>
@@ -98,7 +111,8 @@ const HtmlHead = ({ appTitle }) => (
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
       rel="stylesheet"
-    ></link>
+    >
+    </link>
     <link rel="preconnect" href="https://fonts.gstatic.com"></link>
     <link
       href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"

@@ -2,7 +2,6 @@ import React from "react";
 import { withRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
-import { useWallet } from "use-wallet";
 import { Case, Default, Switch } from "react-if";
 
 import { tokenSorter } from "../lib/tokens";
@@ -20,12 +19,14 @@ import SectionTitle from "../components/sectionTitle";
 import { GrayRectangle } from "../components/Banners/styled";
 import { Loading, NotConnected } from "../components/Banners/GrayBanners";
 import { TokenList } from "./dashboard";
+import { useSigner } from "../lib/hooks/useSigner";
 
 // MAIN COMPONENT
 
 const IndexPage = () => {
   useScrollTop();
-  const { status } = useWallet();
+  const { status } = useSigner();
+  
   const {
     data: featuredTokens,
     isLoading: featuredTokensLoading,

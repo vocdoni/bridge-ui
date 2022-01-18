@@ -1,12 +1,13 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
-import { useWallet } from "use-wallet";
+import { useSigner } from "../../lib/hooks/useSigner";
 
 import { shortAddress } from "../../lib/utils";
 import { WALLET_IDENTICON } from "../../lib/constants/url";
 
-import { useModal, ActionTypes } from "../../lib/contexts/modal";
+// import { ActionTypes, useModal } from "../../lib/contexts/modal";
+import { useMessageAlert } from "../../lib/contexts/message-alert";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ const ConnectWalletButton = styled.div<{ wide: boolean }>`
   font-weight: 500;
   font-size: 16px;
   background: ${({ theme }) =>
-    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+  `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
@@ -112,38 +113,46 @@ export const TextLink = styled.p`
   }
 `;
 
-const WalletAddress = ({ account }) => {
+const WalletAddress = (
+  { address, onClick }: { address: string; onClick: () => void },
+) => {
   return (
     <ButtonContainer>
-      <ConnectedWalletButton>
+      <ConnectedWalletButton onClick={onClick}>
         <ConnectedWalletIcon />
-        {account && shortAddress(account)}
+        {address && shortAddress(address)}
       </ConnectedWalletButton>
     </ButtonContainer>
   );
 };
 
 export const ConnectButton = ({ wide = false }: { wide?: boolean }) => {
-  const { dispatch } = useModal();
-  const { status, networkName, account } = useWallet();
+  // const { dispatch } = useModal();
+  const { status, address, methods } = useSigner();
   const { loading: poolLoading } = usePool();
+  const { setAlertMessage } = useMessageAlert();
 
   const isConnected = status === "connected";
 
   const label = useMemo(() => {
     if (poolLoading) return "Loading...";
-    if (status === "connecting") return "Connecting to " + networkName;
+    else if (status === "connecting") return "Connecting";
     return "Connect Wallet";
   }, [poolLoading, status]);
 
   const handleButtonClick = async () => {
     // This opens the modal containing the list of wallets. The connection logic is
     // handeled from there.
-    dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+    // dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+    methods.selectWallet()
+      .catch((err) => {
+        setAlertMessage("Could not connect to the wallet");
+        console.error(err);
+      });
   };
 
   if (isConnected) {
-    return <WalletAddress account={account} />;
+    return <WalletAddress address={address} onClick={handleButtonClick} />;
   }
 
   return (
@@ -156,9 +165,17 @@ export const ConnectButton = ({ wide = false }: { wide?: boolean }) => {
 };
 
 export const ConnectWalletLink = () => {
-  const { dispatch } = useModal();
+  // const { dispatch } = useModal();
+  const { methods } = useSigner();
+  const { setAlertMessage } = useMessageAlert();
 
-  const openWallets = () => dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+  // const openWallets = () => dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+  const openWallets = () =>
+    methods.selectWallet()
+      .catch((err) => {
+        setAlertMessage("Could not connect to the wallet");
+        console.error(err);
+      });
 
   return <TextLink onClick={openWallets}>Connect Wallet</TextLink>;
 };

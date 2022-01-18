@@ -3,7 +3,6 @@ import { Case, Default, Else, If, Switch, Then, When } from "react-if";
 import { CensusErc20Api } from "dvote-js";
 import Router from "next/router";
 import styled from "styled-components";
-import { useWallet } from "use-wallet";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
@@ -21,7 +20,6 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
-import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
 import { VOICE_DISCORD } from "../../lib/constants/url";
 import { useEnvironment } from "../../lib/hooks/useEnvironment";
@@ -195,10 +193,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
 // MAIN COMPONENT
 const TokenAddPage = () => {
   useScrollTop();
-  const wallet = useWallet();
-  const signer = useSigner();
-
-  const { dispatch } = useModal();
+  const {signer, status, address, methods} = useSigner();
 
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<TokenAddress>("");
@@ -208,7 +203,7 @@ const TokenAddPage = () => {
   const { setAlertMessage } = useMessageAlert();
   const storedTokens = useStoredTokens();
 
-  const isConnected = wallet.connector || wallet.account;
+  const isConnected = status === "connected";
   const alreadyRegistered = storedTokens.data.tokens.some(
     (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
   );
@@ -243,14 +238,18 @@ const TokenAddPage = () => {
   const onSubmit = useCallback(async () => {
     if (!tokenInfo) return;
     if (!isConnected) {
-      return dispatch({
-        type: ActionTypes.OPEN_WALLET_LIST,
-      });
+      // return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+      methods.selectWallet()
+        .catch((err) => {
+          setAlertMessage("Could not connect to the wallet");
+          console.error(err);
+        });
+      return;
     }
 
     try {
       setRegisteringToken(true);
-      const holderAddress = wallet.account;
+      const holderAddress = address;
       const pool = await poolPromise;
 
       const hasBal = await hasBalance(tokenInfo.address, holderAddress, pool);
@@ -288,7 +287,7 @@ const TokenAddPage = () => {
     } finally {
       setRegisteringToken(false);
     }
-  }, [signer, wallet, tokenInfo, poolPromise]);
+  }, [signer, address, tokenInfo, poolPromise]);
 
   // RENDER ==============================================================================
 

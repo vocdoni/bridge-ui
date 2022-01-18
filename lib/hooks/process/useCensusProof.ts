@@ -1,23 +1,22 @@
 import { usePool } from "@vocdoni/react-hooks";
 import { GatewayPool } from "dvote-js";
 import { useEffect, useState } from "react";
-import { useWallet } from "use-wallet";
 import { getProof, CensusProof } from "../../api";
 import { TokenInfo } from "../../types";
+import { useSigner } from "../useSigner";
 
 export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) => {
   const { poolPromise } = usePool();
   const [proof, setProof] = useState<CensusProof>();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const wallet = useWallet();
+  const { address: holderAddress } = useSigner();
 
-  const account = wallet?.account;
   const tokenAddr = token?.address;
   const balanceMappingPosition = token?.balanceMappingPosition;
 
   useEffect(() => {
-    if (!account || !tokenAddr || !targetBlock) {
+    if (!holderAddress || !tokenAddr || !targetBlock) {
       if (loading) setLoading(false);
       return;
     }
@@ -28,7 +27,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
     poolPromise
       .then((pool: GatewayPool) =>
         getProof({
-          account,
+          account: holderAddress,
           token: tokenAddr,
           block: targetBlock,
           balanceMappingPosition,
@@ -47,7 +46,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
         if (err?.message == "You have no token balance") return;
         setError("Could not fetch the census proof");
       });
-  }, [account, tokenAddr, balanceMappingPosition, poolPromise, targetBlock]);
+  }, [holderAddress, tokenAddr, balanceMappingPosition, poolPromise, targetBlock]);
 
   return { proof, error, loading };
 };

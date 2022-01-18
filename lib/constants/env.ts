@@ -4,22 +4,22 @@ export const DEFAULT_CHAIN_ID = 1;
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 
 interface BuildVariables {
-  isDevelopment: boolean;
   environment: string;
   commitSha: string;
   appTitle: string;
   analyticsKey: string;
   fortmaticKey: string;
+  walletConnectId: string;
 }
 
 /*  Maybe have singleton objects with fields derived from env directly */
 export const BUILD: BuildVariables = {
-  isDevelopment: false,
   environment: process.env.NODE_ENV,
   commitSha: process.env.COMMIT_SHA,
   appTitle: process.env.APP_TITLE,
   analyticsKey: process.env.ANALYTICS_KEY,
   fortmaticKey: process.env.FORTMATIC_API_KEY,
+  walletConnectId: process.env.WALLET_CONNECT_ID,
 };
 
 export interface NetworkVariables {

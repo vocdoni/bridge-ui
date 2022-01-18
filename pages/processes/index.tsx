@@ -13,7 +13,7 @@ import {
   useVote,
 } from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
-import { useWallet } from "use-wallet";
+import { useSigner } from "../../lib/hooks/useSigner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { EventType, trackEvent } from "../../lib/analytics";
@@ -36,7 +36,7 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/ControlElements/button";
-import { ActionTypes, useModal } from "../../lib/contexts/modal";
+// import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import {
   NotConnected,
@@ -55,8 +55,7 @@ const ProcessPage = () => {
   const processId = useProcessIdFromUrl();
 
   const { setAlertMessage } = useMessageAlert();
-  const wallet = useWallet();
-  const { dispatch } = useModal();
+  const { address: holderAddress, methods, status: signerStatus } = useSigner();
 
   const { process: processDetails, loading: processLoading, error: processError } = useProcess(
     processId
@@ -90,7 +89,7 @@ const ProcessPage = () => {
     holdsBalance: hasBalance,
     error: holdsBalanceError,
     loading: holdsBalanceLoading,
-  } = useUserHoldsToken(wallet?.account, tokenInfo?.address);
+  } = useUserHoldsToken(holderAddress, tokenInfo?.address);
 
   useEffect(() => {
     let errorName: string;
@@ -113,7 +112,7 @@ const ProcessPage = () => {
     setAlertMessage(errorMessage);
   }, [processError, tokenError, processDatesError, resultsError, proofError, holdsBalanceError]);
 
-  const isConnected = !!wallet.account;
+  const isConnected = signerStatus === "connected";
   const allQuestionsSelected =
     voteState.choices.length === processDetails?.metadata?.questions?.length;
   const questionsFilled = allQuestionsSelected && areAllNumbers(voteState.choices);
@@ -124,7 +123,13 @@ const ProcessPage = () => {
 
   const onVoteSubmit = async () => {
     if (!isConnected) {
-      return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+      // return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+      methods.selectWallet()
+        .catch((err) => {
+          setAlertMessage("Could not connect to the wallet");
+          console.error(err);
+        });
+      return;
     }
     try {
       await submitVote(processDetails, proof);

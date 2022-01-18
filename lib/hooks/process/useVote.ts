@@ -1,8 +1,6 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { ProcessDetails, SignedEnvelopeParams, VotingApi } from "dvote-js";
+import { ProcessDetails, SignedEnvelopeParams, Voting, VotingApi } from "dvote-js";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import { useWallet } from "use-wallet";
-
 import { CensusProof } from "../../api";
 import { useMessageAlert } from "../../contexts/message-alert";
 import { useSigner } from "../useSigner";
@@ -49,14 +47,12 @@ export const voteStateReducer = (state: VoteState, action: StatusAction) => {
 
 export const useVote = (processDetails: ProcessDetails) => {
   const [voteState, dispatch] = useReducer(voteStateReducer, INITIAL_STATE);
-  const wallet = useWallet();
-  const signer = useSigner();
+  const { signer, address: voterAddress } = useSigner();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
   const [votingStatus, setVotingStatus] = useState<VotingStatus>();
 
   const processId = processDetails?.id || "";
-  const voterAddress = wallet?.account || "";
 
   const nullifier = useMemo(() => {
     if (processId) return VotingApi.getSignedVoteNullifier(voterAddress, processId);
@@ -102,7 +98,7 @@ export const useVote = (processDetails: ProcessDetails) => {
         censusOrigin: processDetails.state.censusOrigin,
         censusProof: proof.storageProof[0],
         processId: processId,
-        walletOrSigner: signer,
+        walletOrSigner: signer
       };
 
       if (processDetails.state.envelopeType.encryptedVotes) {
