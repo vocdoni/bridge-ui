@@ -193,7 +193,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
 // MAIN COMPONENT
 const TokenAddPage = () => {
   useScrollTop();
-  const {signer, status, address, methods} = useSigner();
+  const { signer, status, address, methods } = useSigner();
 
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<TokenAddress>("");
@@ -218,7 +218,7 @@ const TokenAddPage = () => {
         throw new TokenAddressInvalidError();
       }
 
-      const pool = await poolPromise;
+      const pool: any = await poolPromise;
       const newTokenInfo = await getTokenInfo(formTokenAddress.trim(), pool);
 
       setTokenInfo(newTokenInfo);
@@ -239,18 +239,17 @@ const TokenAddPage = () => {
     if (!tokenInfo) return;
     if (!isConnected) {
       // return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
-      methods.selectWallet()
-        .catch((err) => {
-          setAlertMessage("Could not connect to the wallet");
-          console.error(err);
-        });
+      methods.selectWallet().catch((err) => {
+        setAlertMessage("Could not connect to the wallet");
+        console.error(err);
+      });
       return;
     }
 
     try {
       setRegisteringToken(true);
       const holderAddress = address;
-      const pool = await poolPromise;
+      const pool: any = await poolPromise;
 
       const hasBal = await hasBalance(tokenInfo.address, holderAddress, pool);
       if (!hasBal) throw new NoTokenBalanceError(tokenInfo.symbol);

@@ -40,11 +40,11 @@ import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 import { useEnvironment } from "../../lib/hooks/useEnvironment";
 
 import { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
-import { PlusBox, MinusContainer } from "../../components/ControlElements/plusBox";
+import { MinusContainer, PlusBox } from "../../components/ControlElements/plusBox";
 import { RadioSectionTooltips, TextContent } from "../../components/ControlElements/radio";
 import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
-import { TextInput, DescriptionInput } from "../../components/ControlElements/input";
+import { DescriptionInput, TextInput } from "../../components/ControlElements/input";
 import ProgressComponent, { ProgressState } from "../../components/progress-dialog";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
@@ -292,8 +292,11 @@ const NewProcessPage = () => {
     // proposal's page, it means the user has completed the proposal. In this case the
     // event is NOT triggered.
     function routeChangeHandler(url: string) {
-      if (!url.includes("/processes/#/"))
-        trackEvent(EventType.PROPOSAL_CREATION_ABANDONED, { entity_id: tokenAddress });
+      if (!url.includes("/processes/#/")) {
+        trackEvent(EventType.PROPOSAL_CREATION_ABANDONED, {
+          entity_id: tokenAddress,
+        });
+      }
     }
 
     router.events.on("routeChangeStart", routeChangeHandler);
@@ -397,8 +400,9 @@ const NewProcessPage = () => {
       validateProposal(metadata, startDate, endDate);
       /* TODO move to the beginning of the page. And immediately send to NotFound if the
       address is not valid */
-      if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX))
+      if (!tokenAddress || !tokenAddress.match(FORTY_DIGITS_HEX)) {
         throw new TokenAddressInvalidError();
+      }
 
       // FINAL CONFIRMATION
       const proposalOk = confirm(
@@ -406,8 +410,12 @@ const NewProcessPage = () => {
       );
       if (proposalOk) setProgress(ProgressState.CREATING);
     } catch (error) {
-      if (error instanceof ProposalFormatError) return setAlertMessage(error.message);
-      if (error instanceof TokenAddressInvalidError) return setAlertMessage(error.message);
+      if (error instanceof ProposalFormatError) {
+        return setAlertMessage(error.message);
+      }
+      if (error instanceof TokenAddressInvalidError) {
+        return setAlertMessage(error.message);
+      }
 
       console.error(error);
       return setAlertMessage("The proposal could not be validated");
@@ -417,7 +425,7 @@ const NewProcessPage = () => {
   async function submitProposal() {
     try {
       setSubmitting(true);
-      const pool = await poolPromise;
+      const pool: any = await poolPromise;
 
       // Estimate start/end blocks
       const [startBlock, endBlock] = await Promise.all([
@@ -433,7 +441,9 @@ const NewProcessPage = () => {
 
       // Wait until effectively created
       const ready = await waitUntilProcessCreated(processId, pool);
-      if (!ready) throw new Error("The proposal is not available after a while");
+      if (!ready) {
+        throw new Error("The proposal is not available after a while");
+      }
 
       setSubmitting(false);
       setProcessId(processId);
@@ -461,15 +471,21 @@ const NewProcessPage = () => {
       /* User cancels tx (e.g., by aborting signing process.) This is registered
           differently from a "failure"*/
       if ((error?.message as string)?.includes("signature")) {
-        trackEvent(EventType.TX_CANCELED, { event_canceled: "creating_proposal" });
+        trackEvent(EventType.TX_CANCELED, {
+          event_canceled: "creating_proposal",
+        });
         return setProgressError(USER_CANCELED_TX);
       }
 
-      if (error?.message === NO_TOKEN_BALANCE) return setProgressError(NO_TOKEN_BALANCE);
-      if ((error?.message as string)?.includes("max proposals per address reached"))
-        return setProgressError("You have hit the temporary limit of proposals");
-      if ((error?.message as string)?.includes("leaf node does not match value"))
+      if (error?.message === NO_TOKEN_BALANCE) {
         return setProgressError(NO_TOKEN_BALANCE);
+      }
+      if ((error?.message as string)?.includes("max proposals per address reached")) {
+        return setProgressError("You have hit the temporary limit of proposals");
+      }
+      if ((error?.message as string)?.includes("leaf node does not match value")) {
+        return setProgressError(NO_TOKEN_BALANCE);
+      }
 
       console.error(error);
     }
@@ -531,7 +547,9 @@ const NewProcessPage = () => {
       metadata: ProcessMetadata;
     } = {
       mode: ProcessMode.make({ autoStart: true }),
-      envelopeType: ProcessEnvelopeType.make({ encryptedVotes: envelopeType.hasEncryptedVotes }), // bit mask
+      envelopeType: ProcessEnvelopeType.make({
+        encryptedVotes: envelopeType.hasEncryptedVotes,
+      }), // bit mask
       censusOrigin: ProcessCensusOrigin.ERC20,
       metadata: metadata,
       censusRoot: proof.storageHash,

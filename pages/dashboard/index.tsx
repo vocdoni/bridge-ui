@@ -125,7 +125,14 @@ export const VoteSection = (props: {
       <>
         {processes.map((proc) => {
           const token = tokenInfos.find((token) => token.address == proc.summary.entityId);
-          return <ProcessCard processId={proc.id} metadata={proc.metadata} token={token} />;
+          return (
+            <ProcessCard
+              key={token.address}
+              processId={proc.id}
+              metadata={proc.metadata}
+              token={token}
+            />
+          );
         })}
       </>
     );

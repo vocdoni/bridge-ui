@@ -4,14 +4,14 @@ export const USER_CANCELED_TX = "The transaction was canceled";
 // TOKEN ERRORS ==========================================================================
 
 export class NoTokenBalanceError extends Error {
-  constructor(tokenSymbol: string = "") {
+  constructor(tokenSymbol = "") {
     if (!tokenSymbol) super(`You have no token balance`);
     else super(`You have no balance for token ${tokenSymbol}`);
   }
 }
 
 export class TokenAlreadyRegisteredError extends Error {
-  constructor(tokenSymbol: string = "") {
+  constructor(tokenSymbol = "") {
     if (!tokenSymbol) super(`The token is already registered`);
     else super(`The ${tokenSymbol} token is already registered`);
   }
@@ -24,14 +24,14 @@ export class TokenAddressInvalidError extends Error {
 }
 
 export class FetchRegisteredTokensError extends Error {
-  constructor(fetchingError: string = "") {
+  constructor(fetchingError = "") {
     if (!fetchingError) super(`Could not fetch the registered tokens`);
     else super(`Could not fetch the registered tokens: ${fetchingError}`);
   }
 }
 
 export class FetchTokensInfosError extends Error {
-  constructor(fetchingError: string = "") {
+  constructor(fetchingError = "") {
     if (!fetchingError) super(`Could not fetch the token details`);
     else super(`Could not fetch the token details: ${fetchingError}`);
   }
@@ -60,14 +60,14 @@ export class MissingInputError extends ProposalFormatError {
 }
 
 export class ShortInputError extends ProposalFormatError {
-  constructor(inputType: InputType, index: number = -1) {
+  constructor(inputType: InputType, index = -1) {
     if (index < 0) super(`Please enter a longer ${inputType}`);
     else super(`Please enter a longer ${inputType} for question #${index + 1}`);
   }
 }
 
 export class LongInputError extends ProposalFormatError {
-  constructor(inputType: InputType, maxLength: number, index: number = -1) {
+  constructor(inputType: InputType, maxLength: number, index = -1) {
     if (index < 0) {
       super(`The ${inputType} is too long. Please keep it shorter than ${maxLength} characters`);
     } else {

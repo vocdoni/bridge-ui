@@ -26,7 +26,7 @@ export const useProcessResults = (
 
   const processId = processDetails?.id;
   const tokenAddress = tokenInfo?.address;
-  const { process } = useProcess(processId)
+  const { process } = useProcess(processId);
 
   useEffect(() => {
     const interval = setInterval(() => fetchCurrentResults(), 1000 * 30);

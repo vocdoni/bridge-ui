@@ -13,9 +13,7 @@ type CloseProposalAction = {
   type: ActionTypes.CLOSE_PROPOSAL_LIST;
 };
 
-type ModalsContextAction =
-  | ProposalListAction
-  | CloseProposalAction;
+type ModalsContextAction = ProposalListAction | CloseProposalAction;
 
 interface ModalContextState {
   proposalList: {
@@ -39,10 +37,7 @@ const ModalsContext = createContext<ModalContext>({
   dispatch: () => null,
 });
 
-const reducer = (
-  state: ModalContextState,
-  action: ModalsContextAction,
-): ModalContextState => {
+const reducer = (state: ModalContextState, action: ModalsContextAction): ModalContextState => {
   switch (action.type) {
     case ActionTypes.OPEN_PROPOSAL_LIST:
       return {
@@ -61,11 +56,7 @@ const reducer = (
 
 export const ModalsProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
-  return (
-    <ModalsContext.Provider value={{ state, dispatch }}>
-      {children}
-    </ModalsContext.Provider>
-  );
+  return <ModalsContext.Provider value={{ state, dispatch }}>{children}</ModalsContext.Provider>;
 };
 
 export const useModal = () => useContext(ModalsContext);

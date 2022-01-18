@@ -98,7 +98,7 @@ export function UseStoredTokensProvider({ children }) {
     if (!cachedTokens) cachedTokens = storedTokens.tokens;
 
     try {
-      const pool = await poolPromise;
+      const pool: any = await poolPromise;
       const registeredTokens = await getRegisteredTokenList(0, pool);
 
       // filter out registered tokens we already store.

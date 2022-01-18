@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { providers } from "ethers";
 import Web3Modal, { IProviderOptions } from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -60,7 +54,8 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
 
     setConnecting(true);
 
-    return web3Modal.connect()
+    return web3Modal
+      .connect()
       .then((instance) => {
         setInstance(instance);
 
@@ -83,7 +78,9 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
       return Promise.resolve();
     }
 
-    return new providers.Web3Provider(instance).getSigner().getChainId()
+    return new providers.Web3Provider(instance)
+      .getSigner()
+      .getChainId()
       .then((chainId) => setChainId(chainId));
   };
 
@@ -117,7 +114,9 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
     });
 
     // Update address
-    new providers.Web3Provider(instance).getSigner().getAddress()
+    new providers.Web3Provider(instance)
+      .getSigner()
+      .getAddress()
       .then((address: string) => setAddress(address));
 
     return () => {
@@ -126,9 +125,7 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
   }, [instance]);
 
   const provider = instance ? new providers.Web3Provider(instance) : null;
-  const signer: providers.JsonRpcSigner = provider
-    ? provider.getSigner()
-    : null;
+  const signer: providers.JsonRpcSigner = provider ? provider.getSigner() : null;
 
   let status: "disconnected" | "connecting" | "connected" = "disconnected";
   if (connecting) status = "connecting";
@@ -147,11 +144,7 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
     },
   };
 
-  return (
-    <SignerContext.Provider value={value}>
-      {children}
-    </SignerContext.Provider>
-  );
+  return <SignerContext.Provider value={value}>{children}</SignerContext.Provider>;
 }
 
 export function useSigner() {

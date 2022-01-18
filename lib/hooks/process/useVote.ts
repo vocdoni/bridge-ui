@@ -98,7 +98,7 @@ export const useVote = (processDetails: ProcessDetails) => {
         censusOrigin: processDetails.state.censusOrigin,
         censusProof: proof.storageProof[0],
         processId: processId,
-        walletOrSigner: signer
+        walletOrSigner: signer,
       };
 
       if (processDetails.state.envelopeType.encryptedVotes) {

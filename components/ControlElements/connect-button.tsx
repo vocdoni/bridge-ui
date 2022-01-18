@@ -30,7 +30,7 @@ const ConnectWalletButton = styled.div<{ wide: boolean }>`
   font-weight: 500;
   font-size: 16px;
   background: ${({ theme }) =>
-  `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
+    `linear-gradient(${theme.gradients.primary.mg1.a}, ${theme.gradients.primary.mg1.c1}, ${theme.gradients.primary.mg1.c2});`};
   box-shadow: ${({ theme }) => theme.shadows.buttonShadow};
   border-radius: 8px;
   cursor: pointer;
@@ -113,9 +113,7 @@ export const TextLink = styled.p`
   }
 `;
 
-const WalletAddress = (
-  { address, onClick }: { address: string; onClick: () => void },
-) => {
+const WalletAddress = ({ address, onClick }: { address: string; onClick: () => void }) => {
   return (
     <ButtonContainer>
       <ConnectedWalletButton onClick={onClick}>
@@ -144,11 +142,10 @@ export const ConnectButton = ({ wide = false }: { wide?: boolean }) => {
     // This opens the modal containing the list of wallets. The connection logic is
     // handeled from there.
     // dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
-    methods.selectWallet()
-      .catch((err) => {
-        setAlertMessage("Could not connect to the wallet");
-        console.error(err);
-      });
+    methods.selectWallet().catch((err) => {
+      setAlertMessage("Could not connect to the wallet");
+      console.error(err);
+    });
   };
 
   if (isConnected) {
@@ -171,11 +168,10 @@ export const ConnectWalletLink = () => {
 
   // const openWallets = () => dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
   const openWallets = () =>
-    methods.selectWallet()
-      .catch((err) => {
-        setAlertMessage("Could not connect to the wallet");
-        console.error(err);
-      });
+    methods.selectWallet().catch((err) => {
+      setAlertMessage("Could not connect to the wallet");
+      console.error(err);
+    });
 
   return <TextLink onClick={openWallets}>Connect Wallet</TextLink>;
 };

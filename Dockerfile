@@ -29,7 +29,7 @@ ENV WALLET_CONNECT_ID=${WALLET_CONNECT_ID}
 WORKDIR /app
 ADD package.json /app
 # ADD package-lock.json /app
-RUN npm install
+RUN npm install -f
 
 ADD . /app
 RUN npm run export

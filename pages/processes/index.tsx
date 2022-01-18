@@ -124,11 +124,10 @@ const ProcessPage = () => {
   const onVoteSubmit = async () => {
     if (!isConnected) {
       // return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
-      methods.selectWallet()
-        .catch((err) => {
-          setAlertMessage("Could not connect to the wallet");
-          console.error(err);
-        });
+      methods.selectWallet().catch((err) => {
+        setAlertMessage("Could not connect to the wallet");
+        console.error(err);
+      });
       return;
     }
     try {
@@ -158,7 +157,7 @@ const ProcessPage = () => {
     return renderEmpty();
   }
 
-  let buttonText: string = questionsFilled ? "Submit your vote" : "Fill all the choices";
+  const buttonText: string = questionsFilled ? "Submit your vote" : "Fill all the choices";
   const isLoading = processLoading || tokenLoading || proofLoading;
 
   return (

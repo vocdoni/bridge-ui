@@ -19,7 +19,7 @@ jobs:
         run: npm install -g yarn
 
       - name: Install dependencies
-        run: npm install
+        run: npm install -f
 
       - name: Run tests
         run: npm test
@@ -174,7 +174,7 @@ jobs:
           export_default_credentials: true
       - name: Install dependencies and build (mainnet)
         run: |
-          npm install
+          npm install -f
           npm run export
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
@@ -188,7 +188,7 @@ jobs:
       - name: Install dependencies and build (xdai)
         run: |
           rm -rf build
-          npm install
+          npm install -f
           npm run export
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}

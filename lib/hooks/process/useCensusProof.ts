@@ -1,5 +1,4 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { GatewayPool } from "dvote-js";
 import { useEffect, useState } from "react";
 import { getProof, CensusProof } from "../../api";
 import { TokenInfo } from "../../types";
@@ -25,7 +24,7 @@ export const useCensusProof = (token: Partial<TokenInfo>, targetBlock: number) =
 
     /* TODO should not have "no balance" as an error, but as an additional state. */
     poolPromise
-      .then((pool: GatewayPool) =>
+      .then((pool: any) =>
         getProof({
           account: holderAddress,
           token: tokenAddr,

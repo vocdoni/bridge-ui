@@ -26,7 +26,7 @@ import { useSigner } from "../lib/hooks/useSigner";
 const IndexPage = () => {
   useScrollTop();
   const { status } = useSigner();
-  
+
   const {
     data: featuredTokens,
     isLoading: featuredTokensLoading,

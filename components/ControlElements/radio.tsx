@@ -58,7 +58,7 @@ export function RadioSectionTooltips({ texts, state, setState }: RadioTooltipPro
   return (
     <RadioContainer>
       {texts.map((t, key) => (
-        <RadioLabel>
+        <RadioLabel key={key}>
           <Radio
             checked={key === state}
             onChange={() => {
