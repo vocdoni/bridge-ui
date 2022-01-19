@@ -33,6 +33,7 @@ type SignerValue = {
   methods: {
     selectWallet: () => Promise<void>;
     refreshChainId: () => Promise<void>;
+    disconnect: () => Promise<void>;
   };
 };
 const SignerContext = createContext<SignerValue>(null);
@@ -72,9 +73,23 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
       });
   };
 
+  const disconnect = () => {
+    setInstance(null);
+    setConnected(false);
+    setConnecting(false);
+    setAddress("");
+    // setChainId(DEFAULT_CHAIN_ID);
+
+    const provider = new providers.Web3Provider(instance).provider as WalletConnectProvider;
+    if (!provider.isWalletConnect) {
+      return Promise.resolve();
+    }
+    return provider.close?.();
+  };
+
   const refreshChainId = () => {
     if (!instance) {
-      setChainId(DEFAULT_CHAIN_ID);
+      // setChainId(DEFAULT_CHAIN_ID);
       return Promise.resolve();
     }
 
@@ -109,7 +124,7 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
     instance.on("disconnect", (error: { code: number; message: string }) => {
       console.log(error);
       setAddress("");
-      setChainId(DEFAULT_CHAIN_ID);
+      // setChainId(DEFAULT_CHAIN_ID);
       setConnected(false);
     });
 
@@ -141,6 +156,7 @@ export function UseSignerProvider({ children }: { children: ReactNode }) {
     methods: {
       selectWallet,
       refreshChainId,
+      disconnect,
     },
   };
 

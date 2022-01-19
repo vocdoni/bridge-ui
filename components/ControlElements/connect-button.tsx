@@ -113,10 +113,18 @@ export const TextLink = styled.p`
   }
 `;
 
-const WalletAddress = ({ address, onClick }: { address: string; onClick: () => void }) => {
+const WalletAddress = ({
+  address,
+  onClick,
+  title,
+}: {
+  address: string;
+  onClick: () => void;
+  title?: string;
+}) => {
   return (
     <ButtonContainer>
-      <ConnectedWalletButton onClick={onClick}>
+      <ConnectedWalletButton onClick={onClick} title={title || ""}>
         <ConnectedWalletIcon />
         {address && shortAddress(address)}
       </ConnectedWalletButton>
@@ -139,9 +147,11 @@ export const ConnectButton = ({ wide = false }: { wide?: boolean }) => {
   }, [poolLoading, status]);
 
   const handleButtonClick = async () => {
-    // This opens the modal containing the list of wallets. The connection logic is
-    // handeled from there.
-    // dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+    if (isConnected) {
+      methods.disconnect();
+      return;
+    }
+
     methods.selectWallet().catch((err) => {
       setAlertMessage("Could not connect to the wallet");
       console.error(err);
@@ -149,7 +159,9 @@ export const ConnectButton = ({ wide = false }: { wide?: boolean }) => {
   };
 
   if (isConnected) {
-    return <WalletAddress address={address} onClick={handleButtonClick} />;
+    return (
+      <WalletAddress address={address} onClick={handleButtonClick} title="Click to disconnect" />
+    );
   }
 
   return (

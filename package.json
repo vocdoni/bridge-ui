@@ -29,7 +29,7 @@
     "@walletconnect/web3-provider": "^1.7.1",
     "bluebird": "^3.7.2",
     "dexie": "^3.2.0",
-    "dvote-js": "1.13.3",
+    "dvote-js": "^1.13.4",
     "eslint": "^7.14.0",
     "ethers": "^5.5.3",
     "ethers-multicall": "^0.2.0",
