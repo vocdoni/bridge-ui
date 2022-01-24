@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { MultiLanguage } from "dvote-js";
+import { MultiLanguage } from "@vocdoni/common";
 
 import { PLUS_ICON, MINUS_ICON } from "../../lib/constants/url";
 

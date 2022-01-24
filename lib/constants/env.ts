@@ -1,4 +1,4 @@
-import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
+import { EthNetworkID, VocdoniEnvironment } from "@vocdoni/common";
 
 export const DEFAULT_CHAIN_ID = 1;
 export const ETH_BLOCK_HEIGHT_PADDING = 10;

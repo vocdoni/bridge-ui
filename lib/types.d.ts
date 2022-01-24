@@ -1,6 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { ProcessContractParameters, ProcessMetadata, VotingApi } from "dvote-js";
-import { Awaited } from "./utils";
+// import { ProcessMetadata } from "@vocdoni/data-models";
+// import { VotingApi } from "@vocdoni/voting";
+// import { ProcessContractParameters } from "@vocdoni/contract-wrappers";
+// import { Awaited } from "./utils";
 
 export type TokenAddress = string;
 

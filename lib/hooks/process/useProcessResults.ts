@@ -1,5 +1,5 @@
 import { useBlockStatus, usePool, useProcess } from "@vocdoni/react-hooks";
-import { ProcessDetails, Voting, VotingApi } from "dvote-js";
+import { ProcessDetails, Voting, VotingApi } from "@vocdoni/voting";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";

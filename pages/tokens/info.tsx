@@ -15,7 +15,8 @@ import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import SectionTitle from "../../components/sectionTitle";
 import { TokenLogo, VoteCard } from "../../components/token-card";
 import { PrimaryButton } from "../../components/ControlElements/button";
-import { ProcessSummary, ProcessMetadata } from "dvote-js";
+import { ProcessSummary } from "@vocdoni/voting";
+import { ProcessMetadata } from "@vocdoni/data-models";
 import { ProposalTypeList } from "../../components/Modal/ProposalTypeList";
 import { Loading } from "../../components/Banners/GrayBanners";
 import { LightText, TokenList, VoteSectionContainer } from "../dashboard";
@@ -183,7 +184,9 @@ const VoteSection = (params: VotingSectionProps) => {
   );
 };
 
-const ProcessCard = (props: { id: string; token: TokenInfo; title: string; loading?: boolean }) => {
+const ProcessCard = (
+  props: { id: string; token: TokenInfo; title: string; loading?: boolean },
+) => {
   const { id, token, title, loading } = props;
   // TODO: Show a spinner when `loading` is set
   return (
@@ -204,9 +207,12 @@ const TokenPage = () => {
   useOnNetworkChange();
   useScrollTop();
   const tokenAddress = useUrlHash().substr(1);
-  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(
+    tokenAddress,
+  );
   const processIds = tokenInfo?.processes || [];
-  const { processes, loading: proposalsLoading, error: proposalsError } = useProcesses(processIds);
+  const { processes, loading: proposalsLoading, error: proposalsError } =
+    useProcesses(processIds);
   const { blockStatus } = useBlockStatus();
 
   const blockNumber = blockStatus?.blockNumber || 0;
@@ -231,7 +237,8 @@ const TokenPage = () => {
     const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber >= proc?.summary?.startBlock && blockNumber < proc?.summary?.endBlock;
+    return blockNumber >= proc?.summary?.startBlock &&
+      blockNumber < proc?.summary?.endBlock;
   });
   const endedProcesses = processIds.filter((id) => {
     const proc = processes.find((p) => p.id == id);
@@ -246,13 +253,15 @@ const TokenPage = () => {
     {
       title: "Active votes",
       processes: activeProcesses,
-      processesMessage: "Below are the votes belonging to the available tokens.",
+      processesMessage:
+        "Below are the votes belonging to the available tokens.",
       noProcessesMessage: "There are no active votes at this moment.",
     },
     {
       title: "Vote results",
       processes: endedProcesses,
-      processesMessage: "Below are the results for votes related to your tokens.",
+      processesMessage:
+        "Below are the results for votes related to your tokens.",
       noProcessesMessage: "There are no votes with results to display.",
     },
     {

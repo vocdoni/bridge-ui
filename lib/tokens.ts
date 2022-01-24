@@ -1,4 +1,4 @@
-import { EthNetworkID } from "dvote-js";
+import { EthNetworkID } from "@vocdoni/common";
 import { TokenAddress, TokenInfo } from "./types";
 
 const featuredTokens: Omit<Record<EthNetworkID, TokenAddress[]>, "homestead"> = {
@@ -30,6 +30,8 @@ const featuredTokens: Omit<Record<EthNetworkID, TokenAddress[]>, "homestead"> = 
   ],
   xdai: [],
   sokol: [],
+  avalanche: [],
+  fuji: []
 };
 
 /**

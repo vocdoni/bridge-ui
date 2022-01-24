@@ -16,7 +16,7 @@ import {
 } from "./styled";
 
 import Checkbox from "./checkbox";
-import { ProcessMetadata } from "dvote-js";
+import { ProcessMetadata } from "@vocdoni/data-models";
 import { ProcessResults } from "../../lib/hooks/process/useProcessResults";
 
 type PQuestion = ProcessMetadata["questions"][0];

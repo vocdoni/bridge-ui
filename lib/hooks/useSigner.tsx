@@ -20,7 +20,13 @@ type SignerValue = {
 };
 const SignerContext = createContext<SignerValue>(null);
 
-export function UseSignerProvider({ children, providerOptions }: { children: ReactNode, providerOptions: IProviderOptions }) {
+export function UseSignerProvider({
+  children,
+  providerOptions,
+}: {
+  children: ReactNode;
+  providerOptions: IProviderOptions;
+}) {
   const [instance, setInstance] = useState<any>(null);
   const [connecting, setConnecting] = useState(false);
   const [connected, setConnected] = useState(false);

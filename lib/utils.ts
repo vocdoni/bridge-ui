@@ -1,4 +1,4 @@
-import { ProcessMetadata } from "dvote-js";
+import { ProcessMetadata } from "@vocdoni/data-models";
 import { utils } from "ethers";
 
 import { TRUST_WALLET_BASE_URL } from "./constants/url";

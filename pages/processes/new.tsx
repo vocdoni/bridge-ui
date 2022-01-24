@@ -1,18 +1,16 @@
 import React, { CSSProperties, Fragment, useEffect, useState } from "react";
+import { VotingApi, VotingOracleApi } from "@vocdoni/voting";
+import { DVoteGateway, GatewayPool } from "@vocdoni/client";
 import {
-  DVoteGateway,
-  GatewayPool,
   IProcessCreateParams,
   ProcessCensusOrigin,
   ProcessEnvelopeType,
-  ProcessMetadata,
   ProcessMode,
-  VotingApi,
-  VotingOracleApi,
-} from "dvote-js";
+} from "@vocdoni/contract-wrappers";
+import { ProcessMetadata } from "@vocdoni/data-models";
+import { ProcessMetadataTemplate } from "@vocdoni/data-models";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
-import { ProcessMetadataTemplate } from "dvote-js";
 import Datetime from "react-datetime";
 import { Moment } from "moment";
 import { useRouter } from "next/router";
@@ -39,13 +37,27 @@ import { EventType, trackEvent } from "../../lib/analytics";
 import { useOnNetworkChange } from "../../lib/hooks/useOnNetworkChange";
 import { useEnvironment } from "../../lib/hooks/useEnvironment";
 
-import { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
-import { MinusContainer, PlusBox } from "../../components/ControlElements/plusBox";
-import { RadioSectionTooltips, TextContent } from "../../components/ControlElements/radio";
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from "../../components/ControlElements/button";
+import {
+  MinusContainer,
+  PlusBox,
+} from "../../components/ControlElements/plusBox";
+import {
+  RadioSectionTooltips,
+  TextContent,
+} from "../../components/ControlElements/radio";
 import { ConnectButton } from "../../components/ControlElements/connect-button";
 import SectionTitle from "../../components/sectionTitle";
-import { DescriptionInput, TextInput } from "../../components/ControlElements/input";
-import ProgressComponent, { ProgressState } from "../../components/progress-dialog";
+import {
+  DescriptionInput,
+  TextInput,
+} from "../../components/ControlElements/input";
+import ProgressComponent, {
+  ProgressState,
+} from "../../components/progress-dialog";
 
 /* NOTE The option container does not fit on the right for small laptops. This is why the whole
 layout is changed to a column for devices <= laptop. */
@@ -205,16 +217,18 @@ const QuestionDescription = styled(DescriptionInput)`
 `;
 
 const SubmitButton = ({ submitting, onSubmit }) =>
-  submitting ? (
-    <p>
-      Please wait...
-      <Spinner />
-    </p>
-  ) : (
-    <PrimaryButton wide onClick={onSubmit}>
-      Create proposal
-    </PrimaryButton>
-  );
+  submitting
+    ? (
+      <p>
+        Please wait...
+        <Spinner />
+      </p>
+    )
+    : (
+      <PrimaryButton wide onClick={onSubmit}>
+        Create proposal
+      </PrimaryButton>
+    );
 
 enum ProcessTypes {
   SIGNALING,
@@ -233,7 +247,8 @@ const proposalTexts: TextContent[] = [
   },
   {
     label: "On-chain proposal",
-    tooltip: "Metadata is stored on Ethereum, increasing decentralization and verifiability",
+    tooltip:
+      "Metadata is stored on Ethereum, increasing decentralization and verifiability",
   },
 ];
 
@@ -266,20 +281,24 @@ const NewProcessPage = () => {
     router.push("/");
   }
   const initProcessType: ProcessTypes =
-    (router.query.type as string) === "binding" ? ProcessTypes.BINDING : ProcessTypes.SIGNALING;
+    (router.query.type as string) === "binding"
+      ? ProcessTypes.BINDING
+      : ProcessTypes.SIGNALING;
 
   const isMobile = useIsMobile();
   const isLarge = useIsWide();
 
   const [metadata, setMetadata] = useState<ProcessMetadata>(
-    JSON.parse(JSON.stringify(ProcessMetadataTemplate))
+    JSON.parse(JSON.stringify(ProcessMetadataTemplate)),
   );
   const [envelopeType, setEnvelopeType] = useState(new ProcessEnvelopeType(0));
   const [startDate, setStartDate] = useState(null as Date);
   const [endDate, setEndDate] = useState(null as Date);
   const [processType, setProcessType] = useState<ProcessTypes>(initProcessType);
   const [resultType, setResultType] = useState<ResultTypes>(ResultTypes.NORMAL);
-  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(tokenAddress);
+  const { tokenInfo, loading: tokenLoading, error: tokenError } = useToken(
+    tokenAddress,
+  );
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState<ProgressState>(ProgressState.IDLE);
   const [progressError, setProgressError] = useState<string>(null);
@@ -358,7 +377,9 @@ const NewProcessPage = () => {
     setMetadata(Object.assign({}, metadata));
   };
   const onAddQuestion = () => {
-    metadata.questions.push(JSON.parse(JSON.stringify(ProcessMetadataTemplate.questions[0])));
+    metadata.questions.push(
+      JSON.parse(JSON.stringify(ProcessMetadataTemplate.questions[0])),
+    );
     setMetadata(Object.assign({}, metadata));
   };
 
@@ -406,7 +427,7 @@ const NewProcessPage = () => {
 
       // FINAL CONFIRMATION
       const proposalOk = confirm(
-        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?"
+        "You are about to create a new proposal. The proposal cannot be altered, paused or canceled.\n\nDo you want to continue?",
       );
       if (proposalOk) setProgress(ProgressState.CREATING);
     } catch (error) {
@@ -434,10 +455,9 @@ const NewProcessPage = () => {
       ]);
       const blockCount = endBlock - startBlock;
 
-      const processId =
-        processType === ProcessTypes.BINDING
-          ? await submitBindingVote(pool, startBlock, blockCount)
-          : await submitSignalingVote(pool, startBlock, blockCount);
+      const processId = processType === ProcessTypes.BINDING
+        ? await submitBindingVote(pool, startBlock, blockCount)
+        : await submitSignalingVote(pool, startBlock, blockCount);
 
       // Wait until effectively created
       const ready = await waitUntilProcessCreated(processId, pool);
@@ -453,7 +473,9 @@ const NewProcessPage = () => {
         proposal_id: processId,
         start: startDate,
         end: endDate,
-        binding_type: processType === ProcessTypes.BINDING ? "binding" : "signaling",
+        binding_type: processType === ProcessTypes.BINDING
+          ? "binding"
+          : "signaling",
         results_type: envelopeType.hasEncryptedVotes ? "encrypted" : "normal",
         questions_length: metadata.questions.length,
       };
@@ -480,10 +502,18 @@ const NewProcessPage = () => {
       if (error?.message === NO_TOKEN_BALANCE) {
         return setProgressError(NO_TOKEN_BALANCE);
       }
-      if ((error?.message as string)?.includes("max proposals per address reached")) {
-        return setProgressError("You have hit the temporary limit of proposals");
+      if (
+        (error?.message as string)?.includes(
+          "max proposals per address reached",
+        )
+      ) {
+        return setProgressError(
+          "You have hit the temporary limit of proposals",
+        );
       }
-      if ((error?.message as string)?.includes("leaf node does not match value")) {
+      if (
+        (error?.message as string)?.includes("leaf node does not match value")
+      ) {
         return setProgressError(NO_TOKEN_BALANCE);
       }
 
@@ -491,12 +521,17 @@ const NewProcessPage = () => {
     }
   }
 
-  async function submitSignalingVote(pool: GatewayPool, startBlock: number, blockCount: number) {
+  async function submitSignalingVote(
+    pool: GatewayPool,
+    startBlock: number,
+    blockCount: number,
+  ) {
     const oracleClient = new DVoteGateway({
       uri: env.singalingOracleUrl,
       supportedApis: ["oracle"],
     });
-    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+    const sourceBlockHeight = (await pool.provider.getBlockNumber()) -
+      ETH_BLOCK_HEIGHT_PADDING;
 
     const signalingProcessParams = {
       mode: ProcessMode.make({ autoStart: true }),
@@ -514,27 +549,39 @@ const NewProcessPage = () => {
       maxVoteOverwrites: 1,
       tokenAddress,
       sourceBlockHeight,
-      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      paramsSignature:
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
     };
-    // const proof = await getProof({
-    //   account: holderAddress,
-    //   token: tokenInfo.address,
-    //   block: sourceBlockHeight,
-    //   balanceMappingPosition: tokenInfo.balanceMappingPosition,
-    //   pool,
-    // });
-    // const tokenDetails = {
-    //   balanceMappingPosition: tokenInfo.balanceMappingPosition,
-    //   storageHash: proof.storageHash,
-    //   storageProof: proof.storageProof[0]
-    // }
-    return VotingOracleApi.newProcessErc20(signalingProcessParams, signer, pool, oracleClient);
+    const proof = await getProof({
+      account: holderAddress,
+      token: tokenInfo.address,
+      block: sourceBlockHeight,
+      balanceMappingPosition: tokenInfo.balanceMappingPosition,
+      pool,
+    });
+    const tokenDetails = {
+      balanceMappingPosition: tokenInfo.balanceMappingPosition,
+      storageHash: proof.storageHash,
+      storageProof: proof.storageProof[0],
+    };
+    return VotingOracleApi.newProcessErc20(
+      signalingProcessParams,
+      tokenDetails,
+      signer,
+      pool,
+      oracleClient,
+    );
   }
 
-  async function submitBindingVote(pool: GatewayPool, startBlock: number, blockCount: number) {
+  async function submitBindingVote(
+    pool: GatewayPool,
+    startBlock: number,
+    blockCount: number,
+  ) {
     // Note: The process and the proof need to be created from the same exact `sourceBlockHeight`
     // Otherwise, proofs will not match.
-    const sourceBlockHeight = (await pool.provider.getBlockNumber()) - ETH_BLOCK_HEIGHT_PADDING;
+    const sourceBlockHeight = (await pool.provider.getBlockNumber()) -
+      ETH_BLOCK_HEIGHT_PADDING;
     const proof = await getProof({
       account: holderAddress,
       token: tokenInfo.address,
@@ -543,27 +590,30 @@ const NewProcessPage = () => {
       pool,
     });
 
-    const processParamsPre: Omit<Omit<IProcessCreateParams, "metadata">, "questionCount"> & {
-      metadata: ProcessMetadata;
-    } = {
-      mode: ProcessMode.make({ autoStart: true }),
-      envelopeType: ProcessEnvelopeType.make({
-        encryptedVotes: envelopeType.hasEncryptedVotes,
-      }), // bit mask
-      censusOrigin: ProcessCensusOrigin.ERC20,
-      metadata: metadata,
-      censusRoot: proof.storageHash,
-      startBlock,
-      blockCount,
-      maxCount: metadata.questions.length,
-      maxValue: findMaxValue(metadata),
-      maxTotalCost: 0,
-      costExponent: 10000,
-      maxVoteOverwrites: 1,
-      tokenAddress,
-      sourceBlockHeight,
-      paramsSignature: "0x0000000000000000000000000000000000000000000000000000000000000000",
-    };
+    const processParamsPre:
+      & Omit<Omit<IProcessCreateParams, "metadata">, "questionCount">
+      & {
+        metadata: ProcessMetadata;
+      } = {
+        mode: ProcessMode.make({ autoStart: true }),
+        envelopeType: ProcessEnvelopeType.make({
+          encryptedVotes: envelopeType.hasEncryptedVotes,
+        }), // bit mask
+        censusOrigin: ProcessCensusOrigin.ERC20,
+        metadata: metadata,
+        censusRoot: proof.storageHash,
+        startBlock,
+        blockCount,
+        maxCount: metadata.questions.length,
+        maxValue: findMaxValue(metadata),
+        maxTotalCost: 0,
+        costExponent: 10000,
+        maxVoteOverwrites: 1,
+        tokenAddress,
+        sourceBlockHeight,
+        paramsSignature:
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+      };
 
     return VotingApi.newProcess(processParamsPre, signer, pool);
   }
@@ -592,7 +642,11 @@ const NewProcessPage = () => {
           title="New proposal"
           subtitle="Enter the details of a new proposal and submit them."
         />
-        <SectionTitle title="Title" subtitle="Identify your proposal" smallerTitle />
+        <SectionTitle
+          title="Title"
+          subtitle="Identify your proposal"
+          smallerTitle
+        />
         <InputBox>
           <WidthControlInput
             placeholder="Title"
@@ -615,7 +669,9 @@ const NewProcessPage = () => {
             <QuestionNumber>Question {qIdx + 1}</QuestionNumber>
             <QuestionText>Question</QuestionText>
             <RemoveButton marginTop={-57}>
-              {qIdx > 0 ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} /> : null}
+              {qIdx > 0
+                ? <MinusContainer onClick={() => onRemoveQuestion(qIdx)} />
+                : null}
             </RemoveButton>
             <InputBox>
               <WidthControlInput
@@ -651,16 +707,24 @@ const NewProcessPage = () => {
                 </ChoiceRightSection>
               </RowQuestions>
             ))}
-            {qIdx == metadata.questions.length - 1 ? (
-              <SecondaryButton onClick={onAddQuestion}>Add question</SecondaryButton>
-            ) : null}
+            {qIdx == metadata.questions.length - 1
+              ? (
+                <SecondaryButton onClick={onAddQuestion}>
+                  Add question
+                </SecondaryButton>
+              )
+              : null}
           </Fragment>
         ))}
       </InformationSection>
 
       <OptionSection marginTop={60} isLarge={isLarge}>
         <OptionSectionTitle>Proposal Type</OptionSectionTitle>
-        <RadioSectionTooltips texts={proposalTexts} state={processType} setState={setProcessType} />
+        <RadioSectionTooltips
+          texts={proposalTexts}
+          state={processType}
+          setState={setProcessType}
+        />
         <OptionSectionTitle>Result Type</OptionSectionTitle>
         <RadioSectionTooltips
           texts={resultsTexts}
@@ -672,11 +736,9 @@ const NewProcessPage = () => {
         <CustomDateTime state={endDate} stateSetter={onEndDate} />
         <Unless condition={isMobile}>
           <ButtonRow>
-            {status === "connected" ? (
-              <SubmitButton submitting={submitting} onSubmit={submit} />
-            ) : (
-              <ConnectButton wide />
-            )}
+            {status === "connected"
+              ? <SubmitButton submitting={submitting} onSubmit={submit} />
+              : <ConnectButton wide />}
           </ButtonRow>
         </Unless>
       </OptionSection>

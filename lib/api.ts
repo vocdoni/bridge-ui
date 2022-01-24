@@ -1,5 +1,7 @@
 import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
-import { CensusErc20Api, GatewayPool, ProcessSummary, VotingApi } from "dvote-js";
+import { ProcessSummary, VotingApi } from "@vocdoni/voting";
+import { CensusErc20Api } from "@vocdoni/census";
+import { Erc20TokensApi, GatewayPool } from "@vocdoni/client";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NoTokenBalanceError, NO_TOKEN_BALANCE } from "./errors";
@@ -147,7 +149,7 @@ export function getRegisteredTokenList(
   currentTokenCount: number,
   pool: GatewayPool
 ): Promise<string[]> {
-  return CensusErc20Api.getTokenCount(pool).then((count) => {
+  return Erc20TokensApi.getTokenCount(pool).then((count) => {
     // Nothing changed?
     if (count == currentTokenCount) return Promise.resolve([]);
 
@@ -155,7 +157,7 @@ export function getRegisteredTokenList(
 [currentCount, count] are fetched, instead of [0, count]? [VR 02-08-2021] */
     return Bluebird.map(
       Array.from(Array(count).keys()),
-      (idx) => CensusErc20Api.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
+      (idx) => Erc20TokensApi.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
       { concurrency: 50 }
     );
   });

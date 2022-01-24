@@ -1,5 +1,5 @@
 import Dexie from "dexie";
-import { EthNetworkID } from "dvote-js";
+import { EthNetworkID } from "@vocdoni/common";
 
 import { NonExistingCaseError } from "./errors";
 import { TokenAddress, TokenInfo } from "./types";

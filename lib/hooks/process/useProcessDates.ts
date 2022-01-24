@@ -1,5 +1,5 @@
 import { useBlockStatus } from "@vocdoni/react-hooks";
-import { ProcessState, VotingApi } from "dvote-js";
+import { ProcessState, VotingApi } from "@vocdoni/voting";
 import { useEffect, useState } from "react";
 
 export const useProcessDates = (processState: ProcessState) => {

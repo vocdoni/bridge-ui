@@ -1,4 +1,4 @@
-import { ProcessMetadata } from "dvote-js";
+import { ProcessMetadata } from "@vocdoni/data-models";
 import moment from "moment";
 import {
   DateError,

@@ -1,5 +1,5 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { ProcessDetails, SignedEnvelopeParams, Voting, VotingApi } from "dvote-js";
+import { ProcessDetails, SignedEnvelopeParams, Voting, VotingApi } from "@vocdoni/voting";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { CensusProof } from "../../api";
 import { useMessageAlert } from "../../contexts/message-alert";
@@ -55,7 +55,7 @@ export const useVote = (processDetails: ProcessDetails) => {
   const processId = processDetails?.id || "";
 
   const nullifier = useMemo(() => {
-    if (processId) return VotingApi.getSignedVoteNullifier(voterAddress, processId);
+    if (processId) return Voting.getSignedVoteNullifier(voterAddress, processId);
   }, [processId, voterAddress]);
 
   // Auto refresh vote status
@@ -98,14 +98,13 @@ export const useVote = (processDetails: ProcessDetails) => {
         censusOrigin: processDetails.state.censusOrigin,
         censusProof: proof.storageProof[0],
         processId: processId,
-        walletOrSigner: signer,
       };
 
       if (processDetails.state.envelopeType.encryptedVotes) {
         envelopParams.processKeys = await VotingApi.getProcessKeys(processId, pool);
       }
 
-      const envelope = await VotingApi.packageSignedEnvelope(envelopParams);
+      const envelope = Voting.packageSignedEnvelope(envelopParams);
       await VotingApi.submitEnvelope(envelope, signer, pool);
 
       /* TODO @brickpop what's up with this? */
