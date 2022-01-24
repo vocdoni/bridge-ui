@@ -20,6 +20,27 @@ import { FixedGlobalStyle, theme } from "../theme";
 import { Layout } from "../components/StructuralElements/layout";
 import { CookiesBanner } from "../components/cookies-banner";
 import { ApmProvider, instrumentApmRoutes, updateApmContext, useApm } from "../lib/contexts/apm";
+import { IProviderOptions } from "web3modal";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+// import Fortmatic from "fortmatic";
+
+// Web3Modal settings
+const providerOptions: IProviderOptions = {
+  // metamask: {}
+  walletconnect: {
+    package: WalletConnectProvider,
+    options: {
+      infuraId: BUILD.walletConnectId,
+    },
+  },
+  // fortmatic: {
+  //   package: Fortmatic, // required
+  //   options: {
+  //     key: BUILD.fortmaticKey,
+  //     network: customNetworkOptions, // if we don't pass it, it will default to localhost:8454
+  //   },
+  // },
+};
 
 Router.events.on("routeChangeComplete", (url: string) => {
   trackPage(url);
@@ -36,7 +57,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
       <ThemeProvider theme={theme}>
         <UseMessageAlertProvider>
           <UseLoadingAlertProvider>
-            <UseSignerProvider>
+            <UseSignerProvider providerOptions={providerOptions}>
               <AppWithEnvironment Component={Component} router={router} pageProps={pageProps} />
             </UseSignerProvider>
           </UseLoadingAlertProvider>

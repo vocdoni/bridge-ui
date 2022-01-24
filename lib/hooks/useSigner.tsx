@@ -1,26 +1,8 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { providers } from "ethers";
 import Web3Modal, { IProviderOptions } from "web3modal";
+import { DEFAULT_CHAIN_ID } from "../constants/env";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { BUILD, DEFAULT_CHAIN_ID } from "../constants/env";
-// import Fortmatic from "fortmatic";
-
-const providerOptions: IProviderOptions = {
-  // metamask: {}
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: BUILD.walletConnectId,
-    },
-  },
-  // fortmatic: {
-  //   package: Fortmatic, // required
-  //   options: {
-  //     key: BUILD.fortmaticKey,
-  //     network: customNetworkOptions, // if we don't pass it, it will default to localhost:8454
-  //   },
-  // },
-};
 
 // Context
 
@@ -38,7 +20,7 @@ type SignerValue = {
 };
 const SignerContext = createContext<SignerValue>(null);
 
-export function UseSignerProvider({ children }: { children: ReactNode }) {
+export function UseSignerProvider({ children, providerOptions }: { children: ReactNode, providerOptions: IProviderOptions }) {
   const [instance, setInstance] = useState<any>(null);
   const [connecting, setConnecting] = useState(false);
   const [connected, setConnected] = useState(false);
