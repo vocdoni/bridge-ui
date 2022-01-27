@@ -5,7 +5,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { getRegisteredTokenList, getTokenInfo } from "../../api";
 import { useMessageAlert } from "../message-alert";
 import { VoiceStorage } from "../../storage";
-import { TokenInfo, HookData } from "../../types";
+import { HookData, TokenInfo } from "../../types";
 import { OutsideProviderError } from "../../errors";
 import { useEnvironment } from "../../hooks/useEnvironment";
 
@@ -26,12 +26,15 @@ const UseStoredTokensContext = React.createContext<StoredTokens>(null);
 /**
  * Returns an array containing the list of registered ERC20 tokens.
  * The list is persisted on IndexDB
- * */
+ */
 export function useStoredTokens(): StoredTokens {
   const tokenContext = useContext(UseStoredTokensContext);
 
   if (tokenContext === null) {
-    throw new OutsideProviderError("useStoredTokens()", "<UseStoredTokensProvider />");
+    throw new OutsideProviderError(
+      "useStoredTokens()",
+      "<UseStoredTokensProvider />",
+    );
   }
   return tokenContext;
 }
@@ -47,10 +50,13 @@ export function useStoredTokens(): StoredTokens {
  */
 export function UseStoredTokensProvider({ children }) {
   const { networkName, chainId } = useEnvironment();
-  const { poolPromise } = usePool();
+  const { poolPromise, pool } = usePool();
   const { setAlertMessage } = useMessageAlert();
 
-  const [storedTokens, setStoredTokens] = useState<TokenInfos>({ tokens: [], chainId: 1 });
+  const [storedTokens, setStoredTokens] = useState<TokenInfos>({
+    tokens: [],
+    chainId: 1,
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>(null);
 
@@ -61,14 +67,18 @@ export function UseStoredTokensProvider({ children }) {
         const dbTokensInfo = await readFromStorage();
         await fetchNewRegisteredTokens(dbTokensInfo);
       } catch (error) {
-        console.error("Could not update the list of tokens because: " + error);
-        setError(new Error("Could not update the list of tokens"));
+        if (error) {
+          console.error(
+            "Could not update the list of tokens because: " + error,
+          );
+          setError(new Error("Could not update the list of tokens"));
+        }
       } finally {
         setIsLoading(false);
       }
     };
     asyncEffect();
-  }, [poolPromise]);
+  }, [poolPromise, pool]);
 
   /**
    * Reads the info of tokens stored in IndexedDB and stores them in this component's
@@ -103,16 +113,20 @@ export function UseStoredTokensProvider({ children }) {
 
       // filter out registered tokens we already store.
       const alreadyStored = (token: string) => {
-        return cachedTokens.some((st) => st.address.toLowerCase() == token.toLowerCase());
+        return cachedTokens.some((st) =>
+          st.address.toLowerCase() == token.toLowerCase()
+        );
       };
-      const newTokenAddresses: string[] = registeredTokens.filter((rt) => !alreadyStored(rt));
+      const newTokenAddresses: string[] = registeredTokens.filter((rt) =>
+        !alreadyStored(rt)
+      );
 
       //fetch token infos in small chunk, untill there are no new token addresses
       const inc = 10;
       for (let i = 0; i < newTokenAddresses.length; i += inc) {
         const addressesChunk = newTokenAddresses.slice(i, i + inc);
         const tokenInfoChunk = await Promise.all(
-          addressesChunk.map((addr) => getTokenInfo(addr, pool))
+          addressesChunk.map((addr) => getTokenInfo(addr, pool)),
         );
 
         // accumulate results
@@ -131,7 +145,7 @@ export function UseStoredTokensProvider({ children }) {
       writeToStorage(cachedTokens);
       setError(null);
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   };
 

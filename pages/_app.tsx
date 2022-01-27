@@ -85,7 +85,7 @@ const AppWithEnvironment = ({ Component, router, pageProps }: NextAppProps) => {
       networkId={networkName}
       environment={vocdoniEnvironment}
       minNumGateways={1}
-      discoveryTimeout={2000}
+      discoveryTimeout={3500}
     >
       <UseBlockStatusProvider>
         <UseStoredTokensProvider>
