@@ -135,7 +135,7 @@ const ProcessPage = () => {
       trackEvent(EventType.VOTE_SUBMITTED, { proposal_id: processId });
     } catch (error) {
       /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
-      if ((error.message as string).includes("signature")) {
+      if ((error?.message || "").includes("signature")) {
         trackEvent(EventType.TX_CANCELED, { event_canceled: "voting" });
         return setAlertMessage(USER_CANCELED_TX);
       }
