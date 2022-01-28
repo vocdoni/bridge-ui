@@ -29,7 +29,7 @@
     "@vocdoni/client": "^1.16.2",
     "@vocdoni/common": "^1.15.1",
     "@vocdoni/data-models": "^1.15.3",
-    "@vocdoni/react-hooks": "^0.14.0",
+    "@vocdoni/react-hooks": "^0.14.1",
     "@vocdoni/voting": "^1.16.1",
     "@walletconnect/web3-provider": "^1.7.1",
     "bluebird": "^3.7.2",

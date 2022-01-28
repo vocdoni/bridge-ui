@@ -68,7 +68,7 @@ const VoiceApp = ({ Component, router, pageProps }: NextAppProps) => {
 };
 
 const AppWithEnvironment = ({ Component, router, pageProps }: NextAppProps) => {
-  const { networkName, bootnodesUrl, vocdoniEnvironment } = useEnvironment();
+  const { networkName, bootnodesUrl, vocdoniEnvironment, archiveIpnsId } = useEnvironment();
   const { apm } = useApm();
 
   useEffect(() => {
@@ -86,6 +86,7 @@ const AppWithEnvironment = ({ Component, router, pageProps }: NextAppProps) => {
       environment={vocdoniEnvironment}
       minNumGateways={1}
       discoveryTimeout={3500}
+      archiveIpnsId={archiveIpnsId}
     >
       <UseBlockStatusProvider>
         <UseStoredTokensProvider>

@@ -30,6 +30,7 @@ export interface NetworkVariables {
   bootnodesUrl: string;
   singalingOracleUrl: string;
   vocdoniEnvironment: VocdoniEnvironment;
+  archiveIpnsId?: string;
 }
 
 const ENVIRONMENTS: NetworkVariables[] = [
@@ -41,6 +42,7 @@ const ENVIRONMENTS: NetworkVariables[] = [
     bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.json",
     singalingOracleUrl: "https://signaling-oracle.vocdoni.net/dvote",
     vocdoniEnvironment: "prod",
+    archiveIpnsId: "k2k4r8prjy8gxj5ozkfvc1n9ih5ssn7yjcu8k3u2v5g2711j8rohu0ks",
   },
   {
     chainId: 4,
