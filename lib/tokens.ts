@@ -31,7 +31,8 @@ const featuredTokens: Omit<Record<EthNetworkID, TokenAddress[]>, "homestead"> = 
   xdai: [],
   sokol: [],
   avalanche: [],
-  fuji: []
+  fuji: [],
+  polygon: []
 };
 
 /**

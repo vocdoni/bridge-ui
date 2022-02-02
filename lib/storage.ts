@@ -113,6 +113,8 @@ export class VoiceStorage extends Dexie {
         return this.tokensMainnet;
       case "rinkeby":
         return this.tokensRinkeby;
+      case "polygon":
+	return this.tokensPolygon;
       default:
         throw new NonExistingCaseError();
     }
