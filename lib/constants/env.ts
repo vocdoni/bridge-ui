@@ -1,6 +1,6 @@
 import { EthNetworkID, VocdoniEnvironment } from "@vocdoni/common";
 
-export const DEFAULT_CHAIN_ID = 1;
+export const DEFAULT_CHAIN_ID = 137;
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 
 interface BuildVariables {
