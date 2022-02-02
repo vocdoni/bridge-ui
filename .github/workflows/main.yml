@@ -26,7 +26,7 @@ jobs:
 
   docker-release:
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release')
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release'  || startsWith(github.ref, 'refs/heads/polygon' )
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -97,6 +97,19 @@ jobs:
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
 
+      - name: Push to Docker Hub and ghcr.io (rinkeby)
+        uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/rinkeby'
+        with:
+          context: .
+          file: ./Dockerfile.static
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+          tags: |
+            vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
 
       - name: Push to Docker Hub and ghcr.io (release)
         uses: docker/build-push-action@v2
