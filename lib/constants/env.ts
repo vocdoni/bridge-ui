@@ -53,6 +53,15 @@ const ENVIRONMENTS: NetworkVariables[] = [
     singalingOracleUrl: "https://signaling-oracle.dev.vocdoni.net/dvote",
     vocdoniEnvironment: "dev",
   },
+  {
+    chainId: 137,
+    networkName: "polygon",
+    etherscanPrefix: "https://polygonscan.com/",
+    blockTime: 10,
+    bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.stg.json",
+    singalingOracleUrl: "https://signaling-oracle-polygon.vocdoni.net/dvote",
+    vocdoniEnvironment: "stage",
+  }
 ];
 
 /**
