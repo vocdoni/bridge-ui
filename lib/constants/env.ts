@@ -55,12 +55,12 @@ const ENVIRONMENTS: NetworkVariables[] = [
   },
   {
     chainId: 137,
-    networkName: "polygon",
+    networkName: "matic",
     etherscanPrefix: "https://polygonscan.com/",
     blockTime: 10,
     bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.stg.json",
     singalingOracleUrl: "https://signaling-oracle-polygon.vocdoni.net/dvote",
-    vocdoniEnvironment: "stage",
+    vocdoniEnvironment: "stg",
   }
 ];
 
