@@ -9,6 +9,7 @@ export class VoiceStorage extends Dexie {
   // number = type of the primkey
   tokensMainnet: Dexie.Table<TokenInfo, number>;
   tokensRinkeby: Dexie.Table<TokenInfo, number>;
+  tokensMatic: Dexie.Table<TokenInfo, number>;
 
   constructor() {
     super("VoiceStorage");
@@ -17,11 +18,13 @@ export class VoiceStorage extends Dexie {
     this.version(2).stores({
       tokensMainnet: "&address",
       tokensRinkeby: "&address",
+      tokensMatic: "&address",
     });
 
     // This is needed if your typescript is compiled using babel instead of tsc:
     this.tokensMainnet = this.table("tokensMainnet");
     this.tokensRinkeby = this.table("tokensRinkeby");
+    this.tokensMatic = this.table("tokensMatic");
   }
 
   /** Persists the given tokens into IndexedDB. If it already exist, it overwrites its values. */
@@ -113,8 +116,8 @@ export class VoiceStorage extends Dexie {
         return this.tokensMainnet;
       case "rinkeby":
         return this.tokensRinkeby;
-      case "polygon":
-	return this.tokensPolygon;
+      case "matic":
+	return this.tokensMatic;
       default:
         throw new NonExistingCaseError();
     }
