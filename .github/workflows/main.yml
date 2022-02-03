@@ -97,9 +97,9 @@ jobs:
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
 
-      - name: Push to Docker Hub and ghcr.io (rinkeby)
+      - name: Push to Docker Hub and ghcr.io (polygon)
         uses: docker/build-push-action@v2
-        if: github.ref == 'refs/heads/rinkeby'
+        if: github.ref == 'refs/heads/polygon'
         with:
           context: .
           file: ./Dockerfile.static
