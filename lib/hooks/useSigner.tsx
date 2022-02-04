@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { providers } from "ethers";
 import Web3Modal, { IProviderOptions } from "web3modal";
-import { DEFAULT_CHAIN_ID } from "../constants/env";
+import { BUILD } from "../constants/env";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 // Context
@@ -31,7 +31,7 @@ export function UseSignerProvider({
   const [connecting, setConnecting] = useState(false);
   const [connected, setConnected] = useState(false);
   const [address, setAddress] = useState("");
-  const [chainId, setChainId] = useState(DEFAULT_CHAIN_ID);
+  const [chainId, setChainId] = useState(BUILD.defaultEthChainId);
 
   /** Opens the Web3 pop up. Throws an Error if something fails. */
   const selectWallet = () => {
@@ -66,7 +66,6 @@ export function UseSignerProvider({
     setConnected(false);
     setConnecting(false);
     setAddress("");
-    // setChainId(DEFAULT_CHAIN_ID);
 
     const provider = new providers.Web3Provider(instance).provider as WalletConnectProvider;
     if (!provider.isWalletConnect) {
@@ -77,7 +76,6 @@ export function UseSignerProvider({
 
   const refreshChainId = () => {
     if (!instance) {
-      // setChainId(DEFAULT_CHAIN_ID);
       return Promise.resolve();
     }
 
@@ -112,7 +110,6 @@ export function UseSignerProvider({
     instance.on("disconnect", (error: { code: number; message: string }) => {
       console.log(error);
       setAddress("");
-      // setChainId(DEFAULT_CHAIN_ID);
       setConnected(false);
     });
 
