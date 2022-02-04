@@ -1,19 +1,13 @@
 {
   "name": "bridge-ui",
   "env": {
-    "BOOTNODES_URL": {
-      "required": true
-    },
     "BRIDGE_UI_TAG": {
-      "required": true
-    },
-    "ETH_NETWORK_ID": {
       "required": true
     },
     "VOCDONI_ENVIRONMENT": {
       "required": true
     },
-    "ETH_CHAIN_ID": {
+    "DEFAULT_ETH_CHAIN_ID": {
       "required": true
     },
     "IS_REVIEW_APP": {
