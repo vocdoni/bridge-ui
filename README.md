@@ -23,17 +23,44 @@ To deploy using [Docker Compose](https://docs.docker.com/compose) follow the ins
 
 ### Environment Variables
 
+The build arguments are defined in several stages of the lifecycle and build flow:
+- `env-config.js`
+- `Dockerfile`
+- `Dockerfile.static`
+- `.github/workflows/main.yaml`
+- `lib/constants/env.ts`
+
+#### UI Docker build args
+
+- **Vochain environment**: What is the Vochain environment being targeted from this network (`dev, stg, prod`)
+  - `MAINNET_VOCDONI_ENVIRONMENT`
+  - `RINKEBY_VOCDONI_ENVIRONMENT`
+  - `MATIC_VOCDONI_ENVIRONMENT`
+- **Bootnode URL**: URL to fetch the JSON containing nodes information (gateways, etc.)
+  - `MAINNET_BOOTNODE_URL`
+  - `RINKEBY_BOOTNODE_URL`
+  - `MATIC_BOOTNODE_URL`
+- **Signaling oracle**: The URL of the signaling oracle, used to create gassless proposals
+  - `MAINNET_SIGNALING_ORACLE_URL`
+  - `RINKEBY_SIGNALING_ORACLE_URL`
+  - `MATIC_SIGNALING_ORACLE_URL`
+- **Archive IPNS ID**: (Optional) The ID of the IPNS folder where the archive is hosted
+  - `MAINNET_ARCHIVE_IPNS_ID`
+  - `RINKEBY_ARCHIVE_IPNS_ID`
+  - `MATIC_ARCHIVE_IPNS_ID`
+- **Detault Eth chain ID**: (1, 5, 137...)
+  - `DEFAULT_ETH_CHAIN_ID` (default: 1)
+- Other:
+  - `WALLET_CONNECT_ID`
+  - `FORTMATIC_API_KEY`
+
+#### CI/CD env vars
+
 Configure the `.env` file with the following variables:
 
 -   `BRIDGE_UI_TAG` Docker tag of the image (main, stage, release)
--   `VOCDONI_ENVIRONMENT` Enviromnent type (dev, stage, prod)
--   `BOOTNODES_URL` URL to fetch the JSON containing nodes information (gateways, etc.)
--   `SIGNALING_ORACLE_URL` The URL of the signaling oracle, used to create gassless proposals
--   `ETH_NETWORK_ID` Ethereum nework ID (xdai, goerli...)
 -   `DOMAIN` Domain name to be served. Used by Traefik to fetch SSL certificates from Let's Encrypt
 -   `LE_EMAIL` Email associated to the domain. Used by Traefik to fetch SSL certificates from Let's Encrypt
-
-TBD: Add all remaining variables.
 
 ### Deployment
 
