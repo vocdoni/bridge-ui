@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Case, Default, Switch } from "react-if";
+import { Case, Default, Else, If, Switch, Then } from "react-if";
 
 import { shortTokenName } from "../../lib/utils";
 import { TokenInfo } from "../../lib/types";
@@ -101,7 +101,14 @@ function NoTokensCta({ searchTerm }: NoTokenCtaProps) {
   return (
     <CenterAlign>
       <img src={LOOKING_GLASS_IMG} />
-      <SectionTitle title="Token not found" subtitle={subtitle} />
+      <If condition={!!searchTerm}>
+        <Then>
+          <SectionTitle title="Token not found" subtitle={subtitle} />
+        </Then>
+        <Else>
+          <SectionTitle title="No tokens found" subtitle="" />
+        </Else>
+      </If>
       <PrimaryButton href="/tokens/add">Register token now</PrimaryButton>
     </CenterAlign>
   );
