@@ -65,6 +65,7 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=4
           # MAINNET_VOCDONI_ENVIRONMENT=
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
@@ -77,7 +78,6 @@ jobs:
           # MAINNET_ARCHIVE_IPNS_ID=
           # MATIC_ARCHIVE_IPNS_ID=
           # RINKEBY_ARCHIVE_IPNS_ID=
-          # DEFAULT_ETH_CHAIN_ID=
           # ANALYTICS_KEY=
           # FORTMATIC_API_KEY=
           # PORTIS_DAPP_ID=
@@ -96,6 +96,7 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=4
           # MAINNET_VOCDONI_ENVIRONMENT=
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
@@ -108,7 +109,7 @@ jobs:
           # MAINNET_ARCHIVE_IPNS_ID=
           # MATIC_ARCHIVE_IPNS_ID=
           # RINKEBY_ARCHIVE_IPNS_ID=
-          # DEFAULT_ETH_CHAIN_ID=
+
           # ANALYTICS_KEY=
           # FORTMATIC_API_KEY=
           # PORTIS_DAPP_ID=
@@ -127,6 +128,7 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=1
           # MAINNET_VOCDONI_ENVIRONMENT=
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
@@ -139,7 +141,6 @@ jobs:
           # MAINNET_ARCHIVE_IPNS_ID=
           # MATIC_ARCHIVE_IPNS_ID=
           # RINKEBY_ARCHIVE_IPNS_ID=
-          # DEFAULT_ETH_CHAIN_ID=
           # ANALYTICS_KEY=
           # FORTMATIC_API_KEY=
           # PORTIS_DAPP_ID=
@@ -158,6 +159,7 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=137
           # MAINNET_VOCDONI_ENVIRONMENT=
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
@@ -191,6 +193,7 @@ jobs:
             ANALYTICS_KEY=1w2aWkXE1ukrJJAGi29Gbw3Yi0X
             FORTMATIC_API_KEY=pk_live_A08FE109CFF97C4F
             WALLET_CONNECT_ID=b76cba91dc954ceebff27244923224b1
+            DEFAULT_ETH_CHAIN_ID=1
           # MAINNET_VOCDONI_ENVIRONMENT=prod
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
@@ -273,6 +276,7 @@ jobs:
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
           MAINNET_VOCDONI_ENVIRONMENT: prod
+          DEFAULT_ETH_CHAIN_ID: 1
           # MATIC_VOCDONI_ENVIRONMENT:
           # RINKEBY_VOCDONI_ENVIRONMENT:
           # MAINNET_BOOTNODE_URL:
@@ -300,6 +304,7 @@ jobs:
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
           MAINNET_VOCDONI_ENVIRONMENT: prod
+          DEFAULT_ETH_CHAIN_ID: 100
           # MATIC_VOCDONI_ENVIRONMENT:
           # RINKEBY_VOCDONI_ENVIRONMENT:
           # MAINNET_BOOTNODE_URL:
