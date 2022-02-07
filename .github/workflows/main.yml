@@ -160,6 +160,7 @@ jobs:
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
             DEFAULT_ETH_CHAIN_ID=137
+            MATIC_SIGNALING_ORACLE_URL=https://signaling-oracle-polygon.vocdoni.net/dvote
           # MAINNET_VOCDONI_ENVIRONMENT=
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
@@ -167,7 +168,6 @@ jobs:
           # MATIC_BOOTNODE_URL=
           # RINKEBY_BOOTNODE_URL=
           # MAINNET_SIGNALING_ORACLE_URL=
-          # MATIC_SIGNALING_ORACLE_URL=
           # RINKEBY_SIGNALING_ORACLE_URL=
           # MAINNET_ARCHIVE_IPNS_ID=
           # MATIC_ARCHIVE_IPNS_ID=
