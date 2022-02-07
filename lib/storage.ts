@@ -15,6 +15,7 @@ export class VoiceStorage extends Dexie {
     super("VoiceStorage");
     throwIfNotBrowser();
 
+    // NOTE: THE SCHEMA DEFINITION IS APPEND-ONLY
     this.version(2).stores({
       tokensMainnet: "&address",
       tokensRinkeby: "&address",
@@ -30,13 +31,19 @@ export class VoiceStorage extends Dexie {
   /** Persists the given tokens into IndexedDB. If it already exist, it overwrites its values. */
   writeToken(token: TokenInfo, environment: EthNetworkID): Promise<any> {
     const t = this.getTable(environment);
-    return t.put(token).catch((err) => console.error("Incognito mode might be on", err));
+    const storeToken = { ...token };
+    storeToken.address = storeToken.address.toLowerCase();
+    return t.put(storeToken).catch((err) => console.error("Incognito mode might be on", err));
   }
 
   /** Persists any of the given tokens into IndexedDB. If they already exist, it overwrites their values. */
   writeTokens(tokens: TokenInfo[], environment: EthNetworkID): Promise<any> {
     const t = this.getTable(environment);
-    return Promise.all(tokens.map((tokenInfo) => t.put(tokenInfo))).catch((err) =>
+    return Promise.all(tokens.map((tokenInfo) => {
+      const storeToken = { ...tokenInfo };
+      storeToken.address = storeToken.address.toLowerCase();
+      return t.put(storeToken)
+    })).catch((err) =>
       console.error("Incognito mode might be on", err)
     );
   }
@@ -76,7 +83,8 @@ export class VoiceStorage extends Dexie {
       .toArray()
       .then((tokenInfos) => {
         return tokenInfos.filter((ti) => {
-          return addresses.some((a) => a === ti.address);
+          // ti.address is already lowercase (see writeToken/s above)
+          return addresses.some((a) => a.toLowerCase() === ti.address);
         });
       })
       .catch((err) => {
@@ -117,7 +125,7 @@ export class VoiceStorage extends Dexie {
       case "rinkeby":
         return this.tokensRinkeby;
       case "matic":
-	return this.tokensMatic;
+        return this.tokensMatic;
       default:
         throw new NonExistingCaseError();
     }
