@@ -26,7 +26,7 @@ module.exports = {
   MATIC_ARCHIVE_IPNS_ID: process.env.MATIC_ARCHIVE_IPNS_ID || "",
   RINKEBY_ARCHIVE_IPNS_ID: process.env.RINKEBY_ARCHIVE_IPNS_ID || "",
 
-  DEFAULT_ETH_CHAIN_ID: process.env.DEFAULT_ETH_CHAIN_ID || 1,
+  DEFAULT_ETH_CHAIN_ID: parseInt(process.env.DEFAULT_ETH_CHAIN_ID || "1") || 1,
 
   // ANALYTICS
   ANALYTICS_KEY: process.env.ANALYTICS_KEY || "1w2W1aAJRMbVRAgHVOIRVVIh1Nc",
