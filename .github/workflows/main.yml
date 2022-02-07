@@ -65,6 +65,23 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
@@ -79,6 +96,23 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
@@ -93,6 +127,23 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
@@ -107,6 +158,23 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
@@ -120,10 +188,23 @@ jobs:
           platforms: linux/amd64
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            # VOCDONI_ENVIRONMENT=prod
             ANALYTICS_KEY=1w2aWkXE1ukrJJAGi29Gbw3Yi0X
             FORTMATIC_API_KEY=pk_live_A08FE109CFF97C4F
             WALLET_CONNECT_ID=b76cba91dc954ceebff27244923224b1
+          # MAINNET_VOCDONI_ENVIRONMENT=prod
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # PORTIS_DAPP_ID=
           push: true
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
@@ -191,7 +272,20 @@ jobs:
           npm run export
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
-          # VOCDONI_ENVIRONMENT: prod
+          MAINNET_VOCDONI_ENVIRONMENT: prod
+          # MATIC_VOCDONI_ENVIRONMENT:
+          # RINKEBY_VOCDONI_ENVIRONMENT:
+          # MAINNET_BOOTNODE_URL:
+          # MATIC_BOOTNODE_URL:
+          # RINKEBY_BOOTNODE_URL:
+          # MAINNET_SIGNALING_ORACLE_URL:
+          # MATIC_SIGNALING_ORACLE_URL:
+          # RINKEBY_SIGNALING_ORACLE_URL:
+          # MAINNET_ARCHIVE_IPNS_ID:
+          # MATIC_ARCHIVE_IPNS_ID:
+          # RINKEBY_ARCHIVE_IPNS_ID:
+          # DEFAULT_ETH_CHAIN_ID:
+          # PORTIS_DAPP_ID:
           ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
           WALLET_CONNECT_ID: b76cba91dc954ceebff27244923224b1
@@ -205,7 +299,20 @@ jobs:
           npm run export
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
-          # VOCDONI_ENVIRONMENT: prod
+          MAINNET_VOCDONI_ENVIRONMENT: prod
+          # MATIC_VOCDONI_ENVIRONMENT:
+          # RINKEBY_VOCDONI_ENVIRONMENT:
+          # MAINNET_BOOTNODE_URL:
+          # MATIC_BOOTNODE_URL:
+          # RINKEBY_BOOTNODE_URL:
+          # MAINNET_SIGNALING_ORACLE_URL:
+          # MATIC_SIGNALING_ORACLE_URL:
+          # RINKEBY_SIGNALING_ORACLE_URL:
+          # MAINNET_ARCHIVE_IPNS_ID:
+          # MATIC_ARCHIVE_IPNS_ID:
+          # RINKEBY_ARCHIVE_IPNS_ID:
+          # DEFAULT_ETH_CHAIN_ID:
+          # PORTIS_DAPP_ID:
           ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
           WALLET_CONNECT_ID: b76cba91dc954ceebff27244923224b1
