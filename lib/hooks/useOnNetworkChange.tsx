@@ -1,6 +1,6 @@
 import router from "next/router";
 import { useEffect, useState } from "react";
-import { useMessageAlert } from "../contexts/message-alert";
+// import { useMessageAlert } from "../contexts/message-alert";
 import { useEnvironment } from "./useEnvironment";
 
 /**
@@ -15,15 +15,15 @@ import { useEnvironment } from "./useEnvironment";
  */
 export function useOnNetworkChange() {
   const { chainId: newNetwork, networkName } = useEnvironment();
-  const { setAlertMessage } = useMessageAlert();
+  // const { setAlertMessage } = useMessageAlert();
 
   const [currNetwork, setCurrNetwork] = useState(newNetwork);
 
   useEffect(() => {
     if (currNetwork !== newNetwork) {
       setCurrNetwork(newNetwork);
-      setAlertMessage(`This page does not exist on ${networkName}.`);
-      router.replace("/");
+      // setAlertMessage(`This page does not exist on ${networkName}.`);
+      // router.push("/");
     }
   }, [newNetwork]);
 }
