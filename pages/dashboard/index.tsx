@@ -60,15 +60,16 @@ const DashboardPage = () => {
   }, [holderAddress]);
 
   const upcomingProcesses = processes.filter((proc) =>
-    blockHeight < proc.summary.startBlock
+    blockHeight < proc.summary.startBlock && !proc?.summary?.archived
   );
   const activeProcesses = processes.filter(
     (proc) =>
       blockHeight >= proc.summary.startBlock &&
-      blockHeight < proc.summary.endBlock,
+      blockHeight < proc.summary.endBlock &&
+      !proc?.summary?.archived,
   );
   const endedProcesses = processes.filter((proc) =>
-    blockHeight >= proc.summary.endBlock
+    blockHeight >= proc.summary.endBlock || !proc?.summary?.archived
   );
 
   const VOTING_SECTIONS = [

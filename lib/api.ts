@@ -21,8 +21,17 @@ export async function getProcessList(tokenAddress: string, pool: GatewayPool): P
   let result: string[] = [];
   let from = 0;
 
+  const processList = await VotingApi.getProcessList(
+    { fromArchive: true, entityId: tokenAddress },
+    pool
+  );
+  result = result.concat(processList);
+
   while (true) {
-    const processList = await VotingApi.getProcessList({ entityId: tokenAddress, from }, pool);
+    const processList = await VotingApi.getProcessList(
+      { fromArchive: false, entityId: tokenAddress, from },
+      pool
+    );
     if (processList.length == 0) return result;
 
     result = result.concat(processList.map((id) => "0x" + id));
