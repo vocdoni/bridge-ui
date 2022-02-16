@@ -44,7 +44,7 @@ export const useProcessResults = (
     const hasEncryptedVotes = processDetails?.state?.envelopeType?.encryptedVotes;
 
     // Encrypted and not ended?
-    if (hasEncryptedVotes) {
+    if (hasEncryptedVotes && !processDetails?.state?.archived) {
       const endBlock = processDetails?.state?.endBlock;
       if (blockStatus.blockNumber < endBlock) {
         // Return empty results

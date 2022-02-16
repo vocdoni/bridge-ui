@@ -16,13 +16,46 @@ export interface ProofParameters {
   block: number;
   balanceMappingPosition: number;
 }
+/* Get the processes id's from the archive */
+const getArchiveProcessIdList = async (
+  tokenAddress: string,
+  pool: GatewayPool
+): Promise<string[]> => {
+  return VotingApi.getProcessList({ fromArchive: true, entityId: tokenAddress }, pool)
+};
+
+/* Get the processes id's from the gateway */
+const getGwProcessIdList = async (
+  tokenAddress: string,
+  from: number,
+  pool: GatewayPool
+): Promise<string[]> => {
+  return VotingApi.getProcessList(
+    { fromArchive: false, entityId: tokenAddress, from },
+    pool
+  )
+};
 
 export async function getProcessList(tokenAddress: string, pool: GatewayPool): Promise<string[]> {
-  let result: string[] = [];
   let from = 0;
 
+  let result: string[] = await Promise.all([
+    getArchiveProcessIdList(tokenAddress, pool),
+    getGwProcessIdList(tokenAddress, from, pool),
+  ]).then((result: string[][]) => {
+    from += result[1].length;
+    return result.flat(1);
+  });
+
+  if (from === 0) {
+    return result;
+  }
+
   while (true) {
-    const processList = await VotingApi.getProcessList({ entityId: tokenAddress, from }, pool);
+    const processList = await VotingApi.getProcessList(
+      { fromArchive: false, entityId: tokenAddress, from },
+      pool
+    );
     if (processList.length == 0) return result;
 
     result = result.concat(processList.map((id) => "0x" + id));
