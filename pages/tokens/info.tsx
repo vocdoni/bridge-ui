@@ -231,21 +231,21 @@ const TokenPage = () => {
     const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber < proc?.summary?.startBlock && !proc?.summary?.archived;
+    return !proc?.summary?.archived && blockNumber < proc?.summary?.startBlock;
   });
   const activeProcesses = processIds.filter((id) => {
     const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber >= proc?.summary?.startBlock &&
-      blockNumber < proc?.summary?.endBlock &&
-      !proc?.summary?.archived;
+    return !proc?.summary?.archived &&
+      blockNumber >= proc?.summary?.startBlock &&
+      blockNumber < proc?.summary?.endBlock;
   });
   const endedProcesses = processIds.filter((id) => {
     const proc = processes.find((p) => p.id == id);
     if (!proc) return false;
 
-    return blockNumber >= proc?.summary?.endBlock || proc?.summary?.archived;
+    return proc?.summary?.archived || blockNumber >= proc?.summary?.endBlock;
   });
 
   // This exact logic is being done in dashboard/index.tsx
