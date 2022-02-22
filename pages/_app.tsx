@@ -6,7 +6,6 @@ import { Router } from "next/router";
 import { UseSignerProvider } from "../lib/hooks/useSigner";
 import { UseBlockStatusProvider, UsePoolProvider, UseProcessProvider } from "@vocdoni/react-hooks";
 import { ThemeProvider } from "styled-components";
-import "react-datetime/css/react-datetime.css";
 
 import { UseMessageAlertProvider } from "../lib/contexts/message-alert";
 import { UseLoadingAlertProvider } from "../lib/contexts/loading-alert";

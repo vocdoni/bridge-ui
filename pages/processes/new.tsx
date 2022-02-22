@@ -11,8 +11,8 @@ import { ProcessMetadata } from "@vocdoni/data-models";
 import { ProcessMetadataTemplate } from "@vocdoni/data-models";
 import styled from "styled-components";
 import { usePool } from "@vocdoni/react-hooks";
-import Datetime from "react-datetime";
-import { Moment } from "moment";
+import { DatePicker, TimeInput } from "@mantine/dates";
+import { Grid, Space } from "@mantine/core";
 import { useRouter } from "next/router";
 import Spinner from "react-svg-spinner";
 import { Unless, When } from "react-if";
@@ -64,6 +64,7 @@ layout is changed to a column for devices <= laptop. */
 const FormContainer = styled.div`
   display: flex;
   width: 100%;
+  justify-content: space-between;
 
   @media ${({ theme }) => theme.screens.laptop} {
     margin-top: 0;
@@ -338,14 +339,31 @@ const NewProcessPage = () => {
     onRemoveChoice(currentQuestion, currentChoice);
   };
 
-  const onStartDate = (date: string | Moment) => {
-    if (typeof date == "string") return;
-    setStartDate(date.toDate());
+  const onStartDate = (date: Date) => {
+    setStartDate(date);
+    if (date > endDate) setEndDate(date);
   };
-  const onEndDate = (date: string | Moment) => {
-    if (typeof date == "string") return;
-    setEndDate(date.toDate());
+  const onStartTime = (date: Date) => {
+    const newDate = new Date(startDate);
+    newDate.setHours(date.getHours());
+    newDate.setMinutes(date.getMinutes());
+    newDate.setSeconds(date.getSeconds());
+    setStartDate(newDate);
+    if (newDate > endDate) setEndDate(newDate);
   };
+  const onEndDate = (date: Date) => {
+    setEndDate(date);
+    if (date < startDate) setStartDate(date);
+  };
+  const onEndTime = (date: Date) => {
+    const newDate = new Date(endDate);
+    newDate.setHours(date.getHours());
+    newDate.setMinutes(date.getMinutes());
+    newDate.setSeconds(date.getSeconds());
+    setEndDate(newDate);
+    if (newDate < startDate) setStartDate(newDate);
+  };
+
   const setMainTitle = (title: string) => {
     metadata.title.default = title;
     setMetadata(Object.assign({}, metadata));
@@ -732,8 +750,49 @@ const NewProcessPage = () => {
           setState={onResultsTypeChange}
         />
         <OptionSectionTitle>Proposal date</OptionSectionTitle>
-        <CustomDateTime isStart state={startDate} stateSetter={onStartDate} />
-        <CustomDateTime state={endDate} stateSetter={onEndDate} />
+
+        <Grid>
+          <Grid.Col md={7}>
+            <DatePicker
+              value={startDate}
+              onChange={onStartDate}
+              placeholder="Start date"
+              label="Start date"
+              clearable={false}
+              minDate={new Date()}
+            />
+          </Grid.Col>
+          <Grid.Col md={5}>
+            <TimeInput
+              label="Start time"
+              value={startDate}
+              onChange={onStartTime}
+            />
+          </Grid.Col>
+        </Grid>
+
+        <Grid>
+          <Grid.Col md={7}>
+            <DatePicker
+              value={endDate}
+              onChange={onEndDate}
+              placeholder="End date"
+              label="End date"
+              clearable={false}
+              minDate={startDate || new Date()}
+            />
+          </Grid.Col>
+          <Grid.Col md={5}>
+            <TimeInput
+              label="End time"
+              value={endDate}
+              onChange={onEndTime}
+            />
+          </Grid.Col>
+        </Grid>
+
+        <Space h="sm" />
+
         <Unless condition={isMobile}>
           <ButtonRow>
             {status === "connected"
@@ -748,38 +807,5 @@ const NewProcessPage = () => {
     </FormContainer>
   );
 };
-
-const dateTimeStyle: CSSProperties = {
-  width: "100%",
-  border: "2px solid #EFF1F7",
-  boxSizing: "border-box",
-  boxShadow: "inset 0px 2px 3px rgba(180, 193, 228, 0.35)",
-  borderRadius: "8px",
-  marginTop: "0px",
-  marginBottom: "14px",
-  padding: "1em",
-};
-
-// HELPERS =============================================================================
-
-const CustomDateTime = ({ isStart = false, state, stateSetter }) => (
-  <Datetime
-    value={state}
-    inputProps={{
-      placeholder: `${isStart ? "Start" : "End"} date (d/m/y h:m)`,
-      style: dateTimeStyle,
-    }}
-    isValidDate={(cur: Moment) => isValidFutureDate(cur)}
-    dateFormat="D/MM/YYYY"
-    timeFormat="HH:mm[h]"
-    onChange={(date) => stateSetter(date)}
-    strictParsing
-  />
-);
-
-function isValidFutureDate(date: Moment): boolean {
-  const threshold = new Date(Date.now() - 1000 * 60 * 60 * 24);
-  return date.isAfter(threshold);
-}
 
 export default NewProcessPage;

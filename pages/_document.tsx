@@ -1,6 +1,9 @@
 import React from "react";
 import Document from "next/document";
 import { ServerStyleSheet } from "styled-components";
+import { createStylesServer, ServerStyles } from "@mantine/next";
+
+const stylesServer = createStylesServer();
 
 class VocdiniBridge extends Document {
   static async getInitialProps(ctx) {
@@ -10,7 +13,8 @@ class VocdiniBridge extends Document {
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
+          enhanceApp: (App) =>
+            (props) => sheet.collectStyles(<App {...props} />),
         });
 
       const initialProps = await Document.getInitialProps(ctx);
@@ -20,7 +24,11 @@ class VocdiniBridge extends Document {
           <>
             <link rel="icon" type="image/x-icon" href="/media/favicon.ico" />
             <link rel="apple-touch-icon" href="/media/apple-touch-icon.png" />
-            <link rel="mask-icon" href="/media/safari-pinned-tab.svg" color="black" />
+            <link
+              rel="mask-icon"
+              href="/media/safari-pinned-tab.svg"
+              color="black"
+            />
             <link
               rel="icon"
               type="image/png"
@@ -33,7 +41,10 @@ class VocdiniBridge extends Document {
               href="/media/android-chrome-512x512.png"
               sizes="512x512"
             />
-            <meta name="msapplication-config" content="/media/browserconfig.xml" />
+            <meta
+              name="msapplication-config"
+              content="/media/browserconfig.xml"
+            />
             <script
               dangerouslySetInnerHTML={{
                 __html: `
@@ -60,8 +71,9 @@ class VocdiniBridge extends Document {
               }}
             />
             {initialProps.styles}
+            <ServerStyles html={initialProps.html} server={stylesServer} />
             {sheet.getStyleElement()}
-            <script src="https://cdn.rudderlabs.com/v1/rudder-analytics.min.js"></script>
+            <script src="https://cdn.rudderlabs.com/v1/rudder-analytics.min.js" />
           </>
         ),
       };
