@@ -24,7 +24,7 @@ module.exports = {
 
   MAINNET_ARCHIVE_IPNS_ID: process.env.MAINNET_ARCHIVE_IPNS_ID || "k2k4r8prjy8gxj5ozkfvc1n9ih5ssn7yjcu8k3u2v5g2711j8rohu0ks",
   MATIC_ARCHIVE_IPNS_ID: process.env.MATIC_ARCHIVE_IPNS_ID || "",
-  RINKEBY_ARCHIVE_IPNS_ID: process.env.RINKEBY_ARCHIVE_IPNS_ID || "",
+  RINKEBY_ARCHIVE_IPNS_ID: process.env.RINKEBY_ARCHIVE_IPNS_ID || "k2k4r8pp0fxtuy2rlwk1ktqa7tz6tbvxrw9w9bmu8zfpy0hi8cze7hv4",
 
   DEFAULT_ETH_CHAIN_ID: parseInt(process.env.DEFAULT_ETH_CHAIN_ID || "1") || 1,
 
