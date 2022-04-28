@@ -55,7 +55,7 @@ export function UseStoredTokensProvider({ children }) {
 
   const [storedTokens, setStoredTokens] = useState<TokenInfos>({
     tokens: [],
-    chainId: 1,
+    chainId,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>(null);
