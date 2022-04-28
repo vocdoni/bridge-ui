@@ -115,12 +115,19 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
   // TODO: erc20Helpers is untyped
   const erc20Helpers = AbiMap[address] ?? { abi: ERC20_ABI };
   const tokenInstance = new Contract(address, erc20Helpers.abi, pool.provider);
-
+  const decimals = tokenInstance
+    .decimals()
+    .then((x) => {
+      return x;
+    })
+    .catch((_) => {
+      return BigInt(0);
+    });
   return Promise.all([
     tokenInstance.name(),
     tokenInstance.symbol(),
     tokenInstance.totalSupply(),
-    tokenInstance.decimals(),
+    new Promise((resolve,_) => resolve(decimals)),
     CensusErc20Api.getTokenInfo(address, pool),
     getProcessList(address, pool),
   ]).then(
