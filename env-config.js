@@ -12,11 +12,11 @@ module.exports = {
   // NETWORK
   MAINNET_VOCDONI_ENVIRONMENT: process.env.MAINNET_VOCDONI_ENVIRONMENT || "prod",
   MATIC_VOCDONI_ENVIRONMENT: process.env.MATIC_VOCDONI_ENVIRONMENT || "stg",
-  RINKEBY_VOCDONI_ENVIRONMENT: process.env.RINKEBY_VOCDONI_ENVIRONMENT || "stg",
+  RINKEBY_VOCDONI_ENVIRONMENT: process.env.RINKEBY_VOCDONI_ENVIRONMENT || "dev",
 
   MAINNET_BOOTNODE_URL: process.env.MAINNET_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.json",
   MATIC_BOOTNODE_URL: process.env.MATIC_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.stg.json",
-  RINKEBY_BOOTNODE_URL: process.env.RINKEBY_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.stg.json",
+  RINKEBY_BOOTNODE_URL: process.env.RINKEBY_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.dev.json",
 
   MAINNET_SIGNALING_ORACLE_URL: process.env.MAINNET_SIGNALING_ORACLE_URL || "https://signaling-oracle.vocdoni.net/dvote",
   MATIC_SIGNALING_ORACLE_URL: process.env.MATIC_SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
