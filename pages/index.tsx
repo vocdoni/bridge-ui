@@ -33,14 +33,14 @@ const IndexPage = () => {
     error: featuredTokensError,
   } = useFeaturedTokens(true);
 
-  const tokensWithBalance = useTokensWithBalance();
+//   const tokensWithBalance = useTokensWithBalance();
 
   const isWalletConnected = status === "connected";
-  const hasTokenWithBalance = tokensWithBalance?.data?.length;
+//   const hasTokenWithBalance = tokensWithBalance?.data?.length;
 
-  if (hasTokenWithBalance) {
-    tokensWithBalance.data.sort(tokenSorter);
-  }
+//   if (hasTokenWithBalance) {
+//     tokensWithBalance.data.sort(tokenSorter);
+//   }
 
   return (
     <>
@@ -103,7 +103,7 @@ const IndexPage = () => {
       </TokenSection>
 
       {/* YOUR TOKENS */}
-      <TokenSection>
+      {/* <TokenSection>
         <SectionTitle title="Tokens you hold" subtitle="Compatible tokens in your wallet" />
         <Switch>
           <Case condition={!isWalletConnected}>
@@ -139,7 +139,7 @@ const IndexPage = () => {
             </GrayRectangle>
           </Default>
         </Switch>
-      </TokenSection>
+      </TokenSection> */}
     </>
   );
 };
