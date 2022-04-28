@@ -128,7 +128,7 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            DEFAULT_ETH_CHAIN_ID=1
+            DEFAULT_ETH_CHAIN_ID=4
           # MAINNET_VOCDONI_ENVIRONMENT=
           # MATIC_VOCDONI_ENVIRONMENT=
           # RINKEBY_VOCDONI_ENVIRONMENT=
