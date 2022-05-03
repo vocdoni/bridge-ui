@@ -14,15 +14,15 @@ module.exports = {
   MATIC_VOCDONI_ENVIRONMENT: process.env.MATIC_VOCDONI_ENVIRONMENT || "stg",
   RINKEBY_VOCDONI_ENVIRONMENT: process.env.RINKEBY_VOCDONI_ENVIRONMENT || "dev",
 
-  MAINNET_BOOTNODE_URL: process.env.MAINNET_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.json",
+  MAINNET_BOOTNODE_URL: process.env.MAINNET_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.azeno.json",
   MATIC_BOOTNODE_URL: process.env.MATIC_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.stg.json",
   RINKEBY_BOOTNODE_URL: process.env.RINKEBY_BOOTNODE_URL || "https://bootnodes.vocdoni.net/gateways.dev.json",
 
-  MAINNET_SIGNALING_ORACLE_URL: process.env.MAINNET_SIGNALING_ORACLE_URL || "https://signaling-oracle.vocdoni.net/dvote",
+  MAINNET_SIGNALING_ORACLE_URL: process.env.MAINNET_SIGNALING_ORACLE_URL || "https://oracle.azeno.vocdoni.net/dvote",
   MATIC_SIGNALING_ORACLE_URL: process.env.MATIC_SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
   RINKEBY_SIGNALING_ORACLE_URL: process.env.RINKEBY_SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
 
-  MAINNET_ARCHIVE_IPNS_ID: process.env.MAINNET_ARCHIVE_IPNS_ID || "k2k4r8prjy8gxj5ozkfvc1n9ih5ssn7yjcu8k3u2v5g2711j8rohu0ks",
+  MAINNET_ARCHIVE_IPNS_ID: process.env.MAINNET_ARCHIVE_IPNS_ID || "k2k4r8mdn544n7f8nprwqeo27jr1v1unsu74th57s1j8mumjck7y7cbz",
   MATIC_ARCHIVE_IPNS_ID: process.env.MATIC_ARCHIVE_IPNS_ID || "",
   RINKEBY_ARCHIVE_IPNS_ID: process.env.RINKEBY_ARCHIVE_IPNS_ID || "k2k4r8pp0fxtuy2rlwk1ktqa7tz6tbvxrw9w9bmu8zfpy0hi8cze7hv4",
 
