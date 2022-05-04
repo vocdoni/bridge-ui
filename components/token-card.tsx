@@ -253,7 +253,7 @@ const ClickableVoteCard = React.forwardRef<HTMLDivElement, CardProps>(
           </div>
           <TokenDescription>
             <VoteSymbol>{symbol}</VoteSymbol>
-            <VoteName>{name && shortTokenName(name)}</VoteName>
+            {/* <VoteName>{shortTokenName(name) || name}</VoteName> */}
           </TokenDescription>
         </CardHeader>
         <ProposalTitle>{children}</ProposalTitle>
