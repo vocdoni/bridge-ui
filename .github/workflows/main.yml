@@ -136,7 +136,7 @@ jobs:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
           DIR: ${{ steps.extract.outputs.destination }}
         run: |
-          for f in $(find "./$DIR/.next/static" -name "*.js.map") ; do 
+          for f in $(find "./$DIR/.next/static" -name "*.js.map") ; do
             export filename=${f%.*}
             curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#"./$DIR/.next"}" -F sourcemap=@$f
           done
@@ -175,7 +175,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0
         with:
           service_account_key: ${{ secrets.GCP_PRODUCTION }}
           export_default_credentials: true
