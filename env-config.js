@@ -22,7 +22,7 @@ module.exports = {
   MATIC_SIGNALING_ORACLE_URL: process.env.MATIC_SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
   RINKEBY_SIGNALING_ORACLE_URL: process.env.RINKEBY_SIGNALING_ORACLE_URL || "https://signaling-oracle.dev.vocdoni.net/dvote",
 
-  MAINNET_ARCHIVE_IPNS_ID: process.env.MAINNET_ARCHIVE_IPNS_ID || "k2k4r8mdn544n7f8nprwqeo27jr1v1unsu74th57s1j8mumjck7y7cbz",
+  MAINNET_ARCHIVE_IPNS_ID: process.env.MAINNET_ARCHIVE_IPNS_ID || "k2k4r8n84llyqk6u0sifx9g3vkmtmuba3qf3yxv1qcr6if78lyhtuwye",
   MATIC_ARCHIVE_IPNS_ID: process.env.MATIC_ARCHIVE_IPNS_ID || "",
   RINKEBY_ARCHIVE_IPNS_ID: process.env.RINKEBY_ARCHIVE_IPNS_ID || "k2k4r8pp0fxtuy2rlwk1ktqa7tz6tbvxrw9w9bmu8zfpy0hi8cze7hv4",
 
