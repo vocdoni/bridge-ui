@@ -3,6 +3,8 @@ import Spinner from "react-svg-spinner";
 import { useProcess } from "@vocdoni/react-hooks";
 import { Case, Default, Else, If, Switch, Then } from "react-if";
 import styled from "styled-components";
+import { BUILD } from "../../lib/constants/env";
+
 
 import { useToken } from "../../lib/contexts/tokens";
 import {
@@ -53,6 +55,7 @@ const ProcessPage = () => {
   useScrollTop();
   useOnNetworkChange();
   const processId = useProcessIdFromUrl();
+  const explorerURI = BUILD.explorer + '/elections/show/#/'+processId
 
   const { setAlertMessage } = useMessageAlert();
   const { address: holderAddress, methods, status: signerStatus } = useSigner();
@@ -236,6 +239,13 @@ const ProcessPage = () => {
           </ButtonContainer>
         </Default>
       </Switch>
+      <>
+        <ButtonContainer>
+          <Button href={explorerURI}  mode={"positive"} >
+            View the process on the explorer
+          </Button>
+        </ButtonContainer>
+      </>
     </>
   );
 };

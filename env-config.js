@@ -28,6 +28,8 @@ module.exports = {
 
   DEFAULT_ETH_CHAIN_ID: parseInt(process.env.DEFAULT_ETH_CHAIN_ID || "1") || 1,
 
+  VOCHAIN_EXPLORER_URL: process.env.VOCHAIN_EXPLORER_URL || "https://azeno.explorer.vote",
+
   // ANALYTICS
   ANALYTICS_KEY: process.env.ANALYTICS_KEY || "1w2W1aAJRMbVRAgHVOIRVVIh1Nc",
 
