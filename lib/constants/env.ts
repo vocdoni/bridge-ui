@@ -22,6 +22,7 @@ interface BuildArgumengs {
   mainnet: NetworkEnv;
   matic: NetworkEnv;
   rinkeby: NetworkEnv;
+  explorer: string;
 }
 
 /*  Maybe have singleton objects with fields derived from env directly */
@@ -52,6 +53,7 @@ export const BUILD: BuildArgumengs = {
     vocdoniEnvironment: process.env.RINKEBY_VOCDONI_ENVIRONMENT as VocdoniEnvironment,
     archiveIpnsId: process.env.RINKEBY_ARCHIVE_IPNS_ID
   },
+  explorer: process.env.VOCHAIN_EXPLORER_URL,
 };
 
 export interface NetworkVariables {
