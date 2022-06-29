@@ -55,7 +55,7 @@ const ProcessPage = () => {
   useScrollTop();
   useOnNetworkChange();
   const processId = useProcessIdFromUrl();
-  const explorerURI = BUILD.explorer + '/elections/show/#/'+processId
+  const explorerURI = BUILD.explorer + '/processes/show/#/'+processId
 
   const { setAlertMessage } = useMessageAlert();
   const { address: holderAddress, methods, status: signerStatus } = useSigner();
