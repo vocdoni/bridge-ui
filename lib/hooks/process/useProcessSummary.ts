@@ -1,5 +1,5 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { ProcessDetails, VotingApi } from "dvote-js";
+import { ProcessDetails, VotingApi } from "@vocdoni/voting";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -65,8 +65,8 @@ export const useProcessSummary = ({
       { description: "Votes", value: "-" },
     ];
   } else {
-    let absoluteAmount: string = "0";
-    let turnout: string = "0";
+    let absoluteAmount = "0";
+    let turnout = "0";
 
     if (!resultsWeight.isZero()) {
       //format result weights

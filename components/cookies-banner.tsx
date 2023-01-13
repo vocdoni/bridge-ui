@@ -1,5 +1,5 @@
 import React from "react";
-import { If } from "react-if";
+import { When } from "react-if";
 import styled from "styled-components";
 
 import { COOKIES_URL } from "../lib/constants/url";
@@ -12,7 +12,7 @@ export const CookiesBanner = () => {
   const { acceptCookies, show } = useCookies();
 
   return (
-    <If condition={show}>
+    <When condition={show}>
       <CookiesContainer>
         <CenteredContainer>
           <FlexContainer>
@@ -35,7 +35,7 @@ export const CookiesBanner = () => {
           </FlexContainer>
         </CenteredContainer>
       </CookiesContainer>
-    </If>
+    </When>
   );
 };
 

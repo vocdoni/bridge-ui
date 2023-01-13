@@ -1,5 +1,5 @@
 import { useBlockStatus } from "@vocdoni/react-hooks";
-import { ProcessState, VotingApi } from "dvote-js";
+import { ProcessState, VotingApi } from "@vocdoni/voting";
 import { useEffect, useState } from "react";
 
 export const useProcessDates = (processState: ProcessState) => {
@@ -13,9 +13,18 @@ export const useProcessDates = (processState: ProcessState) => {
 
   // Lazy auto refresh
   useEffect(() => {
-    if (!blockHeight) return;
-    const startDate = VotingApi.estimateDateAtBlockSync(startBlock, blockStatus);
-    const endDate = VotingApi.estimateDateAtBlockSync(endBlock, blockStatus);
+    let startDate: Date;
+    let endDate: Date;
+
+    if (processState?.archived) {
+      if (!processState?.startDate || !processState?.endDate) return;
+      startDate = processState.startDate;
+      endDate = processState.endDate;
+    } else {
+      if (!blockHeight) return;
+      startDate = VotingApi.estimateDateAtBlockSync(startBlock, blockStatus);
+      endDate = VotingApi.estimateDateAtBlockSync(endBlock, blockStatus);
+    }
 
     setStartDate(startDate);
     setEndDate(endDate);

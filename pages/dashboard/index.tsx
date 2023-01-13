@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import Spinner from "react-svg-spinner";
 import styled from "styled-components";
 import { useBlockHeight, useProcesses } from "@vocdoni/react-hooks";
-import { useWallet } from "use-wallet";
+import { useSigner } from "../../lib/hooks/useSigner";
 import { useRouter } from "next/router";
 import { Else, If, Then } from "react-if";
-import { ProcessSummary, ProcessMetadata } from "dvote-js";
-// import Select from 'react-select'
+import { ProcessSummary } from "@vocdoni/voting";
+import { ProcessMetadata } from "@vocdoni/data-models";
 
 import { useStoredTokens } from "../../lib/contexts/tokens";
 import { TokenInfo } from "../../lib/types";
@@ -39,7 +39,7 @@ export const VoteSectionContainer = styled.div`
 // MAIN COMPONENT
 const DashboardPage = () => {
   useScrollTop();
-  const { account } = useWallet();
+  const { address: holderAddress } = useSigner();
   const router = useRouter();
   const {
     data: storedTokens,
@@ -49,32 +49,42 @@ const DashboardPage = () => {
   const processIds = storedTokens.tokens
     .filter((token) => token?.address)
     .map((token) => token.address);
-  const { processes, loading: processesLoading, error: processesError } = useProcesses(processIds);
+  const { processes, loading: processesLoading, error: processesError } =
+    useProcesses(processIds);
   const { blockHeight } = useBlockHeight();
 
   useEffect(() => {
-    if (!account) {
+    if (!holderAddress) {
       router.replace("/");
     }
-  }, [account]);
+  }, [holderAddress]);
 
-  const upcomingProcesses = processes.filter((proc) => blockHeight < proc.summary.startBlock);
-  const activeProcesses = processes.filter(
-    (proc) => blockHeight >= proc.summary.startBlock && blockHeight < proc.summary.endBlock
+  const upcomingProcesses = processes.filter((proc) =>
+    !proc?.summary?.archived && blockHeight < proc.summary.startBlock
   );
-  const endedProcesses = processes.filter((proc) => blockHeight >= proc.summary.endBlock);
+  const activeProcesses = processes.filter(
+    (proc) =>
+      !proc?.summary?.archived &&
+      blockHeight >= proc.summary.startBlock &&
+      blockHeight < proc.summary.endBlock
+  );
+  const endedProcesses = processes.filter((proc) =>
+    proc?.summary?.archived || blockHeight >= proc.summary.endBlock
+  );
 
   const VOTING_SECTIONS = [
     {
       title: "Active votes",
       processes: activeProcesses,
-      processesMessage: "Below are the votes belonging to the available tokens.",
+      processesMessage:
+        "Below are the votes belonging to the available tokens.",
       noProcessesMessage: "There are no active votes at this moment.",
     },
     {
       title: "Vote results",
       processes: endedProcesses,
-      processesMessage: "Below are the results for votes related to your tokens.",
+      processesMessage:
+        "Below are the results for votes related to your tokens.",
       noProcessesMessage: "There are no votes with results to display.",
     },
     {
@@ -105,7 +115,11 @@ const DashboardPage = () => {
 };
 
 export const VoteSection = (props: {
-  processes: { id: string; summary?: ProcessSummary; metadata?: ProcessMetadata }[];
+  processes: {
+    id: string;
+    summary?: ProcessSummary;
+    metadata?: ProcessMetadata;
+  }[];
   tokenInfos: TokenInfo[];
   loadingProcesses: boolean;
   title: string;
@@ -125,8 +139,17 @@ export const VoteSection = (props: {
     return (
       <>
         {processes.map((proc) => {
-          const token = tokenInfos.find((token) => token.address == proc.summary.entityId);
-          return <ProcessCard processId={proc.id} metadata={proc.metadata} token={token} />;
+          const token = tokenInfos.find((token) =>
+            token.address == proc.summary.entityId
+          );
+          return (
+            <ProcessCard
+              key={token.address}
+              processId={proc.id}
+              metadata={proc.metadata}
+              token={token}
+            />
+          );
         })}
       </>
     );
@@ -135,7 +158,9 @@ export const VoteSection = (props: {
   return (
     <VoteSectionContainer>
       <h2>{title}</h2>
-      <LightText>{processes.length ? processesMessage : noProcessesMessage}</LightText>
+      <LightText>
+        {processes.length ? processesMessage : noProcessesMessage}
+      </LightText>
       <TokenList>{loadingProcesses ? <Spinner /> : <Processes />}</TokenList>
     </VoteSectionContainer>
   );
@@ -159,9 +184,12 @@ const ProcessCard = (props: {
       <p>
         <If condition={!!props.metadata}>
           <Then>
-            <strong>{limitedText(props.metadata?.title?.default, 35) || "(title)"}</strong>
+            <strong>
+              {limitedText(props.metadata?.title?.default, 35) || "(title)"}
+            </strong>
             <br />
-            {limitedText(props.metadata?.description?.default) || "(description)"}
+            {limitedText(props.metadata?.description?.default) ||
+              "(description)"}
           </Then>
           <Else>
             <Spinner />

@@ -1,5 +1,5 @@
 import { useBlockStatus, usePool, useProcess } from "@vocdoni/react-hooks";
-import { ProcessDetails, Voting, VotingApi } from "dvote-js";
+import { ProcessDetails, Voting, VotingApi } from "@vocdoni/voting";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import TokenAmount from "token-amount";
@@ -26,7 +26,7 @@ export const useProcessResults = (
 
   const processId = processDetails?.id;
   const tokenAddress = tokenInfo?.address;
-  const { process } = useProcess(processId)
+  const { process } = useProcess(processId);
 
   useEffect(() => {
     const interval = setInterval(() => fetchCurrentResults(), 1000 * 30);
@@ -44,7 +44,7 @@ export const useProcessResults = (
     const hasEncryptedVotes = processDetails?.state?.envelopeType?.encryptedVotes;
 
     // Encrypted and not ended?
-    if (hasEncryptedVotes) {
+    if (hasEncryptedVotes && !processDetails?.state?.archived) {
       const endBlock = processDetails?.state?.endBlock;
       if (blockStatus.blockNumber < endBlock) {
         // Return empty results

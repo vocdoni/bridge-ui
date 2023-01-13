@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Contract, ContractCall, Provider } from "ethers-multicall";
-import { useWallet } from "use-wallet";
+import { useSigner } from "../../hooks/useSigner";
 import { BigNumber } from "ethers";
 import { usePool } from "@vocdoni/react-hooks";
 
@@ -36,7 +36,7 @@ export function useTokensWithBalance(sorted = false): UserHeldTokens {
 }
 
 export function UseTokensWithBalance({ children }) {
-  const { status, account } = useWallet();
+  const { status, address: holderAddress } = useSigner();
   const { poolPromise } = usePool();
   const { setAlertMessage } = useMessageAlert();
   const { chainId } = useEnvironment();
@@ -52,7 +52,7 @@ export function UseTokensWithBalance({ children }) {
 
   useEffect(() => {
     fetchUserTokens();
-  }, [account, storedTokens, poolPromise, storedTokenLoading]);
+  }, [holderAddress, storedTokens, poolPromise, storedTokenLoading]);
 
   const fetchUserTokens = async (): Promise<TokenInfo[]> => {
     if (
@@ -68,7 +68,7 @@ export function UseTokensWithBalance({ children }) {
       const pool = await poolPromise;
       const ethcallProvider = new Provider(pool.provider, chainId);
       const tokenBalanceCalls: ContractCall[] = storedTokens.tokens.map((tokenInfo) =>
-        new Contract(tokenInfo?.address, ERC20_ABI).balanceOf(account)
+        new Contract(tokenInfo?.address, ERC20_ABI).balanceOf(holderAddress)
       );
 
       /* TODO @brickpop extract this to something like hasBalance() in lib/api.ts? [VR 05-08-2021] */

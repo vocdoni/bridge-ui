@@ -34,7 +34,7 @@ export function useToken(address: TokenAddress) {
     setLoading(true);
 
     poolPromise
-      .then((pool) => getTokenInfo(address, pool))
+      .then((pool: any) => getTokenInfo(address, pool))
       .then((tokenInfo) => {
         setLoading(false);
         setError("");
@@ -78,7 +78,7 @@ export function useTokens(addresses: TokenAddress[]) {
   useEffect(() => {
     const uncachedTokens: string[] = [];
 
-    for (let addr of addresses) {
+    for (const addr of addresses) {
       const included = storedTokens.tokens.some(
         (t) => t.address.toLowerCase() == addr?.toLowerCase?.()
       );
@@ -88,7 +88,7 @@ export function useTokens(addresses: TokenAddress[]) {
     }
 
     poolPromise
-      .then((gwPool) => {
+      .then((gwPool: any) => {
         return Promise.all(uncachedTokens.map((tokenAddr) => getTokenInfo(tokenAddr, gwPool)));
       })
       .then((newTokenInfos) => {

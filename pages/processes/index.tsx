@@ -3,6 +3,8 @@ import Spinner from "react-svg-spinner";
 import { useProcess } from "@vocdoni/react-hooks";
 import { Case, Default, Else, If, Switch, Then } from "react-if";
 import styled from "styled-components";
+import { BUILD } from "../../lib/constants/env";
+
 
 import { useToken } from "../../lib/contexts/tokens";
 import {
@@ -13,7 +15,7 @@ import {
   useVote,
 } from "../../lib/hooks/process";
 import { areAllNumbers } from "../../lib/utils";
-import { useWallet } from "use-wallet";
+import { useSigner } from "../../lib/hooks/useSigner";
 import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { useMessageAlert } from "../../lib/contexts/message-alert";
 import { EventType, trackEvent } from "../../lib/analytics";
@@ -36,7 +38,7 @@ import {
 import SectionTitle from "../../components/sectionTitle";
 import { Questions } from "../../components/Processes/Questions";
 import Button from "../../components/ControlElements/button";
-import { ActionTypes, useModal } from "../../lib/contexts/modal";
+// import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { LoadingSpinner } from "../../components/loading-spinner";
 import {
   NotConnected,
@@ -53,10 +55,10 @@ const ProcessPage = () => {
   useScrollTop();
   useOnNetworkChange();
   const processId = useProcessIdFromUrl();
+  const explorerURI = BUILD.explorer + '/processes/show/#/'+processId
 
   const { setAlertMessage } = useMessageAlert();
-  const wallet = useWallet();
-  const { dispatch } = useModal();
+  const { address: holderAddress, methods, status: signerStatus } = useSigner();
 
   const { process: processDetails, loading: processLoading, error: processError } = useProcess(
     processId
@@ -90,7 +92,7 @@ const ProcessPage = () => {
     holdsBalance: hasBalance,
     error: holdsBalanceError,
     loading: holdsBalanceLoading,
-  } = useUserHoldsToken(wallet?.account, tokenInfo?.address);
+  } = useUserHoldsToken(holderAddress, tokenInfo?.address);
 
   useEffect(() => {
     let errorName: string;
@@ -113,7 +115,7 @@ const ProcessPage = () => {
     setAlertMessage(errorMessage);
   }, [processError, tokenError, processDatesError, resultsError, proofError, holdsBalanceError]);
 
-  const isConnected = !!wallet.account;
+  const isConnected = signerStatus === "connected";
   const allQuestionsSelected =
     voteState.choices.length === processDetails?.metadata?.questions?.length;
   const questionsFilled = allQuestionsSelected && areAllNumbers(voteState.choices);
@@ -124,14 +126,19 @@ const ProcessPage = () => {
 
   const onVoteSubmit = async () => {
     if (!isConnected) {
-      return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+      // return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+      methods.selectWallet().catch((err) => {
+        setAlertMessage("Could not connect to the wallet");
+        console.error(err);
+      });
+      return;
     }
     try {
       await submitVote(processDetails, proof);
       trackEvent(EventType.VOTE_SUBMITTED, { proposal_id: processId });
     } catch (error) {
       /* User cancels tx (e.g., by aborting signing process.) This is not registered as "failure"*/
-      if ((error.message as string).includes("signature")) {
+      if ((error?.message || "").includes("signature")) {
         trackEvent(EventType.TX_CANCELED, { event_canceled: "voting" });
         return setAlertMessage(USER_CANCELED_TX);
       }
@@ -153,7 +160,7 @@ const ProcessPage = () => {
     return renderEmpty();
   }
 
-  let buttonText: string = questionsFilled ? "Submit your vote" : "Fill all the choices";
+  const buttonText: string = questionsFilled ? "Submit your vote" : "Fill all the choices";
   const isLoading = processLoading || tokenLoading || proofLoading;
 
   return (
@@ -232,6 +239,13 @@ const ProcessPage = () => {
           </ButtonContainer>
         </Default>
       </Switch>
+      <>
+        <ButtonContainer>
+          <Button href={explorerURI}  mode={"positive"} >
+            View the process on the explorer
+          </Button>
+        </ButtonContainer>
+      </>
     </>
   );
 };

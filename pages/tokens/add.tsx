@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { Case, Default, Else, If, Switch, Then, When } from "react-if";
-import { CensusErc20Api } from "dvote-js";
+import { Erc20TokensApi } from "@vocdoni/client";
 import Router from "next/router";
 import styled from "styled-components";
-import { useWallet } from "use-wallet";
 import { usePool } from "@vocdoni/react-hooks";
 
 import { getTokenInfo, hasBalance, registerToken } from "../../lib/api";
@@ -21,15 +20,20 @@ import { useScrollTop } from "../../lib/hooks/useScrollTop";
 import { EventType, trackEvent } from "../../lib/analytics";
 import { FORTY_DIGITS_HEX } from "../../lib/constants/regex";
 import { abbreviatedTokenAmount, shortAddress } from "../../lib/utils";
-import { ActionTypes, useModal } from "../../lib/contexts/modal";
-import { flex_row_large_column_small_mixin, space_between_children_mixin } from "../../lib/mixins";
+import {
+  flex_row_large_column_small_mixin,
+  space_between_children_mixin,
+} from "../../lib/mixins";
 import { VOICE_DISCORD } from "../../lib/constants/url";
 import { useEnvironment } from "../../lib/hooks/useEnvironment";
 
 import { Spinner } from "../../components/spinner";
 import SectionTitle from "../../components/sectionTitle";
 import SearchWidget from "../../components/searchWidget";
-import Button, { PrimaryButton, SecondaryButton } from "../../components/ControlElements/button";
+import Button, {
+  PrimaryButton,
+  SecondaryButton,
+} from "../../components/ControlElements/button";
 import { VerticalSpace } from "../../components/StructuralElements/verticalBuffer";
 
 const TokenSummary = styled.div`
@@ -115,7 +119,8 @@ const CompatibleTokenNote = styled.p`
   }
 `;
 
-const CompatibilityNote = `The token contract must store balances in a mapping between the holder address and the full amount. For example: mapping (address => uint256) balance.
+const CompatibilityNote =
+  `The token contract must store balances in a mapping between the holder address and the full amount. For example: mapping (address => uint256) balance.
 If you have problems registering your token you can reach us on our `;
 
 const ButtonsRow = ({
@@ -142,13 +147,17 @@ const ButtonsRow = ({
           <PrimaryButton href={address ? "/tokens/info#/" + address : ""}>
             Visit token page
           </PrimaryButton>
-          <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
+          <SecondaryButton onClick={onRevalidate}>
+            Validate another token
+          </SecondaryButton>
         </Case>
         <Default>
           <PrimaryButton onClick={onSubmit}>
             {!isConnected ? "Connect wallet" : "Register token"}
           </PrimaryButton>
-          <SecondaryButton onClick={onRevalidate}>Validate another token</SecondaryButton>
+          <SecondaryButton onClick={onRevalidate}>
+            Validate another token
+          </SecondaryButton>
         </Default>
       </Switch>
     </ButtonsContainer>
@@ -183,7 +192,11 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
         <Info>
           <TokenAttributeTitle>Token address</TokenAttributeTitle>
           {/* TODO insert copy icon (and use the same links as in header?) [VR 30-06-2021] */}
-          <a target="_blank" rel="noopener noreferrer" href={`${etherscanPrefix}/token/${address}`}>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`${etherscanPrefix}/token/${address}`}
+          >
             <Address>{shortAddress(address)}</Address>
           </a>
         </Info>
@@ -195,10 +208,7 @@ const TokenContainer = ({ symbol, name, totalSupplyFormatted, address }) => {
 // MAIN COMPONENT
 const TokenAddPage = () => {
   useScrollTop();
-  const wallet = useWallet();
-  const signer = useSigner();
-
-  const { dispatch } = useModal();
+  const { signer, status, address, methods } = useSigner();
 
   const { poolPromise } = usePool();
   const [formTokenAddress, setFormTokenAddress] = useState<TokenAddress>("");
@@ -208,9 +218,9 @@ const TokenAddPage = () => {
   const { setAlertMessage } = useMessageAlert();
   const storedTokens = useStoredTokens();
 
-  const isConnected = wallet.connector || wallet.account;
+  const isConnected = status === "connected";
   const alreadyRegistered = storedTokens.data.tokens.some(
-    (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase()
+    (t) => t?.address.toLowerCase() == formTokenAddress.toLowerCase(),
   );
 
   // CALLBACKS ===========================================================================
@@ -223,18 +233,22 @@ const TokenAddPage = () => {
         throw new TokenAddressInvalidError();
       }
 
-      const pool = await poolPromise;
+      const pool: any = await poolPromise;
       const newTokenInfo = await getTokenInfo(formTokenAddress.trim(), pool);
 
       setTokenInfo(newTokenInfo);
     } catch (error) {
-      trackEvent(EventType.TOKEN_FETCHING_FAILED, { token_address: formTokenAddress.trim() });
+      trackEvent(EventType.TOKEN_FETCHING_FAILED, {
+        token_address: formTokenAddress.trim(),
+      });
 
-      if (error instanceof TokenAddressInvalidError) setAlertMessage(error.message);
-      else
+      if (error instanceof TokenAddressInvalidError) {
+        setAlertMessage(error.message);
+      } else {
         setAlertMessage(
-          "Could not fetch the token details. Make sure you are on the right network"
+          "Could not fetch the token details. Make sure you are on the right network",
         );
+      }
     } finally {
       setLoadingToken(false);
     }
@@ -243,19 +257,22 @@ const TokenAddPage = () => {
   const onSubmit = useCallback(async () => {
     if (!tokenInfo) return;
     if (!isConnected) {
-      return dispatch({
-        type: ActionTypes.OPEN_WALLET_LIST,
+      // return dispatch({ type: ActionTypes.OPEN_WALLET_LIST });
+      methods.selectWallet().catch((err) => {
+        setAlertMessage("Could not connect to the wallet");
+        console.error(err);
       });
+      return;
     }
 
     try {
       setRegisteringToken(true);
-      const holderAddress = wallet.account;
-      const pool = await poolPromise;
+      const holderAddress = address;
+      const pool: any = await poolPromise;
 
       const hasBal = await hasBalance(tokenInfo.address, holderAddress, pool);
       if (!hasBal) throw new NoTokenBalanceError(tokenInfo.symbol);
-      else if (await CensusErc20Api.isRegistered(tokenInfo.address, pool)) {
+      else if (await Erc20TokensApi.isRegistered(tokenInfo.address, pool)) {
         throw new TokenAlreadyRegisteredError(tokenInfo.symbol);
       }
 
@@ -264,7 +281,9 @@ const TokenAddPage = () => {
       await storedTokens.refresh();
 
       setAlertMessage("The token has been successfully registered", "success");
-      trackEvent(EventType.TOKEN_REGISTERED, { token_address: tokenInfo.address });
+      trackEvent(EventType.TOKEN_REGISTERED, {
+        token_address: tokenInfo.address,
+      });
 
       Router.push("/tokens/info#/" + tokenInfo.address);
     } catch (error) {
@@ -280,15 +299,19 @@ const TokenAddPage = () => {
         error: error?.message,
       });
 
-      if (error instanceof NoTokenBalanceError || error instanceof TokenAlreadyRegisteredError)
+      if (
+        error instanceof NoTokenBalanceError ||
+        error instanceof TokenAlreadyRegisteredError
+      ) {
         return setAlertMessage(error.message);
+      }
 
       console.error(error?.message); //log unspecified errors.
       setAlertMessage("The token could not be registered");
     } finally {
       setRegisteringToken(false);
     }
-  }, [signer, wallet, tokenInfo, poolPromise]);
+  }, [signer, address, tokenInfo, poolPromise]);
 
   // RENDER ==============================================================================
 
@@ -309,9 +332,10 @@ const TokenAddPage = () => {
             <SearchWidget
               onKeyDown={(ev) => (ev.key == "Enter" ? checkToken() : null)}
               onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-                setFormTokenAddress(ev.target.value)
-              }
-              onClick={storedTokens.isLoading || loadingToken ? undefined : checkToken}
+                setFormTokenAddress(ev.target.value)}
+              onClick={storedTokens.isLoading || loadingToken
+                ? undefined
+                : checkToken}
               loading={storedTokens.isLoading || loadingToken}
             />
             <CompatibleTokenNote>

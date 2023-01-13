@@ -4,7 +4,6 @@ import { ActionTypes, useModal } from "../../lib/contexts/modal";
 import { ModalContainer } from "./styled";
 
 enum ModalType {
-  WALLET,
   PROPOSAL,
 }
 
@@ -19,21 +18,10 @@ function useOutsideHandler(ref, type: ModalType) {
         });
       }
     }
-    function handleClickOutsideWallet(event) {
-      const isOutside = !ref.current.contains(event.target);
-      if (ref.current && isOutside) {
-        dispatch({
-          type: ActionTypes.CLOSE_WALLET_LIST,
-        });
-      }
-    }
 
     switch (type) {
       case ModalType.PROPOSAL:
         document.addEventListener("mousedown", handleClickOutsideProposal);
-        break;
-      case ModalType.WALLET:
-        document.addEventListener("mousedown", handleClickOutsideWallet);
         break;
       default:
         break;
@@ -46,9 +34,6 @@ function useOutsideHandler(ref, type: ModalType) {
         case ModalType.PROPOSAL:
           document.removeEventListener("mousedown", handleClickOutsideProposal);
           break;
-        case ModalType.WALLET:
-          document.removeEventListener("mousedown", handleClickOutsideWallet);
-          break;
         default:
           break;
       }
@@ -60,17 +45,6 @@ type ModalProps = {
   children: any;
   width: number;
   isOpen: boolean;
-};
-
-export const WalletModal = ({ children, width, isOpen }: ModalProps) => {
-  const modalRefWallet = useRef(null);
-  useOutsideHandler(modalRefWallet, ModalType.WALLET);
-
-  return (
-    <ModalContainer ref={modalRefWallet} width={width} isOpen={isOpen}>
-      {children}
-    </ModalContainer>
-  );
 };
 
 export const ProposalModal = ({ children, width, isOpen }: ModalProps) => {

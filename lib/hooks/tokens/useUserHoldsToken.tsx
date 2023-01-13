@@ -1,5 +1,5 @@
 import { usePool } from "@vocdoni/react-hooks";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { hasBalance } from "../../api";
 
 /**
@@ -24,7 +24,7 @@ export function useUserHoldsToken(userAddress, tokenAddress) {
       if (!loading) {
         setLoading(true);
         poolPromise
-          .then((p) => {
+          .then((p: any) => {
             return hasBalance(tokenAddress, userAddress, p);
           })
           .then((b) => {

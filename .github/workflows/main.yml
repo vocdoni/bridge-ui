@@ -19,14 +19,14 @@ jobs:
         run: npm install -g yarn
 
       - name: Install dependencies
-        run: npm install
+        run: npm install -f
 
       - name: Run tests
         run: npm test
 
   docker-release:
     runs-on: self-hosted
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release')
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage' || startsWith(github.ref, 'refs/heads/release')  || startsWith(github.ref, 'refs/heads/polygon')
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -65,6 +65,23 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=4
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
@@ -79,6 +96,24 @@ jobs:
           push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=4
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
             vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
             ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
@@ -90,16 +125,61 @@ jobs:
           context: .
           file: ./Dockerfile.static
           platforms: linux/amd64
+          push: true
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            VOCDONI_ENVIRONMENT=stg
-            ETH_NETWORK_ID=goerli
-            BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.stg.json
-            SIGNALING_ORACLE_URL=https://signaling-oracle.dev.vocdoni.net/dvote
-          push: true
+            DEFAULT_ETH_CHAIN_ID=4
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
           tags: |
-            vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
-            ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
+            vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
+
+      - name: Push to Docker Hub and ghcr.io (polygon)
+        uses: docker/build-push-action@v2
+        if: github.ref == 'refs/heads/polygon'
+        with:
+          context: .
+          file: ./Dockerfile.static
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            COMMIT_SHA=${{ steps.var.outputs.sha_short }}
+            DEFAULT_ETH_CHAIN_ID=137
+            MATIC_SIGNALING_ORACLE_URL=https://signaling-oracle-polygon.vocdoni.net/dvote
+          # MAINNET_VOCDONI_ENVIRONMENT=
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # ANALYTICS_KEY=
+          # FORTMATIC_API_KEY=
+          # PORTIS_DAPP_ID=
+          # WALLET_CONNECT_ID=
+          tags: |
+            vocdoni/${{ github.event.repository.name }}:latest-static, vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static,
+            ghcr.io/vocdoni/${{ github.event.repository.name }}:latest-static,ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}-static
 
       - name: Push to Docker Hub and ghcr.io (release)
         uses: docker/build-push-action@v2
@@ -110,15 +190,24 @@ jobs:
           platforms: linux/amd64
           build-args: |
             COMMIT_SHA=${{ steps.var.outputs.sha_short }}
-            VOCDONI_ENVIRONMENT=prod
-            ETH_NETWORK_ID=mainnet
-            ETH_CHAIN_ID=1
-            BOOTNODES_URL=https://bootnodes.vocdoni.net/gateways.json
-            SIGNALING_ORACLE_URL=https://signaling-oracle.vocdoni.net/dvote
-            BLOCK_TIME=10
-            ETHERSCAN_PREFIX=https://etherscan.io
             ANALYTICS_KEY=1w2aWkXE1ukrJJAGi29Gbw3Yi0X
             FORTMATIC_API_KEY=pk_live_A08FE109CFF97C4F
+            WALLET_CONNECT_ID=b76cba91dc954ceebff27244923224b1
+            DEFAULT_ETH_CHAIN_ID=1
+          # MAINNET_VOCDONI_ENVIRONMENT=prod
+          # MATIC_VOCDONI_ENVIRONMENT=
+          # RINKEBY_VOCDONI_ENVIRONMENT=
+          # MAINNET_BOOTNODE_URL=
+          # MATIC_BOOTNODE_URL=
+          # RINKEBY_BOOTNODE_URL=
+          # MAINNET_SIGNALING_ORACLE_URL=
+          # MATIC_SIGNALING_ORACLE_URL=
+          # RINKEBY_SIGNALING_ORACLE_URL=
+          # MAINNET_ARCHIVE_IPNS_ID=
+          # MATIC_ARCHIVE_IPNS_ID=
+          # RINKEBY_ARCHIVE_IPNS_ID=
+          # DEFAULT_ETH_CHAIN_ID=
+          # PORTIS_DAPP_ID=
           push: true
           tags: |
             vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }},
@@ -126,12 +215,14 @@ jobs:
 
       - name: extract build files from image
         id: extract
+        if: github.ref == 'refs/heads/main'
         uses: shrink/actions-docker-extract@v1
         with:
           image: ghcr.io/vocdoni/${{ github.event.repository.name }}:${{ steps.var.outputs.branch }}
           path: /app/build/
 
       - name: upload sourcemap to apm
+        if: github.ref == 'refs/heads/main'
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
           DIR: ${{ steps.extract.outputs.destination }}
@@ -140,7 +231,6 @@ jobs:
             export filename=${f%.*}
             curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="Voice" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#"./$DIR/.next"}" -F sourcemap=@$f
           done
-
 
   gcp-release:
     runs-on: self-hosted
@@ -181,37 +271,56 @@ jobs:
           export_default_credentials: true
       - name: Install dependencies and build (mainnet)
         run: |
-          npm install
+          npm install -f
           npm run export
         env:
           COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
-          VOCDONI_ENVIRONMENT: prod
-          ETH_NETWORK_ID: mainnet
-          ETH_CHAIN_ID: 1
-          BOOTNODES_URL: https://bootnodes.vocdoni.net/gateways.json
-          SIGNALING_ORACLE_URL: https://signaling-oracle.vocdoni.net/dvote
-          BLOCK_TIME: 10
-          ETHERSCAN_PREFIX: https://etherscan.io
+          MAINNET_VOCDONI_ENVIRONMENT: prod
+          DEFAULT_ETH_CHAIN_ID: 1
+          # MATIC_VOCDONI_ENVIRONMENT:
+          # RINKEBY_VOCDONI_ENVIRONMENT:
+          # MAINNET_BOOTNODE_URL:
+          # MATIC_BOOTNODE_URL:
+          # RINKEBY_BOOTNODE_URL:
+          # MAINNET_SIGNALING_ORACLE_URL:
+          # MATIC_SIGNALING_ORACLE_URL:
+          # RINKEBY_SIGNALING_ORACLE_URL:
+          # MAINNET_ARCHIVE_IPNS_ID:
+          # MATIC_ARCHIVE_IPNS_ID:
+          # RINKEBY_ARCHIVE_IPNS_ID:
+          # DEFAULT_ETH_CHAIN_ID:
+          # PORTIS_DAPP_ID:
           ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
+          WALLET_CONNECT_ID: b76cba91dc954ceebff27244923224b1
       - name: Upload static site to GCS
         run: |
           gsutil -m cp -r build/* gs://voice.aragon.org
       - name: Install dependencies and build (xdai)
         run: |
           rm -rf build
-          npm install
+          npm install -f
           npm run export
         env:
-          VOCDONI_ENVIRONMENT: prod
-          ETH_NETWORK_ID: xdai
-          ETH_CHAIN_ID: 100
-          BOOTNODES_URL: https://bootnodes.vocdoni.net/gateways.json
-          SIGNALING_ORACLE_URL: https://signaling-oracle-xdai.vocdoni.net/dvote
-          BLOCK_TIME: 10
-          ETHERSCAN_PREFIX: https://etherscan.io
+          COMMIT_SHA: ${{ steps.var.outputs.sha_short }}
+          MAINNET_VOCDONI_ENVIRONMENT: prod
+          DEFAULT_ETH_CHAIN_ID: 100
+          # MATIC_VOCDONI_ENVIRONMENT:
+          # RINKEBY_VOCDONI_ENVIRONMENT:
+          # MAINNET_BOOTNODE_URL:
+          # MATIC_BOOTNODE_URL:
+          # RINKEBY_BOOTNODE_URL:
+          # MAINNET_SIGNALING_ORACLE_URL:
+          # MATIC_SIGNALING_ORACLE_URL:
+          # RINKEBY_SIGNALING_ORACLE_URL:
+          # MAINNET_ARCHIVE_IPNS_ID:
+          # MATIC_ARCHIVE_IPNS_ID:
+          # RINKEBY_ARCHIVE_IPNS_ID:
+          # DEFAULT_ETH_CHAIN_ID:
+          # PORTIS_DAPP_ID:
           ANALYTICS_KEY: 1w2aWkXE1ukrJJAGi29Gbw3Yi0X
           FORTMATIC_API_KEY: pk_live_A08FE109CFF97C4F
+          WALLET_CONNECT_ID: b76cba91dc954ceebff27244923224b1
       - name: Upload static site to GCS
         run: |
           gsutil -m cp -r build/* gs://voice-xdai.aragon.org

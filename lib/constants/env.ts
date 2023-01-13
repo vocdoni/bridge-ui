@@ -1,25 +1,59 @@
-import { EthNetworkID, VocdoniEnvironment } from "dvote-js";
+import { EthNetworkID, VocdoniEnvironment } from "@vocdoni/common";
 
-export const DEFAULT_CHAIN_ID = 1;
 export const ETH_BLOCK_HEIGHT_PADDING = 10;
 
-interface BuildVariables {
-  isDevelopment: boolean;
-  environment: string;
+type NetworkEnv = {
+  bootnodeUrl: string,
+  signalingOracle: string,
+  vocdoniEnvironment: VocdoniEnvironment,
+  archiveIpnsId?: string
+}
+
+interface BuildArgumengs {
+  defaultLang: string,
+  defaultEthChainId: number,
+  environment: "development" | "production" | "test";
   commitSha: string;
   appTitle: string;
   analyticsKey: string;
   fortmaticKey: string;
+  walletConnectId: string;
+  // Networks
+  mainnet: NetworkEnv;
+  matic: NetworkEnv;
+  rinkeby: NetworkEnv;
+  explorer: string;
 }
 
 /*  Maybe have singleton objects with fields derived from env directly */
-export const BUILD: BuildVariables = {
-  isDevelopment: false,
-  environment: process.env.NODE_ENV,
+export const BUILD: BuildArgumengs = {
+  defaultLang: "en",
+  defaultEthChainId: parseInt(process.env.DEFAULT_ETH_CHAIN_ID || "1"),
+  environment: process.env.NODE_ENV || "development",
   commitSha: process.env.COMMIT_SHA,
-  appTitle: process.env.APP_TITLE,
+  appTitle: process.env.APP_TITLE || "Aragon Voice",
   analyticsKey: process.env.ANALYTICS_KEY,
   fortmaticKey: process.env.FORTMATIC_API_KEY,
+  walletConnectId: process.env.WALLET_CONNECT_ID,
+  mainnet: {
+    bootnodeUrl: process.env.MAINNET_BOOTNODE_URL,
+    signalingOracle: process.env.MAINNET_SIGNALING_ORACLE_URL,
+    vocdoniEnvironment: process.env.MAINNET_VOCDONI_ENVIRONMENT as VocdoniEnvironment,
+    archiveIpnsId: process.env.MAINNET_ARCHIVE_IPNS_ID
+  },
+  matic: {
+    bootnodeUrl: process.env.MATIC_BOOTNODE_URL,
+    signalingOracle: process.env.MATIC_SIGNALING_ORACLE_URL,
+    vocdoniEnvironment: process.env.MATIC_VOCDONI_ENVIRONMENT as VocdoniEnvironment,
+    archiveIpnsId: process.env.MATIC_ARCHIVE_IPNS_ID
+  },
+  rinkeby: {
+    bootnodeUrl: process.env.RINKEBY_BOOTNODE_URL,
+    signalingOracle: process.env.RINKEBY_SIGNALING_ORACLE_URL,
+    vocdoniEnvironment: process.env.RINKEBY_VOCDONI_ENVIRONMENT as VocdoniEnvironment,
+    archiveIpnsId: process.env.RINKEBY_ARCHIVE_IPNS_ID
+  },
+  explorer: process.env.VOCHAIN_EXPLORER_URL,
 };
 
 export interface NetworkVariables {
@@ -30,6 +64,7 @@ export interface NetworkVariables {
   bootnodesUrl: string;
   singalingOracleUrl: string;
   vocdoniEnvironment: VocdoniEnvironment;
+  archiveIpnsId?: string;
 }
 
 const ENVIRONMENTS: NetworkVariables[] = [
@@ -38,19 +73,29 @@ const ENVIRONMENTS: NetworkVariables[] = [
     networkName: "mainnet",
     etherscanPrefix: "https://etherscan.io",
     blockTime: 10,
-    bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.json",
-    singalingOracleUrl: "https://signaling-oracle.vocdoni.net/dvote",
-    vocdoniEnvironment: "prod",
+    bootnodesUrl: BUILD.mainnet.bootnodeUrl,
+    singalingOracleUrl: BUILD.mainnet.signalingOracle,
+    vocdoniEnvironment: BUILD.mainnet.vocdoniEnvironment,
+    archiveIpnsId: BUILD.mainnet.archiveIpnsId
   },
   {
     chainId: 4,
     networkName: "rinkeby",
     etherscanPrefix: "https://rinkeby.etherscan.io",
-    blockTime: 12,
-    bootnodesUrl: "https://bootnodes.vocdoni.net/gateways.dev.json",
-    singalingOracleUrl: "https://signaling-oracle.dev.vocdoni.net/dvote",
-    vocdoniEnvironment: "dev",
+    blockTime: 10,
+    bootnodesUrl: BUILD.rinkeby.bootnodeUrl,
+    singalingOracleUrl: BUILD.rinkeby.signalingOracle,
+    vocdoniEnvironment: BUILD.rinkeby.vocdoniEnvironment,
   },
+  {
+    chainId: 137,
+    networkName: "matic",
+    etherscanPrefix: "https://polygonscan.com/",
+    blockTime: 10,
+    bootnodesUrl: BUILD.matic.bootnodeUrl,
+    singalingOracleUrl: BUILD.matic.signalingOracle,
+    vocdoniEnvironment: BUILD.matic.vocdoniEnvironment,
+  }
 ];
 
 /**

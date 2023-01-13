@@ -1,5 +1,7 @@
 import { BigNumber, Contract, ethers, providers, Signer } from "ethers";
-import { CensusErc20Api, GatewayPool, ProcessSummary, VotingApi } from "dvote-js";
+import { ProcessSummary, VotingApi } from "@vocdoni/voting";
+import { CensusErc20Api } from "@vocdoni/census";
+import { Erc20TokensApi, GatewayPool } from "@vocdoni/client";
 import TokenAmount from "token-amount";
 import Bluebird from "bluebird";
 import { NoTokenBalanceError, NO_TOKEN_BALANCE } from "./errors";
@@ -14,13 +16,46 @@ export interface ProofParameters {
   block: number;
   balanceMappingPosition: number;
 }
+/* Get the processes id's from the archive */
+const getArchiveProcessIdList = async (
+  tokenAddress: string,
+  pool: GatewayPool
+): Promise<string[]> => {
+  return VotingApi.getProcessList({ fromArchive: true, entityId: tokenAddress }, pool)
+};
+
+/* Get the processes id's from the gateway */
+const getGwProcessIdList = async (
+  tokenAddress: string,
+  from: number,
+  pool: GatewayPool
+): Promise<string[]> => {
+  return VotingApi.getProcessList(
+    { fromArchive: false, entityId: tokenAddress, from },
+    pool
+  )
+};
 
 export async function getProcessList(tokenAddress: string, pool: GatewayPool): Promise<string[]> {
-  let result: string[] = [];
   let from = 0;
 
+  let result: string[] = await Promise.all([
+    getArchiveProcessIdList(tokenAddress, pool),
+    getGwProcessIdList(tokenAddress, from, pool),
+  ]).then((result: string[][]) => {
+    from += result[1].length;
+    return result.flat(1);
+  });
+
+  if (from === 0) {
+    return result;
+  }
+
   while (true) {
-    const processList = await VotingApi.getProcessList({ entityId: tokenAddress, from }, pool);
+    const processList = await VotingApi.getProcessList(
+      { fromArchive: false, entityId: tokenAddress, from },
+      pool
+    );
     if (processList.length == 0) return result;
 
     result = result.concat(processList.map((id) => "0x" + id));
@@ -80,12 +115,19 @@ export function getTokenInfo(address: string, pool: GatewayPool): Promise<TokenI
   // TODO: erc20Helpers is untyped
   const erc20Helpers = AbiMap[address] ?? { abi: ERC20_ABI };
   const tokenInstance = new Contract(address, erc20Helpers.abi, pool.provider);
-
+  const decimals = tokenInstance
+    .decimals()
+    .then((x) => {
+      return x;
+    })
+    .catch((_) => {
+      return BigInt(0);
+    });
   return Promise.all([
     tokenInstance.name(),
     tokenInstance.symbol(),
     tokenInstance.totalSupply(),
-    tokenInstance.decimals(),
+    new Promise((resolve,_) => resolve(decimals)),
     CensusErc20Api.getTokenInfo(address, pool),
     getProcessList(address, pool),
   ]).then(
@@ -147,7 +189,7 @@ export function getRegisteredTokenList(
   currentTokenCount: number,
   pool: GatewayPool
 ): Promise<string[]> {
-  return CensusErc20Api.getTokenCount(pool).then((count) => {
+  return Erc20TokensApi.getTokenCount(pool).then((count) => {
     // Nothing changed?
     if (count == currentTokenCount) return Promise.resolve([]);
 
@@ -155,7 +197,7 @@ export function getRegisteredTokenList(
 [currentCount, count] are fetched, instead of [0, count]? [VR 02-08-2021] */
     return Bluebird.map(
       Array.from(Array(count).keys()),
-      (idx) => CensusErc20Api.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
+      (idx) => Erc20TokensApi.getTokenAddressAt(idx, pool).then((addr) => addr.toLowerCase()),
       { concurrency: 50 }
     );
   });
