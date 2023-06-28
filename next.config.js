@@ -15,6 +15,7 @@ module.exports = {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
+      readline: false,
     };
     config.plugins.push(new DuplicatePackageCheckerPlugin())
     config.plugins.push(

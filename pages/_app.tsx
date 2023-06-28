@@ -38,12 +38,12 @@ import { MantineProvider } from "@mantine/core";
 // Web3Modal settings
 const providerOptions: IProviderOptions = {
   // metamask: {}
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: BUILD.walletConnectId,
-    },
-  },
+  // walletconnect: {
+  //   package: WalletConnectProvider,
+  //   options: {
+  //     infuraId: BUILD.walletConnectId,
+  //   },
+  // },
   // fortmatic: {
   //   package: Fortmatic, // required
   //   options: {
